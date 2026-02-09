@@ -29,27 +29,30 @@
 <meta name="twitter:description" content="クリエイティブツールを開発するインディーサークル">
 
 <!-- Favicon -->
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%233B82F6' rx='20' width='100' height='100'/><text x='50' y='68' font-size='45' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'>ef</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%2300d4ff' rx='20' width='100' height='100'/><text x='50' y='68' font-size='45' font-family='sans-serif' font-weight='bold' fill='%23000' text-anchor='middle'>ef</text></svg>">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg: #FAFBFC;
-  --bg-card: #FFFFFF;
-  --text: #1A1D23;
-  --text-sub: #5F6672;
-  --accent: #3B82F6;
-  --accent-hover: #2563EB;
-  --accent-light: #EFF6FF;
-  --border: #E5E7EB;
-  --radius: 16px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06);
-  --shadow-hover: 0 2px 8px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.1);
-  --font-en: 'Outfit', sans-serif;
-  --font-ja: 'Zen Kaku Gothic New', sans-serif;
+  --bg: #0a0a0f;
+  --bg-card: rgba(15, 15, 25, 0.8);
+  --text: #e0e0e0;
+  --text-sub: #8a8a9a;
+  --neon-primary: #00d4ff;
+  --neon-secondary: #00ff88;
+  --neon-pink: #ff00aa;
+  --neon-purple: #8b5cf6;
+  --border: rgba(0, 212, 255, 0.2);
+  --border-hover: rgba(0, 212, 255, 0.6);
+  --radius: 12px;
+  --glow: 0 0 10px var(--neon-primary), 0 0 20px var(--neon-primary), 0 0 40px var(--neon-primary);
+  --glow-soft: 0 0 5px var(--neon-primary), 0 0 10px rgba(0, 212, 255, 0.5);
+  --font-en: 'Orbitron', sans-serif;
+  --font-display: 'Rajdhani', sans-serif;
+  --font-ja: 'Noto Sans JP', sans-serif;
   --font-body: var(--font-ja);
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -61,6 +64,113 @@ body {
   color: var(--text);
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* --- Background Effects --- */
+.bg-effects {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Grid */
+.grid-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: gridMove 20s linear infinite;
+}
+
+@keyframes gridMove {
+  0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+  100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+}
+
+/* Floating particles */
+.particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--neon-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--neon-primary), 0 0 20px var(--neon-primary);
+  animation: float 15s infinite;
+  opacity: 0.6;
+}
+
+.particle:nth-child(1) { left: 5%; animation-delay: 0s; animation-duration: 12s; }
+.particle:nth-child(2) { left: 15%; animation-delay: 2s; animation-duration: 18s; }
+.particle:nth-child(3) { left: 25%; animation-delay: 4s; animation-duration: 14s; }
+.particle:nth-child(4) { left: 85%; animation-delay: 1s; animation-duration: 16s; }
+.particle:nth-child(5) { left: 90%; animation-delay: 3s; animation-duration: 20s; }
+.particle:nth-child(6) { left: 95%; animation-delay: 5s; animation-duration: 13s; }
+.particle:nth-child(7) { left: 8%; animation-delay: 6s; animation-duration: 17s; }
+.particle:nth-child(8) { left: 92%; animation-delay: 7s; animation-duration: 15s; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 0.8; transform: translateY(90vh) scale(1); }
+  90% { opacity: 0.8; transform: translateY(10vh) scale(1); }
+  100% { transform: translateY(0) scale(0); opacity: 0; }
+}
+
+/* Neon lines */
+.neon-line {
+  position: absolute;
+  background: linear-gradient(90deg, transparent, var(--neon-primary), transparent);
+  height: 2px;
+  animation: lineMove 8s infinite;
+  opacity: 0.5;
+}
+
+.neon-line:nth-child(1) { top: 20%; width: 200px; left: -200px; animation-delay: 0s; }
+.neon-line:nth-child(2) { top: 40%; width: 300px; right: -300px; animation-delay: 2s; animation-direction: reverse; }
+.neon-line:nth-child(3) { top: 60%; width: 250px; left: -250px; animation-delay: 4s; }
+.neon-line:nth-child(4) { top: 80%; width: 180px; right: -180px; animation-delay: 6s; animation-direction: reverse; }
+
+@keyframes lineMove {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(calc(100vw + 300px)); }
+  50.01% { transform: translateX(calc(-100vw - 300px)); }
+  100% { transform: translateX(0); }
+}
+
+/* Vertical neon lines */
+.neon-line-v {
+  position: absolute;
+  background: linear-gradient(180deg, transparent, var(--neon-pink), transparent);
+  width: 2px;
+  height: 150px;
+  animation: lineVMove 10s infinite;
+  opacity: 0.4;
+}
+
+.neon-line-v:nth-child(1) { left: 3%; animation-delay: 0s; }
+.neon-line-v:nth-child(2) { left: 7%; animation-delay: 3s; }
+.neon-line-v:nth-child(3) { right: 3%; animation-delay: 1.5s; }
+.neon-line-v:nth-child(4) { right: 7%; animation-delay: 4.5s; }
+
+@keyframes lineVMove {
+  0%, 100% { top: -150px; opacity: 0; }
+  10% { opacity: 0.6; }
+  90% { opacity: 0.6; }
+  100% { top: 100vh; opacity: 0; }
 }
 
 /* --- Language Switcher --- */
@@ -76,33 +186,40 @@ body {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 6px 12px;
-  font-size: 13px;
+  font-size: 12px;
   font-family: var(--font-en);
   color: var(--text-sub);
   cursor: pointer;
   transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
-.lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+.lang-btn:hover {
+  border-color: var(--neon-primary);
+  color: var(--neon-primary);
+  box-shadow: var(--glow-soft);
+}
 .lang-btn svg { width: 16px; height: 16px; }
 .lang-dropdown {
   display: none;
   position: absolute;
   top: calc(100% + 6px);
   right: 0;
-  background: var(--bg-card);
+  background: rgba(10, 10, 20, 0.95);
   border: 1px solid var(--border);
   border-radius: 12px;
-  box-shadow: var(--shadow-hover);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
   min-width: 180px;
   padding: 6px;
   animation: fadeIn 0.2s ease;
+  backdrop-filter: blur(20px);
 }
 .lang-dropdown.show { display: block; }
 .lang-option {
   display: block;
   width: 100%;
   text-align: left;
-  padding: 8px 12px;
+  padding: 10px 14px;
   font-size: 14px;
   font-family: var(--font-body);
   background: none;
@@ -112,15 +229,19 @@ body {
   cursor: pointer;
   transition: var(--transition);
 }
-.lang-option:hover { background: var(--accent-light); color: var(--accent); }
-.lang-option.active { color: var(--accent); font-weight: 500; }
+.lang-option:hover {
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--neon-primary);
+  text-shadow: 0 0 10px var(--neon-primary);
+}
+.lang-option.active { color: var(--neon-primary); font-weight: 700; }
 
 /* --- Header --- */
 header {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(250, 251, 252, 0.85);
+  background: rgba(10, 10, 15, 0.8);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
@@ -129,7 +250,7 @@ header {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 24px;
-  height: 64px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -137,126 +258,225 @@ header {
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
   color: var(--text);
 }
 .logo-icon {
-  width: 36px;
-  height: 36px;
-  background: var(--accent);
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: #000;
   font-family: var(--font-en);
-  font-weight: 700;
-  font-size: 18px;
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+  animation: logoPulse 3s ease-in-out infinite;
 }
+
+@keyframes logoPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+  50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 60px rgba(0, 212, 255, 0.4); }
+}
+
 .logo-text {
   font-family: var(--font-en);
-  font-weight: 600;
-  font-size: 18px;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
-nav { display: flex; align-items: center; gap: 24px; }
+nav { display: flex; align-items: center; gap: 28px; }
 nav a {
-  font-size: 14px;
+  font-size: 13px;
+  font-family: var(--font-en);
   color: var(--text-sub);
   text-decoration: none;
   transition: var(--transition);
-  font-weight: 400;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
-nav a:hover { color: var(--accent); }
+nav a:hover {
+  color: var(--neon-primary);
+  text-shadow: 0 0 10px var(--neon-primary);
+}
 
 /* --- Hero --- */
 .hero {
+  position: relative;
+  z-index: 1;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 100px 24px 80px;
+  padding: 120px 24px 100px;
   text-align: center;
 }
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: var(--accent-light);
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 6px 14px;
-  border-radius: 20px;
-  margin-bottom: 24px;
-  animation: slideUp 0.6s ease both;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid var(--neon-primary);
+  color: var(--neon-primary);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-en);
+  padding: 8px 20px;
+  border-radius: 30px;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  box-shadow: var(--glow-soft);
+  animation: badgePulse 2s ease-in-out infinite;
 }
-.hero-badge::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  background: var(--accent);
-  border-radius: 50%;
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 5px var(--neon-primary), 0 0 10px rgba(0, 212, 255, 0.3); }
+  50% { box-shadow: 0 0 10px var(--neon-primary), 0 0 20px rgba(0, 212, 255, 0.5), 0 0 30px rgba(0, 212, 255, 0.3); }
 }
+
 .hero h1 {
-  font-size: clamp(32px, 5vw, 56px);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.03em;
-  margin-bottom: 20px;
-  animation: slideUp 0.6s ease 0.1s both;
+  font-size: clamp(36px, 6vw, 72px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  margin-bottom: 30px;
+  font-family: var(--font-ja);
 }
-.hero h1 .accent { color: var(--accent); }
+.hero h1 .accent {
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-secondary), var(--neon-primary));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 3s ease-in-out infinite;
+  text-shadow: none;
+  filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.5));
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Typing effect */
+.typing-text {
+  display: inline;
+}
+.typing-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background: var(--neon-primary);
+  margin-left: 4px;
+  animation: blink 1s step-end infinite;
+  box-shadow: 0 0 10px var(--neon-primary);
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 .hero p {
-  font-size: clamp(16px, 2vw, 19px);
+  font-size: clamp(15px, 2vw, 18px);
   color: var(--text-sub);
-  max-width: 560px;
-  margin: 0 auto 40px;
-  animation: slideUp 0.6s ease 0.2s both;
+  max-width: 600px;
+  margin: 0 auto 50px;
+  line-height: 2;
 }
 .hero-cta {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: var(--accent);
-  color: white;
+  gap: 10px;
+  background: transparent;
+  border: 2px solid var(--neon-primary);
+  color: var(--neon-primary);
   text-decoration: none;
-  padding: 14px 28px;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 500;
+  padding: 16px 36px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-en);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   transition: var(--transition);
-  animation: slideUp 0.6s ease 0.3s both;
+  position: relative;
+  overflow: hidden;
+}
+.hero-cta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+  transition: 0.5s;
+}
+.hero-cta:hover::before {
+  left: 100%;
 }
 .hero-cta:hover {
-  background: var(--accent-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+  background: var(--neon-primary);
+  color: #000;
+  box-shadow: var(--glow);
+  transform: translateY(-3px);
 }
 .hero-cta svg { width: 18px; height: 18px; }
 
 /* --- Section --- */
-section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
+section {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 100px 24px;
+}
 .section-label {
   font-family: var(--font-en);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--neon-pink);
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-bottom: 8px;
+  letter-spacing: 0.2em;
+  margin-bottom: 10px;
+  text-shadow: 0 0 10px var(--neon-pink);
 }
 .section-title {
-  font-size: clamp(24px, 3.5vw, 36px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin-bottom: 48px;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  margin-bottom: 60px;
+  color: var(--text);
+}
+
+/* Scroll animations */
+.scroll-animate {
+  opacity: 0;
+  transform: translateX(-60px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.scroll-animate.from-right {
+  transform: translateX(60px);
+}
+.scroll-animate.visible {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 /* --- Products --- */
 .products-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 24px;
+  gap: 30px;
 }
 .product-card {
   background: var(--bg-card);
@@ -265,131 +485,161 @@ section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
   padding: 40px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   transition: var(--transition);
   text-decoration: none;
   color: inherit;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(10px);
 }
-.product-card:hover {
-  box-shadow: var(--shadow-hover);
-  border-color: var(--accent);
-  transform: translateY(-4px);
-}
-.product-card::after {
+.product-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), #8B5CF6);
+  height: 2px;
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-purple), var(--neon-pink));
   opacity: 0;
   transition: var(--transition);
 }
-.product-card:hover::after { opacity: 1; }
+.product-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.15), inset 0 0 60px rgba(0, 212, 255, 0.03);
+  transform: translateY(-5px);
+}
+.product-card:hover::before { opacity: 1; }
+
 .product-icon {
-  width: 56px;
-  height: 56px;
-  background: var(--accent-light);
-  border-radius: 14px;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(139, 92, 246, 0.2));
+  border: 1px solid var(--border);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 28px;
+  font-size: 32px;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
 }
 .product-name {
   font-family: var(--font-en);
-  font-size: 22px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 .product-desc {
   color: var(--text-sub);
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.8;
 }
 .product-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
 }
 .product-tag {
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: var(--bg);
-  color: var(--text-sub);
+  font-size: 11px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid var(--border);
+  color: var(--neon-primary);
   font-family: var(--font-en);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 .product-links {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 8px;
+  gap: 12px;
+  margin-top: 10px;
 }
 .product-link {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 13px;
-  font-weight: 500;
-  color: var(--accent);
+  font-weight: 700;
+  font-family: var(--font-en);
+  color: var(--neon-primary);
   text-decoration: none;
-  padding: 6px 14px;
-  border: 1px solid var(--accent);
-  border-radius: 8px;
+  padding: 10px 24px;
+  border: 1px solid var(--neon-primary);
+  border-radius: 30px;
   transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 .product-link:hover {
-  background: var(--accent);
-  color: white;
+  background: var(--neon-primary);
+  color: #000;
+  box-shadow: var(--glow-soft);
 }
 
 /* --- About --- */
 .about-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 48px;
+  gap: 50px;
   align-items: start;
 }
-.about-text { color: var(--text-sub); font-size: 15px; }
-.about-text p + p { margin-top: 16px; }
+.about-text {
+  color: var(--text-sub);
+  font-size: 15px;
+  line-height: 2;
+}
 .about-info {
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 32px;
+  padding: 36px;
+  backdrop-filter: blur(10px);
 }
 .about-info-item {
-  padding: 16px 0;
+  padding: 18px 0;
   border-bottom: 1px solid var(--border);
   display: flex;
-  gap: 16px;
+  gap: 20px;
 }
 .about-info-item:last-child { border-bottom: none; }
 .about-info-label {
-  font-size: 13px;
-  color: var(--text-sub);
-  min-width: 80px;
-  font-weight: 500;
+  font-size: 12px;
+  color: var(--neon-pink);
+  min-width: 90px;
+  font-weight: 700;
+  font-family: var(--font-en);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 .about-info-value {
   font-size: 14px;
   font-weight: 500;
+  color: var(--text);
 }
 .about-info-value a {
-  color: var(--accent);
+  color: var(--neon-primary);
   text-decoration: none;
+  transition: var(--transition);
 }
-.about-info-value a:hover { text-decoration: underline; }
+.about-info-value a:hover {
+  text-shadow: 0 0 10px var(--neon-primary);
+}
 
 /* --- Footer --- */
 footer {
+  position: relative;
+  z-index: 1;
   border-top: 1px solid var(--border);
-  padding: 40px 24px;
+  padding: 50px 24px;
   text-align: center;
+  background: rgba(5, 5, 10, 0.8);
 }
 .footer-inner {
   max-width: 1100px;
@@ -397,39 +647,55 @@ footer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
 }
-.footer-links { display: flex; gap: 24px; }
+.footer-links { display: flex; gap: 30px; }
 .footer-links a {
   font-size: 13px;
+  font-family: var(--font-en);
   color: var(--text-sub);
   text-decoration: none;
   transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
-.footer-links a:hover { color: var(--accent); }
+.footer-links a:hover {
+  color: var(--neon-primary);
+  text-shadow: 0 0 10px var(--neon-primary);
+}
 .footer-copy {
   font-size: 12px;
   color: var(--text-sub);
   font-family: var(--font-en);
+  letter-spacing: 0.1em;
 }
 
 /* --- Animations --- */
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-4px); }
+  from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: slideUp 0.8s ease forwards; }
+.fade-in-delay-1 { animation: slideUp 0.8s ease 0.1s forwards; opacity: 0; }
+.fade-in-delay-2 { animation: slideUp 0.8s ease 0.2s forwards; opacity: 0; }
+.fade-in-delay-3 { animation: slideUp 0.8s ease 0.3s forwards; opacity: 0; }
+.fade-in-delay-4 { animation: slideUp 0.8s ease 0.4s forwards; opacity: 0; }
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
-  .header-inner { height: 56px; }
+  .header-inner { height: 60px; }
   nav a.nav-link-text { display: none; }
-  .hero { padding: 60px 20px 50px; }
-  .about-content { grid-template-columns: 1fr; gap: 32px; }
+  .hero { padding: 80px 20px 60px; }
+  .about-content { grid-template-columns: 1fr; gap: 40px; }
   .product-card { padding: 28px; }
+  .particle:nth-child(n+5) { display: none; }
+  .neon-line-v { display: none; }
 }
 
 /* --- i18n: hide/show by lang --- */
@@ -448,6 +714,29 @@ footer {
 </style>
 </head>
 <body>
+
+<!-- Background Effects -->
+<div class="bg-effects">
+  <div class="grid-bg"></div>
+  <div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+  <div class="neon-line"></div>
+  <div class="neon-line"></div>
+  <div class="neon-line"></div>
+  <div class="neon-line"></div>
+  <div class="neon-line-v"></div>
+  <div class="neon-line-v"></div>
+  <div class="neon-line-v"></div>
+  <div class="neon-line-v"></div>
+</div>
 
 <!-- ===== HEADER ===== -->
 <header>
@@ -486,19 +775,19 @@ footer {
 
 <!-- ===== HERO ===== -->
 <div class="hero">
-  <div class="hero-badge">Indie Tool Dev</div>
-  <h1>
-    <span data-i18n="ja"><span class="accent">世界に楽しいを届ける</span></span>
-    <span data-i18n="en"><span class="accent">Bringing Fun to the World</span></span>
-    <span data-i18n="zh-CN"><span class="accent">向世界传递欢乐</span></span>
-    <span data-i18n="zh-TW"><span class="accent">向世界傳遞歡樂</span></span>
-    <span data-i18n="ko"><span class="accent">세상에 즐거움을 전하다</span></span>
-    <span data-i18n="es"><span class="accent">Llevando diversión al mundo</span></span>
-    <span data-i18n="fr"><span class="accent">Apporter du plaisir au monde</span></span>
-    <span data-i18n="de"><span class="accent">Spaß in die Welt bringen</span></span>
-    <span data-i18n="pt"><span class="accent">Levando diversão ao mundo</span></span>
+  <div class="hero-badge fade-in">Indie Tool Dev</div>
+  <h1 class="fade-in-delay-1">
+    <span data-i18n="ja"><span class="accent typing-text" id="typingTextJa"></span><span class="typing-cursor" id="cursorJa"></span></span>
+    <span data-i18n="en"><span class="accent typing-text" id="typingTextEn"></span><span class="typing-cursor" id="cursorEn"></span></span>
+    <span data-i18n="zh-CN"><span class="accent typing-text" id="typingTextZhCN"></span><span class="typing-cursor" id="cursorZhCN"></span></span>
+    <span data-i18n="zh-TW"><span class="accent typing-text" id="typingTextZhTW"></span><span class="typing-cursor" id="cursorZhTW"></span></span>
+    <span data-i18n="ko"><span class="accent typing-text" id="typingTextKo"></span><span class="typing-cursor" id="cursorKo"></span></span>
+    <span data-i18n="es"><span class="accent typing-text" id="typingTextEs"></span><span class="typing-cursor" id="cursorEs"></span></span>
+    <span data-i18n="fr"><span class="accent typing-text" id="typingTextFr"></span><span class="typing-cursor" id="cursorFr"></span></span>
+    <span data-i18n="de"><span class="accent typing-text" id="typingTextDe"></span><span class="typing-cursor" id="cursorDe"></span></span>
+    <span data-i18n="pt"><span class="accent typing-text" id="typingTextPt"></span><span class="typing-cursor" id="cursorPt"></span></span>
   </h1>
-  <p>
+  <p class="fade-in-delay-2">
     <span data-i18n="ja">その野望を掲げ、様々な面白ツールを作り続ける一人の男 "深夜徘徊"<br>彼の面白いは世間を賑わせ、世界を圧倒する…！(予定)<br>その彼が運営する開発サイトの名は、、、<br>『あいふぁくとりー(あいふぁく)』！</span>
     <span data-i18n="en">With this grand ambition, one man "SINNYA_HAIKAI" keeps creating amazing tools.<br>His creations will rock the world and blow everyone away...! (Planned)<br>The name of his development site is...<br>"eye-factory" (a.k.a. "aifaku")!</span>
     <span data-i18n="zh-CN">怀揣着这一宏大野心，一个名叫"深夜徘徊"的男人不断创造各种有趣的工具。<br>他的创意将轰动世界、震撼所有人…！（计划中）<br>他运营的开发站点名为……<br>「eye-factory（简称aifaku）」！</span>
@@ -509,7 +798,7 @@ footer {
     <span data-i18n="de">Mit dieser großen Ambition erschafft ein Mann namens "SINNYA_HAIKAI" weiterhin erstaunliche Tools.<br>Seine Kreationen werden die Welt rocken und alle umhauen...! (Geplant)<br>Der Name seiner Entwicklungsseite ist...<br>"eye-factory" (auch bekannt als "aifaku")!</span>
     <span data-i18n="pt">Com essa grande ambição, um homem "SINNYA_HAIKAI" continua criando ferramentas incríveis.<br>Suas criações vão abalar o mundo e impressionar a todos...! (Planejado)<br>O nome do seu site de desenvolvimento é...<br>"eye-factory" (também conhecido como "aifaku")!</span>
   </p>
-  <a href="#products" class="hero-cta">
+  <a href="#products" class="hero-cta fade-in-delay-3">
     <span data-i18n="ja">製品を見る</span><span data-i18n="en">View Products</span><span data-i18n="zh-CN">查看产品</span><span data-i18n="zh-TW">查看產品</span><span data-i18n="ko">제품 보기</span><span data-i18n="es">Ver productos</span><span data-i18n="fr">Voir les produits</span><span data-i18n="de">Produkte ansehen</span><span data-i18n="pt">Ver produtos</span>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
   </a>
@@ -517,14 +806,14 @@ footer {
 
 <!-- ===== PRODUCTS ===== -->
 <section id="products">
-  <div class="section-label">Products</div>
-  <div class="section-title">
+  <div class="section-label scroll-animate">Products</div>
+  <div class="section-title scroll-animate">
     <span data-i18n="ja">製品一覧</span><span data-i18n="en">Our Products</span><span data-i18n="zh-CN">产品一览</span><span data-i18n="zh-TW">產品一覽</span><span data-i18n="ko">제품 목록</span><span data-i18n="es">Nuestros Productos</span><span data-i18n="fr">Nos Produits</span><span data-i18n="de">Unsere Produkte</span><span data-i18n="pt">Nossos Produtos</span>
   </div>
   <div class="products-grid">
 
     <!-- DotChange -->
-    <div class="product-card">
+    <div class="product-card scroll-animate from-right">
       <div class="product-icon">🎨</div>
       <div class="product-name">DotChange</div>
       <div class="product-desc">
@@ -548,7 +837,6 @@ footer {
         <a href="https://eye-factory.booth.pm/" class="product-link" target="_blank" rel="noopener">
           <span data-i18n="ja">BOOTH で購入</span><span data-i18n="en">Buy on BOOTH</span><span data-i18n="zh-CN">在BOOTH购买</span><span data-i18n="zh-TW">在BOOTH購買</span><span data-i18n="ko">BOOTH에서 구매</span><span data-i18n="es">Comprar en BOOTH</span><span data-i18n="fr">Acheter sur BOOTH</span><span data-i18n="de">Auf BOOTH kaufen</span><span data-i18n="pt">Comprar no BOOTH</span>
         </a>
-        <!-- DLsite・FANZA は準備中 -->
       </div>
     </div>
 
@@ -557,12 +845,12 @@ footer {
 
 <!-- ===== ABOUT ===== -->
 <section id="about">
-  <div class="section-label">About</div>
-  <div class="section-title">
+  <div class="section-label scroll-animate">About</div>
+  <div class="section-title scroll-animate">
     <span data-i18n="ja">あいふぁくとりーについて</span><span data-i18n="en">About eye-factory</span><span data-i18n="zh-CN">关于 eye-factory</span><span data-i18n="zh-TW">關於 eye-factory</span><span data-i18n="ko">eye-factory 소개</span><span data-i18n="es">Acerca de eye-factory</span><span data-i18n="fr">À propos de eye-factory</span><span data-i18n="de">Über eye-factory</span><span data-i18n="pt">Sobre eye-factory</span>
   </div>
   <div class="about-content">
-    <div class="about-text">
+    <div class="about-text scroll-animate">
       <p>
         <span data-i18n="ja">あいふぁくとりー（eye-factory）は、「これ面白くない？」から始まるツール開発サークル。<br>代表の深夜徘徊が「世界に楽しいを届ける」を合言葉に、使って楽しい・見て楽しいツールを日々量産中。<br>デスクトップアプリからWebツールまで、思いついたら即カタチにしていくスタイルで活動しています。</span>
         <span data-i18n="en">eye-factory is a tool dev circle that starts with "Hey, isn't this cool?"<br>Led by SINNYA_HAIKAI with the motto "Bringing fun to the world," we're cranking out tools that are fun to use and fun to watch—every single day.<br>From desktop apps to web tools, if we think of it, we build it. That's how we roll.</span>
@@ -575,7 +863,7 @@ footer {
         <span data-i18n="pt">eye-factory é um círculo de dev que começa com "Isso não é legal?"<br>Liderado por SINNYA_HAIKAI com o lema "Levando diversão ao mundo," estamos criando ferramentas divertidas de usar e de ver—todos os dias!<br>De apps desktop a ferramentas web, se pensamos, fazemos. É assim que a gente funciona!</span>
       </p>
     </div>
-    <div class="about-info">
+    <div class="about-info scroll-animate from-right">
       <div class="about-info-item">
         <div class="about-info-label">
           <span data-i18n="ja">サークル名</span><span data-i18n="en">Circle</span><span data-i18n="zh-CN">社团名</span><span data-i18n="zh-TW">社團名</span><span data-i18n="ko">서클명</span><span data-i18n="es">Círculo</span><span data-i18n="fr">Cercle</span><span data-i18n="de">Circle</span><span data-i18n="pt">Círculo</span>
@@ -627,6 +915,65 @@ const langCodes = {
   'ko': 'ko', 'es': 'es', 'fr': 'fr', 'de': 'de', 'pt': 'pt'
 };
 
+// Typing text for each language
+const typingTexts = {
+  'ja': '世界に楽しいを届ける',
+  'en': 'Bringing Fun to the World',
+  'zh-CN': '向世界传递欢乐',
+  'zh-TW': '向世界傳遞歡樂',
+  'ko': '세상에 즐거움을 전하다',
+  'es': 'Llevando diversión al mundo',
+  'fr': 'Apporter du plaisir au monde',
+  'de': 'Spaß in die Welt bringen',
+  'pt': 'Levando diversão ao mundo'
+};
+
+let currentTypingTimeout = null;
+
+function typeText(lang) {
+  const text = typingTexts[lang];
+  const elementId = 'typingText' + lang.replace('-', '').charAt(0).toUpperCase() + lang.replace('-', '').slice(1);
+  const element = document.getElementById(elementId) || document.getElementById('typingTextJa');
+
+  // Map language codes to element IDs
+  const idMap = {
+    'ja': 'typingTextJa',
+    'en': 'typingTextEn',
+    'zh-CN': 'typingTextZhCN',
+    'zh-TW': 'typingTextZhTW',
+    'ko': 'typingTextKo',
+    'es': 'typingTextEs',
+    'fr': 'typingTextFr',
+    'de': 'typingTextDe',
+    'pt': 'typingTextPt'
+  };
+
+  const targetElement = document.getElementById(idMap[lang]);
+  if (!targetElement) return;
+
+  // Clear previous timeout
+  if (currentTypingTimeout) {
+    clearTimeout(currentTypingTimeout);
+  }
+
+  // Reset all typing texts
+  Object.values(idMap).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '';
+  });
+
+  let i = 0;
+  function type() {
+    if (i < text.length) {
+      targetElement.textContent += text.charAt(i);
+      i++;
+      currentTypingTimeout = setTimeout(type, 80);
+    }
+  }
+
+  setTimeout(type, 500);
+}
+
 function setLang(lang) {
   document.documentElement.setAttribute('data-lang', lang);
   document.documentElement.setAttribute('lang', langCodes[lang]);
@@ -636,6 +983,9 @@ function setLang(lang) {
   });
   document.getElementById('langDropdown').classList.remove('show');
   localStorage.setItem('ef-lang', lang);
+
+  // Trigger typing animation
+  typeText(lang);
 }
 
 function toggleLangMenu() {
@@ -666,6 +1016,25 @@ function detectLang() {
   return 'ja';
 }
 
+// Scroll animation
+function handleScrollAnimation() {
+  const elements = document.querySelectorAll('.scroll-animate');
+  const windowHeight = window.innerHeight;
+
+  elements.forEach(element => {
+    const elementTop = element.getBoundingClientRect().top;
+    const elementVisible = 150;
+
+    if (elementTop < windowHeight - elementVisible) {
+      element.classList.add('visible');
+    }
+  });
+}
+
+window.addEventListener('scroll', handleScrollAnimation);
+window.addEventListener('load', handleScrollAnimation);
+
+// Initialize
 setLang(detectLang());
 </script>
 </body>
