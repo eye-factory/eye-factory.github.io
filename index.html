@@ -315,7 +315,7 @@ nav a:hover {
   z-index: 1;
   max-width: 1100px;
   margin: 0 auto;
-  padding: 120px 24px 100px;
+  padding: 40px 24px 80px;
   text-align: center;
 }
 .hero-badge {
@@ -378,6 +378,11 @@ nav a:hover {
   margin-left: 4px;
   animation: blink 1s step-end infinite;
   box-shadow: 0 0 10px var(--neon-primary);
+  transition: opacity 0.5s ease;
+}
+.typing-cursor.hidden {
+  opacity: 0;
+  animation: none;
 }
 
 @keyframes blink {
@@ -387,10 +392,12 @@ nav a:hover {
 
 .hero p {
   font-size: clamp(15px, 2vw, 18px);
-  color: var(--text-sub);
+  color: #ffffff;
+  font-weight: 700;
   max-width: 600px;
   margin: 0 auto 50px;
   line-height: 2;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 .hero-cta {
   display: inline-flex;
@@ -687,6 +694,19 @@ footer {
 .fade-in-delay-3 { animation: slideUp 0.8s ease 0.3s forwards; opacity: 0; }
 .fade-in-delay-4 { animation: slideUp 0.8s ease 0.4s forwards; opacity: 0; }
 
+/* Description line-by-line fade in */
+@keyframes descFadeIn {
+  from { opacity: 0; transform: translateY(15px) scale(0.98); filter: blur(4px); }
+  to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+}
+.hero p .desc-line {
+  display: block;
+  opacity: 0;
+}
+.hero p .desc-line.show {
+  animation: descFadeIn 0.6s ease forwards;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
   .header-inner { height: 60px; }
@@ -899,7 +919,7 @@ footer {
       <a href="https://x.com/SINNYA_HAIKAI" target="_blank" rel="noopener">X (Twitter)</a>
       <a href="https://eye-factory.booth.pm/" target="_blank" rel="noopener">BOOTH</a>
     </div>
-    <div class="footer-copy">&copy; 2025 eye-factory. All rights reserved.</div>
+    <div class="footer-copy">&copy; 2026 eye-factory. All rights reserved.</div>
   </div>
 </footer>
 
@@ -948,7 +968,20 @@ function typeText(lang) {
     'pt': 'typingTextPt'
   };
 
+  const cursorMap = {
+    'ja': 'cursorJa',
+    'en': 'cursorEn',
+    'zh-CN': 'cursorZhCN',
+    'zh-TW': 'cursorZhTW',
+    'ko': 'cursorKo',
+    'es': 'cursorEs',
+    'fr': 'cursorFr',
+    'de': 'cursorDe',
+    'pt': 'cursorPt'
+  };
+
   const targetElement = document.getElementById(idMap[lang]);
+  const cursorElement = document.getElementById(cursorMap[lang]);
   if (!targetElement) return;
 
   // Clear previous timeout
@@ -956,10 +989,19 @@ function typeText(lang) {
     clearTimeout(currentTypingTimeout);
   }
 
-  // Reset all typing texts
+  // Reset all typing texts and show all cursors
   Object.values(idMap).forEach(id => {
     const el = document.getElementById(id);
     if (el) el.textContent = '';
+  });
+  Object.values(cursorMap).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('hidden');
+  });
+
+  // Reset description lines
+  document.querySelectorAll('.hero p .desc-line').forEach(el => {
+    el.classList.remove('show');
   });
 
   let i = 0;
@@ -968,10 +1010,38 @@ function typeText(lang) {
       targetElement.textContent += text.charAt(i);
       i++;
       currentTypingTimeout = setTimeout(type, 80);
+    } else {
+      // Typing finished - hide cursor
+      if (cursorElement) {
+        cursorElement.classList.add('hidden');
+      }
+      // Start description line animation
+      animateDescriptionLines(lang);
     }
   }
 
   setTimeout(type, 500);
+}
+
+function animateDescriptionLines(lang) {
+  const heroP = document.querySelector('.hero p');
+  const langSpan = heroP.querySelector('[data-i18n="' + lang + '"]');
+  if (!langSpan) return;
+
+  // Get the HTML content and split by <br>
+  const html = langSpan.innerHTML;
+  const lines = html.split(/<br\s*\/?>/i);
+
+  // Wrap each line in a span
+  langSpan.innerHTML = lines.map(line => '<span class="desc-line">' + line + '</span>').join('');
+
+  // Animate each line with delay
+  const lineElements = langSpan.querySelectorAll('.desc-line');
+  lineElements.forEach((line, index) => {
+    setTimeout(() => {
+      line.classList.add('show');
+    }, index * 300);
+  });
 }
 
 function setLang(lang) {
