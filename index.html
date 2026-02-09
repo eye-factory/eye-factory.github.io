@@ -1,5 +1,681 @@
 <!DOCTYPE html>
-<html>
-<head><title>eye-factory</title></head>
-<body><h1>Coming Soon</h1></body>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>あいふぁくとりー | eye-factory</title>
+<meta name="description" content="あいふぁくとりー (eye-factory) - クリエイティブツールを開発するインディーサークル">
+<meta name="keywords" content="eye-factory, あいふぁくとりー, DotChange, ドット絵, pixel art, クリエイターツール">
+<meta name="author" content="eye-factory">
+<link rel="canonical" href="https://eye-factory.net/">
+
+<!-- OGP -->
+<meta property="og:title" content="あいふぁくとりー | eye-factory">
+<meta property="og:description" content="クリエイティブツールを開発するインディーサークル。つくる人の「あったらいいな」をかたちにする。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://eye-factory.net/">
+<meta property="og:site_name" content="eye-factory">
+<meta property="og:locale" content="ja_JP">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:locale:alternate" content="zh_CN">
+<meta property="og:locale:alternate" content="zh_TW">
+<meta property="og:locale:alternate" content="ko_KR">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@SINNYA_HAIKAI">
+<meta name="twitter:creator" content="@SINNYA_HAIKAI">
+<meta name="twitter:title" content="あいふぁくとりー | eye-factory">
+<meta name="twitter:description" content="クリエイティブツールを開発するインディーサークル">
+
+<!-- Favicon -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%233B82F6' rx='20' width='100' height='100'/><text x='50' y='68' font-size='45' font-family='sans-serif' font-weight='bold' fill='white' text-anchor='middle'>ef</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #FAFBFC;
+  --bg-card: #FFFFFF;
+  --text: #1A1D23;
+  --text-sub: #5F6672;
+  --accent: #3B82F6;
+  --accent-hover: #2563EB;
+  --accent-light: #EFF6FF;
+  --border: #E5E7EB;
+  --radius: 16px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 24px rgba(0,0,0,0.06);
+  --shadow-hover: 0 2px 8px rgba(0,0,0,0.06), 0 12px 40px rgba(0,0,0,0.1);
+  --font-en: 'Outfit', sans-serif;
+  --font-ja: 'Zen Kaku Gothic New', sans-serif;
+  --font-body: var(--font-ja);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Language Switcher --- */
+.lang-switcher {
+  position: relative;
+  z-index: 100;
+}
+.lang-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-family: var(--font-en);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.lang-btn:hover { border-color: var(--accent); color: var(--accent); }
+.lang-btn svg { width: 16px; height: 16px; }
+.lang-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-hover);
+  min-width: 180px;
+  padding: 6px;
+  animation: fadeIn 0.2s ease;
+}
+.lang-dropdown.show { display: block; }
+.lang-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  background: none;
+  border: none;
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--transition);
+}
+.lang-option:hover { background: var(--accent-light); color: var(--accent); }
+.lang-option.active { color: var(--accent); font-weight: 500; }
+
+/* --- Header --- */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(250, 251, 252, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+}
+.logo-icon {
+  width: 36px;
+  height: 36px;
+  background: var(--accent);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 18px;
+}
+.logo-text {
+  font-family: var(--font-en);
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+nav { display: flex; align-items: center; gap: 24px; }
+nav a {
+  font-size: 14px;
+  color: var(--text-sub);
+  text-decoration: none;
+  transition: var(--transition);
+  font-weight: 400;
+}
+nav a:hover { color: var(--accent); }
+
+/* --- Hero --- */
+.hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 100px 24px 80px;
+  text-align: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+  animation: slideUp 0.6s ease both;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.hero h1 {
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin-bottom: 20px;
+  animation: slideUp 0.6s ease 0.1s both;
+}
+.hero h1 .accent { color: var(--accent); }
+.hero p {
+  font-size: clamp(16px, 2vw, 19px);
+  color: var(--text-sub);
+  max-width: 560px;
+  margin: 0 auto 40px;
+  animation: slideUp 0.6s ease 0.2s both;
+}
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent);
+  color: white;
+  text-decoration: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: var(--transition);
+  animation: slideUp 0.6s ease 0.3s both;
+}
+.hero-cta:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.35);
+}
+.hero-cta svg { width: 18px; height: 18px; }
+
+/* --- Section --- */
+section { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
+.section-label {
+  font-family: var(--font-en);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+.section-title {
+  font-size: clamp(24px, 3.5vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 48px;
+}
+
+/* --- Products --- */
+.products-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+.product-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: var(--transition);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+}
+.product-card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: var(--accent);
+  transform: translateY(-4px);
+}
+.product-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), #8B5CF6);
+  opacity: 0;
+  transition: var(--transition);
+}
+.product-card:hover::after { opacity: 1; }
+.product-icon {
+  width: 56px;
+  height: 56px;
+  background: var(--accent-light);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.product-name {
+  font-family: var(--font-en);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.product-desc {
+  color: var(--text-sub);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.product-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.product-tag {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text-sub);
+  font-family: var(--font-en);
+}
+.product-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.product-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+  padding: 6px 14px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  transition: var(--transition);
+}
+.product-link:hover {
+  background: var(--accent);
+  color: white;
+}
+
+/* --- About --- */
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: start;
+}
+.about-text { color: var(--text-sub); font-size: 15px; }
+.about-text p + p { margin-top: 16px; }
+.about-info {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+.about-info-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 16px;
+}
+.about-info-item:last-child { border-bottom: none; }
+.about-info-label {
+  font-size: 13px;
+  color: var(--text-sub);
+  min-width: 80px;
+  font-weight: 500;
+}
+.about-info-value {
+  font-size: 14px;
+  font-weight: 500;
+}
+.about-info-value a {
+  color: var(--accent);
+  text-decoration: none;
+}
+.about-info-value a:hover { text-decoration: underline; }
+
+/* --- Footer --- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 40px 24px;
+  text-align: center;
+}
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.footer-links { display: flex; gap: 24px; }
+.footer-links a {
+  font-size: 13px;
+  color: var(--text-sub);
+  text-decoration: none;
+  transition: var(--transition);
+}
+.footer-links a:hover { color: var(--accent); }
+.footer-copy {
+  font-size: 12px;
+  color: var(--text-sub);
+  font-family: var(--font-en);
+}
+
+/* --- Animations --- */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .header-inner { height: 56px; }
+  nav a.nav-link-text { display: none; }
+  .hero { padding: 60px 20px 50px; }
+  .about-content { grid-template-columns: 1fr; gap: 32px; }
+  .product-card { padding: 28px; }
+}
+
+/* --- i18n: hide/show by lang --- */
+[data-i18n] { display: none; }
+[data-lang="ja"] [data-i18n="ja"],
+[data-lang="en"] [data-i18n="en"],
+[data-lang="zh-CN"] [data-i18n="zh-CN"],
+[data-lang="zh-TW"] [data-i18n="zh-TW"],
+[data-lang="ko"] [data-i18n="ko"],
+[data-lang="es"] [data-i18n="es"],
+[data-lang="fr"] [data-i18n="fr"],
+[data-lang="de"] [data-i18n="de"],
+[data-lang="pt"] [data-i18n="pt"] {
+  display: revert;
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <div class="logo-icon">ef</div>
+      <span class="logo-text">eye-factory</span>
+    </a>
+    <nav>
+      <a href="#products" class="nav-link-text">
+        <span data-i18n="ja">製品</span><span data-i18n="en">Products</span><span data-i18n="zh-CN">产品</span><span data-i18n="zh-TW">產品</span><span data-i18n="ko">제품</span><span data-i18n="es">Productos</span><span data-i18n="fr">Produits</span><span data-i18n="de">Produkte</span><span data-i18n="pt">Produtos</span>
+      </a>
+      <a href="#about" class="nav-link-text">
+        <span data-i18n="ja">概要</span><span data-i18n="en">About</span><span data-i18n="zh-CN">关于</span><span data-i18n="zh-TW">關於</span><span data-i18n="ko">소개</span><span data-i18n="es">Acerca de</span><span data-i18n="fr">À propos</span><span data-i18n="de">Über uns</span><span data-i18n="pt">Sobre</span>
+      </a>
+      <div class="lang-switcher">
+        <button class="lang-btn" onclick="toggleLangMenu()" aria-label="Language">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          <span id="currentLangLabel">日本語</span>
+        </button>
+        <div class="lang-dropdown" id="langDropdown">
+          <button class="lang-option active" onclick="setLang('ja')">日本語</button>
+          <button class="lang-option" onclick="setLang('en')">English</button>
+          <button class="lang-option" onclick="setLang('zh-CN')">简体中文</button>
+          <button class="lang-option" onclick="setLang('zh-TW')">繁體中文</button>
+          <button class="lang-option" onclick="setLang('ko')">한국어</button>
+          <button class="lang-option" onclick="setLang('es')">Español</button>
+          <button class="lang-option" onclick="setLang('fr')">Français</button>
+          <button class="lang-option" onclick="setLang('de')">Deutsch</button>
+          <button class="lang-option" onclick="setLang('pt')">Português</button>
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <div class="hero-badge">
+    <span data-i18n="ja">インディーツール開発</span><span data-i18n="en">Indie Tool Development</span><span data-i18n="zh-CN">独立工具开发</span><span data-i18n="zh-TW">獨立工具開發</span><span data-i18n="ko">인디 도구 개발</span><span data-i18n="es">Desarrollo de herramientas indie</span><span data-i18n="fr">Développement d'outils indépendants</span><span data-i18n="de">Indie-Werkzeugentwicklung</span><span data-i18n="pt">Desenvolvimento de ferramentas indie</span>
+  </div>
+  <h1>
+    <span data-i18n="ja">つくる人の<span class="accent">「あったらいいな」</span>を<br>かたちにする</span>
+    <span data-i18n="en">We build tools<br>that <span class="accent">creators wish existed</span></span>
+    <span data-i18n="zh-CN">将创作者的<br><span class="accent">"要是有就好了"</span>变为现实</span>
+    <span data-i18n="zh-TW">將創作者的<br><span class="accent">「要是有就好了」</span>化為現實</span>
+    <span data-i18n="ko">크리에이터가 <span class="accent">바라던 도구</span>를<br>만듭니다</span>
+    <span data-i18n="es">Creamos herramientas que<br>los creadores <span class="accent">desearían que existieran</span></span>
+    <span data-i18n="fr">Nous créons les outils dont<br>les créateurs <span class="accent">rêvaient</span></span>
+    <span data-i18n="de">Wir bauen Werkzeuge, die sich<br><span class="accent">Kreative wünschen</span></span>
+    <span data-i18n="pt">Criamos ferramentas que<br>os criadores <span class="accent">gostariam que existissem</span></span>
+  </h1>
+  <p>
+    <span data-i18n="ja">あいふぁくとりーは、クリエイター向けの便利なデスクトップツール・Webツールを開発するインディーサークルです。</span>
+    <span data-i18n="en">eye-factory is an indie circle developing useful desktop & web tools for creators.</span>
+    <span data-i18n="zh-CN">eye-factory 是一个为创作者开发实用桌面和网页工具的独立社团。</span>
+    <span data-i18n="zh-TW">eye-factory 是一個為創作者開發實用桌面和網頁工具的獨立社團。</span>
+    <span data-i18n="ko">eye-factory는 크리에이터를 위한 유용한 데스크톱 및 웹 도구를 개발하는 인디 서클입니다.</span>
+    <span data-i18n="es">eye-factory es un círculo indie que desarrolla herramientas útiles de escritorio y web para creadores.</span>
+    <span data-i18n="fr">eye-factory est un cercle indépendant développant des outils bureau et web utiles pour les créateurs.</span>
+    <span data-i18n="de">eye-factory ist ein Indie-Circle, der nützliche Desktop- und Web-Tools für Kreative entwickelt.</span>
+    <span data-i18n="pt">eye-factory é um círculo indie que desenvolve ferramentas úteis de desktop e web para criadores.</span>
+  </p>
+  <a href="#products" class="hero-cta">
+    <span data-i18n="ja">製品を見る</span><span data-i18n="en">View Products</span><span data-i18n="zh-CN">查看产品</span><span data-i18n="zh-TW">查看產品</span><span data-i18n="ko">제품 보기</span><span data-i18n="es">Ver productos</span><span data-i18n="fr">Voir les produits</span><span data-i18n="de">Produkte ansehen</span><span data-i18n="pt">Ver produtos</span>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+  </a>
+</div>
+
+<!-- ===== PRODUCTS ===== -->
+<section id="products">
+  <div class="section-label">Products</div>
+  <div class="section-title">
+    <span data-i18n="ja">製品一覧</span><span data-i18n="en">Our Products</span><span data-i18n="zh-CN">产品一览</span><span data-i18n="zh-TW">產品一覽</span><span data-i18n="ko">제품 목록</span><span data-i18n="es">Nuestros Productos</span><span data-i18n="fr">Nos Produits</span><span data-i18n="de">Unsere Produkte</span><span data-i18n="pt">Nossos Produtos</span>
+  </div>
+  <div class="products-grid">
+
+    <!-- DotChange -->
+    <div class="product-card">
+      <div class="product-icon">🎨</div>
+      <div class="product-name">DotChange</div>
+      <div class="product-desc">
+        <span data-i18n="ja">画像・動画をワンクリックでドット絵に変換するデスクトップツール。ドットサイズ、減色レベル、色調整、出力サイズなど細かくカスタマイズ可能。GIF変換にも対応。</span>
+        <span data-i18n="en">A desktop tool that converts images and videos to pixel art with one click. Customize dot size, color reduction, color adjustments, output size, and more. GIF conversion supported.</span>
+        <span data-i18n="zh-CN">一键将图片和视频转换为像素画的桌面工具。可自定义点阵大小、减色级别、色彩调整、输出尺寸等。支持GIF转换。</span>
+        <span data-i18n="zh-TW">一鍵將圖片和影片轉換為像素畫的桌面工具。可自訂點陣大小、減色級別、色彩調整、輸出尺寸等。支援GIF轉換。</span>
+        <span data-i18n="ko">이미지와 동영상을 원클릭으로 도트 그림으로 변환하는 데스크톱 도구. 도트 크기, 감색 레벨, 색상 조정, 출력 크기 등을 세밀하게 커스터마이즈 가능. GIF 변환 지원.</span>
+        <span data-i18n="es">Herramienta de escritorio que convierte imágenes y videos a pixel art con un clic. Personaliza tamaño de punto, reducción de colores, ajustes de color, tamaño de salida y más. Compatible con conversión GIF.</span>
+        <span data-i18n="fr">Outil de bureau qui convertit images et vidéos en pixel art en un clic. Personnalisez la taille des points, la réduction des couleurs, les ajustements de couleur, la taille de sortie et plus. Conversion GIF prise en charge.</span>
+        <span data-i18n="de">Desktop-Tool, das Bilder und Videos mit einem Klick in Pixel-Art umwandelt. Punktgröße, Farbreduktion, Farbanpassungen, Ausgabegröße und mehr anpassbar. GIF-Konvertierung unterstützt.</span>
+        <span data-i18n="pt">Ferramenta desktop que converte imagens e vídeos em pixel art com um clique. Personalize tamanho do ponto, redução de cores, ajustes de cor, tamanho de saída e mais. Conversão GIF suportada.</span>
+      </div>
+      <div class="product-tags">
+        <span class="product-tag">Windows</span>
+        <span class="product-tag">Python</span>
+        <span class="product-tag">9 Languages</span>
+        <span class="product-tag">v1.0.0</span>
+      </div>
+      <div class="product-links">
+        <a href="https://eye-factory.booth.pm/" class="product-link" target="_blank" rel="noopener">
+          <span data-i18n="ja">BOOTH で購入</span><span data-i18n="en">Buy on BOOTH</span><span data-i18n="zh-CN">在BOOTH购买</span><span data-i18n="zh-TW">在BOOTH購買</span><span data-i18n="ko">BOOTH에서 구매</span><span data-i18n="es">Comprar en BOOTH</span><span data-i18n="fr">Acheter sur BOOTH</span><span data-i18n="de">Auf BOOTH kaufen</span><span data-i18n="pt">Comprar no BOOTH</span>
+        </a>
+        <!-- DLsite・FANZA は準備中 -->
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="section-label">About</div>
+  <div class="section-title">
+    <span data-i18n="ja">あいふぁくとりーについて</span><span data-i18n="en">About eye-factory</span><span data-i18n="zh-CN">关于 eye-factory</span><span data-i18n="zh-TW">關於 eye-factory</span><span data-i18n="ko">eye-factory 소개</span><span data-i18n="es">Acerca de eye-factory</span><span data-i18n="fr">À propos de eye-factory</span><span data-i18n="de">Über eye-factory</span><span data-i18n="pt">Sobre eye-factory</span>
+  </div>
+  <div class="about-content">
+    <div class="about-text">
+      <p>
+        <span data-i18n="ja">あいふぁくとりー（eye-factory）は、クリエイターが日々の制作で「こんなツールがあったら便利なのに」と感じる瞬間を拾い上げ、実際に形にすることを目指すインディー開発サークルです。</span>
+        <span data-i18n="en">eye-factory is an indie development circle that picks up on the moments when creators think "I wish there was a tool like this" and turns them into reality.</span>
+        <span data-i18n="zh-CN">eye-factory 是一个独立开发社团，致力于捕捉创作者在日常创作中"要是有这样的工具就好了"的瞬间，并将其变为现实。</span>
+        <span data-i18n="zh-TW">eye-factory 是一個獨立開發社團，致力於捕捉創作者在日常創作中「要是有這樣的工具就好了」的瞬間，並將其化為現實。</span>
+        <span data-i18n="ko">eye-factory는 크리에이터가 일상적인 제작에서 "이런 도구가 있으면 좋겠다"라고 느끼는 순간을 포착하여 실제로 구현하는 인디 개발 서클입니다.</span>
+        <span data-i18n="es">eye-factory es un círculo de desarrollo indie que captura los momentos en que los creadores piensan "ojalá existiera una herramienta así" y los convierte en realidad.</span>
+        <span data-i18n="fr">eye-factory est un cercle de développement indépendant qui capte les moments où les créateurs pensent « j'aurais aimé qu'un tel outil existe » et les concrétise.</span>
+        <span data-i18n="de">eye-factory ist ein Indie-Entwicklungskreis, der die Momente aufgreift, in denen Kreative denken „Ich wünschte, es gäbe ein solches Tool" und sie Wirklichkeit werden lässt.</span>
+        <span data-i18n="pt">eye-factory é um círculo de desenvolvimento indie que capta os momentos em que criadores pensam "queria que existisse uma ferramenta assim" e os transforma em realidade.</span>
+      </p>
+      <p>
+        <span data-i18n="ja">使いやすさと実用性を第一に、デスクトップアプリからWebツールまで幅広く展開しています。</span>
+        <span data-i18n="en">Prioritizing ease of use and practicality, we develop a wide range of products from desktop apps to web tools.</span>
+        <span data-i18n="zh-CN">以易用性和实用性为优先，从桌面应用到网页工具广泛展开。</span>
+        <span data-i18n="zh-TW">以易用性和實用性為優先，從桌面應用到網頁工具廣泛展開。</span>
+        <span data-i18n="ko">사용 편의성과 실용성을 최우선으로 데스크톱 앱부터 웹 도구까지 폭넓게 전개하고 있습니다.</span>
+        <span data-i18n="es">Priorizando la facilidad de uso y la practicidad, desarrollamos una amplia gama de productos desde aplicaciones de escritorio hasta herramientas web.</span>
+        <span data-i18n="fr">En privilégiant la facilité d'utilisation et la praticité, nous développons une large gamme de produits, des applications de bureau aux outils web.</span>
+        <span data-i18n="de">Mit Fokus auf Benutzerfreundlichkeit und Praxistauglichkeit entwickeln wir eine breite Palette von Desktop-Apps bis hin zu Web-Tools.</span>
+        <span data-i18n="pt">Priorizando facilidade de uso e praticidade, desenvolvemos uma ampla gama de produtos, desde aplicativos desktop até ferramentas web.</span>
+      </p>
+    </div>
+    <div class="about-info">
+      <div class="about-info-item">
+        <div class="about-info-label">
+          <span data-i18n="ja">名前</span><span data-i18n="en">Name</span><span data-i18n="zh-CN">名称</span><span data-i18n="zh-TW">名稱</span><span data-i18n="ko">이름</span><span data-i18n="es">Nombre</span><span data-i18n="fr">Nom</span><span data-i18n="de">Name</span><span data-i18n="pt">Nome</span>
+        </div>
+        <div class="about-info-value">
+          <span data-i18n="ja">あいふぁくとりー</span><span data-i18n="en">eye-factory</span><span data-i18n="zh-CN">eye-factory</span><span data-i18n="zh-TW">eye-factory</span><span data-i18n="ko">eye-factory</span><span data-i18n="es">eye-factory</span><span data-i18n="fr">eye-factory</span><span data-i18n="de">eye-factory</span><span data-i18n="pt">eye-factory</span>
+        </div>
+      </div>
+      <div class="about-info-item">
+        <div class="about-info-label">Web</div>
+        <div class="about-info-value"><a href="https://eye-factory.net">eye-factory.net</a></div>
+      </div>
+      <div class="about-info-item">
+        <div class="about-info-label">X</div>
+        <div class="about-info-value"><a href="https://x.com/SINNYA_HAIKAI" target="_blank" rel="noopener">@SINNYA_HAIKAI</a></div>
+      </div>
+      <div class="about-info-item">
+        <div class="about-info-label">BOOTH</div>
+        <div class="about-info-value"><a href="https://eye-factory.booth.pm/" target="_blank" rel="noopener">eye-factory.booth.pm</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="https://x.com/SINNYA_HAIKAI" target="_blank" rel="noopener">X (Twitter)</a>
+      <a href="https://eye-factory.booth.pm/" target="_blank" rel="noopener">BOOTH</a>
+    </div>
+    <div class="footer-copy">&copy; 2025 eye-factory. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+// --- Language System ---
+const langLabels = {
+  'ja': '日本語', 'en': 'English', 'zh-CN': '简体中文', 'zh-TW': '繁體中文',
+  'ko': '한국어', 'es': 'Español', 'fr': 'Français', 'de': 'Deutsch', 'pt': 'Português'
+};
+
+const langCodes = {
+  'ja': 'ja', 'en': 'en', 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW',
+  'ko': 'ko', 'es': 'es', 'fr': 'fr', 'de': 'de', 'pt': 'pt'
+};
+
+function setLang(lang) {
+  document.documentElement.setAttribute('data-lang', lang);
+  document.documentElement.setAttribute('lang', langCodes[lang]);
+  document.getElementById('currentLangLabel').textContent = langLabels[lang];
+  document.querySelectorAll('.lang-option').forEach(el => {
+    el.classList.toggle('active', el.textContent.includes(langLabels[lang]));
+  });
+  document.getElementById('langDropdown').classList.remove('show');
+  localStorage.setItem('ef-lang', lang);
+}
+
+function toggleLangMenu() {
+  document.getElementById('langDropdown').classList.toggle('show');
+}
+
+// Close dropdown on outside click
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.lang-switcher')) {
+    document.getElementById('langDropdown').classList.remove('show');
+  }
+});
+
+// Auto-detect language
+function detectLang() {
+  const saved = localStorage.getItem('ef-lang');
+  if (saved) return saved;
+  const nav = (navigator.language || '').toLowerCase();
+  if (nav.startsWith('ja')) return 'ja';
+  if (nav.startsWith('zh') && nav.includes('tw')) return 'zh-TW';
+  if (nav.startsWith('zh')) return 'zh-CN';
+  if (nav.startsWith('ko')) return 'ko';
+  if (nav.startsWith('es')) return 'es';
+  if (nav.startsWith('fr')) return 'fr';
+  if (nav.startsWith('de')) return 'de';
+  if (nav.startsWith('pt')) return 'pt';
+  if (nav.startsWith('en')) return 'en';
+  return 'ja';
+}
+
+setLang(detectLang());
+</script>
+</body>
 </html>
