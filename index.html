@@ -400,6 +400,9 @@ nav a:hover {
   line-height: 2;
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
+.hero p > span[data-i18n] {
+  opacity: 0;
+}
 .hero-cta {
   display: inline-flex;
   align-items: center;
@@ -815,7 +818,7 @@ footer {
     <span data-i18n="de"><span class="accent typing-text" id="typingTextDe"></span><span class="typing-cursor" id="cursorDe"></span></span>
     <span data-i18n="pt"><span class="accent typing-text" id="typingTextPt"></span><span class="typing-cursor" id="cursorPt"></span></span>
   </h1>
-  <p class="fade-in-delay-2">
+  <p>
     <span data-i18n="ja">その野望を掲げ、様々な面白ツールを作り続ける一人の男 "深夜徘徊"<br>彼の面白いは世間を賑わせ、世界を圧倒する…！(予定)<br>その彼が運営する開発サイトの名は、、、<br>『あいふぁくとりー(あいふぁく)』！</span>
     <span data-i18n="en">With this grand ambition, one man "SINNYA_HAIKAI" keeps creating amazing tools.<br>His creations will rock the world and blow everyone away...! (Planned)<br>The name of his development site is...<br>"eye-factory" (a.k.a. "aifaku")!</span>
     <span data-i18n="zh-CN">怀揣着这一宏大野心，一个名叫"深夜徘徊"的男人不断创造各种有趣的工具。<br>他的创意将轰动世界、震撼所有人…！（计划中）<br>他运营的开发站点名为……<br>「eye-factory（简称aifaku）」！</span>
@@ -1007,9 +1010,12 @@ function typeText(lang) {
     if (el) el.classList.remove('hidden');
   });
 
-  // Reset description lines
+  // Reset description lines and hide all language spans
   document.querySelectorAll('.hero p .desc-line').forEach(el => {
     el.classList.remove('show');
+  });
+  document.querySelectorAll('.hero p > span[data-i18n]').forEach(el => {
+    el.style.opacity = '0';
   });
 
   let i = 0;
@@ -1042,6 +1048,9 @@ function animateDescriptionLines(lang) {
 
   // Wrap each line in a span
   langSpan.innerHTML = lines.map(line => '<span class="desc-line">' + line + '</span>').join('');
+
+  // Make parent span visible (it starts with opacity: 0)
+  langSpan.style.opacity = '1';
 
   // Animate each line with delay
   const lineElements = langSpan.querySelectorAll('.desc-line');
