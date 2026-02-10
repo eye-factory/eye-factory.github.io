@@ -648,8 +648,11 @@
     }
 
     .preview-image {
-      width: 100%;
-      height: 100%;
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
       object-fit: contain;
       border-radius: 4px;
     }
@@ -1296,8 +1299,11 @@
       }
 
       .preview-image {
-        width: 100%;
-        height: 100%;
+        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
         object-fit: contain;
       }
 
@@ -1792,10 +1798,8 @@
       small: 640,
     };
 
-    // Max size for preview processing (balance between speed and quality)
-    const PREVIEW_MAX_SIZE = 720;
-    // Max size for saving (keeps quality)
-    const SAVE_MAX_SIZE = 1280;
+    // Max size for processing (to avoid memory issues with very large images)
+    const MAX_PROCESS_SIZE = 1280;
 
     function getAspectType(width, height) {
       const ratio = width / height;
@@ -1981,7 +1985,7 @@
     }
 
     // Resize image for preview/processing if too large
-    function resizeForPreview(imageData, maxSize = PREVIEW_MAX_SIZE) {
+    function resizeForPreview(imageData, maxSize = MAX_PROCESS_SIZE) {
       const { width, height } = imageData;
       const maxDimension = Math.max(width, height);
 
@@ -2025,11 +2029,9 @@
       // File state
       const [file, setFile] = useState(null);
       const [fileType, setFileType] = useState(null); // 'image' | 'video'
-      const [originalImage, setOriginalImage] = useState(null); // Small preview version
-      const [originalFullImage, setOriginalFullImage] = useState(null); // Full-size for saving
+      const [originalImage, setOriginalImage] = useState(null);
       const [processedImage, setProcessedImage] = useState(null);
-      const [videoFrames, setVideoFrames] = useState([]); // Small preview versions
-      const [originalFullFrames, setOriginalFullFrames] = useState([]); // Full-size for saving
+      const [videoFrames, setVideoFrames] = useState([]);
       const [processedFrames, setProcessedFrames] = useState([]);
       const [frameDelays, setFrameDelays] = useState([]); // GIF frame delays in ms
       const [aspectType, setAspectType] = useState('landscape');
@@ -2148,8 +2150,6 @@
         setProgress(0);
         setProcessedImage(null);
         setProcessedFrames([]);
-        setOriginalFullImage(null);
-        setOriginalFullFrames([]);
         setShowAfter(false);
 
         const ext = file.name.toLowerCase().split('.').pop();
@@ -2174,7 +2174,7 @@
         setLoading(false);
       };
 
-      // Load animated GIF (first 5 seconds, small preview + full-size for saving)
+      // Load animated GIF (first 5 seconds, capped at MAX_PROCESS_SIZE)
       const loadGif = async (file) => {
         try {
           const arrayBuffer = await file.arrayBuffer();
@@ -2211,23 +2211,17 @@
           const framesToUse = frames.slice(0, frameLimit);
           const delaysToUse = delays.slice(0, frameLimit);
 
-          // Create both preview and full-size versions
-          const previewFrames = [];
-          const fullFrames = [];
-
+          // Resize frames if needed (cap at MAX_PROCESS_SIZE)
+          const resizedFrames = [];
           for (let i = 0; i < framesToUse.length; i++) {
-            // Full-size for saving (max SAVE_MAX_SIZE)
-            fullFrames.push(resizeForPreview(framesToUse[i], SAVE_MAX_SIZE));
-            // Small preview for display/processing
-            previewFrames.push(resizeForPreview(framesToUse[i], PREVIEW_MAX_SIZE));
+            resizedFrames.push(resizeForPreview(framesToUse[i], MAX_PROCESS_SIZE));
             setProgress((i / framesToUse.length) * 100);
           }
 
-          setVideoFrames(previewFrames);
-          setOriginalFullFrames(fullFrames);
+          setVideoFrames(resizedFrames);
           setFrameDelays(delaysToUse);
-          if (previewFrames.length > 0) {
-            setOriginalImage(previewFrames[0]);
+          if (resizedFrames.length > 0) {
+            setOriginalImage(resizedFrames[0]);
           }
 
           setProgress(100);
@@ -2241,53 +2235,35 @@
         }
       };
 
-      // Load image (small preview for display, full-size for saving)
+      // Load image at original size (capped at MAX_PROCESS_SIZE to avoid memory issues)
       const loadImage = (file) => {
         return new Promise((resolve, reject) => {
           const img = new Image();
           img.onload = () => {
             // Store aspect ratio
             setImageAspectRatio(img.width / img.height);
-
-            // Create full-size version for saving (max SAVE_MAX_SIZE)
-            const fullMaxDimension = Math.max(img.width, img.height);
-            let fullWidth = img.width;
-            let fullHeight = img.height;
-            if (fullMaxDimension > SAVE_MAX_SIZE) {
-              const scale = SAVE_MAX_SIZE / fullMaxDimension;
-              fullWidth = Math.round(img.width * scale);
-              fullHeight = Math.round(img.height * scale);
-            }
-            const fullCanvas = document.createElement('canvas');
-            fullCanvas.width = fullWidth;
-            fullCanvas.height = fullHeight;
-            const fullCtx = fullCanvas.getContext('2d');
-            fullCtx.imageSmoothingEnabled = true;
-            fullCtx.imageSmoothingQuality = 'high';
-            fullCtx.drawImage(img, 0, 0, fullWidth, fullHeight);
-            const fullImageData = fullCtx.getImageData(0, 0, fullWidth, fullHeight);
-            setOriginalFullImage(fullImageData);
-
-            // Create small preview version for fast processing
-            const previewMaxDimension = Math.max(img.width, img.height);
-            let previewWidth = img.width;
-            let previewHeight = img.height;
-            if (previewMaxDimension > PREVIEW_MAX_SIZE) {
-              const scale = PREVIEW_MAX_SIZE / previewMaxDimension;
-              previewWidth = Math.round(img.width * scale);
-              previewHeight = Math.round(img.height * scale);
-            }
-            const previewCanvas = document.createElement('canvas');
-            previewCanvas.width = previewWidth;
-            previewCanvas.height = previewHeight;
-            const previewCtx = previewCanvas.getContext('2d');
-            previewCtx.imageSmoothingEnabled = true;
-            previewCtx.imageSmoothingQuality = 'high';
-            previewCtx.drawImage(img, 0, 0, previewWidth, previewHeight);
-            const previewImageData = previewCtx.getImageData(0, 0, previewWidth, previewHeight);
-            setOriginalImage(previewImageData);
-
             setAspectType(getAspectType(img.width, img.height));
+
+            // Cap at MAX_PROCESS_SIZE if too large
+            const maxDimension = Math.max(img.width, img.height);
+            let targetWidth = img.width;
+            let targetHeight = img.height;
+            if (maxDimension > MAX_PROCESS_SIZE) {
+              const scale = MAX_PROCESS_SIZE / maxDimension;
+              targetWidth = Math.round(img.width * scale);
+              targetHeight = Math.round(img.height * scale);
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+            const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
+            setOriginalImage(imageData);
+
             setFrameDelays([]);
             resolve();
           };
@@ -2296,7 +2272,7 @@
         });
       };
 
-      // Load video (first 5 seconds, small preview + full-size for saving)
+      // Load video (first 5 seconds, capped at MAX_PROCESS_SIZE)
       const loadVideo = (file) => {
         return new Promise((resolve, reject) => {
           const video = document.createElement('video');
@@ -2307,67 +2283,44 @@
             const duration = Math.min(video.duration, 5); // Max 5 seconds
             const fps = 10;
             const frameCount = Math.floor(duration * fps);
-            const previewFrames = [];
-            const fullFrames = [];
+            const frames = [];
 
             // Store aspect ratio
             setImageAspectRatio(video.videoWidth / video.videoHeight);
-
-            // Calculate full-size dimensions (for saving)
-            const fullMaxDimension = Math.max(video.videoWidth, video.videoHeight);
-            let fullWidth = video.videoWidth;
-            let fullHeight = video.videoHeight;
-            if (fullMaxDimension > SAVE_MAX_SIZE) {
-              const scale = SAVE_MAX_SIZE / fullMaxDimension;
-              fullWidth = Math.round(video.videoWidth * scale);
-              fullHeight = Math.round(video.videoHeight * scale);
-            }
-            const fullCanvas = document.createElement('canvas');
-            fullCanvas.width = fullWidth;
-            fullCanvas.height = fullHeight;
-            const fullCtx = fullCanvas.getContext('2d');
-            fullCtx.imageSmoothingEnabled = true;
-            fullCtx.imageSmoothingQuality = 'high';
-
-            // Calculate preview dimensions (small for fast processing)
-            const previewMaxDimension = Math.max(video.videoWidth, video.videoHeight);
-            let previewWidth = video.videoWidth;
-            let previewHeight = video.videoHeight;
-            if (previewMaxDimension > PREVIEW_MAX_SIZE) {
-              const scale = PREVIEW_MAX_SIZE / previewMaxDimension;
-              previewWidth = Math.round(video.videoWidth * scale);
-              previewHeight = Math.round(video.videoHeight * scale);
-            }
-            const previewCanvas = document.createElement('canvas');
-            previewCanvas.width = previewWidth;
-            previewCanvas.height = previewHeight;
-            const previewCtx = previewCanvas.getContext('2d');
-            previewCtx.imageSmoothingEnabled = true;
-            previewCtx.imageSmoothingQuality = 'high';
-
             setAspectType(getAspectType(video.videoWidth, video.videoHeight));
+
+            // Cap at MAX_PROCESS_SIZE if too large
+            const maxDimension = Math.max(video.videoWidth, video.videoHeight);
+            let targetWidth = video.videoWidth;
+            let targetHeight = video.videoHeight;
+            if (maxDimension > MAX_PROCESS_SIZE) {
+              const scale = MAX_PROCESS_SIZE / maxDimension;
+              targetWidth = Math.round(video.videoWidth * scale);
+              targetHeight = Math.round(video.videoHeight * scale);
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
 
             for (let i = 0; i < frameCount; i++) {
               const time = i / fps;
               video.currentTime = time;
               await new Promise(r => video.onseeked = r);
 
-              // Full-size frame for saving
-              fullCtx.drawImage(video, 0, 0, fullWidth, fullHeight);
-              fullFrames.push(fullCtx.getImageData(0, 0, fullWidth, fullHeight));
-
-              // Preview frame for display
-              previewCtx.drawImage(video, 0, 0, previewWidth, previewHeight);
-              previewFrames.push(previewCtx.getImageData(0, 0, previewWidth, previewHeight));
+              ctx.drawImage(video, 0, 0, targetWidth, targetHeight);
+              frames.push(ctx.getImageData(0, 0, targetWidth, targetHeight));
 
               setProgress((i / frameCount) * 100);
             }
 
-            setVideoFrames(previewFrames);
-            setOriginalFullFrames(fullFrames);
+            setVideoFrames(frames);
             setFrameDelays([]);
-            if (previewFrames.length > 0) {
-              setOriginalImage(previewFrames[0]);
+            if (frames.length > 0) {
+              setOriginalImage(frames[0]);
             }
             resolve();
           };
@@ -2433,9 +2386,9 @@
         setLoading(false);
       };
 
-      // Save PNG (process from full-size original at selected output size)
+      // Save PNG (process at selected output size)
       const handleSave = async () => {
-        if (!originalFullImage) return;
+        if (!originalImage) return;
 
         setLoading(true);
         setLoadingText(t('converting'));
@@ -2444,13 +2397,13 @@
         await new Promise(r => setTimeout(r, 50));
 
         try {
-          // Calculate output size from original full-size image
-          const [targetW, targetH] = calculateOutputSize(originalFullImage.width, originalFullImage.height, outputSize);
+          // Calculate output size
+          const [targetW, targetH] = calculateOutputSize(originalImage.width, originalImage.height, outputSize);
 
           // Resize original to target size first
-          const resizedOriginal = resizeWithAspectRatio(originalFullImage, targetW, targetH);
+          const resizedOriginal = resizeWithAspectRatio(originalImage, targetW, targetH);
 
-          // Process at full output size
+          // Process at output size
           const divisor = getColorDivisor();
           const processed = pixelateImage(
             resizedOriginal,
@@ -2481,18 +2434,18 @@
         setLoading(false);
       };
 
-      // Save GIF (process from full-size originals at selected output size)
+      // Save GIF (process at selected output size)
       const handleSaveGif = async () => {
-        if (originalFullFrames.length === 0) return;
+        if (videoFrames.length === 0) return;
 
         setLoading(true);
         setLoadingText(t('generatingGif'));
         setProgress(0);
 
-        // Calculate output size from first full-size frame
-        const firstFrame = originalFullFrames[0];
+        // Calculate output size from first frame
+        const firstFrame = videoFrames[0];
         const [targetW, targetH] = calculateOutputSize(firstFrame.width, firstFrame.height, outputSize);
-        const frameCount = Math.min(originalFullFrames.length, gifDuration * gifFps);
+        const frameCount = Math.min(videoFrames.length, gifDuration * gifFps);
         const frameDelay = Math.round(1000 / gifFps);
 
         const divisor = getColorDivisor();
@@ -2500,7 +2453,7 @@
         // Check if any frame has transparency
         let hasTransparency = false;
         for (let i = 0; i < Math.min(frameCount, 5); i++) {
-          const frame = originalFullFrames[i];
+          const frame = videoFrames[i];
           for (let j = 3; j < frame.data.length; j += 4) {
             if (frame.data[j] < 255) {
               hasTransparency = true;
@@ -2517,7 +2470,7 @@
 
           for (let i = 0; i < frameCount; i++) {
             // Resize original to target size
-            const resizedOriginal = resizeWithAspectRatio(originalFullFrames[i], targetW, targetH);
+            const resizedOriginal = resizeWithAspectRatio(videoFrames[i], targetW, targetH);
 
             // Process at full output size
             const processed = pixelateImage(
