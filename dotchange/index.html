@@ -613,9 +613,10 @@
       border: 2px dashed rgba(0,212,255,0.3);
       border-radius: 6px;
       margin: 8px;
+      padding: 8px;
       transition: all 0.3s;
       position: relative;
-      overflow: hidden;
+      overflow: visible;
       min-height: 0;
     }
 
@@ -1762,6 +1763,9 @@
       small: 640,
     };
 
+    // Max size for preview/processing (to improve performance)
+    const PREVIEW_MAX_SIZE = 1280;
+
     function getAspectType(width, height) {
       const ratio = width / height;
       if (ratio > 1.2) return 'landscape';
@@ -1945,6 +1949,40 @@
       return resultCtx.getImageData(0, 0, targetWidth, targetHeight);
     }
 
+    // Resize image for preview/processing if too large
+    function resizeForPreview(imageData, maxSize = PREVIEW_MAX_SIZE) {
+      const { width, height } = imageData;
+      const maxDimension = Math.max(width, height);
+
+      // If already within bounds, return original
+      if (maxDimension <= maxSize) {
+        return imageData;
+      }
+
+      // Calculate new dimensions
+      const scale = maxSize / maxDimension;
+      const newWidth = Math.round(width * scale);
+      const newHeight = Math.round(height * scale);
+
+      // Create source canvas
+      const srcCanvas = document.createElement('canvas');
+      srcCanvas.width = width;
+      srcCanvas.height = height;
+      const srcCtx = srcCanvas.getContext('2d', { willReadFrequently: true });
+      srcCtx.putImageData(imageData, 0, 0);
+
+      // Create result canvas
+      const resultCanvas = document.createElement('canvas');
+      resultCanvas.width = newWidth;
+      resultCanvas.height = newHeight;
+      const resultCtx = resultCanvas.getContext('2d', { willReadFrequently: true });
+      resultCtx.imageSmoothingEnabled = true;
+      resultCtx.imageSmoothingQuality = 'high';
+      resultCtx.drawImage(srcCanvas, 0, 0, newWidth, newHeight);
+
+      return resultCtx.getImageData(0, 0, newWidth, newHeight);
+    }
+
     // ═══════════════════════════════════════════════════════════════
     // MAIN APP COMPONENT
     // ═══════════════════════════════════════════════════════════════
@@ -2100,7 +2138,7 @@
         setLoading(false);
       };
 
-      // Load animated GIF using custom decoder
+      // Load animated GIF using custom decoder (first 5 seconds, resized)
       const loadGif = async (file) => {
         try {
           const arrayBuffer = await file.arrayBuffer();
@@ -2116,17 +2154,52 @@
           }
 
           const { frames, delays, width, height } = result;
-          setAspectType(getAspectType(width, height));
 
-          // Limit frames
-          const maxFrames = 100;
-          const framesToUse = frames.slice(0, maxFrames);
-          const delaysToUse = delays.slice(0, maxFrames);
+          // Calculate resized dimensions
+          const maxDimension = Math.max(width, height);
+          let targetWidth = width;
+          let targetHeight = height;
+          const needsResize = maxDimension > PREVIEW_MAX_SIZE;
 
-          setVideoFrames(framesToUse);
+          if (needsResize) {
+            const scale = PREVIEW_MAX_SIZE / maxDimension;
+            targetWidth = Math.round(width * scale);
+            targetHeight = Math.round(height * scale);
+          }
+
+          setAspectType(getAspectType(targetWidth, targetHeight));
+
+          // Limit to first 5 seconds based on frame delays
+          let totalTime = 0;
+          const maxTime = 5000; // 5 seconds in ms
+          let frameLimit = frames.length;
+
+          for (let i = 0; i < frames.length; i++) {
+            totalTime += delays[i] || 100;
+            if (totalTime >= maxTime) {
+              frameLimit = i + 1;
+              break;
+            }
+          }
+
+          const framesToUse = frames.slice(0, frameLimit);
+          const delaysToUse = delays.slice(0, frameLimit);
+
+          // Resize frames if needed
+          const resizedFrames = [];
+          for (let i = 0; i < framesToUse.length; i++) {
+            if (needsResize) {
+              resizedFrames.push(resizeForPreview(framesToUse[i], PREVIEW_MAX_SIZE));
+            } else {
+              resizedFrames.push(framesToUse[i]);
+            }
+            setProgress((i / framesToUse.length) * 100);
+          }
+
+          setVideoFrames(resizedFrames);
           setFrameDelays(delaysToUse);
-          if (framesToUse.length > 0) {
-            setOriginalImage(framesToUse[0]);
+          if (resizedFrames.length > 0) {
+            setOriginalImage(resizedFrames[0]);
           }
 
           setProgress(100);
@@ -2140,19 +2213,32 @@
         }
       };
 
-      // Load image
+      // Load image (resize if too large for better performance)
       const loadImage = (file) => {
         return new Promise((resolve, reject) => {
           const img = new Image();
           img.onload = () => {
+            // Calculate preview size
+            const maxDimension = Math.max(img.width, img.height);
+            let targetWidth = img.width;
+            let targetHeight = img.height;
+
+            if (maxDimension > PREVIEW_MAX_SIZE) {
+              const scale = PREVIEW_MAX_SIZE / maxDimension;
+              targetWidth = Math.round(img.width * scale);
+              targetHeight = Math.round(img.height * scale);
+            }
+
             const canvas = document.createElement('canvas');
-            canvas.width = img.width;
-            canvas.height = img.height;
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
             const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0);
-            const imageData = ctx.getImageData(0, 0, img.width, img.height);
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+            const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
             setOriginalImage(imageData);
-            setAspectType(getAspectType(img.width, img.height));
+            setAspectType(getAspectType(targetWidth, targetHeight));
             setFrameDelays([]); // Reset for static images
             resolve();
           };
@@ -2161,7 +2247,7 @@
         });
       };
 
-      // Load video (first 5 seconds)
+      // Load video (first 5 seconds, resized for performance)
       const loadVideo = (file) => {
         return new Promise((resolve, reject) => {
           const video = document.createElement('video');
@@ -2174,20 +2260,33 @@
             const frameCount = Math.floor(duration * fps);
             const frames = [];
 
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const ctx = canvas.getContext('2d');
+            // Calculate resized dimensions
+            const maxDimension = Math.max(video.videoWidth, video.videoHeight);
+            let targetWidth = video.videoWidth;
+            let targetHeight = video.videoHeight;
 
-            setAspectType(getAspectType(video.videoWidth, video.videoHeight));
+            if (maxDimension > PREVIEW_MAX_SIZE) {
+              const scale = PREVIEW_MAX_SIZE / maxDimension;
+              targetWidth = Math.round(video.videoWidth * scale);
+              targetHeight = Math.round(video.videoHeight * scale);
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+
+            setAspectType(getAspectType(targetWidth, targetHeight));
 
             for (let i = 0; i < frameCount; i++) {
               const time = i / fps;
               video.currentTime = time;
               await new Promise(r => video.onseeked = r);
 
-              ctx.drawImage(video, 0, 0);
-              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              ctx.drawImage(video, 0, 0, targetWidth, targetHeight);
+              const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
               frames.push(imageData);
 
               setProgress((i / frameCount) * 100);
