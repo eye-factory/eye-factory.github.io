@@ -1,0 +1,2731 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DotChange Web</title>
+
+  <!-- React -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- OpenCV.js -->
+  <script async src="https://docs.opencv.org/4.x/opencv.js" onload="onOpenCvReady()"></script>
+
+  <!-- GIF.js (encoder) - load both main and worker -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.js"></script>
+
+  <!-- gif-frames for animated GIF parsing -->
+  <script>
+    // Simple GIF frame decoder
+    window.decodeGifFrames = async function(arrayBuffer) {
+      const bytes = new Uint8Array(arrayBuffer);
+
+      // Check GIF signature
+      const sig = String.fromCharCode(bytes[0], bytes[1], bytes[2]);
+      if (sig !== 'GIF') throw new Error('Not a GIF file');
+
+      // Parse header
+      const width = bytes[6] | (bytes[7] << 8);
+      const height = bytes[8] | (bytes[9] << 8);
+      const packed = bytes[10];
+      const hasGCT = (packed & 0x80) !== 0;
+      const gctSize = hasGCT ? (2 << (packed & 0x07)) : 0;
+
+      let pos = 13;
+      let globalColorTable = null;
+
+      if (hasGCT) {
+        globalColorTable = bytes.slice(pos, pos + gctSize * 3);
+        pos += gctSize * 3;
+      }
+
+      const frames = [];
+      const delays = [];
+      let transparentIndex = -1;
+      let delay = 100;
+      let disposalMethod = 0;
+
+      // Create composite canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+
+      const prevCanvas = document.createElement('canvas');
+      prevCanvas.width = width;
+      prevCanvas.height = height;
+      const prevCtx = prevCanvas.getContext('2d');
+
+      while (pos < bytes.length) {
+        const block = bytes[pos++];
+
+        if (block === 0x21) { // Extension
+          const extType = bytes[pos++];
+
+          if (extType === 0xF9) { // Graphics Control Extension
+            pos++; // block size (always 4)
+            const gcPacked = bytes[pos++];
+            disposalMethod = (gcPacked >> 2) & 0x07;
+            const hasTransparency = (gcPacked & 0x01) !== 0;
+            delay = (bytes[pos] | (bytes[pos + 1] << 8)) * 10;
+            pos += 2;
+            transparentIndex = hasTransparency ? bytes[pos++] : -1;
+            pos++; // block terminator
+          } else {
+            // Skip other extensions
+            while (bytes[pos] !== 0) {
+              pos += bytes[pos] + 1;
+            }
+            pos++; // block terminator
+          }
+        } else if (block === 0x2C) { // Image Descriptor
+          const frameLeft = bytes[pos] | (bytes[pos + 1] << 8);
+          const frameTop = bytes[pos + 2] | (bytes[pos + 3] << 8);
+          const frameWidth = bytes[pos + 4] | (bytes[pos + 5] << 8);
+          const frameHeight = bytes[pos + 6] | (bytes[pos + 7] << 8);
+          pos += 8;
+
+          const imgPacked = bytes[pos++];
+          const hasLCT = (imgPacked & 0x80) !== 0;
+          const interlaced = (imgPacked & 0x40) !== 0;
+          const lctSize = hasLCT ? (2 << (imgPacked & 0x07)) : 0;
+
+          let colorTable = globalColorTable;
+          if (hasLCT) {
+            colorTable = bytes.slice(pos, pos + lctSize * 3);
+            pos += lctSize * 3;
+          }
+
+          // LZW decode
+          const minCodeSize = bytes[pos++];
+          let data = [];
+          while (bytes[pos] !== 0) {
+            const subBlockSize = bytes[pos++];
+            for (let i = 0; i < subBlockSize; i++) {
+              data.push(bytes[pos++]);
+            }
+          }
+          pos++; // block terminator
+
+          // Decode LZW
+          const pixels = lzwDecode(minCodeSize, data, frameWidth * frameHeight);
+
+          // Save previous state for disposal
+          if (disposalMethod === 3) {
+            prevCtx.drawImage(canvas, 0, 0);
+          }
+
+          // Draw frame
+          const imageData = ctx.createImageData(frameWidth, frameHeight);
+          for (let i = 0; i < pixels.length; i++) {
+            const colorIdx = pixels[i];
+            if (colorIdx !== transparentIndex) {
+              const r = colorTable[colorIdx * 3];
+              const g = colorTable[colorIdx * 3 + 1];
+              const b = colorTable[colorIdx * 3 + 2];
+              imageData.data[i * 4] = r;
+              imageData.data[i * 4 + 1] = g;
+              imageData.data[i * 4 + 2] = b;
+              imageData.data[i * 4 + 3] = 255;
+            }
+          }
+
+          // Create temp canvas for frame
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = frameWidth;
+          tempCanvas.height = frameHeight;
+          const tempCtx = tempCanvas.getContext('2d');
+          tempCtx.putImageData(imageData, 0, 0);
+
+          // Draw onto main canvas
+          ctx.drawImage(tempCanvas, frameLeft, frameTop);
+
+          // Capture frame
+          frames.push(ctx.getImageData(0, 0, width, height));
+          delays.push(delay || 100);
+
+          // Handle disposal
+          if (disposalMethod === 2) {
+            ctx.clearRect(frameLeft, frameTop, frameWidth, frameHeight);
+          } else if (disposalMethod === 3) {
+            ctx.drawImage(prevCanvas, 0, 0);
+          }
+
+          transparentIndex = -1;
+          delay = 100;
+          disposalMethod = 0;
+        } else if (block === 0x3B) { // Trailer
+          break;
+        } else {
+          // Unknown block, try to skip
+          break;
+        }
+      }
+
+      return { frames, delays, width, height };
+    };
+
+    // LZW decoder
+    function lzwDecode(minCodeSize, data, pixelCount) {
+      const clearCode = 1 << minCodeSize;
+      const eoiCode = clearCode + 1;
+      let codeSize = minCodeSize + 1;
+      let nextCode = eoiCode + 1;
+      let oldCode = -1;
+
+      // Initialize dictionary
+      let dictionary = [];
+      for (let i = 0; i < clearCode; i++) {
+        dictionary[i] = [i];
+      }
+      dictionary[clearCode] = [];
+      dictionary[eoiCode] = [];
+
+      const output = [];
+      let bitBuffer = 0;
+      let bitsInBuffer = 0;
+      let dataPos = 0;
+
+      function readCode() {
+        while (bitsInBuffer < codeSize && dataPos < data.length) {
+          bitBuffer |= data[dataPos++] << bitsInBuffer;
+          bitsInBuffer += 8;
+        }
+        const code = bitBuffer & ((1 << codeSize) - 1);
+        bitBuffer >>= codeSize;
+        bitsInBuffer -= codeSize;
+        return code;
+      }
+
+      while (output.length < pixelCount) {
+        const code = readCode();
+
+        if (code === clearCode) {
+          codeSize = minCodeSize + 1;
+          nextCode = eoiCode + 1;
+          dictionary = [];
+          for (let i = 0; i < clearCode; i++) {
+            dictionary[i] = [i];
+          }
+          dictionary[clearCode] = [];
+          dictionary[eoiCode] = [];
+          oldCode = -1;
+          continue;
+        }
+
+        if (code === eoiCode) break;
+
+        let entry;
+        if (code < nextCode) {
+          entry = dictionary[code];
+        } else if (code === nextCode && oldCode >= 0) {
+          entry = dictionary[oldCode].concat(dictionary[oldCode][0]);
+        } else {
+          break; // Invalid code
+        }
+
+        output.push(...entry);
+
+        if (oldCode >= 0 && nextCode < 4096) {
+          dictionary[nextCode++] = dictionary[oldCode].concat(entry[0]);
+          if (nextCode >= (1 << codeSize) && codeSize < 12) {
+            codeSize++;
+          }
+        }
+
+        oldCode = code;
+      }
+
+      return output;
+    }
+  </script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Sans+TC:wght@400;700&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0a0a14;
+      --bg-panel: #12121f;
+      --bg-card: #1a1a2e;
+      --neon-primary: #00d4ff;
+      --neon-purple: #8b5cf6;
+      --neon-pink: #e94560;
+      --neon-green: #4ecca3;
+      --text-main: #eaeaea;
+      --text-dim: #888888;
+      --font-en: 'Orbitron', sans-serif;
+      --font-ja: 'Noto Sans JP', sans-serif;
+      --header-height: 46px;
+      --content-max-width: 1400px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: var(--font-ja);
+      background: var(--bg-dark);
+      color: var(--text-main);
+    }
+
+    /* Animated background - extends to full screen */
+    .bg-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* App wrapper - full viewport */
+    .scale-wrapper {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header - sticky at top */
+    .header {
+      flex-shrink: 0;
+      height: var(--header-height);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      background: var(--bg-dark);
+      border-bottom: 1px solid rgba(0,212,255,0.2);
+      max-width: var(--content-max-width);
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-en);
+      font-weight: 800;
+      font-size: 14px;
+      color: #000;
+    }
+
+    .logo-text {
+      font-family: var(--font-en);
+      font-size: 24px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .lang-select {
+      background: var(--bg-card);
+      border: 1px solid rgba(0,212,255,0.3);
+      color: var(--text-main);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .lang-select:hover {
+      border-color: var(--neon-primary);
+    }
+
+    /* App container - fills remaining height */
+    .app-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-width: var(--content-max-width);
+      width: 100%;
+      margin: 0 auto;
+      padding: 10px 20px;
+      height: calc(100vh - var(--header-height));
+      min-height: 0;
+    }
+
+    /* Main layout - left menu + right preview */
+    .main-content {
+      flex: 1;
+      display: flex;
+      gap: 12px;
+      min-height: 0;
+    }
+
+    /* Footer space - compact */
+    .footer-space {
+      flex-shrink: 0;
+      margin-top: 6px;
+      padding: 4px 10px;
+      height: 32px;
+      background: var(--bg-panel);
+      border-radius: 5px;
+      border: 1px solid rgba(0,212,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dim);
+      font-size: 10px;
+    }
+
+    /* Control panel - fixed width, compact to fit all items */
+    .control-panel {
+      flex-shrink: 0;
+      width: 190px;
+      background: var(--bg-panel);
+      border-radius: 6px;
+      padding: 6px 8px;
+      border: 1px solid rgba(0,212,255,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+    }
+
+    .control-panel::-webkit-scrollbar {
+      width: 2px;
+    }
+
+    .control-panel::-webkit-scrollbar-thumb {
+      background: var(--neon-primary);
+      border-radius: 1px;
+    }
+
+    .section {
+      flex-shrink: 0;
+    }
+
+    .section-full {
+      grid-column: 1 / -1;
+    }
+
+    .section-title {
+      font-size: 8px;
+      color: var(--neon-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin-bottom: 2px;
+      font-family: var(--font-en);
+    }
+
+    /* Buttons - compact */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 5px 8px;
+      border: none;
+      border-radius: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 15px rgba(0,212,255,0.4);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid rgba(0,212,255,0.3);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--neon-primary);
+      box-shadow: 0 0 10px rgba(0,212,255,0.2);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, var(--neon-green), #2ecc71);
+      color: #000;
+    }
+
+    .btn-success:hover {
+      box-shadow: 0 4px 15px rgba(78,204,163,0.4);
+    }
+
+    .btn-pink {
+      background: linear-gradient(135deg, var(--neon-pink), #ff6b8a);
+      color: #fff;
+    }
+
+    .btn-pink:hover {
+      box-shadow: 0 4px 15px rgba(233,69,96,0.4);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none !important;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    /* Slider - compact */
+    .slider-container {
+      margin-bottom: 2px;
+    }
+
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1px;
+      font-size: 9px;
+    }
+
+    .slider-value {
+      color: var(--neon-primary);
+      font-weight: 600;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 3px;
+      -webkit-appearance: none;
+      background: var(--bg-card);
+      border-radius: 2px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 0 3px rgba(0,212,255,0.5);
+    }
+
+    /* Select / Dropdown - compact */
+    .select-group {
+      display: flex;
+      gap: 2px;
+    }
+
+    .select-btn {
+      flex: 1;
+      padding: 4px 5px;
+      background: var(--bg-card);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 3px;
+      color: var(--text-dim);
+      font-size: 9px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+
+    .select-btn:hover {
+      border-color: var(--neon-primary);
+      color: var(--text-main);
+    }
+
+    .select-btn.active {
+      background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(139,92,246,0.2));
+      border-color: var(--neon-primary);
+      color: var(--neon-primary);
+    }
+
+    /* Custom input */
+    .custom-input {
+      width: 100%;
+      padding: 5px 8px;
+      background: var(--bg-card);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 4px;
+      color: var(--text-main);
+      font-size: 10px;
+      outline: none;
+      margin-top: 3px;
+    }
+
+    .custom-input:focus {
+      border-color: var(--neon-primary);
+    }
+
+    .custom-input::placeholder {
+      color: var(--text-dim);
+    }
+
+    /* Preview area - fills remaining space */
+    .preview-area {
+      flex: 1;
+      background: var(--bg-panel);
+      border-radius: 8px;
+      border: 1px solid rgba(0,212,255,0.1);
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .drop-zone {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px dashed rgba(0,212,255,0.3);
+      border-radius: 6px;
+      margin: 8px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    .drop-zone.drag-over {
+      border-color: var(--neon-primary);
+      background: rgba(0,212,255,0.05);
+    }
+
+    .drop-zone.has-file {
+      border-style: solid;
+      border-color: rgba(0,212,255,0.2);
+    }
+
+    .drop-hint {
+      text-align: center;
+      color: var(--text-dim);
+    }
+
+    .drop-hint-icon {
+      font-size: 40px;
+      margin-bottom: 10px;
+      opacity: 0.5;
+    }
+
+    .drop-hint-text {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .preview-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    .preview-video {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    /* Video controls */
+    .video-controls {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: var(--bg-card);
+      border-radius: 0 0 8px 8px;
+    }
+
+    .play-btn {
+      width: 32px;
+      height: 32px;
+      background: var(--neon-primary);
+      border: none;
+      border-radius: 50%;
+      color: #000;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .seek-bar {
+      flex: 1;
+    }
+
+    .time-display {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: var(--font-en);
+      min-width: 50px;
+      text-align: right;
+    }
+
+    /* Action buttons - compact */
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+      margin-top: 4px;
+    }
+
+    /* Loading overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(10,10,20,0.9);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid var(--bg-card);
+      border-top-color: var(--neon-primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-text {
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
+    .loading-progress {
+      width: 200px;
+      height: 4px;
+      background: var(--bg-card);
+      border-radius: 2px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .loading-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-primary), var(--neon-purple));
+      transition: width 0.3s;
+    }
+
+    /* Color presets - compact */
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin-bottom: 3px;
+    }
+
+    .preset-btn {
+      padding: 3px 2px;
+      font-size: 8px;
+    }
+
+    /* GIF options - compact */
+    .gif-options {
+      background: var(--bg-card);
+      border-radius: 3px;
+      padding: 4px 6px;
+      margin-top: 3px;
+    }
+
+    .gif-options-title {
+      font-size: 8px;
+      color: var(--neon-purple);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .option-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3px;
+    }
+
+    .option-row:last-child {
+      margin-bottom: 0;
+    }
+
+    .option-label {
+      font-size: 8px;
+      color: var(--text-dim);
+    }
+
+    .option-select {
+      display: flex;
+      gap: 2px;
+    }
+
+    .option-btn {
+      padding: 2px 5px;
+      font-size: 8px;
+      background: var(--bg-panel);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 2px;
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .option-btn:hover {
+      border-color: var(--neon-purple);
+    }
+
+    .option-btn.active {
+      background: rgba(139,92,246,0.2);
+      border-color: var(--neon-purple);
+      color: var(--neon-purple);
+    }
+
+    /* Before/After toggle */
+    .preview-toggle {
+      flex-shrink: 0;
+      display: flex;
+      gap: 6px;
+      padding: 6px 8px;
+    }
+
+    .toggle-btn {
+      flex: 1;
+      padding: 6px 8px;
+      background: var(--bg-card);
+      border: 1px solid rgba(0,212,255,0.2);
+      border-radius: 4px;
+      color: var(--text-dim);
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn.active {
+      background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(139,92,246,0.15));
+      border-color: var(--neon-primary);
+      color: var(--neon-primary);
+    }
+
+    .toggle-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* OpenCV loading */
+    .opencv-loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+
+    .opencv-loading h2 {
+      font-family: var(--font-en);
+      background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 16px;
+    }
+
+    /* File info - compact */
+    .file-info {
+      font-size: 8px;
+      color: var(--text-dim);
+      margin-top: 2px;
+      padding: 2px 4px;
+      background: var(--bg-card);
+      border-radius: 2px;
+      word-break: break-all;
+      line-height: 1.2;
+    }
+
+    /* Ultrawide / Short height monitors - ultra compact 2-column layout */
+    @media (max-height: 800px) {
+      :root {
+        --header-height: 36px;
+      }
+
+      .header {
+        padding: 0 12px;
+      }
+
+      .logo-icon {
+        width: 26px;
+        height: 26px;
+        font-size: 10px;
+      }
+
+      .logo-text {
+        font-size: 18px;
+      }
+
+      .lang-select {
+        padding: 3px 8px;
+        font-size: 10px;
+      }
+
+      .app-container {
+        padding: 4px 12px;
+      }
+
+      .main-content {
+        gap: 8px;
+      }
+
+      /* 2-column control panel for ultrawide */
+      .control-panel {
+        width: 290px;
+        padding: 3px 5px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px 6px;
+        align-content: start;
+      }
+
+      /* Sections that span full width */
+      .control-panel > .section:first-child {
+        grid-column: 1 / -1;
+      }
+
+      .section-title {
+        font-size: 7px;
+        margin-bottom: 1px;
+      }
+
+      .btn {
+        padding: 3px 5px;
+        font-size: 8px;
+      }
+
+      .slider-container {
+        margin-bottom: 1px;
+      }
+
+      .slider-label {
+        font-size: 8px;
+        margin-bottom: 0;
+      }
+
+      input[type="range"] {
+        height: 2px;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        width: 8px;
+        height: 8px;
+      }
+
+      .select-group {
+        gap: 2px;
+      }
+
+      .select-btn {
+        padding: 2px 3px;
+        font-size: 8px;
+      }
+
+      .preset-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1px;
+        margin-bottom: 1px;
+      }
+
+      .preset-btn {
+        padding: 2px 1px;
+        font-size: 7px;
+      }
+
+      .gif-options {
+        padding: 2px 4px;
+        margin-top: 1px;
+        grid-column: 1 / -1;
+      }
+
+      .gif-options-title {
+        font-size: 7px;
+        margin-bottom: 1px;
+      }
+
+      .option-row {
+        margin-bottom: 1px;
+      }
+
+      .option-label {
+        font-size: 7px;
+      }
+
+      .option-btn {
+        padding: 1px 3px;
+        font-size: 7px;
+      }
+
+      .action-buttons {
+        gap: 2px;
+        margin-top: 2px;
+        grid-column: 1 / -1;
+      }
+
+      .file-info {
+        font-size: 6px;
+        margin-top: 1px;
+        padding: 1px 3px;
+        grid-column: 1 / -1;
+      }
+
+      .footer-space {
+        height: 22px;
+        margin-top: 3px;
+        font-size: 8px;
+      }
+
+      .preview-toggle {
+        padding: 3px 6px;
+        gap: 4px;
+      }
+
+      .toggle-btn {
+        padding: 3px 6px;
+        font-size: 9px;
+      }
+
+      .video-controls {
+        padding: 3px 8px;
+        gap: 6px;
+      }
+
+      .play-btn {
+        width: 22px;
+        height: 22px;
+        font-size: 9px;
+      }
+
+      .time-display {
+        font-size: 8px;
+      }
+
+      .drop-zone {
+        margin: 4px;
+      }
+    }
+
+    /* Even shorter screens (ultrawide like 2560x1080) - minimal compact 2-column */
+    @media (max-height: 700px) {
+      :root {
+        --header-height: 30px;
+      }
+
+      .header {
+        padding: 0 10px;
+      }
+
+      .logo-icon {
+        width: 22px;
+        height: 22px;
+        font-size: 9px;
+        border-radius: 4px;
+      }
+
+      .logo-text {
+        font-size: 16px;
+      }
+
+      .lang-select {
+        padding: 2px 6px;
+        font-size: 9px;
+      }
+
+      .app-container {
+        padding: 2px 10px;
+      }
+
+      .main-content {
+        gap: 6px;
+      }
+
+      .control-panel {
+        width: 260px;
+        padding: 2px 4px;
+        gap: 1px 4px;
+      }
+
+      .section-title {
+        font-size: 6px;
+        margin-bottom: 0;
+      }
+
+      .btn {
+        padding: 2px 4px;
+        font-size: 7px;
+      }
+
+      .slider-container {
+        margin-bottom: 0;
+      }
+
+      .slider-label {
+        font-size: 7px;
+        margin-bottom: 0;
+      }
+
+      input[type="range"] {
+        height: 2px;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        width: 6px;
+        height: 6px;
+      }
+
+      .select-group {
+        gap: 1px;
+      }
+
+      .select-btn {
+        padding: 1px 2px;
+        font-size: 7px;
+      }
+
+      .preset-grid {
+        gap: 1px;
+        margin-bottom: 0;
+      }
+
+      .preset-btn {
+        padding: 1px 1px;
+        font-size: 6px;
+      }
+
+      .gif-options {
+        padding: 2px 3px;
+        margin-top: 0;
+      }
+
+      .gif-options-title {
+        font-size: 6px;
+        margin-bottom: 0;
+      }
+
+      .option-row {
+        margin-bottom: 0;
+      }
+
+      .option-label {
+        font-size: 6px;
+      }
+
+      .option-select {
+        gap: 1px;
+      }
+
+      .option-btn {
+        padding: 1px 2px;
+        font-size: 6px;
+      }
+
+      .action-buttons {
+        gap: 1px;
+        margin-top: 1px;
+      }
+
+      .file-info {
+        font-size: 5px;
+        margin-top: 0;
+        padding: 1px 2px;
+        line-height: 1.1;
+      }
+
+      .footer-space {
+        height: 18px;
+        margin-top: 2px;
+        font-size: 7px;
+      }
+
+      .preview-toggle {
+        padding: 2px 4px;
+        gap: 3px;
+      }
+
+      .toggle-btn {
+        padding: 2px 4px;
+        font-size: 8px;
+      }
+
+      .video-controls {
+        padding: 2px 6px;
+        gap: 4px;
+      }
+
+      .play-btn {
+        width: 18px;
+        height: 18px;
+        font-size: 8px;
+      }
+
+      .time-display {
+        font-size: 7px;
+        min-width: 35px;
+      }
+
+      .drop-zone {
+        margin: 3px;
+      }
+
+      .drop-hint-icon {
+        font-size: 24px;
+        margin-bottom: 4px;
+      }
+
+      .drop-hint-text {
+        font-size: 9px;
+      }
+    }
+
+    /* Mobile fallback */
+    @media (max-width: 768px) {
+      .scale-wrapper {
+        height: auto;
+        min-height: 100vh;
+      }
+
+      .app-container {
+        height: auto;
+        min-height: calc(100vh - var(--header-height));
+        padding: 10px;
+      }
+
+      .main-content {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .control-panel {
+        width: 100%;
+        max-height: none;
+      }
+
+      .preview-area {
+        min-height: 300px;
+      }
+
+      .header {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+        gap: 8px;
+      }
+
+      .preset-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .action-buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    // OpenCV ready flag
+    let cvReady = false;
+    function onOpenCvReady() {
+      cvReady = true;
+      if (window.onCvLoaded) window.onCvLoaded();
+    }
+  </script>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useCallback } = React;
+
+    // ═══════════════════════════════════════════════════════════════
+    // TRANSLATIONS
+    // ═══════════════════════════════════════════════════════════════
+    const TRANSLATIONS = {
+      ja: {
+        title: 'DotChange',
+        subtitle: 'ドット絵変換ツール',
+        dropHint: 'ここにファイルをドラッグ&ドロップ\nまたはクリックして選択',
+        selectFile: 'ファイルを選択',
+        dotSize: 'ドットサイズ',
+        colorReduction: '減色レベル',
+        colorFew: '少なめ',
+        colorStandard: '標準',
+        colorMany: '多め',
+        colorCustom: 'カスタム',
+        colorAdjust: '色調整',
+        reset: '標準',
+        retro: 'レトロ',
+        vivid: 'ビビッド',
+        sepia: 'セピア',
+        cool: 'クール',
+        warm: 'ウォーム',
+        mono: 'モノクロ',
+        brightness: '明るさ',
+        contrast: 'コントラスト',
+        saturation: '彩度',
+        hueShift: '色相',
+        outputSize: '出力サイズ',
+        sizeLarge: '大',
+        sizeMedium: '中',
+        sizeSmall: '小',
+        convert: '変換',
+        save: '画像保存',
+        saveGif: 'GIF保存',
+        before: '変換前',
+        after: '変換後',
+        gifOptions: 'GIF設定',
+        duration: '長さ',
+        fps: 'FPS',
+        sec: '秒',
+        loading: '読み込み中...',
+        converting: '変換中...',
+        generatingGif: 'GIF生成中...',
+        play: '再生',
+        pause: '停止',
+        videoNote: '※動画は冒頭5秒のみ読み込み',
+      },
+      en: {
+        title: 'DotChange',
+        subtitle: 'Pixel Art Converter',
+        dropHint: 'Drag & drop file here\nor click to select',
+        selectFile: 'Select File',
+        dotSize: 'Dot Size',
+        colorReduction: 'Color Reduction',
+        colorFew: 'Few',
+        colorStandard: 'Standard',
+        colorMany: 'Many',
+        colorCustom: 'Custom',
+        colorAdjust: 'Color Adjust',
+        reset: 'Reset',
+        retro: 'Retro',
+        vivid: 'Vivid',
+        sepia: 'Sepia',
+        cool: 'Cool',
+        warm: 'Warm',
+        mono: 'Mono',
+        brightness: 'Brightness',
+        contrast: 'Contrast',
+        saturation: 'Saturation',
+        hueShift: 'Hue',
+        outputSize: 'Output Size',
+        sizeLarge: 'Large',
+        sizeMedium: 'Medium',
+        sizeSmall: 'Small',
+        convert: 'Convert',
+        save: 'Save Image',
+        saveGif: 'Save GIF',
+        before: 'Before',
+        after: 'After',
+        gifOptions: 'GIF Options',
+        duration: 'Duration',
+        fps: 'FPS',
+        sec: 'sec',
+        loading: 'Loading...',
+        converting: 'Converting...',
+        generatingGif: 'Generating GIF...',
+        play: 'Play',
+        pause: 'Pause',
+        videoNote: '※Only first 5 seconds loaded',
+      },
+      zh_cn: {
+        title: 'DotChange',
+        subtitle: '像素风格转换工具',
+        dropHint: '将文件拖放到此处\n或点击选择',
+        selectFile: '选择文件',
+        dotSize: '点阵大小',
+        colorReduction: '减色级别',
+        colorFew: '少',
+        colorStandard: '标准',
+        colorMany: '多',
+        colorCustom: '自定义',
+        colorAdjust: '色彩调整',
+        reset: '重置',
+        retro: '复古',
+        vivid: '鲜艳',
+        sepia: '怀旧',
+        cool: '冷色',
+        warm: '暖色',
+        mono: '单色',
+        brightness: '亮度',
+        contrast: '对比度',
+        saturation: '饱和度',
+        hueShift: '色相',
+        outputSize: '输出尺寸',
+        sizeLarge: '大',
+        sizeMedium: '中',
+        sizeSmall: '小',
+        convert: '转换',
+        save: '保存图片',
+        saveGif: '保存GIF',
+        before: '转换前',
+        after: '转换后',
+        gifOptions: 'GIF设置',
+        duration: '时长',
+        fps: 'FPS',
+        sec: '秒',
+        loading: '加载中...',
+        converting: '转换中...',
+        generatingGif: '生成GIF中...',
+        play: '播放',
+        pause: '暂停',
+        videoNote: '※仅加载前5秒',
+      },
+      zh_tw: {
+        title: 'DotChange',
+        subtitle: '像素風格轉換工具',
+        dropHint: '將檔案拖放到此處\n或點擊選擇',
+        selectFile: '選擇檔案',
+        dotSize: '點陣大小',
+        colorReduction: '減色級別',
+        colorFew: '少',
+        colorStandard: '標準',
+        colorMany: '多',
+        colorCustom: '自訂',
+        colorAdjust: '色彩調整',
+        reset: '重設',
+        retro: '復古',
+        vivid: '鮮豔',
+        sepia: '懷舊',
+        cool: '冷色',
+        warm: '暖色',
+        mono: '單色',
+        brightness: '亮度',
+        contrast: '對比度',
+        saturation: '飽和度',
+        hueShift: '色相',
+        outputSize: '輸出尺寸',
+        sizeLarge: '大',
+        sizeMedium: '中',
+        sizeSmall: '小',
+        convert: '轉換',
+        save: '儲存圖片',
+        saveGif: '儲存GIF',
+        before: '轉換前',
+        after: '轉換後',
+        gifOptions: 'GIF設定',
+        duration: '時長',
+        fps: 'FPS',
+        sec: '秒',
+        loading: '載入中...',
+        converting: '轉換中...',
+        generatingGif: '生成GIF中...',
+        play: '播放',
+        pause: '暫停',
+        videoNote: '※僅載入前5秒',
+      },
+      ko: {
+        title: 'DotChange',
+        subtitle: '픽셀 아트 변환 도구',
+        dropHint: '파일을 드래그 앤 드롭\n또는 클릭하여 선택',
+        selectFile: '파일 선택',
+        dotSize: '도트 크기',
+        colorReduction: '감색 레벨',
+        colorFew: '적음',
+        colorStandard: '표준',
+        colorMany: '많음',
+        colorCustom: '사용자 지정',
+        colorAdjust: '색상 조정',
+        reset: '초기화',
+        retro: '레트로',
+        vivid: '비비드',
+        sepia: '세피아',
+        cool: '쿨',
+        warm: '웜',
+        mono: '모노',
+        brightness: '밝기',
+        contrast: '대비',
+        saturation: '채도',
+        hueShift: '색상',
+        outputSize: '출력 크기',
+        sizeLarge: '대',
+        sizeMedium: '중',
+        sizeSmall: '소',
+        convert: '변환',
+        save: '이미지 저장',
+        saveGif: 'GIF 저장',
+        before: '변환 전',
+        after: '변환 후',
+        gifOptions: 'GIF 설정',
+        duration: '길이',
+        fps: 'FPS',
+        sec: '초',
+        loading: '로딩 중...',
+        converting: '변환 중...',
+        generatingGif: 'GIF 생성 중...',
+        play: '재생',
+        pause: '정지',
+        videoNote: '※처음 5초만 로드',
+      },
+      es: {
+        title: 'DotChange',
+        subtitle: 'Convertidor de Pixel Art',
+        dropHint: 'Arrastra y suelta aquí\no haz clic para seleccionar',
+        selectFile: 'Seleccionar',
+        dotSize: 'Tamaño',
+        colorReduction: 'Reducción',
+        colorFew: 'Poco',
+        colorStandard: 'Normal',
+        colorMany: 'Mucho',
+        colorCustom: 'Personal',
+        colorAdjust: 'Ajuste',
+        reset: 'Reset',
+        retro: 'Retro',
+        vivid: 'Vívido',
+        sepia: 'Sepia',
+        cool: 'Frío',
+        warm: 'Cálido',
+        mono: 'Mono',
+        brightness: 'Brillo',
+        contrast: 'Contraste',
+        saturation: 'Saturación',
+        hueShift: 'Tono',
+        outputSize: 'Tamaño',
+        sizeLarge: 'Grande',
+        sizeMedium: 'Medio',
+        sizeSmall: 'Pequeño',
+        convert: 'Convertir',
+        save: 'Guardar Imagen',
+        saveGif: 'Guardar GIF',
+        before: 'Antes',
+        after: 'Después',
+        gifOptions: 'Opciones GIF',
+        duration: 'Duración',
+        fps: 'FPS',
+        sec: 'seg',
+        loading: 'Cargando...',
+        converting: 'Convirtiendo...',
+        generatingGif: 'Generando GIF...',
+        play: 'Play',
+        pause: 'Pausa',
+        videoNote: '※Solo primeros 5 seg',
+      },
+      fr: {
+        title: 'DotChange',
+        subtitle: 'Convertisseur Pixel Art',
+        dropHint: 'Glissez-déposez ici\nou cliquez pour sélectionner',
+        selectFile: 'Sélectionner',
+        dotSize: 'Taille',
+        colorReduction: 'Réduction',
+        colorFew: 'Peu',
+        colorStandard: 'Normal',
+        colorMany: 'Beaucoup',
+        colorCustom: 'Custom',
+        colorAdjust: 'Réglage',
+        reset: 'Reset',
+        retro: 'Rétro',
+        vivid: 'Vif',
+        sepia: 'Sépia',
+        cool: 'Froid',
+        warm: 'Chaud',
+        mono: 'Mono',
+        brightness: 'Luminosité',
+        contrast: 'Contraste',
+        saturation: 'Saturation',
+        hueShift: 'Teinte',
+        outputSize: 'Taille',
+        sizeLarge: 'Grand',
+        sizeMedium: 'Moyen',
+        sizeSmall: 'Petit',
+        convert: 'Convertir',
+        save: 'Enreg. Image',
+        saveGif: 'Enregistrer GIF',
+        before: 'Avant',
+        after: 'Après',
+        gifOptions: 'Options GIF',
+        duration: 'Durée',
+        fps: 'FPS',
+        sec: 'sec',
+        loading: 'Chargement...',
+        converting: 'Conversion...',
+        generatingGif: 'Génération GIF...',
+        play: 'Lecture',
+        pause: 'Pause',
+        videoNote: '※5 premières sec',
+      },
+      de: {
+        title: 'DotChange',
+        subtitle: 'Pixel Art Konverter',
+        dropHint: 'Datei hier ablegen\noder klicken zum Auswählen',
+        selectFile: 'Auswählen',
+        dotSize: 'Größe',
+        colorReduction: 'Reduktion',
+        colorFew: 'Wenig',
+        colorStandard: 'Normal',
+        colorMany: 'Viel',
+        colorCustom: 'Custom',
+        colorAdjust: 'Anpassung',
+        reset: 'Reset',
+        retro: 'Retro',
+        vivid: 'Lebendig',
+        sepia: 'Sepia',
+        cool: 'Kühl',
+        warm: 'Warm',
+        mono: 'Mono',
+        brightness: 'Helligkeit',
+        contrast: 'Kontrast',
+        saturation: 'Sättigung',
+        hueShift: 'Farbton',
+        outputSize: 'Größe',
+        sizeLarge: 'Groß',
+        sizeMedium: 'Mittel',
+        sizeSmall: 'Klein',
+        convert: 'Konvertieren',
+        save: 'Bild Speichern',
+        saveGif: 'GIF Speichern',
+        before: 'Vorher',
+        after: 'Nachher',
+        gifOptions: 'GIF Optionen',
+        duration: 'Dauer',
+        fps: 'FPS',
+        sec: 'Sek',
+        loading: 'Laden...',
+        converting: 'Konvertiere...',
+        generatingGif: 'GIF erstellen...',
+        play: 'Abspielen',
+        pause: 'Pause',
+        videoNote: '※Nur erste 5 Sek',
+      },
+      pt: {
+        title: 'DotChange',
+        subtitle: 'Conversor Pixel Art',
+        dropHint: 'Arraste e solte aqui\nou clique para selecionar',
+        selectFile: 'Selecionar',
+        dotSize: 'Tamanho',
+        colorReduction: 'Redução',
+        colorFew: 'Pouco',
+        colorStandard: 'Normal',
+        colorMany: 'Muito',
+        colorCustom: 'Custom',
+        colorAdjust: 'Ajuste',
+        reset: 'Reset',
+        retro: 'Retrô',
+        vivid: 'Vívido',
+        sepia: 'Sépia',
+        cool: 'Frio',
+        warm: 'Quente',
+        mono: 'Mono',
+        brightness: 'Brilho',
+        contrast: 'Contraste',
+        saturation: 'Saturação',
+        hueShift: 'Matiz',
+        outputSize: 'Tamanho',
+        sizeLarge: 'Grande',
+        sizeMedium: 'Médio',
+        sizeSmall: 'Pequeno',
+        convert: 'Converter',
+        save: 'Salvar Imagem',
+        saveGif: 'Salvar GIF',
+        before: 'Antes',
+        after: 'Depois',
+        gifOptions: 'Opções GIF',
+        duration: 'Duração',
+        fps: 'FPS',
+        sec: 'seg',
+        loading: 'Carregando...',
+        converting: 'Convertendo...',
+        generatingGif: 'Gerando GIF...',
+        play: 'Play',
+        pause: 'Pausa',
+        videoNote: '※Apenas primeiros 5 seg',
+      },
+    };
+
+    // Detect browser language
+    function detectLanguage() {
+      const browserLang = navigator.language.toLowerCase();
+      if (browserLang.startsWith('ja')) return 'ja';
+      if (browserLang.startsWith('zh-tw') || browserLang.startsWith('zh-hant')) return 'zh_tw';
+      if (browserLang.startsWith('zh')) return 'zh_cn';
+      if (browserLang.startsWith('ko')) return 'ko';
+      if (browserLang.startsWith('es')) return 'es';
+      if (browserLang.startsWith('fr')) return 'fr';
+      if (browserLang.startsWith('de')) return 'de';
+      if (browserLang.startsWith('pt')) return 'pt';
+      return 'en';
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // COLOR PRESETS (from PC version)
+    // ═══════════════════════════════════════════════════════════════
+    const COLOR_PRESETS = {
+      reset: { brightness: 0, contrast: 0, saturation: 0, hue: 0 },
+      retro: { brightness: -10, contrast: 10, saturation: -30, hue: 0 },
+      vivid: { brightness: 5, contrast: 20, saturation: 40, hue: 0 },
+      sepia: { brightness: 5, contrast: 10, saturation: -50, hue: 15 },
+      cool: { brightness: 0, contrast: 5, saturation: -10, hue: -20 },
+      warm: { brightness: 5, contrast: 5, saturation: 10, hue: 15 },
+      mono: { brightness: 0, contrast: 10, saturation: -100, hue: 0 },
+    };
+
+    // ═══════════════════════════════════════════════════════════════
+    // OUTPUT SIZES
+    // ═══════════════════════════════════════════════════════════════
+    const OUTPUT_SIZES = {
+      image: {
+        landscape: { large: [1920, 1080], medium: [1280, 720], small: [854, 480] },
+        square: { large: [1080, 1080], medium: [720, 720], small: [480, 480] },
+        portrait: { large: [1080, 1920], medium: [720, 1280], small: [480, 854] },
+      },
+      gif: {
+        landscape: { large: [1280, 720], medium: [854, 480], small: [640, 360] },
+        square: { large: [720, 720], medium: [480, 480], small: [360, 360] },
+        portrait: { large: [720, 1280], medium: [480, 854], small: [360, 640] },
+      },
+    };
+
+    function getAspectType(width, height) {
+      const ratio = width / height;
+      if (ratio > 1.2) return 'landscape';
+      if (ratio < 0.8) return 'portrait';
+      return 'square';
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // IMAGE PROCESSING (ported from PC version)
+    // ═══════════════════════════════════════════════════════════════
+    function pixelateImage(imageData, dotSize, colorLevel, brightness, contrast, saturation, hue) {
+      const { width, height, data } = imageData;
+
+      // Store original alpha values
+      const originalAlpha = new Uint8ClampedArray(width * height);
+      for (let i = 0; i < width * height; i++) {
+        originalAlpha[i] = data[i * 4 + 3];
+      }
+
+      // Create new canvas for processing (with alpha support)
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      ctx.clearRect(0, 0, width, height); // Ensure transparent background
+      ctx.putImageData(imageData, 0, 0);
+
+      // Calculate small size
+      const newW = Math.max(1, Math.floor(width / dotSize));
+      const newH = Math.max(1, Math.floor(height / dotSize));
+
+      // Create small canvas (preserve alpha)
+      const smallCanvas = document.createElement('canvas');
+      smallCanvas.width = newW;
+      smallCanvas.height = newH;
+      const smallCtx = smallCanvas.getContext('2d', { willReadFrequently: true });
+      smallCtx.clearRect(0, 0, newW, newH);
+      smallCtx.imageSmoothingEnabled = true;
+      smallCtx.imageSmoothingQuality = 'high';
+      smallCtx.drawImage(canvas, 0, 0, newW, newH);
+
+      // Scale back up with nearest neighbor
+      const resultCanvas = document.createElement('canvas');
+      resultCanvas.width = width;
+      resultCanvas.height = height;
+      const resultCtx = resultCanvas.getContext('2d', { willReadFrequently: true });
+      resultCtx.clearRect(0, 0, width, height);
+      resultCtx.imageSmoothingEnabled = false;
+      resultCtx.drawImage(smallCanvas, 0, 0, width, height);
+
+      // Get pixelated image data
+      let result = resultCtx.getImageData(0, 0, width, height);
+
+      // Restore pixelated alpha (use the pixelated alpha, not original)
+      // This creates blocky transparency matching the pixel art style
+
+      // Color reduction
+      if (colorLevel > 0) {
+        const divisor = colorLevel;
+        const half = Math.floor(divisor / 2);
+        for (let i = 0; i < result.data.length; i += 4) {
+          result.data[i] = Math.min(255, Math.floor((result.data[i] + half) / divisor) * divisor);
+          result.data[i + 1] = Math.min(255, Math.floor((result.data[i + 1] + half) / divisor) * divisor);
+          result.data[i + 2] = Math.min(255, Math.floor((result.data[i + 2] + half) / divisor) * divisor);
+        }
+      }
+
+      // Brightness and contrast
+      if (brightness !== 0 || contrast !== 0) {
+        const factor = (100 + contrast) / 100;
+        const brightnessOffset = brightness * 2.55;
+        for (let i = 0; i < result.data.length; i += 4) {
+          for (let c = 0; c < 3; c++) {
+            let val = result.data[i + c];
+            val += brightnessOffset;
+            val = (val - 128) * factor + 128;
+            result.data[i + c] = Math.max(0, Math.min(255, Math.round(val)));
+          }
+        }
+      }
+
+      // Saturation and hue
+      if (saturation !== 0 || hue !== 0) {
+        for (let i = 0; i < result.data.length; i += 4) {
+          let r = result.data[i];
+          let g = result.data[i + 1];
+          let b = result.data[i + 2];
+
+          // Convert to HSL
+          r /= 255; g /= 255; b /= 255;
+          const max = Math.max(r, g, b);
+          const min = Math.min(r, g, b);
+          let h, s, l = (max + min) / 2;
+
+          if (max === min) {
+            h = s = 0;
+          } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+              case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+              case g: h = ((b - r) / d + 2) / 6; break;
+              case b: h = ((r - g) / d + 4) / 6; break;
+            }
+          }
+
+          // Apply adjustments
+          h = (h + hue / 360 + 1) % 1;
+          s = Math.max(0, Math.min(1, s * ((100 + saturation) / 100)));
+
+          // Monochrome
+          if (saturation <= -100) {
+            s = 0;
+          }
+
+          // Convert back to RGB
+          let r2, g2, b2;
+          if (s === 0) {
+            r2 = g2 = b2 = l;
+          } else {
+            const hue2rgb = (p, q, t) => {
+              if (t < 0) t += 1;
+              if (t > 1) t -= 1;
+              if (t < 1/6) return p + (q - p) * 6 * t;
+              if (t < 1/2) return q;
+              if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+              return p;
+            };
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r2 = hue2rgb(p, q, h + 1/3);
+            g2 = hue2rgb(p, q, h);
+            b2 = hue2rgb(p, q, h - 1/3);
+          }
+
+          result.data[i] = Math.round(r2 * 255);
+          result.data[i + 1] = Math.round(g2 * 255);
+          result.data[i + 2] = Math.round(b2 * 255);
+        }
+      }
+
+      return result;
+    }
+
+    function resizeWithCenterCrop(imageData, targetWidth, targetHeight) {
+      const { width, height } = imageData;
+
+      // Create source canvas (preserve alpha)
+      const srcCanvas = document.createElement('canvas');
+      srcCanvas.width = width;
+      srcCanvas.height = height;
+      const srcCtx = srcCanvas.getContext('2d', { willReadFrequently: true });
+      srcCtx.clearRect(0, 0, width, height); // Ensure transparent background
+      srcCtx.putImageData(imageData, 0, 0);
+
+      // Calculate scale and crop
+      const scale = Math.max(targetWidth / width, targetHeight / height);
+      const scaledWidth = Math.round(width * scale);
+      const scaledHeight = Math.round(height * scale);
+      const offsetX = Math.round((scaledWidth - targetWidth) / 2);
+      const offsetY = Math.round((scaledHeight - targetHeight) / 2);
+
+      // Create result canvas (preserve alpha)
+      const resultCanvas = document.createElement('canvas');
+      resultCanvas.width = targetWidth;
+      resultCanvas.height = targetHeight;
+      const resultCtx = resultCanvas.getContext('2d', { willReadFrequently: true });
+      resultCtx.clearRect(0, 0, targetWidth, targetHeight); // Ensure transparent background
+      resultCtx.imageSmoothingEnabled = false; // Use nearest neighbor for pixel art
+      resultCtx.drawImage(srcCanvas, -offsetX, -offsetY, scaledWidth, scaledHeight);
+
+      return resultCtx.getImageData(0, 0, targetWidth, targetHeight);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MAIN APP COMPONENT
+    // ═══════════════════════════════════════════════════════════════
+    function App() {
+      const [cvLoaded, setCvLoaded] = useState(cvReady);
+      const [lang, setLang] = useState(detectLanguage());
+      const t = useCallback((key) => TRANSLATIONS[lang]?.[key] || TRANSLATIONS.en[key] || key, [lang]);
+
+      // File state
+      const [file, setFile] = useState(null);
+      const [fileType, setFileType] = useState(null); // 'image' | 'video'
+      const [originalImage, setOriginalImage] = useState(null);
+      const [processedImage, setProcessedImage] = useState(null);
+      const [videoFrames, setVideoFrames] = useState([]);
+      const [processedFrames, setProcessedFrames] = useState([]);
+      const [frameDelays, setFrameDelays] = useState([]); // GIF frame delays in ms
+      const [aspectType, setAspectType] = useState('landscape');
+
+      // Preview state
+      const [showAfter, setShowAfter] = useState(false);
+      const [isPlaying, setIsPlaying] = useState(false);
+      const [currentFrame, setCurrentFrame] = useState(0);
+
+      // Settings
+      const [dotSize, setDotSize] = useState(4);
+      const [colorLevel, setColorLevel] = useState('standard'); // few, standard, many, custom
+      const [customColorLevel, setCustomColorLevel] = useState(17);
+      const [colorPreset, setColorPreset] = useState('reset');
+      const [brightness, setBrightness] = useState(0);
+      const [contrast, setContrast] = useState(0);
+      const [saturation, setSaturation] = useState(0);
+      const [hueShift, setHueShift] = useState(0);
+      const [outputSize, setOutputSize] = useState('medium');
+
+      // GIF options
+      const [gifDuration, setGifDuration] = useState(3);
+      const [gifFps, setGifFps] = useState(10);
+
+      // Loading state
+      const [loading, setLoading] = useState(false);
+      const [loadingText, setLoadingText] = useState('');
+      const [progress, setProgress] = useState(0);
+
+      // Refs
+      const fileInputRef = useRef(null);
+      const videoRef = useRef(null);
+      const animationRef = useRef(null);
+
+      // OpenCV ready check
+      useEffect(() => {
+        if (cvReady) {
+          setCvLoaded(true);
+        } else {
+          window.onCvLoaded = () => setCvLoaded(true);
+        }
+      }, []);
+
+      // Apply color preset
+      useEffect(() => {
+        const preset = COLOR_PRESETS[colorPreset];
+        if (preset) {
+          setBrightness(preset.brightness);
+          setContrast(preset.contrast);
+          setSaturation(preset.saturation);
+          setHueShift(preset.hue);
+        }
+      }, [colorPreset]);
+
+      // Animation loop for video/GIF preview
+      useEffect(() => {
+        if (!isPlaying) return;
+        const frames = showAfter ? processedFrames : videoFrames;
+        if (frames.length === 0) return;
+
+        let frameIndex = currentFrame;
+        let animationId = null;
+
+        const animate = () => {
+          frameIndex = (frameIndex + 1) % frames.length;
+          setCurrentFrame(frameIndex);
+
+          // After preview: always use selected gifFps (matches saved output)
+          // Before preview: use original frame delays if available
+          const delay = showAfter
+            ? (1000 / gifFps)
+            : (frameDelays.length > 0 ? (frameDelays[frameIndex] || 100) : (1000 / gifFps));
+
+          animationId = setTimeout(animate, delay);
+          animationRef.current = animationId;
+        };
+
+        // Initial delay - use selected FPS for after preview
+        const initialDelay = showAfter
+          ? (1000 / gifFps)
+          : (frameDelays.length > 0 ? (frameDelays[frameIndex] || 100) : (1000 / gifFps));
+
+        animationId = setTimeout(animate, initialDelay);
+        animationRef.current = animationId;
+
+        return () => {
+          if (animationId) clearTimeout(animationId);
+          if (animationRef.current) clearTimeout(animationRef.current);
+        };
+      }, [isPlaying, showAfter, videoFrames, processedFrames, frameDelays, gifFps]);
+
+      // Get color divisor
+      const getColorDivisor = () => {
+        switch (colorLevel) {
+          case 'few': return 28;
+          case 'standard': return 17;
+          case 'many': return 11;
+          default: return 17;
+        }
+      };
+
+      // Handle file drop
+      const handleDrop = useCallback((e) => {
+        e.preventDefault();
+        const droppedFile = e.dataTransfer?.files[0] || e.target.files?.[0];
+        if (droppedFile) {
+          loadFile(droppedFile);
+        }
+      }, []);
+
+      // Load file
+      const loadFile = async (file) => {
+        setLoading(true);
+        setLoadingText(t('loading'));
+        setProgress(0);
+        setProcessedImage(null);
+        setProcessedFrames([]);
+        setShowAfter(false);
+
+        const ext = file.name.toLowerCase().split('.').pop();
+        const isGif = ext === 'gif';
+        const isVideo = ['mp4', 'mov', 'webm'].includes(ext);
+
+        setFile(file);
+        setFileType((isGif || isVideo) ? 'video' : 'image');
+
+        try {
+          if (isGif) {
+            await loadGif(file);
+          } else if (isVideo) {
+            await loadVideo(file);
+          } else {
+            await loadImage(file);
+          }
+        } catch (error) {
+          console.error('File load error:', error);
+        }
+
+        setLoading(false);
+      };
+
+      // Load animated GIF using custom decoder
+      const loadGif = async (file) => {
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const result = await window.decodeGifFrames(arrayBuffer);
+
+          if (!result.frames || result.frames.length === 0) {
+            console.error('No frames found in GIF, falling back to static image');
+            setVideoFrames([]);
+            setFrameDelays([]);
+            setFileType('image');
+            await loadImage(file);
+            return;
+          }
+
+          const { frames, delays, width, height } = result;
+          setAspectType(getAspectType(width, height));
+
+          // Limit frames
+          const maxFrames = 100;
+          const framesToUse = frames.slice(0, maxFrames);
+          const delaysToUse = delays.slice(0, maxFrames);
+
+          setVideoFrames(framesToUse);
+          setFrameDelays(delaysToUse);
+          if (framesToUse.length > 0) {
+            setOriginalImage(framesToUse[0]);
+          }
+
+          setProgress(100);
+        } catch (error) {
+          console.error('GIF loading error:', error);
+          // Fallback to static image
+          setVideoFrames([]);
+          setFrameDelays([]);
+          setFileType('image');
+          await loadImage(file);
+        }
+      };
+
+      // Load image
+      const loadImage = (file) => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0);
+            const imageData = ctx.getImageData(0, 0, img.width, img.height);
+            setOriginalImage(imageData);
+            setAspectType(getAspectType(img.width, img.height));
+            setFrameDelays([]); // Reset for static images
+            resolve();
+          };
+          img.onerror = reject;
+          img.src = URL.createObjectURL(file);
+        });
+      };
+
+      // Load video (first 5 seconds)
+      const loadVideo = (file) => {
+        return new Promise((resolve, reject) => {
+          const video = document.createElement('video');
+          video.muted = true;
+          video.preload = 'auto';
+
+          video.onloadedmetadata = async () => {
+            const duration = Math.min(video.duration, 5); // Max 5 seconds
+            const fps = 10;
+            const frameCount = Math.floor(duration * fps);
+            const frames = [];
+
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const ctx = canvas.getContext('2d');
+
+            setAspectType(getAspectType(video.videoWidth, video.videoHeight));
+
+            for (let i = 0; i < frameCount; i++) {
+              const time = i / fps;
+              video.currentTime = time;
+              await new Promise(r => video.onseeked = r);
+
+              ctx.drawImage(video, 0, 0);
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              frames.push(imageData);
+
+              setProgress((i / frameCount) * 100);
+            }
+
+            setVideoFrames(frames);
+            setFrameDelays([]); // Videos use gifFps for playback
+            if (frames.length > 0) {
+              setOriginalImage(frames[0]);
+            }
+            resolve();
+          };
+
+          video.onerror = reject;
+          video.src = URL.createObjectURL(file);
+        });
+      };
+
+      // Convert
+      const handleConvert = async () => {
+        if (!originalImage && videoFrames.length === 0) return;
+
+        setLoading(true);
+        setLoadingText(t('converting'));
+        setProgress(0);
+
+        const divisor = getColorDivisor();
+
+        // Wait for next tick to allow UI update
+        await new Promise(r => setTimeout(r, 50));
+
+        try {
+          if (fileType === 'video' && videoFrames.length > 0) {
+            // Process video frames
+            const processed = [];
+            for (let i = 0; i < videoFrames.length; i++) {
+              const result = pixelateImage(
+                videoFrames[i],
+                dotSize,
+                divisor,
+                brightness,
+                contrast,
+                saturation,
+                hueShift
+              );
+              processed.push(result);
+              setProgress((i / videoFrames.length) * 100);
+              await new Promise(r => setTimeout(r, 0));
+            }
+            setProcessedFrames(processed);
+            setProcessedImage(processed[0]);
+          } else if (originalImage) {
+            // Process single image
+            const result = pixelateImage(
+              originalImage,
+              dotSize,
+              divisor,
+              brightness,
+              contrast,
+              saturation,
+              hueShift
+            );
+            setProcessedImage(result);
+          }
+
+          setShowAfter(true);
+          setCurrentFrame(0);
+        } catch (error) {
+          console.error('Convert error:', error);
+        }
+
+        setLoading(false);
+      };
+
+      // Save PNG (with transparency support)
+      const handleSave = () => {
+        if (!processedImage) return;
+
+        // Get output size
+        const sizeType = fileType === 'video' ? 'gif' : 'image';
+        const [targetW, targetH] = OUTPUT_SIZES[sizeType][aspectType][outputSize];
+
+        // Resize
+        const resized = resizeWithCenterCrop(processedImage, targetW, targetH);
+
+        // Create canvas and download (preserve transparency)
+        const canvas = document.createElement('canvas');
+        canvas.width = targetW;
+        canvas.height = targetH;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        ctx.clearRect(0, 0, targetW, targetH); // Ensure transparent background
+        ctx.putImageData(resized, 0, 0);
+
+        const link = document.createElement('a');
+        link.download = 'dotchange_' + Date.now() + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      };
+
+      // Save GIF using canvas-based encoding (no worker dependency)
+      const handleSaveGif = async () => {
+        if (processedFrames.length === 0) return;
+
+        setLoading(true);
+        setLoadingText(t('generatingGif'));
+        setProgress(0);
+
+        const [targetW, targetH] = OUTPUT_SIZES.gif[aspectType][outputSize];
+        const framesToUse = Math.min(processedFrames.length, gifDuration * gifFps);
+        const frameDelay = Math.round(1000 / gifFps);
+
+        // Check if any frame has transparency
+        let hasTransparency = false;
+        for (let i = 0; i < Math.min(framesToUse, 5); i++) {
+          const frame = processedFrames[i];
+          for (let j = 3; j < frame.data.length; j += 4) {
+            if (frame.data[j] < 255) {
+              hasTransparency = true;
+              break;
+            }
+          }
+          if (hasTransparency) break;
+        }
+
+        try {
+          // Use magenta (0xFF00FF) as transparent color for GIF
+          const transparentColor = 0xFF00FF;
+          const canvasFrames = [];
+          for (let i = 0; i < framesToUse; i++) {
+            const resized = resizeWithCenterCrop(processedFrames[i], targetW, targetH);
+            const canvas = document.createElement('canvas');
+            canvas.width = targetW;
+            canvas.height = targetH;
+            const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+            if (hasTransparency) {
+              // Replace transparent pixels with magenta for GIF transparency
+              const data = resized.data;
+              for (let j = 0; j < data.length; j += 4) {
+                if (data[j + 3] < 128) {
+                  data[j] = 0xFF;     // R
+                  data[j + 1] = 0x00; // G
+                  data[j + 2] = 0xFF; // B
+                  data[j + 3] = 255;  // A (opaque for GIF encoding)
+                }
+              }
+            }
+
+            ctx.clearRect(0, 0, targetW, targetH);
+            ctx.putImageData(resized, 0, 0);
+            canvasFrames.push(canvas);
+            setProgress((i / framesToUse) * 30);
+          }
+
+          // Try to fetch worker script and create blob URL
+          let workerUrl = null;
+          try {
+            const workerResponse = await fetch('https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js');
+            if (workerResponse.ok) {
+              const workerBlob = await workerResponse.blob();
+              workerUrl = URL.createObjectURL(workerBlob);
+            }
+          } catch (e) {
+            console.warn('Could not fetch GIF worker, using direct URL');
+          }
+
+          const gifOptions = {
+            workers: 2,
+            quality: 10,
+            width: targetW,
+            height: targetH
+          };
+
+          // Add transparency support if the source has transparent pixels
+          if (hasTransparency) {
+            gifOptions.transparent = transparentColor;
+          }
+
+          // Use blob URL if available, otherwise fall back to direct URL
+          if (workerUrl) {
+            gifOptions.workerScript = workerUrl;
+          } else {
+            gifOptions.workerScript = 'https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js';
+          }
+
+          const gif = new GIF(gifOptions);
+
+          canvasFrames.forEach((canvas, i) => {
+            gif.addFrame(canvas, { delay: frameDelay, copy: true });
+            setProgress(30 + (i / canvasFrames.length) * 20);
+          });
+
+          gif.on('progress', (p) => setProgress(50 + p * 50));
+
+          gif.on('finished', (blob) => {
+            // Clean up worker URL if we created one
+            if (workerUrl) {
+              URL.revokeObjectURL(workerUrl);
+            }
+
+            // Trigger download
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.style.display = 'none';
+            link.href = url;
+            link.download = 'dotchange_' + Date.now() + '.gif';
+            document.body.appendChild(link);
+            link.click();
+
+            // Cleanup
+            setTimeout(() => {
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+            }, 100);
+
+            setLoading(false);
+          });
+
+          gif.on('abort', () => {
+            console.error('GIF generation aborted');
+            if (workerUrl) {
+              URL.revokeObjectURL(workerUrl);
+            }
+            setLoading(false);
+          });
+
+          gif.render();
+        } catch (error) {
+          console.error('GIF generation error:', error);
+          alert('GIF generation failed: ' + error.message);
+          setLoading(false);
+        }
+      };
+
+      // Get preview image data URL
+      const getPreviewUrl = () => {
+        let imageData;
+
+        if (fileType === 'video') {
+          const frames = showAfter ? processedFrames : videoFrames;
+          if (frames.length === 0) return null;
+          imageData = frames[currentFrame % frames.length];
+        } else {
+          imageData = showAfter ? processedImage : originalImage;
+        }
+
+        if (!imageData) return null;
+
+        const canvas = document.createElement('canvas');
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
+        const ctx = canvas.getContext('2d');
+        ctx.putImageData(imageData, 0, 0);
+        return canvas.toDataURL();
+      };
+
+      // OpenCV loading screen
+      if (!cvLoaded) {
+        return (
+          <div className="opencv-loading">
+            <h2>DotChange Web</h2>
+            <div className="loading-spinner"></div>
+            <p style={{ marginTop: 20, color: '#888' }}>Loading OpenCV.js...</p>
+          </div>
+        );
+      }
+
+      const previewUrl = getPreviewUrl();
+      const hasFile = originalImage || videoFrames.length > 0;
+      const hasProcessed = processedImage || processedFrames.length > 0;
+
+      return (
+        <>
+          <div className="bg-grid"></div>
+
+          <div className="scale-wrapper">
+            {/* Header - sticky */}
+            <header className="header">
+              <div className="logo">
+                <div className="logo-icon">ef</div>
+                <span className="logo-text">{t('title')}</span>
+              </div>
+              <select
+                className="lang-select"
+                value={lang}
+                onChange={(e) => setLang(e.target.value)}
+              >
+                <option value="ja">日本語</option>
+                <option value="en">English</option>
+                <option value="zh_cn">简体中文</option>
+                <option value="zh_tw">繁體中文</option>
+                <option value="ko">한국어</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="pt">Português</option>
+              </select>
+            </header>
+
+            {/* App container - fills remaining height */}
+            <div className="app-container">
+            {/* Main content */}
+            <div className="main-content">
+              {/* Control panel */}
+              <div className="control-panel">
+                {/* File select */}
+                <div className="section section-full">
+                  <button
+                    className="btn btn-secondary btn-full"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {t('selectFile')}
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".jpg,.jpeg,.png,.bmp,.webp,.gif,.mp4,.mov,.webm"
+                    style={{ display: 'none' }}
+                    onChange={handleDrop}
+                  />
+                  {file && (
+                    <div className="file-info">
+                      {file.name}
+                      {fileType === 'video' && <div style={{ marginTop: 1, color: 'var(--neon-purple)', fontSize: '7px' }}>{t('videoNote')}</div>}
+                    </div>
+                  )}
+                </div>
+
+                {/* Dot size */}
+                <div className="section">
+                  <div className="section-title">{t('dotSize')}</div>
+                  <div className="slider-container">
+                    <div className="slider-label">
+                      <span></span>
+                      <span className="slider-value">{dotSize}px</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="1"
+                      max="50"
+                      value={dotSize}
+                      onChange={(e) => setDotSize(Number(e.target.value))}
+                    />
+                  </div>
+                </div>
+
+                {/* Color reduction */}
+                <div className="section">
+                  <div className="section-title">{t('colorReduction')}</div>
+                  <div className="select-group">
+                    {['few', 'standard', 'many'].map(level => (
+                      <button
+                        key={level}
+                        className={`select-btn ${colorLevel === level ? 'active' : ''}`}
+                        onClick={() => setColorLevel(level)}
+                      >
+                        {t(`color${level.charAt(0).toUpperCase() + level.slice(1)}`)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Color adjust */}
+                <div className="section section-full">
+                  <div className="section-title">{t('colorAdjust')}</div>
+                  <div className="preset-grid">
+                    {Object.keys(COLOR_PRESETS).map(preset => (
+                      <button
+                        key={preset}
+                        className={`select-btn preset-btn ${colorPreset === preset ? 'active' : ''}`}
+                        onClick={() => setColorPreset(preset)}
+                      >
+                        {t(preset)}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Sliders */}
+                  <div className="slider-container">
+                    <div className="slider-label">
+                      <span>{t('brightness')}</span>
+                      <span className="slider-value">{brightness}</span>
+                    </div>
+                    <input type="range" min="-50" max="50" value={brightness}
+                      onChange={(e) => { setBrightness(Number(e.target.value)); setColorPreset('custom'); }} />
+                  </div>
+                  <div className="slider-container">
+                    <div className="slider-label">
+                      <span>{t('contrast')}</span>
+                      <span className="slider-value">{contrast}</span>
+                    </div>
+                    <input type="range" min="-50" max="50" value={contrast}
+                      onChange={(e) => { setContrast(Number(e.target.value)); setColorPreset('custom'); }} />
+                  </div>
+                  <div className="slider-container">
+                    <div className="slider-label">
+                      <span>{t('saturation')}</span>
+                      <span className="slider-value">{saturation}</span>
+                    </div>
+                    <input type="range" min="-100" max="100" value={saturation}
+                      onChange={(e) => { setSaturation(Number(e.target.value)); setColorPreset('custom'); }} />
+                  </div>
+                  <div className="slider-container">
+                    <div className="slider-label">
+                      <span>{t('hueShift')}</span>
+                      <span className="slider-value">{hueShift}°</span>
+                    </div>
+                    <input type="range" min="-180" max="180" value={hueShift}
+                      onChange={(e) => { setHueShift(Number(e.target.value)); setColorPreset('custom'); }} />
+                  </div>
+                </div>
+
+                {/* Output size */}
+                <div className="section">
+                  <div className="section-title">{t('outputSize')}</div>
+                  <div className="select-group">
+                    {['large', 'medium', 'small'].map(size => (
+                      <button
+                        key={size}
+                        className={`select-btn ${outputSize === size ? 'active' : ''}`}
+                        onClick={() => setOutputSize(size)}
+                      >
+                        {t(`size${size.charAt(0).toUpperCase() + size.slice(1)}`)}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* GIF options (for video) */}
+                {fileType === 'video' && (
+                  <div className="gif-options">
+                    <div className="gif-options-title">
+                      <span>🎬</span> {t('gifOptions')}
+                    </div>
+                    <div className="option-row">
+                      <span className="option-label">{t('duration')}</span>
+                      <div className="option-select">
+                        {[1, 3, 5].map(sec => (
+                          <button
+                            key={sec}
+                            className={`option-btn ${gifDuration === sec ? 'active' : ''}`}
+                            onClick={() => setGifDuration(sec)}
+                          >
+                            {sec}{t('sec')}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="option-row">
+                      <span className="option-label">{t('fps')}</span>
+                      <div className="option-select">
+                        {[8, 10].map(fps => (
+                          <button
+                            key={fps}
+                            className={`option-btn ${gifFps === fps ? 'active' : ''}`}
+                            onClick={() => setGifFps(fps)}
+                          >
+                            {fps}fps
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Action buttons */}
+                <div className="action-buttons section-full">
+                  <button
+                    className="btn btn-primary"
+                    disabled={!hasFile}
+                    onClick={handleConvert}
+                  >
+                    {t('convert')}
+                  </button>
+                  <button
+                    className="btn btn-success"
+                    disabled={!hasProcessed}
+                    onClick={handleSave}
+                  >
+                    {t('save')}
+                  </button>
+                </div>
+
+                {fileType === 'video' && processedFrames.length > 0 && (
+                  <button
+                    className="btn btn-pink btn-full section-full"
+                    style={{ marginTop: 2 }}
+                    onClick={handleSaveGif}
+                  >
+                    {t('saveGif')}
+                  </button>
+                )}
+              </div>
+
+              {/* Preview area */}
+              <div className="preview-area">
+                {/* Before/After toggle */}
+                {hasFile && (
+                  <div className="preview-toggle">
+                    <button
+                      className={`toggle-btn ${!showAfter ? 'active' : ''}`}
+                      onClick={() => { setShowAfter(false); setCurrentFrame(0); }}
+                    >
+                      {t('before')}
+                    </button>
+                    <button
+                      className={`toggle-btn ${showAfter ? 'active' : ''}`}
+                      disabled={!hasProcessed}
+                      onClick={() => { setShowAfter(true); setCurrentFrame(0); }}
+                    >
+                      {t('after')}
+                    </button>
+                  </div>
+                )}
+
+                {/* Drop zone / Preview */}
+                <div
+                  className={`drop-zone ${hasFile ? 'has-file' : ''}`}
+                  onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }}
+                  onDragLeave={(e) => e.currentTarget.classList.remove('drag-over')}
+                  onDrop={(e) => { e.currentTarget.classList.remove('drag-over'); handleDrop(e); }}
+                  onClick={() => !hasFile && fileInputRef.current?.click()}
+                >
+                  {previewUrl ? (
+                    <img src={previewUrl} className="preview-image" alt="Preview" />
+                  ) : (
+                    <div className="drop-hint">
+                      <div className="drop-hint-icon">📁</div>
+                      <div className="drop-hint-text">{t('dropHint')}</div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Video controls */}
+                {fileType === 'video' && hasFile && (
+                  <div className="video-controls">
+                    <button
+                      className="play-btn"
+                      onClick={() => setIsPlaying(!isPlaying)}
+                    >
+                      {isPlaying ? '⏸' : '▶'}
+                    </button>
+                    <input
+                      type="range"
+                      className="seek-bar"
+                      min="0"
+                      max={(showAfter ? processedFrames : videoFrames).length - 1 || 0}
+                      value={currentFrame}
+                      onChange={(e) => { setCurrentFrame(Number(e.target.value)); setIsPlaying(false); }}
+                    />
+                    <span className="time-display">
+                      {currentFrame + 1} / {(showAfter ? processedFrames : videoFrames).length}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer space for future content */}
+            <div className="footer-space">
+              {/* 製品版リンクや宣伝動画をここに追加予定 */}
+            </div>
+          </div>
+          </div>
+
+          {/* Loading overlay */}
+          {loading && (
+            <div className="loading-overlay">
+              <div className="loading-spinner"></div>
+              <div className="loading-text">{loadingText}</div>
+              <div className="loading-progress">
+                <div className="loading-progress-bar" style={{ width: `${progress}%` }}></div>
+              </div>
+            </div>
+          )}
+        </>
+      );
+    }
+
+    // Render
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
