@@ -568,6 +568,57 @@
       cursor: grabbing;
     }
 
+    /* Mobile value control - button style */
+    .mobile-value-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .value-btn {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(0,212,255,0.3);
+      border-radius: 6px;
+      background: var(--bg-card);
+      color: var(--neon-primary);
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      touch-action: manipulation;
+      transition: all 0.15s;
+    }
+
+    .value-btn:active {
+      background: rgba(0,212,255,0.2);
+      transform: scale(0.95);
+    }
+
+    .value-btn.minus {
+      color: #ff6b6b;
+      border-color: rgba(255,107,107,0.3);
+    }
+
+    .value-btn.plus {
+      color: #51cf66;
+      border-color: rgba(81,207,102,0.3);
+    }
+
+    .value-display {
+      min-width: 50px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--neon-primary);
+      font-family: var(--font-en);
+    }
+
     /* Select / Dropdown - compact */
     .select-group {
       display: flex;
@@ -2096,7 +2147,90 @@
       const videoRef = useRef(null);
       const animationRef = useRef(null);
 
-      // Custom Slider Component - thumb-only interaction
+      // Mobile detection
+      const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+      useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+      }, []);
+
+      // Mobile Button Control Component
+      const MobileValueControl = ({ min, max, value, onChange, step = 1 }) => {
+        const intervalRef = useRef(null);
+        const timeoutRef = useRef(null);
+
+        const increment = () => {
+          onChange(Math.min(max, value + step));
+        };
+
+        const decrement = () => {
+          onChange(Math.max(min, value - step));
+        };
+
+        const startContinuous = (action) => {
+          // Clear any existing timers
+          stopContinuous();
+          // Start continuous after 500ms hold
+          timeoutRef.current = setTimeout(() => {
+            intervalRef.current = setInterval(() => {
+              action();
+            }, 80); // Fast repeat rate
+          }, 500);
+        };
+
+        const stopContinuous = () => {
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
+          }
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+          }
+        };
+
+        // Cleanup on unmount
+        useEffect(() => {
+          return () => stopContinuous();
+        }, []);
+
+        return (
+          <div className="mobile-value-control">
+            <button
+              className="value-btn minus"
+              onClick={decrement}
+              onTouchStart={() => startContinuous(decrement)}
+              onTouchEnd={stopContinuous}
+              onTouchCancel={stopContinuous}
+              onMouseDown={() => startContinuous(decrement)}
+              onMouseUp={stopContinuous}
+              onMouseLeave={stopContinuous}
+            >−</button>
+            <span className="value-display">{value}</span>
+            <button
+              className="value-btn plus"
+              onClick={increment}
+              onTouchStart={() => startContinuous(increment)}
+              onTouchEnd={stopContinuous}
+              onTouchCancel={stopContinuous}
+              onMouseDown={() => startContinuous(increment)}
+              onMouseUp={stopContinuous}
+              onMouseLeave={stopContinuous}
+            >+</button>
+          </div>
+        );
+      };
+
+      // Value Control - switches between slider (PC) and buttons (mobile)
+      const ValueControl = ({ min, max, value, onChange, step = 1 }) => {
+        if (isMobile) {
+          return <MobileValueControl min={min} max={max} value={value} onChange={onChange} step={step} />;
+        }
+        return <CustomSlider min={min} max={max} value={value} onChange={onChange} step={step} />;
+      };
+
+      // Custom Slider Component - thumb-only interaction (PC only)
       const CustomSlider = ({ min, max, value, onChange, step = 1 }) => {
         const trackRef = useRef(null);
         const isDragging = useRef(false);
@@ -2886,7 +3020,7 @@
                       <span></span>
                       <span className="slider-value">{dotSize}px</span>
                     </div>
-                    <CustomSlider
+                    <ValueControl
                       min={1}
                       max={50}
                       value={dotSize}
@@ -2932,7 +3066,7 @@
                       <span>{t('brightness')}</span>
                       <span className="slider-value">{brightness}</span>
                     </div>
-                    <CustomSlider min={-50} max={50} value={brightness}
+                    <ValueControl min={-50} max={50} value={brightness}
                       onChange={(v) => { setBrightness(v); setColorPreset('custom'); }} />
                   </div>
                   <div className="slider-container">
@@ -2940,7 +3074,7 @@
                       <span>{t('contrast')}</span>
                       <span className="slider-value">{contrast}</span>
                     </div>
-                    <CustomSlider min={-50} max={50} value={contrast}
+                    <ValueControl min={-50} max={50} value={contrast}
                       onChange={(v) => { setContrast(v); setColorPreset('custom'); }} />
                   </div>
                   <div className="slider-container">
@@ -2948,7 +3082,7 @@
                       <span>{t('saturation')}</span>
                       <span className="slider-value">{saturation}</span>
                     </div>
-                    <CustomSlider min={-100} max={100} value={saturation}
+                    <ValueControl min={-100} max={100} value={saturation}
                       onChange={(v) => { setSaturation(v); setColorPreset('custom'); }} />
                   </div>
                   <div className="slider-container">
@@ -2956,7 +3090,7 @@
                       <span>{t('hueShift')}</span>
                       <span className="slider-value">{hueShift}°</span>
                     </div>
-                    <CustomSlider min={-180} max={180} value={hueShift}
+                    <ValueControl min={-180} max={180} value={hueShift}
                       onChange={(v) => { setHueShift(v); setColorPreset('custom'); }} />
                   </div>
                 </div>
