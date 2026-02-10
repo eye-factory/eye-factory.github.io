@@ -522,37 +522,50 @@
       font-weight: 600;
     }
 
-    input[type="range"] {
+    /* Custom slider - thumb only interaction */
+    .custom-slider {
+      position: relative;
       width: 100%;
-      height: 3px;
-      -webkit-appearance: none;
+      height: 24px;
+      cursor: default;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .custom-slider-track {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 4px;
       background: var(--bg-card);
       border-radius: 2px;
-      outline: none;
-      cursor: default;
+      transform: translateY(-50%);
+      pointer-events: none;
     }
 
-    input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
+    .custom-slider-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--neon-primary), var(--neon-purple));
+      border-radius: 2px;
+      pointer-events: none;
+    }
+
+    .custom-slider-thumb {
+      position: absolute;
+      top: 50%;
       width: 20px;
       height: 20px;
       background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
       border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 6px rgba(0,212,255,0.6);
       cursor: grab;
-      box-shadow: 0 0 5px rgba(0,212,255,0.5);
+      pointer-events: none;
     }
 
-    input[type="range"]::-webkit-slider-thumb:active {
+    .custom-slider-thumb:active {
       cursor: grabbing;
-    }
-
-    input[type="range"]::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
-      background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
-      border-radius: 50%;
-      cursor: grab;
-      border: none;
     }
 
     /* Select / Dropdown - compact */
@@ -2049,6 +2062,7 @@
       const [processedFrames, setProcessedFrames] = useState([]);
       const [frameDelays, setFrameDelays] = useState([]); // GIF frame delays in ms
       const [isShortGif, setIsShortGif] = useState(false); // GIF is 1 second or less
+      const [adjustedGifData, setAdjustedGifData] = useState(null); // { frameIndices, delays } for output
       const [aspectType, setAspectType] = useState('landscape');
       const [imageAspectRatio, setImageAspectRatio] = useState(1); // width / height
 
@@ -2082,52 +2096,102 @@
       const videoRef = useRef(null);
       const animationRef = useRef(null);
 
-      // Thumb-only slider - state for tracking drag
-      const [sliderDragging, setSliderDragging] = useState(null); // slider id being dragged
+      // Custom Slider Component - thumb-only interaction
+      const CustomSlider = ({ min, max, value, onChange, step = 1 }) => {
+        const trackRef = useRef(null);
+        const isDragging = useRef(false);
 
-      // Check if touch/click is on thumb
-      const isOnThumb = (e, inputEl, value, min, max) => {
-        const rect = inputEl.getBoundingClientRect();
-        const thumbRadius = 16;
-        const trackWidth = rect.width;
-        const valuePercent = (value - min) / (max - min);
-        const thumbCenterX = valuePercent * trackWidth;
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clickX = clientX - rect.left;
-        return Math.abs(clickX - thumbCenterX) <= thumbRadius;
-      };
-
-      // Slider event handlers
-      const handleSliderStart = (e, sliderId, value, min, max) => {
-        const inputEl = e.target;
-        if (isOnThumb(e, inputEl, value, min, max)) {
-          setSliderDragging(sliderId);
-        } else {
-          e.preventDefault();
-          e.stopPropagation();
-        }
-      };
-
-      const handleSliderChange = (e, sliderId, setter) => {
-        if (sliderDragging === sliderId) {
-          setter(Number(e.target.value));
-        }
-      };
-
-      const handleSliderEnd = () => {
-        setSliderDragging(null);
-      };
-
-      // Add global touch/mouse up listener
-      useEffect(() => {
-        const endDrag = () => setSliderDragging(null);
-        window.addEventListener('mouseup', endDrag);
-        window.addEventListener('touchend', endDrag);
-        return () => {
-          window.removeEventListener('mouseup', endDrag);
-          window.removeEventListener('touchend', endDrag);
+        const getValueFromPosition = (clientX) => {
+          if (!trackRef.current) return value;
+          const rect = trackRef.current.getBoundingClientRect();
+          const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+          const rawValue = min + percent * (max - min);
+          return Math.round(rawValue / step) * step;
         };
-      }, []);
+
+        const isOnThumb = (clientX) => {
+          if (!trackRef.current) return false;
+          const rect = trackRef.current.getBoundingClientRect();
+          const thumbRadius = 18;
+          const percent = (value - min) / (max - min);
+          const thumbCenterX = rect.left + percent * rect.width;
+          return Math.abs(clientX - thumbCenterX) <= thumbRadius;
+        };
+
+        const handleStart = (clientX) => {
+          if (isOnThumb(clientX)) {
+            isDragging.current = true;
+          }
+        };
+
+        const handleMove = (clientX) => {
+          if (isDragging.current) {
+            const newValue = getValueFromPosition(clientX);
+            if (newValue !== value) {
+              onChange(newValue);
+            }
+          }
+        };
+
+        const handleEnd = () => {
+          isDragging.current = false;
+        };
+
+        // Mouse events
+        const onMouseDown = (e) => {
+          e.preventDefault();
+          handleStart(e.clientX);
+          if (isDragging.current) {
+            const onMouseMove = (e) => handleMove(e.clientX);
+            const onMouseUp = () => {
+              handleEnd();
+              window.removeEventListener('mousemove', onMouseMove);
+              window.removeEventListener('mouseup', onMouseUp);
+            };
+            window.addEventListener('mousemove', onMouseMove);
+            window.addEventListener('mouseup', onMouseUp);
+          }
+        };
+
+        // Touch events
+        const onTouchStart = (e) => {
+          const touch = e.touches[0];
+          handleStart(touch.clientX);
+          if (isDragging.current) {
+            e.preventDefault();
+          }
+        };
+
+        const onTouchMove = (e) => {
+          if (isDragging.current) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            handleMove(touch.clientX);
+          }
+        };
+
+        const onTouchEnd = () => {
+          handleEnd();
+        };
+
+        const percent = ((value - min) / (max - min)) * 100;
+
+        return (
+          <div
+            ref={trackRef}
+            className="custom-slider"
+            onMouseDown={onMouseDown}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
+            <div className="custom-slider-track">
+              <div className="custom-slider-fill" style={{ width: `${percent}%` }} />
+            </div>
+            <div className="custom-slider-thumb" style={{ left: `${percent}%` }} />
+          </div>
+        );
+      };
 
       // OpenCV ready check
       useEffect(() => {
@@ -2226,6 +2290,7 @@
         setProcessedImage(null);
         setProcessedFrames([]);
         setIsShortGif(false);
+        setAdjustedGifData(null);
         setShowAfter(false);
 
         const ext = file.name.toLowerCase().split('.').pop();
@@ -2296,6 +2361,27 @@
 
           const framesToUse = frames.slice(0, frameLimit);
           const delaysToUse = delays.slice(0, frameLimit);
+
+          // For short GIFs, calculate adjusted frames to handle browser's 20ms minimum
+          let adjustedData = null;
+          if (shortGif) {
+            const MIN_DELAY = 20; // Browser minimum
+            const adjustedIndices = [];
+            const adjustedDelays = [];
+            let accumulatedDelay = 0;
+
+            for (let i = 0; i < delaysToUse.length; i++) {
+              accumulatedDelay += delaysToUse[i] || 10;
+              // Only include frame when accumulated delay reaches MIN_DELAY
+              if (accumulatedDelay >= MIN_DELAY || i === delaysToUse.length - 1) {
+                adjustedIndices.push(i);
+                adjustedDelays.push(Math.max(MIN_DELAY, accumulatedDelay));
+                accumulatedDelay = 0;
+              }
+            }
+            adjustedData = { frameIndices: adjustedIndices, delays: adjustedDelays };
+          }
+          setAdjustedGifData(adjustedData);
 
           // Resize frames if needed (cap at MAX_PROCESS_SIZE)
           const resizedFrames = [];
@@ -2532,20 +2618,33 @@
         const firstFrame = videoFrames[0];
         const [targetW, targetH] = calculateOutputSize(firstFrame.width, firstFrame.height, outputSize);
 
-        // For short GIFs (1 second or less), use all frames with original timing
-        // For longer GIFs, use selected fps and duration
-        const useOriginalTiming = isShortGif && frameDelays.length > 0;
-        const frameCount = useOriginalTiming
-          ? videoFrames.length
-          : Math.min(videoFrames.length, gifDuration * gifFps);
-        const defaultFrameDelay = Math.round(1000 / gifFps);
+        // For short GIFs with sub-20ms delays, use adjusted frame indices
+        // This skips frames to maintain perceived speed within browser's 20ms minimum
+        const useAdjusted = isShortGif && adjustedGifData;
+        const useOriginalTiming = isShortGif && !useAdjusted && frameDelays.length > 0;
 
+        // Determine which frames to process
+        let framesToProcess;
+        let outputDelays;
+        if (useAdjusted) {
+          framesToProcess = adjustedGifData.frameIndices;
+          outputDelays = adjustedGifData.delays;
+        } else if (useOriginalTiming) {
+          framesToProcess = videoFrames.map((_, i) => i);
+          outputDelays = frameDelays;
+        } else {
+          const count = Math.min(videoFrames.length, gifDuration * gifFps);
+          framesToProcess = Array.from({ length: count }, (_, i) => i);
+          outputDelays = null; // Use defaultFrameDelay
+        }
+
+        const defaultFrameDelay = Math.round(1000 / gifFps);
         const divisor = getColorDivisor();
 
         // Check if any frame has transparency
         let hasTransparency = false;
-        for (let i = 0; i < Math.min(frameCount, 5); i++) {
-          const frame = videoFrames[i];
+        for (let i = 0; i < Math.min(framesToProcess.length, 5); i++) {
+          const frame = videoFrames[framesToProcess[i]];
           for (let j = 3; j < frame.data.length; j += 4) {
             if (frame.data[j] < 255) {
               hasTransparency = true;
@@ -2559,10 +2658,12 @@
           // Use magenta (0xFF00FF) as transparent color for GIF
           const transparentColor = 0xFF00FF;
           const canvasFrames = [];
+          const frameDelaysForGif = [];
 
-          for (let i = 0; i < frameCount; i++) {
+          for (let i = 0; i < framesToProcess.length; i++) {
+            const frameIndex = framesToProcess[i];
             // Resize original to target size
-            const resizedOriginal = resizeWithAspectRatio(videoFrames[i], targetW, targetH);
+            const resizedOriginal = resizeWithAspectRatio(videoFrames[frameIndex], targetW, targetH);
 
             // Process at full output size
             const processed = pixelateImage(
@@ -2596,7 +2697,8 @@
             ctx.clearRect(0, 0, targetW, targetH);
             ctx.putImageData(processed, 0, 0);
             canvasFrames.push(canvas);
-            setProgress((i / frameCount) * 30);
+            frameDelaysForGif.push(outputDelays ? outputDelays[i] : defaultFrameDelay);
+            setProgress((i / framesToProcess.length) * 30);
             await new Promise(r => setTimeout(r, 0)); // Allow UI update
           }
 
@@ -2634,8 +2736,8 @@
           const gif = new GIF(gifOptions);
 
           canvasFrames.forEach((canvas, i) => {
-            // Use original frame delay for short GIFs, otherwise use selected FPS
-            const delay = useOriginalTiming ? (frameDelays[i] || 100) : defaultFrameDelay;
+            // Use pre-calculated delay for each frame
+            const delay = frameDelaysForGif[i];
             gif.addFrame(canvas, { delay: delay, copy: true });
             setProgress(30 + (i / canvasFrames.length) * 20);
           });
@@ -2784,14 +2886,11 @@
                       <span></span>
                       <span className="slider-value">{dotSize}px</span>
                     </div>
-                    <input
-                      type="range"
+                    <CustomSlider
                       min={1}
                       max={50}
                       value={dotSize}
-                      onMouseDown={(e) => handleSliderStart(e, 'dotSize', dotSize, 1, 50)}
-                      onTouchStart={(e) => handleSliderStart(e, 'dotSize', dotSize, 1, 50)}
-                      onChange={(e) => handleSliderChange(e, 'dotSize', setDotSize)}
+                      onChange={setDotSize}
                     />
                   </div>
                 </div>
@@ -2833,40 +2932,32 @@
                       <span>{t('brightness')}</span>
                       <span className="slider-value">{brightness}</span>
                     </div>
-                    <input type="range" min={-50} max={50} value={brightness}
-                      onMouseDown={(e) => handleSliderStart(e, 'brightness', brightness, -50, 50)}
-                      onTouchStart={(e) => handleSliderStart(e, 'brightness', brightness, -50, 50)}
-                      onChange={(e) => { if (sliderDragging === 'brightness') { setBrightness(Number(e.target.value)); setColorPreset('custom'); }}} />
+                    <CustomSlider min={-50} max={50} value={brightness}
+                      onChange={(v) => { setBrightness(v); setColorPreset('custom'); }} />
                   </div>
                   <div className="slider-container">
                     <div className="slider-label">
                       <span>{t('contrast')}</span>
                       <span className="slider-value">{contrast}</span>
                     </div>
-                    <input type="range" min={-50} max={50} value={contrast}
-                      onMouseDown={(e) => handleSliderStart(e, 'contrast', contrast, -50, 50)}
-                      onTouchStart={(e) => handleSliderStart(e, 'contrast', contrast, -50, 50)}
-                      onChange={(e) => { if (sliderDragging === 'contrast') { setContrast(Number(e.target.value)); setColorPreset('custom'); }}} />
+                    <CustomSlider min={-50} max={50} value={contrast}
+                      onChange={(v) => { setContrast(v); setColorPreset('custom'); }} />
                   </div>
                   <div className="slider-container">
                     <div className="slider-label">
                       <span>{t('saturation')}</span>
                       <span className="slider-value">{saturation}</span>
                     </div>
-                    <input type="range" min={-100} max={100} value={saturation}
-                      onMouseDown={(e) => handleSliderStart(e, 'saturation', saturation, -100, 100)}
-                      onTouchStart={(e) => handleSliderStart(e, 'saturation', saturation, -100, 100)}
-                      onChange={(e) => { if (sliderDragging === 'saturation') { setSaturation(Number(e.target.value)); setColorPreset('custom'); }}} />
+                    <CustomSlider min={-100} max={100} value={saturation}
+                      onChange={(v) => { setSaturation(v); setColorPreset('custom'); }} />
                   </div>
                   <div className="slider-container">
                     <div className="slider-label">
                       <span>{t('hueShift')}</span>
                       <span className="slider-value">{hueShift}°</span>
                     </div>
-                    <input type="range" min={-180} max={180} value={hueShift}
-                      onMouseDown={(e) => handleSliderStart(e, 'hue', hueShift, -180, 180)}
-                      onTouchStart={(e) => handleSliderStart(e, 'hue', hueShift, -180, 180)}
-                      onChange={(e) => { if (sliderDragging === 'hue') { setHueShift(Number(e.target.value)); setColorPreset('custom'); }}} />
+                    <CustomSlider min={-180} max={180} value={hueShift}
+                      onChange={(v) => { setHueShift(v); setColorPreset('custom'); }} />
                   </div>
                 </div>
 
