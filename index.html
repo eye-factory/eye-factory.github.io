@@ -309,22 +309,31 @@ nav a:hover {
   color: var(--neon-primary);
   text-shadow: 0 0 10px var(--neon-primary);
 }
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.5), 0 0 45px rgba(255, 215, 0, 0.3);
+  }
+}
 .support-btn {
   display: none;
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background: linear-gradient(135deg, #ff6b9d, #c44569);
-  border: 1px solid rgba(255, 107, 157, 0.5);
+  background: linear-gradient(135deg, #ffd700, #ff8c00);
+  border: 1px solid rgba(255, 215, 0, 0.6);
   border-radius: 20px;
-  color: #fff !important;
+  color: #000 !important;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   text-transform: none;
   letter-spacing: 0.02em;
-  transition: var(--transition);
-  box-shadow: 0 0 10px rgba(255, 107, 157, 0.3);
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.2);
+  animation: neonPulse 2s ease-in-out infinite;
 }
 [data-lang="ja"] .support-btn[data-i18n="ja"],
 [data-lang="en"] .support-btn[data-i18n="en"],
@@ -338,10 +347,10 @@ nav a:hover {
   display: inline-flex;
 }
 .support-btn:hover {
-  background: linear-gradient(135deg, #ff85ad, #d45a79);
-  box-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
-  transform: translateY(-1px);
-  text-shadow: none;
+  background: linear-gradient(135deg, #ffe44d, #ffaa00);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.4);
+  transform: translateY(-2px) scale(1.05);
+  animation: none;
 }
 
 /* --- Hero --- */
@@ -817,15 +826,15 @@ footer {
       <a href="#about" class="nav-link-text">
         <span data-i18n="ja">概要</span><span data-i18n="en">About</span><span data-i18n="zh-CN">关于</span><span data-i18n="zh-TW">關於</span><span data-i18n="ko">소개</span><span data-i18n="es">Acerca de</span><span data-i18n="fr">À propos</span><span data-i18n="de">Über uns</span><span data-i18n="pt">Sobre</span>
       </a>
-      <a href="https://ofuse.me/eyefactory" class="support-btn" data-i18n="ja" target="_blank" rel="noopener">☕ 開発支援</a>
-      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="en" target="_blank" rel="noopener">☕ Support</a>
-      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="zh-CN" target="_blank" rel="noopener">☕ 支持</a>
-      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="zh-TW" target="_blank" rel="noopener">☕ 支持</a>
-      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="ko" target="_blank" rel="noopener">☕ 후원</a>
-      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="es" target="_blank" rel="noopener">☕ Apoyar</a>
-      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="fr" target="_blank" rel="noopener">☕ Soutenir</a>
-      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="de" target="_blank" rel="noopener">☕ Unterstützen</a>
-      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="pt" target="_blank" rel="noopener">☕ Apoiar</a>
+      <a href="https://ofuse.me/eyefactory" class="support-btn" data-i18n="ja" target="_blank" rel="noopener">🪙 開発支援</a>
+      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="en" target="_blank" rel="noopener">🪙 Support</a>
+      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="zh-CN" target="_blank" rel="noopener">🪙 支持</a>
+      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="zh-TW" target="_blank" rel="noopener">🪙 支持</a>
+      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="ko" target="_blank" rel="noopener">🪙 후원</a>
+      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="es" target="_blank" rel="noopener">🪙 Apoyar</a>
+      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="fr" target="_blank" rel="noopener">🪙 Soutenir</a>
+      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="de" target="_blank" rel="noopener">🪙 Unterstützen</a>
+      <a href="https://ko-fi.com/eyefactory" class="support-btn" data-i18n="pt" target="_blank" rel="noopener">🪙 Apoiar</a>
       <div class="lang-switcher">
         <button class="lang-btn" onclick="toggleLangMenu()" aria-label="Language">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
