@@ -2082,53 +2082,51 @@
       const videoRef = useRef(null);
       const animationRef = useRef(null);
 
-      // Thumb-only slider component (prevents track click changes)
-      const ThumbSlider = useCallback(({ min, max, value, onChange, ...props }) => {
-        const isDragging = useRef(false);
-        const startValue = useRef(value);
+      // Thumb-only slider - state for tracking drag
+      const [sliderDragging, setSliderDragging] = useState(null); // slider id being dragged
 
-        const handlePointerDown = (e) => {
-          const rect = e.target.getBoundingClientRect();
-          const thumbWidth = 24;
-          const trackWidth = rect.width;
-          const valuePercent = (value - min) / (max - min);
-          const thumbCenter = valuePercent * trackWidth;
-          const clickX = e.clientX - rect.left;
+      // Check if touch/click is on thumb
+      const isOnThumb = (e, inputEl, value, min, max) => {
+        const rect = inputEl.getBoundingClientRect();
+        const thumbRadius = 16;
+        const trackWidth = rect.width;
+        const valuePercent = (value - min) / (max - min);
+        const thumbCenterX = valuePercent * trackWidth;
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clickX = clientX - rect.left;
+        return Math.abs(clickX - thumbCenterX) <= thumbRadius;
+      };
 
-          if (Math.abs(clickX - thumbCenter) <= thumbWidth) {
-            isDragging.current = true;
-            startValue.current = value;
-          } else {
-            isDragging.current = false;
-            startValue.current = value;
-            e.preventDefault();
-          }
+      // Slider event handlers
+      const handleSliderStart = (e, sliderId, value, min, max) => {
+        const inputEl = e.target;
+        if (isOnThumb(e, inputEl, value, min, max)) {
+          setSliderDragging(sliderId);
+        } else {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      };
+
+      const handleSliderChange = (e, sliderId, setter) => {
+        if (sliderDragging === sliderId) {
+          setter(Number(e.target.value));
+        }
+      };
+
+      const handleSliderEnd = () => {
+        setSliderDragging(null);
+      };
+
+      // Add global touch/mouse up listener
+      useEffect(() => {
+        const endDrag = () => setSliderDragging(null);
+        window.addEventListener('mouseup', endDrag);
+        window.addEventListener('touchend', endDrag);
+        return () => {
+          window.removeEventListener('mouseup', endDrag);
+          window.removeEventListener('touchend', endDrag);
         };
-
-        const handleChange = (e) => {
-          if (isDragging.current || Math.abs(Number(e.target.value) - startValue.current) > (max - min) * 0.05) {
-            isDragging.current = true;
-            onChange(e);
-          }
-        };
-
-        const handlePointerUp = () => {
-          isDragging.current = false;
-        };
-
-        return (
-          <input
-            type="range"
-            min={min}
-            max={max}
-            value={value}
-            onPointerDown={handlePointerDown}
-            onChange={handleChange}
-            onPointerUp={handlePointerUp}
-            onPointerLeave={handlePointerUp}
-            {...props}
-          />
-        );
       }, []);
 
       // OpenCV ready check
@@ -2164,20 +2162,33 @@
           frameIndex = (frameIndex + 1) % frames.length;
           setCurrentFrame(frameIndex);
 
-          // After preview: always use selected gifFps (matches saved output)
-          // Before preview: use original frame delays if available
-          const delay = showAfter
-            ? (1000 / gifFps)
-            : (frameDelays.length > 0 ? (frameDelays[frameIndex] || 100) : (1000 / gifFps));
+          // For short GIFs (1 sec or less): always use original frame delays
+          // For longer content: before uses original delays, after uses selected gifFps
+          let delay;
+          if (isShortGif && frameDelays.length > 0) {
+            // Short GIF - always use original timing
+            delay = frameDelays[frameIndex] || 100;
+          } else if (showAfter) {
+            // After preview for non-short content - use selected FPS
+            delay = 1000 / gifFps;
+          } else {
+            // Before preview - use original delays if available
+            delay = frameDelays.length > 0 ? (frameDelays[frameIndex] || 100) : (1000 / gifFps);
+          }
 
           animationId = setTimeout(animate, delay);
           animationRef.current = animationId;
         };
 
-        // Initial delay - use selected FPS for after preview
-        const initialDelay = showAfter
-          ? (1000 / gifFps)
-          : (frameDelays.length > 0 ? (frameDelays[frameIndex] || 100) : (1000 / gifFps));
+        // Initial delay
+        let initialDelay;
+        if (isShortGif && frameDelays.length > 0) {
+          initialDelay = frameDelays[currentFrame] || 100;
+        } else if (showAfter) {
+          initialDelay = 1000 / gifFps;
+        } else {
+          initialDelay = frameDelays.length > 0 ? (frameDelays[currentFrame] || 100) : (1000 / gifFps);
+        }
 
         animationId = setTimeout(animate, initialDelay);
         animationRef.current = animationId;
@@ -2186,7 +2197,7 @@
           if (animationId) clearTimeout(animationId);
           if (animationRef.current) clearTimeout(animationRef.current);
         };
-      }, [isPlaying, showAfter, videoFrames, processedFrames, frameDelays, gifFps]);
+      }, [isPlaying, showAfter, videoFrames, processedFrames, frameDelays, gifFps, isShortGif]);
 
       // Get color divisor
       const getColorDivisor = () => {
@@ -2773,11 +2784,14 @@
                       <span></span>
                       <span className="slider-value">{dotSize}px</span>
                     </div>
-                    <ThumbSlider
+                    <input
+                      type="range"
                       min={1}
                       max={50}
                       value={dotSize}
-                      onChange={(e) => setDotSize(Number(e.target.value))}
+                      onMouseDown={(e) => handleSliderStart(e, 'dotSize', dotSize, 1, 50)}
+                      onTouchStart={(e) => handleSliderStart(e, 'dotSize', dotSize, 1, 50)}
+                      onChange={(e) => handleSliderChange(e, 'dotSize', setDotSize)}
                     />
                   </div>
                 </div>
@@ -2819,32 +2833,40 @@
                       <span>{t('brightness')}</span>
                       <span className="slider-value">{brightness}</span>
                     </div>
-                    <ThumbSlider min={-50} max={50} value={brightness}
-                      onChange={(e) => { setBrightness(Number(e.target.value)); setColorPreset('custom'); }} />
+                    <input type="range" min={-50} max={50} value={brightness}
+                      onMouseDown={(e) => handleSliderStart(e, 'brightness', brightness, -50, 50)}
+                      onTouchStart={(e) => handleSliderStart(e, 'brightness', brightness, -50, 50)}
+                      onChange={(e) => { if (sliderDragging === 'brightness') { setBrightness(Number(e.target.value)); setColorPreset('custom'); }}} />
                   </div>
                   <div className="slider-container">
                     <div className="slider-label">
                       <span>{t('contrast')}</span>
                       <span className="slider-value">{contrast}</span>
                     </div>
-                    <ThumbSlider min={-50} max={50} value={contrast}
-                      onChange={(e) => { setContrast(Number(e.target.value)); setColorPreset('custom'); }} />
+                    <input type="range" min={-50} max={50} value={contrast}
+                      onMouseDown={(e) => handleSliderStart(e, 'contrast', contrast, -50, 50)}
+                      onTouchStart={(e) => handleSliderStart(e, 'contrast', contrast, -50, 50)}
+                      onChange={(e) => { if (sliderDragging === 'contrast') { setContrast(Number(e.target.value)); setColorPreset('custom'); }}} />
                   </div>
                   <div className="slider-container">
                     <div className="slider-label">
                       <span>{t('saturation')}</span>
                       <span className="slider-value">{saturation}</span>
                     </div>
-                    <ThumbSlider min={-100} max={100} value={saturation}
-                      onChange={(e) => { setSaturation(Number(e.target.value)); setColorPreset('custom'); }} />
+                    <input type="range" min={-100} max={100} value={saturation}
+                      onMouseDown={(e) => handleSliderStart(e, 'saturation', saturation, -100, 100)}
+                      onTouchStart={(e) => handleSliderStart(e, 'saturation', saturation, -100, 100)}
+                      onChange={(e) => { if (sliderDragging === 'saturation') { setSaturation(Number(e.target.value)); setColorPreset('custom'); }}} />
                   </div>
                   <div className="slider-container">
                     <div className="slider-label">
                       <span>{t('hueShift')}</span>
                       <span className="slider-value">{hueShift}°</span>
                     </div>
-                    <ThumbSlider min={-180} max={180} value={hueShift}
-                      onChange={(e) => { setHueShift(Number(e.target.value)); setColorPreset('custom'); }} />
+                    <input type="range" min={-180} max={180} value={hueShift}
+                      onMouseDown={(e) => handleSliderStart(e, 'hue', hueShift, -180, 180)}
+                      onTouchStart={(e) => handleSliderStart(e, 'hue', hueShift, -180, 180)}
+                      onChange={(e) => { if (sliderDragging === 'hue') { setHueShift(Number(e.target.value)); setColorPreset('custom'); }}} />
                   </div>
                 </div>
 
