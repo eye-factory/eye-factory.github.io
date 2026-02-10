@@ -309,6 +309,29 @@ nav a:hover {
   color: var(--neon-primary);
   text-shadow: 0 0 10px var(--neon-primary);
 }
+.ofuse-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: linear-gradient(135deg, #ff6b9d, #c44569);
+  border: 1px solid rgba(255, 107, 157, 0.5);
+  border-radius: 20px;
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  transition: var(--transition);
+  box-shadow: 0 0 10px rgba(255, 107, 157, 0.3);
+}
+.ofuse-btn:hover {
+  background: linear-gradient(135deg, #ff85ad, #d45a79);
+  box-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
+  transform: translateY(-1px);
+  text-shadow: none;
+}
 
 /* --- Hero --- */
 .hero {
@@ -783,6 +806,9 @@ footer {
       <a href="#about" class="nav-link-text">
         <span data-i18n="ja">概要</span><span data-i18n="en">About</span><span data-i18n="zh-CN">关于</span><span data-i18n="zh-TW">關於</span><span data-i18n="ko">소개</span><span data-i18n="es">Acerca de</span><span data-i18n="fr">À propos</span><span data-i18n="de">Über uns</span><span data-i18n="pt">Sobre</span>
       </a>
+      <a href="https://ofuse.me/eyefactory" class="ofuse-btn" target="_blank" rel="noopener">
+        ☕ <span data-i18n="ja">お布施</span><span data-i18n="en">Support</span><span data-i18n="zh-CN">支持</span><span data-i18n="zh-TW">支持</span><span data-i18n="ko">후원</span><span data-i18n="es">Apoyar</span><span data-i18n="fr">Soutenir</span><span data-i18n="de">Unterstützen</span><span data-i18n="pt">Apoiar</span>
+      </a>
       <div class="lang-switcher">
         <button class="lang-btn" onclick="toggleLangMenu()" aria-label="Language">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -865,7 +891,7 @@ footer {
         <span class="product-tag">v1.0.0</span>
       </div>
       <div class="product-links">
-        <a href="/dotchange/" class="product-link">
+        <a href="/dotchange/" class="product-link" target="_blank" rel="noopener">
           <span data-i18n="ja">Web版を試す</span><span data-i18n="en">Try Web Version</span><span data-i18n="zh-CN">试用Web版</span><span data-i18n="zh-TW">試用Web版</span><span data-i18n="ko">웹 버전 체험</span><span data-i18n="es">Probar versión web</span><span data-i18n="fr">Essayer version web</span><span data-i18n="de">Web-Version testen</span><span data-i18n="pt">Testar versão web</span>
         </a>
         <a href="https://eye-factory.booth.pm/" class="product-link" target="_blank" rel="noopener">
@@ -916,7 +942,7 @@ footer {
       </div>
       <div class="about-info-item">
         <div class="about-info-label">Web</div>
-        <div class="about-info-value"><a href="https://eye-factory.net">eye-factory.net</a></div>
+        <div class="about-info-value"><a href="https://eye-factory.net" target="_blank" rel="noopener">eye-factory.net</a></div>
       </div>
       <div class="about-info-item">
         <div class="about-info-label">BOOTH</div>
