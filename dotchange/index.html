@@ -1273,36 +1273,36 @@
 
       .preview-area {
         flex: none;
-        min-height: 150px;
-        max-height: 45vh;
+        min-height: 200px;
+        max-height: none;
         width: 100%;
       }
 
-      .preview-area.landscape {
-        max-height: 40vh;
+      /* Before file loaded - compact default */
+      .preview-area.square:not(.has-file) {
+        max-height: 200px;
       }
 
-      .preview-area.portrait {
-        max-height: 55vh;
-      }
-
-      .preview-area.square {
-        max-height: 45vh;
+      /* After file loaded - expand freely based on image */
+      .preview-area.has-file {
+        max-height: none;
       }
 
       .drop-zone {
         margin: 4px;
         padding: 4px;
-        flex: 1;
-        min-height: 0;
         overflow: hidden;
+      }
+
+      .drop-zone.has-file {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .preview-image {
         display: block;
         max-width: 100%;
-        max-height: 100%;
-        width: auto;
         height: auto;
         object-fit: contain;
       }
@@ -2849,7 +2849,7 @@
               </div>
 
               {/* Preview area */}
-              <div className={`preview-area ${hasFile ? aspectType : 'square'}`}>
+              <div className={`preview-area ${hasFile ? aspectType + ' has-file' : 'square'}`}>
                 {/* Before/After toggle */}
                 {hasFile && (
                   <div className="preview-toggle">
