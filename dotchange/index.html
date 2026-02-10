@@ -551,50 +551,49 @@
       font-weight: 600;
     }
 
-    /* Custom slider - thumb only interaction */
-    .custom-slider {
-      position: relative;
+    /* PC slider - native range input */
+    .pc-slider {
+      -webkit-appearance: none;
+      appearance: none;
       width: 100%;
-      height: 24px;
-      cursor: default;
-      touch-action: none;
-      user-select: none;
-    }
-
-    .custom-slider-track {
-      position: absolute;
-      top: 50%;
-      left: 0;
-      right: 0;
-      height: 4px;
+      height: 6px;
       background: var(--bg-card);
-      border-radius: 2px;
-      transform: translateY(-50%);
-      pointer-events: none;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
     }
 
-    .custom-slider-fill {
-      height: 100%;
-      background: linear-gradient(90deg, var(--neon-primary), var(--neon-purple));
-      border-radius: 2px;
-      pointer-events: none;
-    }
-
-    .custom-slider-thumb {
-      position: absolute;
-      top: 50%;
-      width: 20px;
-      height: 20px;
+    .pc-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
       background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
       border-radius: 50%;
-      transform: translate(-50%, -50%);
+      cursor: pointer;
       box-shadow: 0 0 6px rgba(0,212,255,0.6);
-      cursor: grab;
-      pointer-events: none;
     }
 
-    .custom-slider-thumb:active {
-      cursor: grabbing;
+    .pc-slider::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+      border-radius: 50%;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 0 6px rgba(0,212,255,0.6);
+    }
+
+    .pc-slider::-webkit-slider-runnable-track {
+      height: 6px;
+      background: var(--bg-card);
+      border-radius: 3px;
+    }
+
+    .pc-slider::-moz-range-track {
+      height: 6px;
+      background: var(--bg-card);
+      border-radius: 3px;
     }
 
     /* Mobile value control - button style */
@@ -2206,103 +2205,21 @@
         if (isMobile) {
           return <MobileValueControl min={min} max={max} value={value} onChange={onChange} step={step} />;
         }
-        return <CustomSlider min={min} max={max} value={value} onChange={onChange} step={step} />;
+        return <PCSlider min={min} max={max} value={value} onChange={onChange} step={step} />;
       };
 
-      // Custom Slider Component - thumb-only interaction (PC only)
-      const CustomSlider = ({ min, max, value, onChange, step = 1 }) => {
-        const trackRef = useRef(null);
-        const isDragging = useRef(false);
-
-        const getValueFromPosition = (clientX) => {
-          if (!trackRef.current) return value;
-          const rect = trackRef.current.getBoundingClientRect();
-          const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-          const rawValue = min + percent * (max - min);
-          return Math.round(rawValue / step) * step;
-        };
-
-        const isOnThumb = (clientX) => {
-          if (!trackRef.current) return false;
-          const rect = trackRef.current.getBoundingClientRect();
-          const thumbRadius = 18;
-          const percent = (value - min) / (max - min);
-          const thumbCenterX = rect.left + percent * rect.width;
-          return Math.abs(clientX - thumbCenterX) <= thumbRadius;
-        };
-
-        const handleStart = (clientX) => {
-          if (isOnThumb(clientX)) {
-            isDragging.current = true;
-          }
-        };
-
-        const handleMove = (clientX) => {
-          if (isDragging.current) {
-            const newValue = getValueFromPosition(clientX);
-            if (newValue !== value) {
-              onChange(newValue);
-            }
-          }
-        };
-
-        const handleEnd = () => {
-          isDragging.current = false;
-        };
-
-        // Mouse events
-        const onMouseDown = (e) => {
-          e.preventDefault();
-          handleStart(e.clientX);
-          if (isDragging.current) {
-            const onMouseMove = (e) => handleMove(e.clientX);
-            const onMouseUp = () => {
-              handleEnd();
-              window.removeEventListener('mousemove', onMouseMove);
-              window.removeEventListener('mouseup', onMouseUp);
-            };
-            window.addEventListener('mousemove', onMouseMove);
-            window.addEventListener('mouseup', onMouseUp);
-          }
-        };
-
-        // Touch events
-        const onTouchStart = (e) => {
-          const touch = e.touches[0];
-          handleStart(touch.clientX);
-          if (isDragging.current) {
-            e.preventDefault();
-          }
-        };
-
-        const onTouchMove = (e) => {
-          if (isDragging.current) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            handleMove(touch.clientX);
-          }
-        };
-
-        const onTouchEnd = () => {
-          handleEnd();
-        };
-
-        const percent = ((value - min) / (max - min)) * 100;
-
+      // PC Slider Component - native HTML range input
+      const PCSlider = ({ min, max, value, onChange, step = 1 }) => {
         return (
-          <div
-            ref={trackRef}
-            className="custom-slider"
-            onMouseDown={onMouseDown}
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
-          >
-            <div className="custom-slider-track">
-              <div className="custom-slider-fill" style={{ width: `${percent}%` }} />
-            </div>
-            <div className="custom-slider-thumb" style={{ left: `${percent}%` }} />
-          </div>
+          <input
+            type="range"
+            min={min}
+            max={max}
+            value={value}
+            step={step}
+            onChange={(e) => onChange(Number(e.target.value))}
+            className="pc-slider"
+          />
         );
       };
 
