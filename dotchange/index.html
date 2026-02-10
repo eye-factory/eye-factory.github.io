@@ -1232,8 +1232,13 @@
       }
     }
 
-    /* Mobile fallback */
+    /* Mobile layout - preview on top, menu on bottom, scrollable */
     @media (max-width: 768px) {
+      html, body {
+        height: auto;
+        overflow: auto;
+      }
+
       .scale-wrapper {
         height: auto;
         min-height: 100vh;
@@ -1243,35 +1248,72 @@
         height: auto;
         min-height: calc(100vh - var(--header-height));
         padding: 10px;
+        overflow: visible;
       }
 
       .main-content {
-        flex-direction: column;
+        flex-direction: column-reverse; /* Preview on top, menu on bottom */
         gap: 10px;
       }
 
       .control-panel {
         width: 100%;
         max-height: none;
+        overflow: visible;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 10px;
       }
 
       .preview-area {
-        min-height: 300px;
+        min-height: 250px;
+        max-height: 50vh;
       }
 
       .header {
-        flex-direction: column;
-        height: auto;
-        padding: 10px;
-        gap: 8px;
+        flex-direction: row;
+        height: var(--header-height);
+        padding: 0 10px;
       }
 
       .preset-grid {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
       }
 
       .action-buttons {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer-space {
+        display: none;
+      }
+
+      .section-title {
+        font-size: 10px;
+      }
+
+      .btn {
+        padding: 8px 12px;
+        font-size: 12px;
+      }
+
+      .select-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+
+      .slider-label {
+        font-size: 11px;
+      }
+
+      .gif-options {
+        padding: 8px 10px;
+      }
+
+      .option-btn {
+        padding: 4px 8px;
+        font-size: 10px;
       }
     }
   </style>
@@ -1712,19 +1754,12 @@
     };
 
     // ═══════════════════════════════════════════════════════════════
-    // OUTPUT SIZES
+    // OUTPUT SIZES (max side length - same for image and GIF)
     // ═══════════════════════════════════════════════════════════════
-    const OUTPUT_SIZES = {
-      image: {
-        landscape: { large: [1920, 1080], medium: [1280, 720], small: [854, 480] },
-        square: { large: [1080, 1080], medium: [720, 720], small: [480, 480] },
-        portrait: { large: [1080, 1920], medium: [720, 1280], small: [480, 854] },
-      },
-      gif: {
-        landscape: { large: [1280, 720], medium: [854, 480], small: [640, 360] },
-        square: { large: [720, 720], medium: [480, 480], small: [360, 360] },
-        portrait: { large: [720, 1280], medium: [480, 854], small: [360, 640] },
-      },
+    const MAX_SIDE_SIZES = {
+      large: 1280,
+      medium: 854,
+      small: 640,
     };
 
     function getAspectType(width, height) {
@@ -1732,6 +1767,21 @@
       if (ratio > 1.2) return 'landscape';
       if (ratio < 0.8) return 'portrait';
       return 'square';
+    }
+
+    // Calculate output dimensions maintaining aspect ratio
+    function calculateOutputSize(width, height, sizeKey) {
+      const maxSide = MAX_SIDE_SIZES[sizeKey];
+      const maxDimension = Math.max(width, height);
+
+      // If already within bounds, return original dimensions
+      if (maxDimension <= maxSide) {
+        return [width, height];
+      }
+
+      // Scale down so the larger side equals maxSide
+      const scale = maxSide / maxDimension;
+      return [Math.round(width * scale), Math.round(height * scale)];
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -1871,7 +1921,8 @@
       return result;
     }
 
-    function resizeWithCenterCrop(imageData, targetWidth, targetHeight) {
+    // Resize maintaining aspect ratio (no cropping)
+    function resizeWithAspectRatio(imageData, targetWidth, targetHeight) {
       const { width, height } = imageData;
 
       // Create source canvas (preserve alpha)
@@ -1879,24 +1930,17 @@
       srcCanvas.width = width;
       srcCanvas.height = height;
       const srcCtx = srcCanvas.getContext('2d', { willReadFrequently: true });
-      srcCtx.clearRect(0, 0, width, height); // Ensure transparent background
+      srcCtx.clearRect(0, 0, width, height);
       srcCtx.putImageData(imageData, 0, 0);
-
-      // Calculate scale and crop
-      const scale = Math.max(targetWidth / width, targetHeight / height);
-      const scaledWidth = Math.round(width * scale);
-      const scaledHeight = Math.round(height * scale);
-      const offsetX = Math.round((scaledWidth - targetWidth) / 2);
-      const offsetY = Math.round((scaledHeight - targetHeight) / 2);
 
       // Create result canvas (preserve alpha)
       const resultCanvas = document.createElement('canvas');
       resultCanvas.width = targetWidth;
       resultCanvas.height = targetHeight;
       const resultCtx = resultCanvas.getContext('2d', { willReadFrequently: true });
-      resultCtx.clearRect(0, 0, targetWidth, targetHeight); // Ensure transparent background
+      resultCtx.clearRect(0, 0, targetWidth, targetHeight);
       resultCtx.imageSmoothingEnabled = false; // Use nearest neighbor for pixel art
-      resultCtx.drawImage(srcCanvas, -offsetX, -offsetY, scaledWidth, scaledHeight);
+      resultCtx.drawImage(srcCanvas, 0, 0, targetWidth, targetHeight);
 
       return resultCtx.getImageData(0, 0, targetWidth, targetHeight);
     }
@@ -2222,12 +2266,11 @@
       const handleSave = () => {
         if (!processedImage) return;
 
-        // Get output size
-        const sizeType = fileType === 'video' ? 'gif' : 'image';
-        const [targetW, targetH] = OUTPUT_SIZES[sizeType][aspectType][outputSize];
+        // Calculate output size maintaining aspect ratio
+        const [targetW, targetH] = calculateOutputSize(processedImage.width, processedImage.height, outputSize);
 
         // Resize
-        const resized = resizeWithCenterCrop(processedImage, targetW, targetH);
+        const resized = resizeWithAspectRatio(processedImage, targetW, targetH);
 
         // Create canvas and download (preserve transparency)
         const canvas = document.createElement('canvas');
@@ -2251,7 +2294,9 @@
         setLoadingText(t('generatingGif'));
         setProgress(0);
 
-        const [targetW, targetH] = OUTPUT_SIZES.gif[aspectType][outputSize];
+        // Calculate output size from first frame, maintaining aspect ratio
+        const firstFrame = processedFrames[0];
+        const [targetW, targetH] = calculateOutputSize(firstFrame.width, firstFrame.height, outputSize);
         const framesToUse = Math.min(processedFrames.length, gifDuration * gifFps);
         const frameDelay = Math.round(1000 / gifFps);
 
@@ -2273,7 +2318,7 @@
           const transparentColor = 0xFF00FF;
           const canvasFrames = [];
           for (let i = 0; i < framesToUse; i++) {
-            const resized = resizeWithCenterCrop(processedFrames[i], targetW, targetH);
+            const resized = resizeWithAspectRatio(processedFrames[i], targetW, targetH);
             const canvas = document.createElement('canvas');
             canvas.width = targetW;
             canvas.height = targetH;
