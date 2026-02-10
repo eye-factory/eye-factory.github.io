@@ -529,16 +529,30 @@
       background: var(--bg-card);
       border-radius: 2px;
       outline: none;
+      cursor: default;
     }
 
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 12px;
-      height: 12px;
+      width: 20px;
+      height: 20px;
       background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
       border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 0 3px rgba(0,212,255,0.5);
+      cursor: grab;
+      box-shadow: 0 0 5px rgba(0,212,255,0.5);
+    }
+
+    input[type="range"]::-webkit-slider-thumb:active {
+      cursor: grabbing;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+      border-radius: 50%;
+      cursor: grab;
+      border: none;
     }
 
     /* Select / Dropdown - compact */
@@ -2034,6 +2048,7 @@
       const [videoFrames, setVideoFrames] = useState([]);
       const [processedFrames, setProcessedFrames] = useState([]);
       const [frameDelays, setFrameDelays] = useState([]); // GIF frame delays in ms
+      const [isShortGif, setIsShortGif] = useState(false); // GIF is 1 second or less
       const [aspectType, setAspectType] = useState('landscape');
       const [imageAspectRatio, setImageAspectRatio] = useState(1); // width / height
 
@@ -2066,6 +2081,55 @@
       const fileInputRef = useRef(null);
       const videoRef = useRef(null);
       const animationRef = useRef(null);
+
+      // Thumb-only slider component (prevents track click changes)
+      const ThumbSlider = useCallback(({ min, max, value, onChange, ...props }) => {
+        const isDragging = useRef(false);
+        const startValue = useRef(value);
+
+        const handlePointerDown = (e) => {
+          const rect = e.target.getBoundingClientRect();
+          const thumbWidth = 24;
+          const trackWidth = rect.width;
+          const valuePercent = (value - min) / (max - min);
+          const thumbCenter = valuePercent * trackWidth;
+          const clickX = e.clientX - rect.left;
+
+          if (Math.abs(clickX - thumbCenter) <= thumbWidth) {
+            isDragging.current = true;
+            startValue.current = value;
+          } else {
+            isDragging.current = false;
+            startValue.current = value;
+            e.preventDefault();
+          }
+        };
+
+        const handleChange = (e) => {
+          if (isDragging.current || Math.abs(Number(e.target.value) - startValue.current) > (max - min) * 0.05) {
+            isDragging.current = true;
+            onChange(e);
+          }
+        };
+
+        const handlePointerUp = () => {
+          isDragging.current = false;
+        };
+
+        return (
+          <input
+            type="range"
+            min={min}
+            max={max}
+            value={value}
+            onPointerDown={handlePointerDown}
+            onChange={handleChange}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerUp}
+            {...props}
+          />
+        );
+      }, []);
 
       // OpenCV ready check
       useEffect(() => {
@@ -2150,6 +2214,7 @@
         setProgress(0);
         setProcessedImage(null);
         setProcessedFrames([]);
+        setIsShortGif(false);
         setShowAfter(false);
 
         const ext = file.name.toLowerCase().split('.').pop();
@@ -2194,6 +2259,16 @@
           // Store aspect ratio
           setImageAspectRatio(width / height);
           setAspectType(getAspectType(width, height));
+
+          // Calculate total GIF duration
+          let totalGifDuration = 0;
+          for (let i = 0; i < delays.length; i++) {
+            totalGifDuration += delays[i] || 100;
+          }
+
+          // Check if GIF is 1 second or less
+          const shortGif = totalGifDuration <= 1000;
+          setIsShortGif(shortGif);
 
           // Limit to first 5 seconds based on frame delays
           let totalTime = 0;
@@ -2445,8 +2520,14 @@
         // Calculate output size from first frame
         const firstFrame = videoFrames[0];
         const [targetW, targetH] = calculateOutputSize(firstFrame.width, firstFrame.height, outputSize);
-        const frameCount = Math.min(videoFrames.length, gifDuration * gifFps);
-        const frameDelay = Math.round(1000 / gifFps);
+
+        // For short GIFs (1 second or less), use all frames with original timing
+        // For longer GIFs, use selected fps and duration
+        const useOriginalTiming = isShortGif && frameDelays.length > 0;
+        const frameCount = useOriginalTiming
+          ? videoFrames.length
+          : Math.min(videoFrames.length, gifDuration * gifFps);
+        const defaultFrameDelay = Math.round(1000 / gifFps);
 
         const divisor = getColorDivisor();
 
@@ -2542,7 +2623,9 @@
           const gif = new GIF(gifOptions);
 
           canvasFrames.forEach((canvas, i) => {
-            gif.addFrame(canvas, { delay: frameDelay, copy: true });
+            // Use original frame delay for short GIFs, otherwise use selected FPS
+            const delay = useOriginalTiming ? (frameDelays[i] || 100) : defaultFrameDelay;
+            gif.addFrame(canvas, { delay: delay, copy: true });
             setProgress(30 + (i / canvasFrames.length) * 20);
           });
 
@@ -2690,10 +2773,9 @@
                       <span></span>
                       <span className="slider-value">{dotSize}px</span>
                     </div>
-                    <input
-                      type="range"
-                      min="1"
-                      max="50"
+                    <ThumbSlider
+                      min={1}
+                      max={50}
                       value={dotSize}
                       onChange={(e) => setDotSize(Number(e.target.value))}
                     />
@@ -2737,7 +2819,7 @@
                       <span>{t('brightness')}</span>
                       <span className="slider-value">{brightness}</span>
                     </div>
-                    <input type="range" min="-50" max="50" value={brightness}
+                    <ThumbSlider min={-50} max={50} value={brightness}
                       onChange={(e) => { setBrightness(Number(e.target.value)); setColorPreset('custom'); }} />
                   </div>
                   <div className="slider-container">
@@ -2745,7 +2827,7 @@
                       <span>{t('contrast')}</span>
                       <span className="slider-value">{contrast}</span>
                     </div>
-                    <input type="range" min="-50" max="50" value={contrast}
+                    <ThumbSlider min={-50} max={50} value={contrast}
                       onChange={(e) => { setContrast(Number(e.target.value)); setColorPreset('custom'); }} />
                   </div>
                   <div className="slider-container">
@@ -2753,7 +2835,7 @@
                       <span>{t('saturation')}</span>
                       <span className="slider-value">{saturation}</span>
                     </div>
-                    <input type="range" min="-100" max="100" value={saturation}
+                    <ThumbSlider min={-100} max={100} value={saturation}
                       onChange={(e) => { setSaturation(Number(e.target.value)); setColorPreset('custom'); }} />
                   </div>
                   <div className="slider-container">
@@ -2761,7 +2843,7 @@
                       <span>{t('hueShift')}</span>
                       <span className="slider-value">{hueShift}°</span>
                     </div>
-                    <input type="range" min="-180" max="180" value={hueShift}
+                    <ThumbSlider min={-180} max={180} value={hueShift}
                       onChange={(e) => { setHueShift(Number(e.target.value)); setColorPreset('custom'); }} />
                   </div>
                 </div>
