@@ -309,31 +309,22 @@ nav a:hover {
   color: var(--neon-primary);
   text-shadow: 0 0 10px var(--neon-primary);
 }
-@keyframes neonPulse {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.7), 0 0 30px rgba(255, 215, 0, 0.5), 0 0 45px rgba(255, 215, 0, 0.3);
-  }
-}
 .support-btn {
   display: none;
   align-items: center;
   gap: 6px;
   padding: 6px 14px;
-  background: linear-gradient(135deg, #ffd700, #ff8c00);
-  border: 1px solid rgba(255, 215, 0, 0.6);
+  background: rgba(0, 212, 255, 0.15);
+  border: 1px solid rgba(0, 212, 255, 0.4);
   border-radius: 20px;
-  color: #000 !important;
+  color: #fff !important;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
   text-transform: none;
   letter-spacing: 0.02em;
   transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.2);
-  animation: neonPulse 2s ease-in-out infinite;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
 }
 [data-lang="ja"] .support-btn[data-i18n="ja"],
 [data-lang="en"] .support-btn[data-i18n="en"],
@@ -347,10 +338,9 @@ nav a:hover {
   display: inline-flex;
 }
 .support-btn:hover {
-  background: linear-gradient(135deg, #ffe44d, #ffaa00);
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.6), 0 0 60px rgba(255, 215, 0, 0.4);
-  transform: translateY(-2px) scale(1.05);
-  animation: none;
+  background: rgba(0, 212, 255, 0.25);
+  border-color: rgba(0, 212, 255, 0.6);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
 }
 
 /* --- Hero --- */
