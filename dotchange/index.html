@@ -2157,73 +2157,16 @@
 
       // Mobile Button Control Component
       const MobileValueControl = ({ min, max, value, onChange, step = 1 }) => {
-        const intervalRef = useRef(null);
-        const timeoutRef = useRef(null);
-        const valueRef = useRef(value);
-
-        // Keep valueRef in sync
-        useEffect(() => {
-          valueRef.current = value;
-        }, [value]);
-
-        const doIncrement = useCallback(() => {
-          const newVal = Math.min(max, valueRef.current + step);
-          valueRef.current = newVal;
-          onChange(newVal);
-        }, [max, step, onChange]);
-
-        const doDecrement = useCallback(() => {
-          const newVal = Math.max(min, valueRef.current - step);
-          valueRef.current = newVal;
-          onChange(newVal);
-        }, [min, step, onChange]);
-
-        const stopAll = useCallback(() => {
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-            timeoutRef.current = null;
-          }
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-          }
-        }, []);
-
-        const handleTouchStart = useCallback((e, action) => {
-          e.preventDefault(); // Prevent long press menu and other defaults
-          stopAll();
-          // Execute once immediately
-          action();
-          // Start continuous after 500ms
-          timeoutRef.current = setTimeout(() => {
-            intervalRef.current = setInterval(action, 100);
-          }, 500);
-        }, [stopAll]);
-
-        const handleTouchEnd = useCallback((e) => {
-          e.preventDefault();
-          stopAll();
-        }, [stopAll]);
-
-        // Cleanup on unmount
-        useEffect(() => {
-          return () => stopAll();
-        }, [stopAll]);
-
         return (
           <div className="mobile-value-control">
             <button
               className="value-btn minus"
-              onTouchStart={(e) => handleTouchStart(e, doDecrement)}
-              onTouchEnd={handleTouchEnd}
-              onTouchCancel={handleTouchEnd}
+              onClick={() => onChange(Math.max(min, value - step))}
             >−</button>
             <span className="value-display">{value}</span>
             <button
               className="value-btn plus"
-              onTouchStart={(e) => handleTouchStart(e, doIncrement)}
-              onTouchEnd={handleTouchEnd}
-              onTouchCancel={handleTouchEnd}
+              onClick={() => onChange(Math.min(max, value + step))}
             >+</button>
           </div>
         );
