@@ -1484,6 +1484,14 @@
   </style>
 </head>
 <body>
+  <!-- Static header for immediate display before React loads -->
+  <header class="header" id="static-header" style="position:sticky;top:0;z-index:100;background:var(--bg-dark);">
+    <div class="logo">
+      <div class="logo-icon">ef</div>
+      <span class="logo-text">DotChange</span>
+    </div>
+  </header>
+
   <div id="root"></div>
 
   <script>
@@ -1493,6 +1501,11 @@
       cvReady = true;
       if (window.onCvLoaded) window.onCvLoaded();
     }
+    // Hide static header when React renders
+    window.hideStaticHeader = function() {
+      var h = document.getElementById('static-header');
+      if (h) h.style.display = 'none';
+    };
   </script>
 
   <script type="text/babel">
@@ -2197,6 +2210,11 @@
       const fileInputRef = useRef(null);
       const videoRef = useRef(null);
       const animationRef = useRef(null);
+
+      // Hide static header on mount
+      useEffect(() => {
+        if (window.hideStaticHeader) window.hideStaticHeader();
+      }, []);
 
       // Mobile detection
       const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
