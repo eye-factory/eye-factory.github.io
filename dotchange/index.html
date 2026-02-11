@@ -551,6 +551,36 @@
       font-weight: 600;
     }
 
+    .slider-value.editable {
+      cursor: pointer;
+      padding: 1px 4px;
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+
+    .slider-value.editable:hover {
+      background: rgba(0, 212, 255, 0.15);
+    }
+
+    .slider-value-input {
+      width: 50px;
+      padding: 1px 4px;
+      font-size: inherit;
+      font-weight: 600;
+      color: var(--neon-primary);
+      background: rgba(0, 212, 255, 0.1);
+      border: 1px solid var(--neon-primary);
+      border-radius: 3px;
+      outline: none;
+      text-align: right;
+    }
+
+    .slider-value-input::-webkit-inner-spin-button,
+    .slider-value-input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
     /* PC slider - native range input */
     .pc-slider {
       -webkit-appearance: none;
@@ -2213,6 +2243,61 @@
         );
       };
 
+      // Editable Value Component - click to input (PC only)
+      const EditableValue = ({ value, onChange, min, max, suffix = '' }) => {
+        const [editing, setEditing] = useState(false);
+        const [tempValue, setTempValue] = useState(String(value));
+        const inputRef = useRef(null);
+
+        useEffect(() => {
+          if (editing && inputRef.current) {
+            inputRef.current.focus();
+            inputRef.current.select();
+          }
+        }, [editing]);
+
+        const handleSubmit = () => {
+          const num = parseInt(tempValue, 10);
+          if (!isNaN(num)) {
+            onChange(Math.max(min, Math.min(max, num)));
+          }
+          setEditing(false);
+        };
+
+        if (isMobile) {
+          return <span className="slider-value">{value}{suffix}</span>;
+        }
+
+        if (editing) {
+          return (
+            <input
+              ref={inputRef}
+              type="number"
+              className="slider-value-input"
+              value={tempValue}
+              min={min}
+              max={max}
+              onChange={(e) => setTempValue(e.target.value)}
+              onBlur={handleSubmit}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSubmit();
+                if (e.key === 'Escape') setEditing(false);
+              }}
+            />
+          );
+        }
+
+        return (
+          <span
+            className="slider-value editable"
+            onClick={() => { setEditing(true); setTempValue(String(value)); }}
+            title="Click to edit"
+          >
+            {value}{suffix}
+          </span>
+        );
+      };
+
       // OpenCV ready check
       useEffect(() => {
         if (cvReady) {
@@ -2914,7 +2999,7 @@
                   <div className="slider-container">
                     <div className="slider-label">
                       <span></span>
-                      <span className="slider-value">{dotSize}px</span>
+                      <EditableValue value={dotSize} onChange={setDotSize} min={1} max={50} suffix="px" />
                     </div>
                     <ValueControl
                       min={1}
@@ -2960,7 +3045,7 @@
                   <div className="slider-container">
                     <div className="slider-label">
                       <span>{t('brightness')}</span>
-                      <span className="slider-value">{brightness}</span>
+                      <EditableValue value={brightness} onChange={(v) => { setBrightness(v); setColorPreset('custom'); }} min={-50} max={50} />
                     </div>
                     <ValueControl min={-50} max={50} value={brightness}
                       onChange={(v) => { setBrightness(v); setColorPreset('custom'); }} />
@@ -2968,7 +3053,7 @@
                   <div className="slider-container">
                     <div className="slider-label">
                       <span>{t('contrast')}</span>
-                      <span className="slider-value">{contrast}</span>
+                      <EditableValue value={contrast} onChange={(v) => { setContrast(v); setColorPreset('custom'); }} min={-50} max={50} />
                     </div>
                     <ValueControl min={-50} max={50} value={contrast}
                       onChange={(v) => { setContrast(v); setColorPreset('custom'); }} />
@@ -2976,7 +3061,7 @@
                   <div className="slider-container">
                     <div className="slider-label">
                       <span>{t('saturation')}</span>
-                      <span className="slider-value">{saturation}</span>
+                      <EditableValue value={saturation} onChange={(v) => { setSaturation(v); setColorPreset('custom'); }} min={-100} max={100} />
                     </div>
                     <ValueControl min={-100} max={100} value={saturation}
                       onChange={(v) => { setSaturation(v); setColorPreset('custom'); }} />
@@ -2984,7 +3069,7 @@
                   <div className="slider-container">
                     <div className="slider-label">
                       <span>{t('hueShift')}</span>
-                      <span className="slider-value">{hueShift}°</span>
+                      <EditableValue value={hueShift} onChange={(v) => { setHueShift(v); setColorPreset('custom'); }} min={-180} max={180} suffix="°" />
                     </div>
                     <ValueControl min={-180} max={180} value={hueShift}
                       onChange={(v) => { setHueShift(v); setColorPreset('custom'); }} />
