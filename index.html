@@ -753,11 +753,115 @@ footer {
 
 /* --- Responsive --- */
 @media (max-width: 768px) {
-  .header-inner { height: 60px; }
+  .header-inner {
+    height: 54px;
+    padding: 0 16px;
+  }
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+  .logo-text {
+    font-size: 16px;
+  }
+  nav {
+    gap: 12px;
+  }
   nav a.nav-link-text { display: none; }
-  .hero { padding: 80px 20px 60px; }
-  .about-content { grid-template-columns: 1fr; gap: 40px; }
-  .product-card { padding: 28px; }
+  .lang-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+  .lang-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+  .hero {
+    padding: 40px 16px 50px;
+  }
+  .hero-badge {
+    font-size: 10px;
+    padding: 6px 14px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    margin-bottom: 20px;
+  }
+  .hero p {
+    font-size: 14px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+  }
+  .hero-cta {
+    padding: 12px 28px;
+    font-size: 12px;
+  }
+  section {
+    padding: 60px 16px;
+  }
+  .section-label {
+    font-size: 10px;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    margin-bottom: 40px;
+  }
+  .about-content { grid-template-columns: 1fr; gap: 30px; }
+  .about-text {
+    font-size: 14px;
+    line-height: 1.9;
+  }
+  .about-info {
+    padding: 24px;
+  }
+  .about-info-item {
+    padding: 14px 0;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .about-info-label {
+    font-size: 10px;
+  }
+  .about-info-value {
+    font-size: 13px;
+  }
+  .product-card { padding: 24px; }
+  .product-icon {
+    width: 56px;
+    height: 56px;
+  }
+  .product-icon img {
+    width: 36px;
+    height: 36px;
+  }
+  .product-name {
+    font-size: 22px;
+  }
+  .product-desc {
+    font-size: 14px;
+  }
+  .product-tag {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+  .product-link {
+    font-size: 11px;
+    padding: 8px 18px;
+  }
+  footer {
+    padding: 30px 16px;
+  }
+  .footer-links {
+    gap: 20px;
+  }
+  .footer-links a {
+    font-size: 11px;
+  }
+  .footer-copy {
+    font-size: 10px;
+  }
   .particle:nth-child(n+5) { display: none; }
   .neon-line-v { display: none; }
 }
