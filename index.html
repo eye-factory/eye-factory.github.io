@@ -995,14 +995,35 @@ footer {
   box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
 }
 .product-link.trial-btn {
-  background: rgba(255, 204, 0, 0.15);
-  border-color: #ffcc00;
-  color: #ffcc00;
+  background: rgba(139, 92, 246, 0.15);
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
 }
 .product-link.trial-btn:hover {
-  background: #ffcc00;
+  background: var(--neon-purple);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+.product-link.buy-btn {
+  width: 100%;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+  border: none;
   color: #000;
-  box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+  font-weight: 800;
+}
+.product-link.buy-btn:hover {
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+  transform: translateY(-2px);
+}
+.product-links-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+.product-links-row .product-link {
+  flex: 1;
+  justify-content: center;
 }
 
 /* --- i18n: hide/show by lang --- */
@@ -1150,15 +1171,17 @@ footer {
         <span class="product-tag">v1.0.0</span>
       </div>
       <div class="product-links">
-        <a href="/dotchange/" class="product-link" target="_blank" rel="noopener">
-          <span data-i18n="ja">Web版を試す</span><span data-i18n="en">Try Web Version</span><span data-i18n="zh-CN">试用Web版</span><span data-i18n="zh-TW">試用Web版</span><span data-i18n="ko">웹 버전 체험</span><span data-i18n="es">Probar versión web</span><span data-i18n="fr">Essayer version web</span><span data-i18n="de">Web-Version testen</span><span data-i18n="pt">Testar versão web</span>
+        <a href="https://eye-factory.booth.pm/items/7977078" class="product-link buy-btn" target="_blank" rel="noopener">
+          <span data-i18n="ja">製品版を購入</span><span data-i18n="en">Buy Full Version</span><span data-i18n="zh-CN">购买完整版</span><span data-i18n="zh-TW">購買完整版</span><span data-i18n="ko">정식 버전 구매</span><span data-i18n="es">Comprar versión completa</span><span data-i18n="fr">Acheter version complète</span><span data-i18n="de">Vollversion kaufen</span><span data-i18n="pt">Comprar versão completa</span>
         </a>
-        <button class="product-link trial-btn" onclick="showDownloadModal()">
-          <span data-i18n="ja">体験版ダウンロード</span><span data-i18n="en">Download Trial</span><span data-i18n="zh-CN">下载试用版</span><span data-i18n="zh-TW">下載試用版</span><span data-i18n="ko">체험판 다운로드</span><span data-i18n="es">Descargar prueba</span><span data-i18n="fr">Télécharger l'essai</span><span data-i18n="de">Testversion laden</span><span data-i18n="pt">Baixar teste</span>
-        </button>
-        <a href="https://eye-factory.booth.pm/" class="product-link" target="_blank" rel="noopener">
-          <span data-i18n="ja">BOOTH で購入</span><span data-i18n="en">Buy on BOOTH</span><span data-i18n="zh-CN">在BOOTH购买</span><span data-i18n="zh-TW">在BOOTH購買</span><span data-i18n="ko">BOOTH에서 구매</span><span data-i18n="es">Comprar en BOOTH</span><span data-i18n="fr">Acheter sur BOOTH</span><span data-i18n="de">Auf BOOTH kaufen</span><span data-i18n="pt">Comprar no BOOTH</span>
-        </a>
+        <div class="product-links-row">
+          <a href="/dotchange/" class="product-link" target="_blank" rel="noopener">
+            <span data-i18n="ja">Web版を試す</span><span data-i18n="en">Try Web Version</span><span data-i18n="zh-CN">试用Web版</span><span data-i18n="zh-TW">試用Web版</span><span data-i18n="ko">웹 버전 체험</span><span data-i18n="es">Probar versión web</span><span data-i18n="fr">Essayer version web</span><span data-i18n="de">Web-Version testen</span><span data-i18n="pt">Testar versão web</span>
+          </a>
+          <button class="product-link trial-btn" onclick="showDownloadModal()">
+            <span data-i18n="ja">体験版DL</span><span data-i18n="en">Download Trial</span><span data-i18n="zh-CN">下载试用版</span><span data-i18n="zh-TW">下載試用版</span><span data-i18n="ko">체험판 다운로드</span><span data-i18n="es">Descargar prueba</span><span data-i18n="fr">Télécharger l'essai</span><span data-i18n="de">Testversion laden</span><span data-i18n="pt">Baixar teste</span>
+          </button>
+        </div>
       </div>
     </div>
 
