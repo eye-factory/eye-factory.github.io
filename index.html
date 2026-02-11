@@ -32,6 +32,13 @@
 <link rel="icon" type="image/png" sizes="256x256" href="/favicon.png">
 <link rel="apple-touch-icon" sizes="256x256" href="/favicon.png">
 
+<!-- Critical CSS for immediate header display -->
+<style>
+header{position:sticky!important;top:0!important;z-index:100!important;opacity:1!important;visibility:visible!important;display:block!important;background:rgba(10,10,15,0.98)!important;transform:none!important;}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:70px;max-width:1100px;margin:0 auto;padding:0 24px;}
+@media(max-width:768px){.header-inner{height:54px;padding:0 16px;}}
+</style>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
