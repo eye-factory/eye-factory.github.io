@@ -36,7 +36,7 @@
 <style>
 header{position:sticky!important;top:0!important;z-index:100!important;opacity:1!important;visibility:visible!important;display:block!important;background:rgba(10,10,15,0.98)!important;transform:none!important;}
 .header-inner{display:flex;align-items:center;justify-content:space-between;height:70px;max-width:1100px;margin:0 auto;padding:0 24px;}
-@media(max-width:768px){.header-inner{height:54px;padding:0 16px;}}
+@media(max-width:768px){header{background:#0a0a0f!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;-webkit-transform:translateZ(0);}.header-inner{height:54px;padding:0 16px;}}
 </style>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -888,7 +888,11 @@ footer {
     visibility: visible !important;
     display: block !important;
     transform: none !important;
-    background: rgba(10, 10, 15, 0.98);
+    background: #0a0a0f !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    -webkit-transform: translateZ(0);
+    will-change: transform;
   }
 }
 
