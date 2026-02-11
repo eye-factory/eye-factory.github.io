@@ -885,6 +885,111 @@ footer {
   }
 }
 
+/* --- Download Modal --- */
+.download-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+.download-modal-overlay.show { display: flex; }
+.download-modal {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 0 60px rgba(0, 212, 255, 0.3);
+}
+.download-modal-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: var(--text-sub);
+  font-size: 24px;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.download-modal-close:hover {
+  color: var(--neon-primary);
+  background: rgba(0, 212, 255, 0.1);
+}
+.download-modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffcc00;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.download-modal-content {
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.8;
+}
+.download-modal-content h4 {
+  color: var(--neon-primary);
+  font-size: 14px;
+  margin: 20px 0 10px;
+}
+.download-modal-content p { margin: 10px 0; }
+.download-modal-content ol { margin: 10px 0 10px 20px; }
+.download-modal-content li { margin: 5px 0; }
+.download-modal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 25px;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+  border: none;
+  border-radius: 30px;
+  color: #000;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-en);
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+}
+.download-modal-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+}
+.product-link.trial-btn {
+  background: rgba(255, 204, 0, 0.15);
+  border-color: #ffcc00;
+  color: #ffcc00;
+}
+.product-link.trial-btn:hover {
+  background: #ffcc00;
+  color: #000;
+  box-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+}
+
 /* --- i18n: hide/show by lang --- */
 [data-i18n] { display: none; }
 [data-lang="ja"] [data-i18n="ja"],
@@ -1033,6 +1138,9 @@ footer {
         <a href="/dotchange/" class="product-link" target="_blank" rel="noopener">
           <span data-i18n="ja">Web版を試す</span><span data-i18n="en">Try Web Version</span><span data-i18n="zh-CN">试用Web版</span><span data-i18n="zh-TW">試用Web版</span><span data-i18n="ko">웹 버전 체험</span><span data-i18n="es">Probar versión web</span><span data-i18n="fr">Essayer version web</span><span data-i18n="de">Web-Version testen</span><span data-i18n="pt">Testar versão web</span>
         </a>
+        <button class="product-link trial-btn" onclick="showDownloadModal()">
+          <span data-i18n="ja">体験版ダウンロード</span><span data-i18n="en">Download Trial</span><span data-i18n="zh-CN">下载试用版</span><span data-i18n="zh-TW">下載試用版</span><span data-i18n="ko">체험판 다운로드</span><span data-i18n="es">Descargar prueba</span><span data-i18n="fr">Télécharger l'essai</span><span data-i18n="de">Testversion laden</span><span data-i18n="pt">Baixar teste</span>
+        </button>
         <a href="https://eye-factory.booth.pm/" class="product-link" target="_blank" rel="noopener">
           <span data-i18n="ja">BOOTH で購入</span><span data-i18n="en">Buy on BOOTH</span><span data-i18n="zh-CN">在BOOTH购买</span><span data-i18n="zh-TW">在BOOTH購買</span><span data-i18n="ko">BOOTH에서 구매</span><span data-i18n="es">Comprar en BOOTH</span><span data-i18n="fr">Acheter sur BOOTH</span><span data-i18n="de">Auf BOOTH kaufen</span><span data-i18n="pt">Comprar no BOOTH</span>
         </a>
@@ -1101,6 +1209,117 @@ footer {
     <div class="footer-copy">&copy; 2026 eye-factory. All rights reserved.</div>
   </div>
 </footer>
+
+<!-- Download Modal -->
+<div class="download-modal-overlay" id="downloadModal" onclick="hideDownloadModal(event)">
+  <div class="download-modal" onclick="event.stopPropagation()">
+    <button class="download-modal-close" onclick="hideDownloadModal()">&times;</button>
+    <div class="download-modal-title">⚠️ <span data-i18n="ja">ダウンロード前にお読みください</span><span data-i18n="en">Please read before downloading</span><span data-i18n="zh-CN">下载前请阅读</span><span data-i18n="zh-TW">下載前請閱讀</span><span data-i18n="ko">다운로드 전 읽어주세요</span><span data-i18n="es">Lea antes de descargar</span><span data-i18n="fr">À lire avant le téléchargement</span><span data-i18n="de">Bitte vor dem Download lesen</span><span data-i18n="pt">Leia antes de baixar</span></div>
+    <div class="download-modal-content">
+      <div data-i18n="ja">
+        <p>本ソフトはPython製のインディーツールのため、Windows Defenderなどのセキュリティソフトに誤検知される場合があります。ウイルスではありませんのでご安心ください。</p>
+        <h4>【ダウンロード前の準備】</h4>
+        <ol><li>Windows セキュリティを開く</li><li>「ウイルスと脅威の防止」→「設定の管理」</li><li>「除外の追加」でダウンロード先のフォルダを除外に追加</li></ol>
+        <h4>【ZIPを解凍して別の場所に移す場合】</h4>
+        <p>移動先のフォルダも同様に除外に追加してください。</p>
+        <h4>【なぜ除外が必要？】</h4>
+        <p>PyInstallerでEXE化したアプリは、実行時にtempフォルダにファイルを展開する仕組みのため、セキュリティソフトがマルウェアと似た挙動と誤検知することがあります。個人開発のインディーツールでは一般的な問題です。</p>
+      </div>
+      <div data-i18n="en">
+        <p>This software is an indie tool made with Python, so it may be falsely detected by security software like Windows Defender. Rest assured, it is not a virus.</p>
+        <h4>【Before Downloading】</h4>
+        <ol><li>Open Windows Security</li><li>Go to "Virus & threat protection" → "Manage settings"</li><li>Add your download folder to "Exclusions"</li></ol>
+        <h4>【If extracting ZIP to another location】</h4>
+        <p>Add the destination folder to exclusions as well.</p>
+        <h4>【Why exclusions are needed】</h4>
+        <p>Apps packaged with PyInstaller extract files to a temp folder at runtime, which security software may misidentify as malware-like behavior. This is common with indie tools.</p>
+      </div>
+      <div data-i18n="zh-CN">
+        <p>本软件是使用Python开发的独立工具，可能会被Windows Defender等安全软件误报。请放心，这不是病毒。</p>
+        <h4>【下载前的准备】</h4>
+        <ol><li>打开 Windows 安全中心</li><li>进入「病毒和威胁防护」→「管理设置」</li><li>在「排除项」中添加下载文件夹</li></ol>
+        <h4>【如果将ZIP解压到其他位置】</h4>
+        <p>请同样将目标文件夹添加到排除项。</p>
+        <h4>【为什么需要排除？】</h4>
+        <p>使用PyInstaller打包的应用在运行时会将文件解压到临时文件夹，安全软件可能会将此行为误判为恶意软件。这是独立开发工具的常见问题。</p>
+      </div>
+      <div data-i18n="zh-TW">
+        <p>本軟體是使用Python開發的獨立工具，可能會被Windows Defender等安全軟體誤報。請放心，這不是病毒。</p>
+        <h4>【下載前的準備】</h4>
+        <ol><li>開啟 Windows 安全性</li><li>前往「病毒與威脅防護」→「管理設定」</li><li>在「排除項目」中新增下載資料夾</li></ol>
+        <h4>【如果將ZIP解壓到其他位置】</h4>
+        <p>請同樣將目標資料夾新增到排除項目。</p>
+        <h4>【為什麼需要排除？】</h4>
+        <p>使用PyInstaller打包的應用程式在執行時會將檔案解壓到暫存資料夾，安全軟體可能會將此行為誤判為惡意軟體。這是獨立開發工具的常見問題。</p>
+      </div>
+      <div data-i18n="ko">
+        <p>이 소프트웨어는 Python으로 만든 인디 도구이므로 Windows Defender 등의 보안 소프트웨어에서 오탐지될 수 있습니다. 바이러스가 아니니 안심하세요.</p>
+        <h4>【다운로드 전 준비】</h4>
+        <ol><li>Windows 보안 열기</li><li>「바이러스 및 위협 방지」→「설정 관리」로 이동</li><li>「제외 추가」에서 다운로드 폴더를 제외에 추가</li></ol>
+        <h4>【ZIP을 다른 위치에 압축 해제하는 경우】</h4>
+        <p>대상 폴더도 마찬가지로 제외에 추가하세요.</p>
+        <h4>【왜 제외가 필요한가요?】</h4>
+        <p>PyInstaller로 패키징된 앱은 실행 시 임시 폴더에 파일을 추출하는데, 보안 소프트웨어가 이를 악성 소프트웨어와 유사한 동작으로 오인할 수 있습니다. 인디 도구에서는 흔한 문제입니다.</p>
+      </div>
+      <div data-i18n="es">
+        <p>Este software es una herramienta indie hecha con Python, por lo que puede ser detectado falsamente por software de seguridad como Windows Defender. No es un virus, no se preocupe.</p>
+        <h4>【Antes de descargar】</h4>
+        <ol><li>Abra Seguridad de Windows</li><li>Vaya a "Protección contra virus y amenazas" → "Administrar configuración"</li><li>Agregue su carpeta de descarga a "Exclusiones"</li></ol>
+        <h4>【Si extrae el ZIP a otra ubicación】</h4>
+        <p>Agregue también la carpeta de destino a las exclusiones.</p>
+        <h4>【¿Por qué se necesitan exclusiones?】</h4>
+        <p>Las apps empaquetadas con PyInstaller extraen archivos a una carpeta temporal al ejecutarse, lo que el software de seguridad puede confundir con comportamiento malicioso. Es común en herramientas indie.</p>
+      </div>
+      <div data-i18n="fr">
+        <p>Ce logiciel est un outil indie fait avec Python, il peut donc être faussement détecté par des logiciels de sécurité comme Windows Defender. Rassurez-vous, ce n'est pas un virus.</p>
+        <h4>【Avant de télécharger】</h4>
+        <ol><li>Ouvrez Sécurité Windows</li><li>Allez dans « Protection contre les virus et menaces » → « Gérer les paramètres »</li><li>Ajoutez votre dossier de téléchargement aux « Exclusions »</li></ol>
+        <h4>【Si vous extrayez le ZIP ailleurs】</h4>
+        <p>Ajoutez également le dossier de destination aux exclusions.</p>
+        <h4>【Pourquoi les exclusions sont nécessaires】</h4>
+        <p>Les apps packagées avec PyInstaller extraient des fichiers dans un dossier temp à l'exécution, ce que les logiciels de sécurité peuvent confondre avec un comportement malveillant. C'est courant pour les outils indie.</p>
+      </div>
+      <div data-i18n="de">
+        <p>Diese Software ist ein Indie-Tool aus Python und kann daher von Sicherheitssoftware wie Windows Defender fälschlich erkannt werden. Keine Sorge, es ist kein Virus.</p>
+        <h4>【Vor dem Download】</h4>
+        <ol><li>Öffnen Sie Windows-Sicherheit</li><li>Gehen Sie zu „Viren- & Bedrohungsschutz" → „Einstellungen verwalten"</li><li>Fügen Sie Ihren Download-Ordner zu „Ausschlüsse" hinzu</li></ol>
+        <h4>【Wenn Sie die ZIP woanders entpacken】</h4>
+        <p>Fügen Sie auch den Zielordner zu den Ausschlüssen hinzu.</p>
+        <h4>【Warum Ausschlüsse nötig sind】</h4>
+        <p>Mit PyInstaller gepackte Apps extrahieren Dateien zur Laufzeit in einen Temp-Ordner, was Sicherheitssoftware als Malware-ähnliches Verhalten fehlinterpretieren kann. Das ist bei Indie-Tools üblich.</p>
+      </div>
+      <div data-i18n="pt">
+        <p>Este software é uma ferramenta indie feita com Python, então pode ser falsamente detectado por software de segurança como o Windows Defender. Fique tranquilo, não é um vírus.</p>
+        <h4>【Antes de baixar】</h4>
+        <ol><li>Abra a Segurança do Windows</li><li>Vá para "Proteção contra vírus e ameaças" → "Gerenciar configurações"</li><li>Adicione sua pasta de download às "Exclusões"</li></ol>
+        <h4>【Se extrair o ZIP para outro local】</h4>
+        <p>Adicione também a pasta de destino às exclusões.</p>
+        <h4>【Por que exclusões são necessárias】</h4>
+        <p>Apps empacotados com PyInstaller extraem arquivos para uma pasta temp na execução, o que softwares de segurança podem confundir com comportamento de malware. Isso é comum em ferramentas indie.</p>
+      </div>
+    </div>
+    <a href="#" class="download-modal-btn" id="trialDownloadLink">
+      <span data-i18n="ja">ダウンロード開始</span><span data-i18n="en">Start Download</span><span data-i18n="zh-CN">开始下载</span><span data-i18n="zh-TW">開始下載</span><span data-i18n="ko">다운로드 시작</span><span data-i18n="es">Iniciar descarga</span><span data-i18n="fr">Démarrer le téléchargement</span><span data-i18n="de">Download starten</span><span data-i18n="pt">Iniciar download</span>
+    </a>
+  </div>
+</div>
+
+<script>
+// --- Download Modal ---
+function showDownloadModal() {
+  document.getElementById('downloadModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function hideDownloadModal(event) {
+  if (!event || event.target === event.currentTarget) {
+    document.getElementById('downloadModal').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') hideDownloadModal();
+});
+</script>
 
 <script>
 // --- Language System ---
