@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>特定商取引法に基づく表記 | eye-factory</title>
+<meta name="description" content="eye-factory 特定商取引法に基づく表記">
+<link rel="canonical" href="https://eye-factory.net/tokushoho.html">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="256x256" href="/favicon.png">
+<link rel="apple-touch-icon" sizes="256x256" href="/favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg-card: rgba(15, 15, 25, 0.8);
+  --text: #e0e0e0;
+  --text-sub: #8a8a9a;
+  --neon-primary: #00d4ff;
+  --neon-secondary: #00ff88;
+  --neon-pink: #ff00aa;
+  --neon-purple: #8b5cf6;
+  --border: rgba(0, 212, 255, 0.2);
+  --border-hover: rgba(0, 212, 255, 0.6);
+  --radius: 12px;
+  --glow-soft: 0 0 5px var(--neon-primary), 0 0 10px rgba(0, 212, 255, 0.5);
+  --font-en: 'Orbitron', sans-serif;
+  --font-display: 'Rajdhani', sans-serif;
+  --font-ja: 'Noto Sans JP', sans-serif;
+  --font-body: var(--font-ja);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* --- Header --- */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10, 10, 15, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+}
+.logo-icon {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-family: var(--font-en);
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+.logo-text {
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.back-link {
+  font-size: 13px;
+  font-family: var(--font-en);
+  color: var(--text-sub);
+  text-decoration: none;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.back-link:hover {
+  color: var(--neon-primary);
+  text-shadow: 0 0 10px var(--neon-primary);
+}
+
+/* --- Main Content --- */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+}
+
+.page-title {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  margin-bottom: 50px;
+  color: var(--text);
+  text-align: center;
+}
+
+.content-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px;
+  margin-bottom: 40px;
+  backdrop-filter: blur(10px);
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: var(--neon-primary);
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-table {
+  width: 100%;
+}
+
+.info-row {
+  display: flex;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  min-width: 180px;
+  font-weight: 700;
+  color: var(--neon-pink);
+  font-size: 14px;
+}
+
+.info-value {
+  flex: 1;
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.info-value a {
+  color: var(--neon-primary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.info-value a:hover {
+  text-shadow: 0 0 10px var(--neon-primary);
+}
+
+/* --- Footer --- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 50px 24px;
+  text-align: center;
+  background: rgba(5, 5, 10, 0.8);
+}
+.footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.footer-copy {
+  font-size: 12px;
+  color: var(--text-sub);
+  font-family: var(--font-en);
+  letter-spacing: 0.1em;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .header-inner {
+    height: 54px;
+    padding: 0 16px;
+  }
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+  .logo-text {
+    font-size: 16px;
+  }
+  main {
+    padding: 40px 16px 80px;
+  }
+  .content-section {
+    padding: 24px;
+  }
+  .info-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .info-label {
+    min-width: auto;
+    font-size: 12px;
+  }
+  .info-value {
+    font-size: 13px;
+  }
+  footer {
+    padding: 30px 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <div class="logo-icon">ef</div>
+      <span class="logo-text">eye-factory</span>
+    </a>
+    <a href="/" class="back-link">Back to Top</a>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main>
+  <h1 class="page-title">特定商取引法に基づく表記<br><span style="font-size: 0.6em; color: var(--text-sub);">Notation Based on the Specified Commercial Transactions Act</span></h1>
+
+  <!-- 日本語 -->
+  <section class="content-section">
+    <h2 class="section-title">日本語 / Japanese</h2>
+    <div class="info-table">
+      <div class="info-row">
+        <div class="info-label">販売業者</div>
+        <div class="info-value">eye-factory</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">代表者</div>
+        <div class="info-value">請求があった際に遅滞なく開示いたします</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">所在地</div>
+        <div class="info-value">請求があった際に遅滞なく開示いたします</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">連絡先</div>
+        <div class="info-value"><a href="mailto:eye.factory.info@gmail.com">eye.factory.info@gmail.com</a><br>（電話番号は請求があった際に遅滞なく開示いたします）</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">販売URL</div>
+        <div class="info-value"><a href="https://eye-factory.net" target="_blank" rel="noopener">https://eye-factory.net</a></div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">販売価格</div>
+        <div class="info-value">各製品ページに記載の通り</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">支払い方法</div>
+        <div class="info-value">クレジットカード（Stripe決済）</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">商品の引き渡し時期</div>
+        <div class="info-value">決済完了後、即時ダウンロード可能</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">返品・返金について</div>
+        <div class="info-value">デジタル製品の性質上、購入後の返品・返金は原則として承っておりません</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 英語 -->
+  <section class="content-section">
+    <h2 class="section-title">English</h2>
+    <div class="info-table">
+      <div class="info-row">
+        <div class="info-label">Business Name</div>
+        <div class="info-value">eye-factory</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Representative</div>
+        <div class="info-value">Disclosed upon request without delay</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Address</div>
+        <div class="info-value">Disclosed upon request without delay</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Contact</div>
+        <div class="info-value"><a href="mailto:eye.factory.info@gmail.com">eye.factory.info@gmail.com</a><br>(Phone number disclosed upon request without delay)</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Sales URL</div>
+        <div class="info-value"><a href="https://eye-factory.net" target="_blank" rel="noopener">https://eye-factory.net</a></div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Pricing</div>
+        <div class="info-value">As listed on each product page</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Payment Methods</div>
+        <div class="info-value">Credit card (via Stripe)</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Delivery</div>
+        <div class="info-value">Available for immediate download after payment</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Returns & Refunds</div>
+        <div class="info-value">Due to the nature of digital products, returns and refunds are not accepted in principle</div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">&copy; 2026 eye-factory. All rights reserved.</div>
+  </div>
+</footer>
+
+</body>
+</html>
