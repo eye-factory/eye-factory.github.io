@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>CyberTap | eye-factory</title>
 <link rel="icon" type="image/png" href="/favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
@@ -19,6 +19,7 @@
   --neon-pink: #ff00aa;
   --neon-purple: #8b5cf6;
   --neon-yellow: #ffdd00;
+  --neon-orange: #ff8800;
   --font-en: 'Orbitron', sans-serif;
   --font-ja: 'Noto Sans JP', sans-serif;
 }
@@ -28,6 +29,9 @@ html, body {
   height: 100%;
   overflow: hidden;
   touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 body {
@@ -52,16 +56,56 @@ body {
   z-index: 0;
 }
 
-/* Game container */
+/* Rotate guide for portrait mode */
+#rotate-guide {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--bg);
+  z-index: 9999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+}
+#rotate-guide .icon {
+  font-size: 80px;
+  margin-bottom: 30px;
+  animation: rotateHint 2s ease-in-out infinite;
+}
+@keyframes rotateHint {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(90deg); }
+}
+#rotate-guide .message {
+  font-family: var(--font-en);
+  font-size: 20px;
+  color: var(--neon-primary);
+  margin-bottom: 10px;
+}
+#rotate-guide .sub-message {
+  font-size: 14px;
+  color: var(--text-sub);
+}
+
+@media (orientation: portrait) and (max-width: 900px) {
+  #rotate-guide { display: flex; }
+  #game-container { display: none !important; }
+}
+
+/* Game container - Landscape optimized */
 #game-container {
   position: relative;
   width: 100%;
-  max-width: 500px;
   height: 100%;
-  max-height: 800px;
+  max-width: 1200px;
+  max-height: 100vh;
   z-index: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* Screens */
@@ -74,13 +118,14 @@ body {
   height: 100%;
   padding: 20px;
   text-align: center;
+  overflow-y: auto;
 }
 .screen.active { display: flex; }
 
 /* Title screen */
 #title-screen .game-title {
   font-family: var(--font-en);
-  font-size: clamp(48px, 12vw, 72px);
+  font-size: clamp(48px, 10vw, 80px);
   font-weight: 900;
   background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary));
   background-size: 200% 100%;
@@ -88,7 +133,6 @@ body {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: gradientShift 3s ease-in-out infinite;
-  text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
   filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
   margin-bottom: 10px;
 }
@@ -103,7 +147,14 @@ body {
   font-size: 14px;
   color: var(--text-sub);
   letter-spacing: 0.3em;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
+}
+
+.title-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* Buttons */
@@ -111,7 +162,7 @@ body {
   font-family: var(--font-en);
   font-size: 16px;
   font-weight: 700;
-  padding: 16px 48px;
+  padding: 14px 40px;
   border: 2px solid var(--neon-primary);
   background: transparent;
   color: var(--neon-primary);
@@ -120,7 +171,6 @@ body {
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin: 8px;
 }
 .btn:hover, .btn:active {
   background: var(--neon-primary);
@@ -141,29 +191,43 @@ body {
   padding: 10px 24px;
 }
 
-/* Song select */
+/* Song select - Horizontal layout */
+#song-select {
+  flex-direction: row;
+  padding: 20px 40px;
+  gap: 30px;
+}
+.song-select-left {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 #song-select .section-title {
   font-family: var(--font-en);
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--neon-primary);
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   text-shadow: 0 0 10px var(--neon-primary);
 }
 
 .song-list {
-  width: 100%;
-  max-height: 60vh;
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+  max-height: 80vh;
   overflow-y: auto;
   padding: 10px;
+  align-content: start;
 }
 
 .song-item {
   background: var(--bg-card);
   border: 1px solid rgba(0, 212, 255, 0.3);
   border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 12px;
+  padding: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: left;
@@ -171,11 +235,11 @@ body {
 .song-item:hover, .song-item.selected {
   border-color: var(--neon-primary);
   box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-  transform: translateX(5px);
+  transform: scale(1.02);
 }
 .song-item .song-title {
   font-family: var(--font-en);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--neon-primary);
   margin-bottom: 4px;
@@ -188,27 +252,36 @@ body {
   font-family: var(--font-en);
   font-size: 11px;
   color: var(--neon-pink);
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
-/* Difficulty select */
+/* Difficulty select - Horizontal layout */
+#difficulty-select {
+  flex-direction: row;
+  gap: 40px;
+}
+.difficulty-info {
+  text-align: center;
+}
 .difficulty-buttons {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin: 30px 0;
+  flex-direction: row;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .diff-btn {
   font-family: var(--font-en);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  padding: 20px 60px;
+  padding: 20px 40px;
   border: 2px solid;
   background: transparent;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
+  min-width: 140px;
 }
 .diff-btn.easy {
   border-color: var(--neon-secondary);
@@ -245,6 +318,8 @@ body {
 }
 .selected-song-info strong {
   color: var(--neon-primary);
+  font-family: var(--font-en);
+  font-size: 24px;
 }
 
 /* Play screen */
@@ -257,30 +332,31 @@ body {
 
 #play-area {
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: 60px; left: 0; right: 0; bottom: 30px;
+  overflow: hidden;
 }
 
 .play-hud {
   position: absolute;
   top: 0; left: 0; right: 0;
-  padding: 15px 20px;
+  height: 60px;
+  padding: 10px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.5));
   z-index: 10;
 }
 .play-hud .score {
   font-family: var(--font-en);
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: var(--neon-primary);
   text-shadow: 0 0 10px var(--neon-primary);
 }
 .play-hud .combo {
   font-family: var(--font-en);
-  font-size: 18px;
+  font-size: 16px;
   color: var(--neon-secondary);
 }
 .play-hud .song-info {
@@ -288,58 +364,117 @@ body {
   color: var(--text-sub);
   text-align: right;
 }
+.play-hud .song-info .song-name {
+  font-family: var(--font-en);
+  color: var(--neon-primary);
+}
 
-/* Hit circles */
+/* Hit circles - 3 sizes */
 .hit-circle {
   position: absolute;
-  width: 80px;
-  height: 80px;
   border-radius: 50%;
   border: 3px solid var(--neon-primary);
-  background: rgba(0, 212, 255, 0.1);
+  background: rgba(0, 212, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-en);
-  font-size: 24px;
   font-weight: 700;
   color: var(--neon-primary);
   cursor: pointer;
-  transition: transform 0.1s;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
-  animation: circleAppear 0.3s ease-out;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+  animation: circleAppear 0.2s ease-out;
+  transform: translate(-50%, -50%);
 }
 .hit-circle:active {
-  transform: scale(0.9);
+  transform: translate(-50%, -50%) scale(0.95);
 }
+
+/* Small circle - Fast, high score */
+.hit-circle.small {
+  width: 50px;
+  height: 50px;
+  font-size: 14px;
+  border-color: var(--neon-orange);
+  background: rgba(255, 136, 0, 0.15);
+  color: var(--neon-orange);
+  box-shadow: 0 0 15px rgba(255, 136, 0, 0.5);
+}
+.hit-circle.small .approach-ring {
+  border-color: var(--neon-orange);
+}
+
+/* Medium circle - Normal */
+.hit-circle.medium {
+  width: 70px;
+  height: 70px;
+  font-size: 18px;
+}
+
+/* Large circle - Slow, low score */
+.hit-circle.large {
+  width: 100px;
+  height: 100px;
+  font-size: 24px;
+  border-color: var(--neon-purple);
+  background: rgba(139, 92, 246, 0.15);
+  color: var(--neon-purple);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+.hit-circle.large .approach-ring {
+  border-color: var(--neon-purple);
+}
+
 .hit-circle .approach-ring {
   position: absolute;
-  width: 160px;
-  height: 160px;
   border: 2px solid var(--neon-primary);
   border-radius: 50%;
-  animation: approach 1s linear forwards;
-  opacity: 0.6;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Approach ring animations for each size */
+.hit-circle.small .approach-ring {
+  width: 100px; height: 100px;
+  animation: approachSmall 0.6s linear forwards;
+}
+.hit-circle.medium .approach-ring {
+  width: 140px; height: 140px;
+  animation: approachMedium 1s linear forwards;
+}
+.hit-circle.large .approach-ring {
+  width: 200px; height: 200px;
+  animation: approachLarge 1.5s linear forwards;
 }
 
 @keyframes circleAppear {
-  from { transform: scale(0); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-@keyframes approach {
-  from { width: 160px; height: 160px; opacity: 0.8; }
-  to { width: 80px; height: 80px; opacity: 0; }
+@keyframes approachSmall {
+  from { width: 100px; height: 100px; opacity: 0.8; }
+  to { width: 50px; height: 50px; opacity: 0; }
+}
+@keyframes approachMedium {
+  from { width: 140px; height: 140px; opacity: 0.8; }
+  to { width: 70px; height: 70px; opacity: 0; }
+}
+@keyframes approachLarge {
+  from { width: 200px; height: 200px; opacity: 0.8; }
+  to { width: 100px; height: 100px; opacity: 0; }
 }
 
 /* Hit feedback */
 .hit-feedback {
   position: absolute;
   font-family: var(--font-en);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   animation: feedbackPop 0.5s ease-out forwards;
   pointer-events: none;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
 }
 .hit-feedback.perfect {
   color: var(--neon-secondary);
@@ -359,44 +494,66 @@ body {
 }
 
 @keyframes feedbackPop {
-  0% { transform: translateY(0) scale(1); opacity: 1; }
-  100% { transform: translateY(-30px) scale(1.2); opacity: 0; }
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, calc(-50% - 30px)) scale(1.2); opacity: 0; }
 }
 
-/* Result screen */
+/* Result screen - Horizontal layout */
+#result-screen {
+  flex-direction: row;
+  gap: 40px;
+  padding: 30px;
+}
+.result-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 #result-screen .result-title {
   font-family: var(--font-en);
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 900;
   color: var(--neon-primary);
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   text-shadow: 0 0 20px var(--neon-primary);
 }
+
+.result-grade {
+  font-family: var(--font-en);
+  font-size: 80px;
+  font-weight: 900;
+  text-shadow: 0 0 30px currentColor;
+  line-height: 1;
+}
+.grade-s { color: var(--neon-secondary); }
+.grade-a { color: var(--neon-primary); }
+.grade-b { color: var(--neon-yellow); }
+.grade-c { color: var(--neon-pink); }
 
 .result-stats {
   background: var(--bg-card);
   border: 1px solid rgba(0, 212, 255, 0.3);
   border-radius: 16px;
-  padding: 30px;
-  margin-bottom: 30px;
-  min-width: 280px;
+  padding: 24px;
+  min-width: 260px;
 }
 .result-row {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 8px 0;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 .result-row:last-child { border-bottom: none; }
 .result-row .label {
   color: var(--text-sub);
+  font-size: 14px;
 }
 .result-row .value {
   font-family: var(--font-en);
   font-weight: 700;
 }
 .result-row .value.score {
-  font-size: 28px;
+  font-size: 24px;
   color: var(--neon-primary);
 }
 .result-row .value.perfect { color: var(--neon-secondary); }
@@ -404,45 +561,37 @@ body {
 .result-row .value.good { color: var(--neon-yellow); }
 .result-row .value.miss { color: var(--neon-pink); }
 
-.result-grade {
-  font-family: var(--font-en);
-  font-size: 72px;
-  font-weight: 900;
-  margin: 20px 0;
-  text-shadow: 0 0 30px currentColor;
-}
-.grade-s { color: var(--neon-secondary); }
-.grade-a { color: var(--neon-primary); }
-.grade-b { color: var(--neon-yellow); }
-.grade-c { color: var(--neon-pink); }
-
 .result-buttons {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  flex-wrap: wrap;
-  justify-content: center;
+  margin-top: 20px;
 }
 
 /* Ranking screen */
+#ranking-screen {
+  padding: 20px 40px;
+}
 .ranking-list {
   width: 100%;
-  max-height: 50vh;
+  max-width: 600px;
+  max-height: 70vh;
   overflow-y: auto;
   margin: 20px 0;
 }
 .ranking-item {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
+  padding: 10px 14px;
   background: var(--bg-card);
   border-radius: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 .ranking-item .rank {
   font-family: var(--font-en);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  width: 40px;
+  width: 36px;
   color: var(--neon-primary);
 }
 .ranking-item .rank.gold { color: #ffd700; }
@@ -453,10 +602,10 @@ body {
   text-align: left;
 }
 .ranking-item .info .name {
-  font-size: 14px;
+  font-size: 13px;
 }
 .ranking-item .info .meta {
-  font-size: 11px;
+  font-size: 10px;
   color: var(--text-sub);
 }
 .ranking-item .score {
@@ -471,7 +620,7 @@ body {
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   font-family: var(--font-en);
-  font-size: 120px;
+  font-size: 100px;
   font-weight: 900;
   color: var(--neon-primary);
   text-shadow: 0 0 40px var(--neon-primary);
@@ -488,9 +637,8 @@ body {
 /* Progress bar */
 .progress-bar {
   position: absolute;
-  bottom: 0; left: 0;
-  width: 100%;
-  height: 4px;
+  bottom: 0; left: 0; right: 0;
+  height: 6px;
   background: rgba(255,255,255,0.1);
 }
 .progress-bar .fill {
@@ -502,13 +650,13 @@ body {
 /* Back button */
 .back-btn {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 15px;
+  left: 15px;
   font-family: var(--font-en);
   font-size: 12px;
   padding: 8px 16px;
   border: 1px solid var(--text-sub);
-  background: transparent;
+  background: rgba(0,0,0,0.5);
   color: var(--text-sub);
   border-radius: 20px;
   cursor: pointer;
@@ -521,36 +669,30 @@ body {
 }
 
 /* Scrollbar */
-::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
 ::-webkit-scrollbar-thumb { background: var(--neon-primary); border-radius: 3px; }
-
-/* Mobile adjustments */
-@media (max-width: 500px) {
-  .hit-circle {
-    width: 70px;
-    height: 70px;
-    font-size: 20px;
-  }
-  .hit-circle .approach-ring {
-    width: 140px;
-    height: 140px;
-  }
-  @keyframes approach {
-    from { width: 140px; height: 140px; }
-    to { width: 70px; height: 70px; }
-  }
-}
 
 /* No audio warning */
 .no-audio-warning {
   background: rgba(255, 0, 170, 0.2);
   border: 1px solid var(--neon-pink);
   border-radius: 8px;
-  padding: 12px 20px;
-  margin: 20px 0;
-  font-size: 12px;
+  padding: 10px 16px;
+  margin-bottom: 15px;
+  font-size: 11px;
   color: var(--neon-pink);
+}
+
+/* Mobile landscape adjustments */
+@media (max-height: 500px) {
+  .play-hud { height: 50px; padding: 8px 15px; }
+  .play-hud .score { font-size: 22px; }
+  #play-area { top: 50px; bottom: 25px; }
+  .countdown { font-size: 80px; }
+  .result-grade { font-size: 60px; }
+  #result-screen { gap: 20px; padding: 15px; }
+  .result-stats { padding: 16px; }
 }
 </style>
 </head>
@@ -558,29 +700,42 @@ body {
 
 <div class="bg-grid"></div>
 
+<!-- Rotate guide for portrait mode -->
+<div id="rotate-guide">
+  <div class="icon">📱</div>
+  <div class="message">Please Rotate Your Device</div>
+  <div class="sub-message">横画面でプレイしてください</div>
+</div>
+
 <div id="game-container">
   <!-- Title Screen -->
   <div id="title-screen" class="screen active">
     <h1 class="game-title">CyberTap</h1>
     <p class="subtitle">Rhythm Action Game</p>
-    <button class="btn" onclick="showScreen('song-select')">Start</button>
-    <button class="btn secondary small" onclick="showScreen('ranking')">Ranking</button>
+    <div class="title-buttons">
+      <button class="btn" onclick="showScreen('song-select')">Start</button>
+      <button class="btn secondary" onclick="showScreen('ranking')">Ranking</button>
+    </div>
   </div>
 
   <!-- Song Select Screen -->
   <div id="song-select" class="screen">
     <button class="back-btn" onclick="showScreen('title-screen')">Back</button>
-    <h2 class="section-title">Select Song</h2>
-    <div class="no-audio-warning">BGM is not yet available. Tap test mode.</div>
+    <div class="song-select-left">
+      <h2 class="section-title">Select Song</h2>
+      <div class="no-audio-warning">BGM not available yet (Tap test mode)</div>
+    </div>
     <div class="song-list" id="song-list"></div>
   </div>
 
   <!-- Difficulty Select Screen -->
   <div id="difficulty-select" class="screen">
     <button class="back-btn" onclick="showScreen('song-select')">Back</button>
-    <h2 class="section-title">Select Difficulty</h2>
-    <div class="selected-song-info">
-      <strong id="selected-song-name"></strong>
+    <div class="difficulty-info">
+      <h2 class="section-title">Select Difficulty</h2>
+      <div class="selected-song-info">
+        <strong id="selected-song-name"></strong>
+      </div>
     </div>
     <div class="difficulty-buttons">
       <button class="diff-btn easy" onclick="startGame('easy')">Easy</button>
@@ -597,7 +752,7 @@ body {
         <div class="combo" id="current-combo"></div>
       </div>
       <div class="song-info">
-        <div id="play-song-name"></div>
+        <div class="song-name" id="play-song-name"></div>
         <div id="play-difficulty"></div>
       </div>
     </div>
@@ -609,8 +764,14 @@ body {
 
   <!-- Result Screen -->
   <div id="result-screen" class="screen">
-    <h2 class="result-title">Result</h2>
-    <div class="result-grade" id="result-grade">S</div>
+    <div class="result-left">
+      <h2 class="result-title">Result</h2>
+      <div class="result-grade" id="result-grade">S</div>
+      <div class="result-buttons">
+        <button class="btn" onclick="retryGame()">Retry</button>
+        <button class="btn secondary" onclick="showScreen('title-screen')">Title</button>
+      </div>
+    </div>
     <div class="result-stats">
       <div class="result-row">
         <span class="label">Score</span>
@@ -637,10 +798,6 @@ body {
         <span class="value miss" id="result-miss">0</span>
       </div>
     </div>
-    <div class="result-buttons">
-      <button class="btn" onclick="retryGame()">Retry</button>
-      <button class="btn secondary" onclick="showScreen('title-screen')">Title</button>
-    </div>
   </div>
 
   <!-- Ranking Screen -->
@@ -661,8 +818,8 @@ const SONGS = [
     title: 'Cyber Rush',
     artist: 'eye-factory',
     bpm: 140,
-    audioFile: null, // 'audio/cyber_rush.mp3'
-    duration: 60, // seconds (for test mode)
+    audioFile: null,
+    duration: 30,
   },
   {
     id: 'neon_drive',
@@ -670,7 +827,7 @@ const SONGS = [
     artist: 'eye-factory',
     bpm: 128,
     audioFile: null,
-    duration: 60,
+    duration: 30,
   },
   {
     id: 'digital_pulse',
@@ -678,7 +835,7 @@ const SONGS = [
     artist: 'eye-factory',
     bpm: 150,
     audioFile: null,
-    duration: 60,
+    duration: 30,
   },
   {
     id: 'synth_wave',
@@ -686,9 +843,37 @@ const SONGS = [
     artist: 'eye-factory',
     bpm: 120,
     audioFile: null,
-    duration: 60,
+    duration: 30,
   },
 ];
+
+// Circle sizes configuration
+const CIRCLE_TYPES = {
+  small: {
+    size: 50,
+    approachTime: 600,   // Fast approach
+    timingWindow: { perfect: 30, great: 60, good: 100 },
+    scoreMultiplier: 2.0, // High score
+    missWindow: 150,
+  },
+  medium: {
+    size: 70,
+    approachTime: 1000,  // Normal approach
+    timingWindow: { perfect: 50, great: 100, good: 180 },
+    scoreMultiplier: 1.0, // Normal score
+    missWindow: 220,
+  },
+  large: {
+    size: 100,
+    approachTime: 1500,  // Slow approach
+    timingWindow: { perfect: 80, great: 150, good: 250 },
+    scoreMultiplier: 0.5, // Low score
+    missWindow: 300,
+  },
+};
+
+// Base scores
+const BASE_SCORES = { perfect: 300, great: 200, good: 100 };
 
 // ============================================================
 // GAME STATE
@@ -769,7 +954,6 @@ function startGame(difficulty) {
 
   showScreen('play-screen');
 
-  // Countdown then start
   countdown(3, () => {
     gameState.isPlaying = true;
     gameState.startTime = Date.now();
@@ -797,32 +981,56 @@ function countdown(count, callback) {
 }
 
 // ============================================================
-// CIRCLE GENERATION
+// CIRCLE GENERATION - With 3 sizes
 // ============================================================
 function generateCircles() {
   const song = gameState.selectedSong;
   const difficulty = gameState.selectedDifficulty;
 
   // Circles per second based on difficulty
-  const circlesPerSecond = {
-    easy: 1,
-    normal: 2,
-    hard: 3,
+  const circlesPerSecond = { easy: 1.2, normal: 2, hard: 3 }[difficulty];
+
+  // Size distribution based on difficulty
+  const sizeDistribution = {
+    easy:   { small: 0.1, medium: 0.6, large: 0.3 },
+    normal: { small: 0.25, medium: 0.5, large: 0.25 },
+    hard:   { small: 0.4, medium: 0.45, large: 0.15 },
   }[difficulty];
 
   const totalCircles = Math.floor(song.duration * circlesPerSecond);
-  const interval = (song.duration * 1000) / totalCircles;
+
+  const area = document.getElementById('play-area');
+  const areaRect = area.getBoundingClientRect();
+  const padding = 60;
 
   for (let i = 0; i < totalCircles; i++) {
+    // Determine circle size
+    const rand = Math.random();
+    let circleType;
+    if (rand < sizeDistribution.small) {
+      circleType = 'small';
+    } else if (rand < sizeDistribution.small + sizeDistribution.medium) {
+      circleType = 'medium';
+    } else {
+      circleType = 'large';
+    }
+
+    const typeConfig = CIRCLE_TYPES[circleType];
+    const interval = (song.duration * 1000) / totalCircles;
     const appearTime = i * interval;
-    const hitTime = appearTime + 1000; // 1 second approach time
+    const hitTime = appearTime + typeConfig.approachTime;
+
+    // Random position within play area
+    const maxX = Math.max(100, areaRect.width - padding * 2);
+    const maxY = Math.max(100, areaRect.height - padding * 2);
 
     gameState.circles.push({
       id: gameState.circleId++,
+      type: circleType,
       appearTime,
       hitTime,
-      x: 50 + Math.random() * 300, // Random X position
-      y: 100 + Math.random() * 500, // Random Y position
+      x: padding + Math.random() * maxX,
+      y: padding + Math.random() * maxY,
       number: i + 1,
       active: false,
       hit: false,
@@ -852,15 +1060,18 @@ function gameLoop() {
     }
 
     // Check for missed circles
-    if (circle.active && !circle.hit && elapsed > circle.hitTime + 200) {
-      circle.hit = true;
-      removeCircle(circle.id);
-      registerHit('miss', circle.x, circle.y);
+    if (circle.active && !circle.hit) {
+      const typeConfig = CIRCLE_TYPES[circle.type];
+      if (elapsed > circle.hitTime + typeConfig.missWindow) {
+        circle.hit = true;
+        removeCircle(circle.id);
+        registerHit('miss', circle.x, circle.y, circle.type);
+      }
     }
   });
 
   // End game check
-  if (elapsed >= duration) {
+  if (elapsed >= duration + 500) {
     endGame();
     return;
   }
@@ -871,31 +1082,28 @@ function gameLoop() {
 function spawnCircle(circle) {
   const area = document.getElementById('play-area');
   const areaRect = area.getBoundingClientRect();
+  const typeConfig = CIRCLE_TYPES[circle.type];
 
-  // Adjust position to fit within play area
-  const maxX = areaRect.width - 80;
-  const maxY = areaRect.height - 150;
-  const x = Math.min(Math.max(10, circle.x), maxX);
-  const y = Math.min(Math.max(80, circle.y), maxY);
+  // Ensure circle is within bounds
+  const halfSize = typeConfig.size / 2;
+  const x = Math.min(Math.max(halfSize + 10, circle.x), areaRect.width - halfSize - 10);
+  const y = Math.min(Math.max(halfSize + 10, circle.y), areaRect.height - halfSize - 10);
 
   const el = document.createElement('div');
-  el.className = 'hit-circle';
+  el.className = `hit-circle ${circle.type}`;
   el.id = 'circle-' + circle.id;
   el.style.left = x + 'px';
   el.style.top = y + 'px';
-  el.innerHTML = `
-    <div class="approach-ring"></div>
-    <span>${circle.number}</span>
-  `;
+  el.innerHTML = `<div class="approach-ring"></div><span>${circle.number}</span>`;
 
-  el.onclick = (e) => {
+  const hitHandler = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     hitCircle(circle);
   };
-  el.ontouchstart = (e) => {
-    e.preventDefault();
-    hitCircle(circle);
-  };
+
+  el.addEventListener('click', hitHandler);
+  el.addEventListener('touchstart', hitHandler, { passive: false });
 
   area.appendChild(el);
 }
@@ -914,30 +1122,42 @@ function hitCircle(circle) {
 
   const elapsed = Date.now() - gameState.startTime;
   const timing = Math.abs(elapsed - circle.hitTime);
+  const typeConfig = CIRCLE_TYPES[circle.type];
 
   let result;
-  if (timing < 50) {
+  let scoreGained = 0;
+
+  if (timing < typeConfig.timingWindow.perfect) {
     result = 'perfect';
-    gameState.score += 300;
-  } else if (timing < 100) {
+    scoreGained = Math.floor(BASE_SCORES.perfect * typeConfig.scoreMultiplier);
+  } else if (timing < typeConfig.timingWindow.great) {
     result = 'great';
-    gameState.score += 200;
-  } else if (timing < 200) {
+    scoreGained = Math.floor(BASE_SCORES.great * typeConfig.scoreMultiplier);
+  } else if (timing < typeConfig.timingWindow.good) {
     result = 'good';
-    gameState.score += 100;
+    scoreGained = Math.floor(BASE_SCORES.good * typeConfig.scoreMultiplier);
   } else {
     result = 'miss';
   }
 
+  if (result !== 'miss') {
+    gameState.score += scoreGained;
+  }
+
   const el = document.getElementById('circle-' + circle.id);
-  const rect = el ? el.getBoundingClientRect() : { left: circle.x, top: circle.y };
-  const area = document.getElementById('play-area').getBoundingClientRect();
+  let feedbackX = circle.x, feedbackY = circle.y;
+  if (el) {
+    const rect = el.getBoundingClientRect();
+    const area = document.getElementById('play-area').getBoundingClientRect();
+    feedbackX = rect.left - area.left + rect.width / 2;
+    feedbackY = rect.top - area.top + rect.height / 2;
+  }
 
   removeCircle(circle.id);
-  registerHit(result, rect.left - area.left + 40, rect.top - area.top + 40);
+  registerHit(result, feedbackX, feedbackY, circle.type, scoreGained);
 }
 
-function registerHit(result, x, y) {
+function registerHit(result, x, y, circleType, scoreGained = 0) {
   gameState.hits[result]++;
 
   if (result === 'miss') {
@@ -949,20 +1169,18 @@ function registerHit(result, x, y) {
     }
   }
 
-  // Update HUD
   document.getElementById('current-score').textContent = gameState.score.toLocaleString();
   document.getElementById('current-combo').textContent =
     gameState.combo > 1 ? `${gameState.combo} COMBO` : '';
 
-  // Show feedback
-  showFeedback(result, x, y);
+  showFeedback(result, x, y, scoreGained);
 }
 
-function showFeedback(result, x, y) {
+function showFeedback(result, x, y, score = 0) {
   const area = document.getElementById('play-area');
   const feedback = document.createElement('div');
   feedback.className = 'hit-feedback ' + result;
-  feedback.textContent = result.toUpperCase();
+  feedback.textContent = result === 'miss' ? 'MISS' : `${result.toUpperCase()} +${score}`;
   feedback.style.left = x + 'px';
   feedback.style.top = y + 'px';
   area.appendChild(feedback);
@@ -976,7 +1194,6 @@ function showFeedback(result, x, y) {
 function endGame() {
   gameState.isPlaying = false;
 
-  // Calculate grade
   const totalNotes = gameState.circles.length;
   const hitNotes = gameState.hits.perfect + gameState.hits.great + gameState.hits.good;
   const accuracy = totalNotes > 0 ? (hitNotes / totalNotes) * 100 : 0;
@@ -996,7 +1213,6 @@ function endGame() {
     gradeClass = 'grade-c';
   }
 
-  // Update result screen
   document.getElementById('result-grade').textContent = grade;
   document.getElementById('result-grade').className = 'result-grade ' + gradeClass;
   document.getElementById('result-score').textContent = gameState.score.toLocaleString();
@@ -1006,9 +1222,7 @@ function endGame() {
   document.getElementById('result-good').textContent = gameState.hits.good;
   document.getElementById('result-miss').textContent = gameState.hits.miss;
 
-  // Save to ranking
   saveScore();
-
   showScreen('result-screen');
 }
 
@@ -1029,7 +1243,6 @@ function saveScore() {
     date: new Date().toISOString(),
   });
 
-  // Keep top 10
   rankings.sort((a, b) => b.score - a.score);
   rankings = rankings.slice(0, 10);
 
@@ -1040,7 +1253,6 @@ function renderRanking() {
   const container = document.getElementById('ranking-list');
   container.innerHTML = '';
 
-  // Show all songs' top scores
   SONGS.forEach(song => {
     ['easy', 'normal', 'hard'].forEach(diff => {
       const key = `cybertap_ranking_${song.id}_${diff}`;
@@ -1048,7 +1260,7 @@ function renderRanking() {
 
       if (rankings.length > 0) {
         const header = document.createElement('div');
-        header.style.cssText = 'font-size: 12px; color: var(--neon-primary); margin: 16px 0 8px; text-transform: uppercase;';
+        header.style.cssText = 'font-size: 12px; color: var(--neon-primary); margin: 14px 0 6px; text-transform: uppercase; font-family: var(--font-en);';
         header.textContent = `${song.title} - ${diff}`;
         container.appendChild(header);
 
@@ -1084,7 +1296,6 @@ function renderRanking() {
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Prevent default touch behaviors
   document.addEventListener('touchmove', e => {
     if (gameState.isPlaying) e.preventDefault();
   }, { passive: false });
