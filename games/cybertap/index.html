@@ -2211,17 +2211,25 @@ function generateCircles() {
     // AppearTime is calculated backwards from hitTime
     const appearTime = hitTime - typeConfig.approachTime;
 
-    // Position within play area - unified to upper 2/3 area (no bottom notes)
-    const maxX = Math.max(100, areaRect.width - padding * 2);
-    const maxY = Math.max(100, (areaRect.height - padding * 2) * 0.65); // Upper 65% only
+    // Position within play area - account for approach ring size
+    // Approach ring sizes: medium=200, large=260, xlarge=320
+    const approachRingSize = { medium: 200, large: 260, xlarge: 320 }[circleType];
+    const halfRing = approachRingSize / 2;
+    const margin = halfRing + 10; // Margin = half of approach ring + buffer
+
+    // Calculate valid spawn area (upper 65%, within margins)
+    const minX = margin;
+    const maxX = Math.max(margin + 50, areaRect.width - margin);
+    const minY = margin;
+    const maxY = Math.max(margin + 50, (areaRect.height - margin) * 0.65);
 
     gameState.circles.push({
       id: gameState.circleId++,
       type: circleType,
       appearTime,
       hitTime,
-      x: padding + Math.random() * maxX,
-      y: padding + Math.random() * maxY,
+      x: minX + Math.random() * (maxX - minX),
+      y: minY + Math.random() * (maxY - minY),
       number: i + 1,
       active: false,
       hit: false,
@@ -2285,10 +2293,14 @@ function spawnCircle(circle) {
   circle.spawnTime = Date.now() - gameState.startTime;
   circle.visualHitTime = circle.spawnTime + typeConfig.approachTime;
 
-  // Ensure circle is within bounds
-  const halfSize = typeConfig.size / 2;
-  const x = Math.min(Math.max(halfSize + 10, circle.x), areaRect.width - halfSize - 10);
-  const y = Math.min(Math.max(halfSize + 10, circle.y), areaRect.height - halfSize - 10);
+  // Approach ring sizes: medium=200, large=260, xlarge=320
+  const approachRingSize = { medium: 200, large: 260, xlarge: 320 }[circle.type];
+  const halfRing = approachRingSize / 2;
+  const margin = 10;
+
+  // Ensure circle + approach ring is within bounds
+  const x = Math.min(Math.max(halfRing + margin, circle.x), areaRect.width - halfRing - margin);
+  const y = Math.min(Math.max(halfRing + margin, circle.y), areaRect.height - halfRing - margin);
 
   const el = document.createElement('div');
   // Immediately set target class if this is the current target
