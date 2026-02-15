@@ -1784,6 +1784,7 @@ body {
 <script>
 // ============================================================
 // SONG DATA - Easy to add new songs
+// Each song can have custom note distribution (medium/large/xlarge %)
 // ============================================================
 const SONGS = [
   {
@@ -1792,7 +1793,19 @@ const SONGS = [
     artist: 'eye-factory',
     bpm: 128,
     audioFile: 'lumi_zero.mp3',
-    duration: 10,  // Test: 10 seconds
+    duration: 57,  // 56.52 seconds
+    // Note size distribution (must sum to 1.0)
+    noteDistribution: { medium: 0.70, large: 0.25, xlarge: 0.05 },
+  },
+  {
+    id: 'dark_crysta',
+    title: 'Dark Crysta',
+    artist: 'eye-factory',
+    bpm: 140,
+    audioFile: 'dark_crysta.mp3',
+    duration: 95,  // 94.84 seconds
+    // More large/xlarge notes for dramatic feel
+    noteDistribution: { medium: 0.50, large: 0.40, xlarge: 0.10 },
   },
 ];
 
@@ -2226,13 +2239,20 @@ function generateCircles() {
   // Store speed multiplier for later use in timing calculations
   gameState.speedMultiplier = difficultyConfig.speedMultiplier;
 
-  // Size distribution: medium (normal), large (strong beats), xlarge (accents)
+  // Size distribution: use per-song noteDistribution, adjusted by difficulty
+  // Easy: more medium notes, Hard/VeryHard: more large/xlarge notes
+  const baseDist = song.noteDistribution || { medium: 0.70, large: 0.25, xlarge: 0.05 };
+  const difficultyAdjust = {
+    easy:     { medium: 0.10, large: -0.08, xlarge: -0.02 },
+    normal:   { medium: 0.00, large: 0.00,  xlarge: 0.00  },
+    hard:     { medium: -0.05, large: 0.03, xlarge: 0.02  },
+    veryhard: { medium: -0.10, large: 0.05, xlarge: 0.05  },
+  }[difficulty] || { medium: 0, large: 0, xlarge: 0 };
   const sizeDistribution = {
-    easy:     { medium: 0.80, large: 0.18, xlarge: 0.02 },
-    normal:   { medium: 0.70, large: 0.25, xlarge: 0.05 },
-    hard:     { medium: 0.60, large: 0.32, xlarge: 0.08 },
-    veryhard: { medium: 0.55, large: 0.35, xlarge: 0.10 },
-  }[difficulty];
+    medium: Math.max(0.1, Math.min(0.9, baseDist.medium + difficultyAdjust.medium)),
+    large:  Math.max(0.05, Math.min(0.6, baseDist.large + difficultyAdjust.large)),
+    xlarge: Math.max(0.02, Math.min(0.3, baseDist.xlarge + difficultyAdjust.xlarge)),
+  };
 
   // Calculate total circles based on interval (no rapid succession < 0.3s)
   const hitInterval = Math.max(difficultyConfig.minInterval, 300);
