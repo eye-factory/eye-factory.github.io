@@ -36,54 +36,38 @@ html, body {
 
 body {
   font-family: var(--font-ja);
-  background: var(--bg);
+  background: var(--bg) url('ctap1.png') center center / cover no-repeat;
   color: var(--text);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Background image - lowest layer */
+/* Background image overlay - for opacity control */
 .bg-image {
-  position: fixed;
+  position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  background: url('ctap1.png') center center / cover no-repeat;
-  opacity: 0.35;
+  background: var(--bg);
+  opacity: 0.6;
   pointer-events: none;
   z-index: 0;
   transition: opacity 0.4s ease;
 }
 
-/* Hide static background during play (GIF only) */
+/* During play - make overlay more opaque to show GIF better */
 body.playing .bg-image {
-  opacity: 0;
+  opacity: 0.8;
 }
 
-/* ============================================================
-   MOBILE PORTRAIT -> FORCED LANDSCAPE
-   ============================================================ */
-@media screen and (orientation: portrait) and (max-width: 900px) {
-  html {
-    /* Rotate entire page 90 degrees */
-    transform: rotate(90deg);
-    transform-origin: left top;
-    width: 100vh;
-    height: 100vw;
-    overflow-x: hidden;
-    position: absolute;
-    top: 100%;
-    left: 0;
-  }
-}
 
 /* Cyber noise overlay */
 .bg-noise {
-  position: fixed;
+  position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
   opacity: 0;
   background: repeating-linear-gradient(
     0deg,
@@ -108,11 +92,11 @@ body.playing .bg-image {
 
 /* Additional scan line effect */
 .bg-scanlines {
-  position: fixed;
+  position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
   background: repeating-linear-gradient(
     transparent 0px,
     transparent 3px,
@@ -132,7 +116,7 @@ body.playing .bg-image {
 
 /* Background grid */
 .bg-grid {
-  position: fixed;
+  position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
   background-image:
@@ -140,56 +124,13 @@ body.playing .bg-image {
     linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
   background-size: 50px 50px;
   pointer-events: none;
-  z-index: -1;
+  z-index: 0;
 }
 
-/* Rotate guide for portrait mode */
+/* Rotate guide for portrait mode - disabled, using CSS rotation */
 #rotate-guide {
   display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: var(--bg);
-  z-index: 9999;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 40px;
-  opacity: 1;
-  transition: opacity 0.8s ease, filter 0.8s ease;
 }
-#rotate-guide.fade-out {
-  opacity: 0;
-  filter: blur(10px);
-  pointer-events: none;
-}
-#rotate-guide .icon {
-  font-size: 80px;
-  margin-bottom: 30px;
-  animation: rotateHint 2s ease-in-out infinite;
-}
-@keyframes rotateHint {
-  0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(90deg); }
-}
-#rotate-guide .message {
-  font-family: var(--font-en);
-  font-size: 20px;
-  color: var(--neon-primary);
-  margin-bottom: 10px;
-}
-#rotate-guide .sub-message {
-  font-size: 14px;
-  color: var(--text-sub);
-}
-
-/* Rotate guide disabled - using CSS forced landscape instead */
-/*
-@media (orientation: portrait) and (max-width: 900px) {
-  #rotate-guide.show { display: flex; }
-}
-*/
 
 /* Game container with cyber border */
 #game-container {
@@ -204,7 +145,7 @@ body.playing .bg-image {
   overflow: hidden;
   border: 3px solid transparent;
   border-radius: 8px;
-  background: linear-gradient(rgba(10, 10, 15, 0.7), rgba(10, 10, 15, 0.7)) padding-box,
+  background: linear-gradient(rgba(10, 10, 15, 0.85), rgba(10, 10, 15, 0.85)) padding-box,
               linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary)) border-box;
   background-size: 100% 100%, 200% 100%;
   animation: cyberBorderAnimation 4s ease-in-out infinite;
@@ -387,7 +328,7 @@ body.playing .bg-image {
 /* Tap to Start screen (all devices - for audio initialization) */
 #tap-start-screen {
   display: none;
-  position: fixed;
+  position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
   background: var(--bg);
@@ -961,7 +902,7 @@ body.playing .bg-image {
 
 /* Screen transition fade */
 #screen-fade {
-  position: fixed;
+  position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
   background: var(--bg);
@@ -1815,9 +1756,31 @@ body.playing .bg-image {
     flex-direction: column;
   }
 }
+/* Main wrapper for rotation */
+#app-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Mobile portrait - rotate the app wrapper */
+@media screen and (orientation: portrait) and (max-width: 932px) {
+  #app-wrapper {
+    transform: rotate(90deg);
+    transform-origin: center center;
+    width: 100vh;
+    height: 100vw;
+  }
+}
 </style>
 </head>
 <body>
+
+<!-- Main app wrapper for rotation support -->
+<div id="app-wrapper">
 
 <!-- Tap to Start screen (all devices - for audio initialization) -->
 <div id="tap-start-screen">
@@ -1832,13 +1795,6 @@ body.playing .bg-image {
 <div class="bg-noise"></div>
 <div class="bg-scanlines"></div>
 <div class="bg-grid"></div>
-
-<!-- Rotate guide for portrait mode -->
-<div id="rotate-guide">
-  <div class="icon">📱</div>
-  <div class="message">Please Rotate Your Device</div>
-  <div class="sub-message">横画面でプレイしてください</div>
-</div>
 
 <div id="game-container">
   <!-- Title Screen -->
@@ -3069,5 +3025,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+</div><!-- /app-wrapper -->
 </body>
 </html>
