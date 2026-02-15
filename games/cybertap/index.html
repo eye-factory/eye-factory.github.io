@@ -1643,16 +1643,18 @@ body {
   border-radius: 0;
 }
 
-/* Mobile portrait (rotated to landscape) - use 90% of available space */
+/* Mobile portrait (rotated to landscape) - use 95% of available space */
 @media (orientation: portrait) and (max-width: 900px) {
   #app-wrapper {
     /* After rotation: visible height = original vw, visible width = original vh */
-    /* Use 90% of the rotated viewport */
-    height: 90vw;
-    width: calc(90vw * 16 / 9);
-    max-width: 90vh;
-    max-height: calc(90vh * 9 / 16);
+    /* Use 95% of the rotated viewport */
+    height: 95vw;
+    width: calc(95vw * 16 / 9);
+    max-width: 95vh;
+    max-height: calc(95vh * 9 / 16);
     border-width: 3px;
+    /* Shift slightly left for better centering (accounts for notch/rounded corners) */
+    margin-left: -3vw;
   }
 }
 </style>
@@ -2303,14 +2305,16 @@ function generateCircles() {
       : { medium: 200, large: 260, xlarge: 320 };
     const approachRingSize = approachRingSizes[circleType];
     const halfRing = approachRingSize / 2;
-    const margin = halfRing + 10; // Margin = half of approach ring + buffer
+    // Margin must include half of approach ring so entire ring stays visible
+    const edgeMargin = halfRing + 15;
 
-    // Calculate valid spawn area (full width, upper portion to avoid progress bar)
-    const minX = margin;
-    const maxX = Math.max(margin + 50, areaRect.width - margin);
-    const minY = margin;
-    // Keep notes in upper 70% to avoid progress bar area
-    const maxY = Math.max(margin + 50, areaRect.height * 0.70 - margin);
+    // Calculate valid spawn area - notes must be fully visible
+    // X: from left edge + margin to right edge - margin
+    const minX = edgeMargin;
+    const maxX = Math.max(edgeMargin + 30, areaRect.width - edgeMargin);
+    // Y: from top edge + margin to 65% height (above progress bar)
+    const minY = edgeMargin;
+    const maxY = Math.max(edgeMargin + 30, areaRect.height * 0.65 - edgeMargin);
 
     gameState.circles.push({
       id: gameState.circleId++,
@@ -2394,12 +2398,14 @@ function spawnCircle(circle) {
     : { medium: 200, large: 260, xlarge: 320 };
   const approachRingSize = approachRingSizes[circle.type];
   const halfRing = approachRingSize / 2;
-  const margin = 10;
+  // Edge margin ensures entire approach ring stays visible
+  const edgeMargin = halfRing + 15;
 
-  // Ensure circle + approach ring is within bounds (stay above progress bar)
-  const x = Math.min(Math.max(halfRing + margin, circle.x), areaRect.width - halfRing - margin);
-  const maxYBound = areaRect.height * 0.85 - halfRing - margin; // Stay above progress bar
-  const y = Math.min(Math.max(halfRing + margin, circle.y), maxYBound);
+  // Ensure circle + approach ring is fully within bounds
+  const x = Math.min(Math.max(edgeMargin, circle.x), areaRect.width - edgeMargin);
+  // Y bound: stay within play area, above progress bar (65% of height)
+  const maxYBound = areaRect.height * 0.65 - edgeMargin;
+  const y = Math.min(Math.max(edgeMargin, circle.y), Math.max(edgeMargin + 30, maxYBound));
 
   const el = document.createElement('div');
   // Immediately set target class if this is the current target
