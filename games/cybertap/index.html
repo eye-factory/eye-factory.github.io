@@ -493,6 +493,15 @@ body {
   text-transform: uppercase;
   min-width: 140px;
 }
+.diff-btn.baby {
+  border-color: #ff99cc;
+  color: #ff99cc;
+}
+.diff-btn.baby:hover {
+  background: #ff99cc;
+  color: #000;
+  box-shadow: 0 0 20px #ff99cc;
+}
 .diff-btn.easy {
   border-color: var(--neon-secondary);
   color: var(--neon-secondary);
@@ -1637,6 +1646,7 @@ body {
       </div>
     </div>
     <div class="difficulty-buttons">
+      <button class="diff-btn baby" onclick="startGame('baby')">Baby</button>
       <button class="diff-btn easy" onclick="startGame('easy')">Easy</button>
       <button class="diff-btn normal" onclick="startGame('normal')">Normal</button>
       <button class="diff-btn hard" onclick="startGame('hard')">Hard</button>
@@ -2128,6 +2138,24 @@ function countdown(count, callback) {
 function generateCircles() {
   const song = gameState.selectedSong;
   const difficulty = gameState.selectedDifficulty;
+
+  // Baby mode: 1 note only for GOD grade testing
+  if (difficulty === 'baby') {
+    const area = document.getElementById('play-area');
+    const areaRect = area.getBoundingClientRect();
+    gameState.circles.push({
+      id: gameState.circleId++,
+      type: 'large',
+      appearTime: 500,
+      hitTime: 2000,
+      x: areaRect.width / 2,
+      y: areaRect.height / 3,
+      number: 1,
+      active: false,
+      hit: false,
+    });
+    return;
+  }
 
   // Difficulty settings:
   // Easy: 1.5s interval, max 1 note on screen
