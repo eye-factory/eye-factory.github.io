@@ -639,13 +639,17 @@ body {
 
 /* Inactive circles (not current target) */
 .hit-circle.inactive {
-  opacity: 0.4;
-  filter: grayscale(0.5) brightness(0.6);
+  opacity: 0.6;
+  filter: brightness(0.7);
   pointer-events: none;
 }
 .hit-circle.inactive::before {
   animation: none;
-  opacity: 0.4;
+  opacity: 0.5;
+}
+/* Approach ring always animates even on inactive circles */
+.hit-circle.inactive .approach-ring {
+  opacity: 0.8;
 }
 
 /* Current target circle (highlighted) */
@@ -712,14 +716,14 @@ body {
 
 .hit-circle .approach-ring {
   position: absolute;
-  border: 3px solid var(--neon-primary);
+  border: 4px solid #00ffff;
   border-radius: 50%;
-  opacity: 0.9;
+  opacity: 1;
   pointer-events: none;
-  box-shadow: 0 0 15px var(--neon-primary), 0 0 30px rgba(0, 212, 255, 0.4);
+  box-shadow: 0 0 20px #00ffff, 0 0 40px rgba(0, 255, 255, 0.6);
 }
 
-/* Approach ring animations for each size */
+/* Approach ring animations for each size - always visible */
 .hit-circle.medium .approach-ring {
   width: 200px; height: 200px;
   animation: approachMedium 1s linear forwards;
@@ -731,7 +735,7 @@ body {
 .hit-circle.xlarge .approach-ring {
   width: 320px; height: 320px;
   animation: approachXLarge 1.5s linear forwards;
-  border-width: 4px;
+  border-width: 5px;
 }
 
 /* Ripple effect on tap */
@@ -2102,29 +2106,30 @@ function generateCircles() {
   const song = gameState.selectedSong;
   const difficulty = gameState.selectedDifficulty;
 
-  // Circles per second based on difficulty
-  // Easy: 0.8 (ゆっくり), Normal: 1.44, Hard: 2.0
-  const circlesPerSecond = { easy: 0.8, normal: 1.44, hard: 2.0 }[difficulty];
+  // Difficulty settings:
+  // Easy: 1.5s interval, max 1 note on screen
+  // Normal: 1.0s interval, max 2 notes on screen
+  // Hard: 0.7s interval, max 3 notes on screen
+  const difficultyConfig = {
+    easy:   { minInterval: 1500, maxOnScreen: 1 },
+    normal: { minInterval: 1000, maxOnScreen: 2 },
+    hard:   { minInterval: 700,  maxOnScreen: 3 },
+  }[difficulty];
 
   // Size distribution: medium (normal), large (strong beats), xlarge (accents)
   const sizeDistribution = {
-    easy:   { medium: 0.75, large: 0.22, xlarge: 0.03 },
-    normal: { medium: 0.65, large: 0.30, xlarge: 0.05 },
-    hard:   { medium: 0.55, large: 0.38, xlarge: 0.07 },
+    easy:   { medium: 0.80, large: 0.18, xlarge: 0.02 },
+    normal: { medium: 0.70, large: 0.25, xlarge: 0.05 },
+    hard:   { medium: 0.60, large: 0.32, xlarge: 0.08 },
   }[difficulty];
 
-  const totalCircles = Math.floor(song.duration * circlesPerSecond);
+  // Calculate total circles based on interval (no rapid succession < 0.3s)
+  const hitInterval = Math.max(difficultyConfig.minInterval, 300);
+  const totalCircles = Math.floor((song.duration * 1000) / hitInterval);
 
   const area = document.getElementById('play-area');
   const areaRect = area.getBoundingClientRect();
   const padding = 80;
-
-  // Minimum interval between hitTimes (no simultaneous taps)
-  const minHitInterval = 300; // 0.3 seconds minimum
-
-  // Calculate hitTime interval (ensuring minimum interval)
-  const rawInterval = (song.duration * 1000) / totalCircles;
-  const hitInterval = Math.max(rawInterval, minHitInterval);
 
   // First hitTime starts after the longest approach time + buffer for START! display
   const maxApproachTime = Math.max(
