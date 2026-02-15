@@ -2275,16 +2275,22 @@ function generateCircles() {
     const appearTime = hitTime - adjustedApproachTime;
 
     // Position within play area - account for approach ring size
-    // Approach ring sizes: medium=200, large=260, xlarge=320
-    const approachRingSize = { medium: 200, large: 260, xlarge: 320 }[circleType];
+    // Mobile (<=480px): medium=140, large=180, xlarge=220
+    // Desktop: medium=200, large=260, xlarge=320
+    const isMobile = window.innerWidth <= 480 || window.innerHeight <= 480;
+    const approachRingSizes = isMobile
+      ? { medium: 140, large: 180, xlarge: 220 }
+      : { medium: 200, large: 260, xlarge: 320 };
+    const approachRingSize = approachRingSizes[circleType];
     const halfRing = approachRingSize / 2;
     const margin = halfRing + 10; // Margin = half of approach ring + buffer
 
-    // Calculate valid spawn area (upper 65%, within margins)
+    // Calculate valid spawn area (full width, upper portion to avoid progress bar)
     const minX = margin;
     const maxX = Math.max(margin + 50, areaRect.width - margin);
     const minY = margin;
-    const maxY = Math.max(margin + 50, (areaRect.height - margin) * 0.65);
+    // Keep notes in upper 70% to avoid progress bar area
+    const maxY = Math.max(margin + 50, areaRect.height * 0.70 - margin);
 
     gameState.circles.push({
       id: gameState.circleId++,
@@ -2359,14 +2365,21 @@ function spawnCircle(circle) {
   const adjustedApproachTime = typeConfig.approachTime / (gameState.speedMultiplier || 1);
   circle.visualHitTime = circle.spawnTime + adjustedApproachTime;
 
-  // Approach ring sizes: medium=200, large=260, xlarge=320
-  const approachRingSize = { medium: 200, large: 260, xlarge: 320 }[circle.type];
+  // Approach ring sizes - mobile vs desktop
+  // Mobile (<=480px): medium=140, large=180, xlarge=220
+  // Desktop: medium=200, large=260, xlarge=320
+  const isMobile = window.innerWidth <= 480 || window.innerHeight <= 480;
+  const approachRingSizes = isMobile
+    ? { medium: 140, large: 180, xlarge: 220 }
+    : { medium: 200, large: 260, xlarge: 320 };
+  const approachRingSize = approachRingSizes[circle.type];
   const halfRing = approachRingSize / 2;
   const margin = 10;
 
-  // Ensure circle + approach ring is within bounds
+  // Ensure circle + approach ring is within bounds (stay above progress bar)
   const x = Math.min(Math.max(halfRing + margin, circle.x), areaRect.width - halfRing - margin);
-  const y = Math.min(Math.max(halfRing + margin, circle.y), areaRect.height - halfRing - margin);
+  const maxYBound = areaRect.height * 0.85 - halfRing - margin; // Stay above progress bar
+  const y = Math.min(Math.max(halfRing + margin, circle.y), maxYBound);
 
   const el = document.createElement('div');
   // Immediately set target class if this is the current target
