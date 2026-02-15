@@ -49,15 +49,32 @@ body {
   top: 0; left: 0;
   width: 100%; height: 100%;
   background: url('ctap1.png') center center / cover no-repeat;
-  opacity: 0.18;
+  opacity: 0.35;
   pointer-events: none;
-  z-index: -2;
+  z-index: 0;
   transition: opacity 0.4s ease;
 }
 
 /* Hide static background during play (GIF only) */
 body.playing .bg-image {
   opacity: 0;
+}
+
+/* ============================================================
+   MOBILE PORTRAIT -> FORCED LANDSCAPE
+   ============================================================ */
+@media screen and (orientation: portrait) and (max-width: 900px) {
+  html {
+    /* Rotate entire page 90 degrees */
+    transform: rotate(90deg);
+    transform-origin: left top;
+    width: 100vh;
+    height: 100vw;
+    overflow-x: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
 }
 
 /* Cyber noise overlay */
@@ -123,7 +140,7 @@ body.playing .bg-image {
     linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
   background-size: 50px 50px;
   pointer-events: none;
-  z-index: 0;
+  z-index: -1;
 }
 
 /* Rotate guide for portrait mode */
@@ -167,9 +184,12 @@ body.playing .bg-image {
   color: var(--text-sub);
 }
 
+/* Rotate guide disabled - using CSS forced landscape instead */
+/*
 @media (orientation: portrait) and (max-width: 900px) {
   #rotate-guide.show { display: flex; }
 }
+*/
 
 /* Game container with cyber border */
 #game-container {
@@ -184,7 +204,7 @@ body.playing .bg-image {
   overflow: hidden;
   border: 3px solid transparent;
   border-radius: 8px;
-  background: linear-gradient(rgba(10, 10, 15, 0.85), rgba(10, 10, 15, 0.85)) padding-box,
+  background: linear-gradient(rgba(10, 10, 15, 0.7), rgba(10, 10, 15, 0.7)) padding-box,
               linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary)) border-box;
   background-size: 100% 100%, 200% 100%;
   animation: cyberBorderAnimation 4s ease-in-out infinite;
@@ -1826,8 +1846,8 @@ body.playing .bg-image {
     <h1 class="game-title">CyberTap</h1>
     <p class="subtitle">Rhythm Action Game</p>
     <div class="title-buttons">
-      <button class="btn" onclick="showScreen('song-select')">Start</button>
-      <button class="btn secondary" onclick="showScreen('ranking')">Ranking</button>
+      <button class="btn" onclick="playSE(SE.wind); showScreen('song-select')">Start</button>
+      <button class="btn secondary" onclick="playSE(SE.wind); showScreen('ranking')">Ranking</button>
     </div>
     <div class="volume-settings">
       <div class="volume-row">
@@ -1891,7 +1911,7 @@ body.playing .bg-image {
       <div class="result-grade" id="result-grade">S</div>
       <div class="result-buttons">
         <button class="btn" onclick="retryGame()">Retry</button>
-        <button class="btn secondary" onclick="showScreen('title-screen')">Title</button>
+        <button class="btn secondary" onclick="stopResultBGM(); showScreen('title-screen')">Title</button>
       </div>
     </div>
     <div class="result-stats">
@@ -2092,6 +2112,17 @@ function playSE(audioElement) {
 // ============================================================
 let titleBGM = null;
 let gameBGM = null;
+let resultBGM = null;
+
+// ============================================================
+// SE (Sound Effects)
+// ============================================================
+const SE = {
+  wind: new Audio('wind.mp3'),
+  dj: new Audio('dj.mp3'),
+  god: new Audio('god.mp3'),
+  low: new Audio('low.mp3')
+};
 
 function initBGM() {
   titleBGM = new Audio('taitoru.mp3');
@@ -2225,6 +2256,7 @@ function renderSongList() {
 }
 
 function selectSong(song) {
+  playSE(SE.dj);
   gameState.selectedSong = song;
   document.getElementById('selected-song-name').textContent = song.title;
   showScreen('difficulty-select');
@@ -2795,15 +2827,34 @@ function endGame() {
 
     // GOD grade special effect
     if (resultData.isGod) {
+      playSE(SE.god);
       const flash = document.createElement('div');
       flash.className = 'god-flash';
       document.body.appendChild(flash);
       setTimeout(() => flash.remove(), 2000);
+    } else if (resultData.grade === 'C' || resultData.grade === 'D') {
+      // Low grade BGM
+      if (resultBGM) {
+        resultBGM.pause();
+        resultBGM.currentTime = 0;
+      }
+      resultBGM = SE.low;
+      resultBGM.loop = true;
+      resultBGM.volume = getVolume();
+      resultBGM.play().catch(() => {});
     }
   }, 300);
 }
 
+function stopResultBGM() {
+  if (resultBGM) {
+    resultBGM.pause();
+    resultBGM.currentTime = 0;
+  }
+}
+
 function retryGame() {
+  stopResultBGM();
   startGame(gameState.selectedDifficulty);
 }
 
