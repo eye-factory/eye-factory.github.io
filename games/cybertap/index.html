@@ -540,22 +540,52 @@ body {
   color: var(--neon-primary);
 }
 
-/* Hit circles - 3 sizes */
+/* Hit circles - Unified cyber design */
 .hit-circle {
   position: absolute;
   border-radius: 50%;
-  border: 3px solid var(--neon-primary);
-  background: rgba(0, 212, 255, 0.15);
+  border: 3px solid transparent;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(255, 0, 170, 0.2));
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-en);
   font-weight: 700;
-  color: var(--neon-primary);
   cursor: pointer;
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
-  animation: circleAppear 0.2s ease-out;
+  animation: circleAppear 0.3s ease-out;
   transform: translate(-50%, -50%);
+  /* Gradient border effect */
+  background-clip: padding-box;
+  position: relative;
+}
+.hit-circle::before {
+  content: '';
+  position: absolute;
+  top: -3px; left: -3px; right: -3px; bottom: -3px;
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary));
+  background-size: 200% 100%;
+  border-radius: 50%;
+  z-index: -1;
+  animation: gradientBorder 2s ease-in-out infinite;
+}
+.hit-circle::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, rgba(255, 0, 170, 0.1) 100%);
+  border-radius: 50%;
+  z-index: -1;
+}
+@keyframes gradientBorder {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.hit-circle span {
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8));
 }
 .hit-circle:active {
   transform: translate(-50%, -50%) scale(0.95);
@@ -566,13 +596,7 @@ body {
   width: 50px;
   height: 50px;
   font-size: 14px;
-  border-color: var(--neon-orange);
-  background: rgba(255, 136, 0, 0.15);
-  color: var(--neon-orange);
-  box-shadow: 0 0 15px rgba(255, 136, 0, 0.5);
-}
-.hit-circle.small .approach-ring {
-  border-color: var(--neon-orange);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 0 40px rgba(255, 0, 170, 0.3);
 }
 
 /* Medium circle - Normal */
@@ -580,6 +604,7 @@ body {
   width: 70px;
   height: 70px;
   font-size: 18px;
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.5), 0 0 50px rgba(255, 0, 170, 0.3);
 }
 
 /* Large circle - Slow, low score */
@@ -587,21 +612,21 @@ body {
   width: 100px;
   height: 100px;
   font-size: 24px;
-  border-color: var(--neon-purple);
-  background: rgba(139, 92, 246, 0.15);
-  color: var(--neon-purple);
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-}
-.hit-circle.large .approach-ring {
-  border-color: var(--neon-purple);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.5), 0 0 60px rgba(255, 0, 170, 0.3);
 }
 
 .hit-circle .approach-ring {
   position: absolute;
-  border: 2px solid var(--neon-primary);
+  border: 2px solid;
+  border-image: linear-gradient(90deg, var(--neon-primary), var(--neon-pink)) 1;
   border-radius: 50%;
   opacity: 0.7;
   pointer-events: none;
+}
+/* Fix approach ring border */
+.hit-circle .approach-ring {
+  border: 2px solid var(--neon-primary);
+  box-shadow: 0 0 10px var(--neon-primary);
 }
 
 /* Approach ring animations for each size */
@@ -636,37 +661,115 @@ body {
   to { width: 100px; height: 100px; opacity: 0; }
 }
 
-/* Hit feedback */
+/* Hit feedback - Enhanced */
 .hit-feedback {
   position: absolute;
   font-family: var(--font-en);
-  font-size: 18px;
-  font-weight: 700;
-  animation: feedbackPop 0.5s ease-out forwards;
+  font-size: 22px;
+  font-weight: 900;
   pointer-events: none;
   transform: translate(-50%, -50%);
   white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 .hit-feedback.perfect {
-  color: var(--neon-secondary);
-  text-shadow: 0 0 10px var(--neon-secondary);
+  background: linear-gradient(90deg, #00ff88, #00ffcc, #00ff88);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px #00ff88) drop-shadow(0 0 30px #00ff88);
+  animation: feedbackPerfect 0.6s ease-out forwards;
 }
 .hit-feedback.great {
-  color: var(--neon-primary);
-  text-shadow: 0 0 10px var(--neon-primary);
+  background: linear-gradient(90deg, var(--neon-primary), #00ffff, var(--neon-primary));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 12px var(--neon-primary)) drop-shadow(0 0 25px var(--neon-primary));
+  animation: feedbackGreat 0.6s ease-out forwards;
 }
 .hit-feedback.good {
-  color: var(--neon-yellow);
-  text-shadow: 0 0 10px var(--neon-yellow);
+  background: linear-gradient(90deg, var(--neon-yellow), #ffff00, var(--neon-yellow));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px var(--neon-yellow));
+  animation: feedbackGood 0.5s ease-out forwards;
 }
 .hit-feedback.miss {
-  color: var(--neon-pink);
-  text-shadow: 0 0 10px var(--neon-pink);
+  background: linear-gradient(90deg, var(--neon-pink), #ff4488, var(--neon-pink));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px var(--neon-pink));
+  animation: feedbackMiss 0.5s ease-out forwards;
 }
 
-@keyframes feedbackPop {
+@keyframes feedbackPerfect {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  20% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+  40% { transform: translate(-50%, -50%) scale(1.2); }
+  100% { transform: translate(-50%, calc(-50% - 40px)) scale(1.3); opacity: 0; }
+}
+@keyframes feedbackGreat {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  20% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+  100% { transform: translate(-50%, calc(-50% - 35px)) scale(1.2); opacity: 0; }
+}
+@keyframes feedbackGood {
+  0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+  20% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, calc(-50% - 30px)) scale(1.1); opacity: 0; }
+}
+@keyframes feedbackMiss {
   0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-  100% { transform: translate(-50%, calc(-50% - 30px)) scale(1.2); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(0.9) rotate(-5deg); }
+  100% { transform: translate(-50%, calc(-50% - 20px)) scale(0.8); opacity: 0; }
+}
+
+/* Score popup animation */
+.score-popup {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-en);
+  font-size: 24px;
+  font-weight: 900;
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px var(--neon-primary));
+  animation: scorePopup 0.8s ease-out forwards;
+  pointer-events: none;
+  z-index: 100;
+}
+@keyframes scorePopup {
+  0% { transform: translateX(-50%) scale(0.5); opacity: 0; }
+  30% { transform: translateX(-50%) scale(1.3); opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-30px) scale(1); opacity: 0; }
+}
+
+/* Screen transition fade */
+#screen-fade {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--bg);
+  z-index: 9998;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+#screen-fade.active {
+  opacity: 1;
+  pointer-events: all;
 }
 
 /* Result screen - Horizontal layout */
@@ -691,15 +794,72 @@ body {
 
 .result-grade {
   font-family: var(--font-en);
-  font-size: 80px;
+  font-size: 100px;
   font-weight: 900;
-  text-shadow: 0 0 30px currentColor;
   line-height: 1;
+  opacity: 0;
+  animation: gradeReveal 1s ease-out 0.3s forwards;
 }
-.grade-s { color: var(--neon-secondary); }
-.grade-a { color: var(--neon-primary); }
-.grade-b { color: var(--neon-yellow); }
-.grade-c { color: var(--neon-pink); }
+.grade-s {
+  background: linear-gradient(90deg, #00ff88, #00ffcc, #88ff00, #00ff88);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 30px #00ff88) drop-shadow(0 0 60px #00ff88);
+  animation: gradeReveal 1s ease-out 0.3s forwards, gradeShineS 2s ease-in-out infinite;
+}
+.grade-a {
+  background: linear-gradient(90deg, var(--neon-primary), #00ffff, var(--neon-primary));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 25px var(--neon-primary)) drop-shadow(0 0 50px var(--neon-primary));
+  animation: gradeReveal 1s ease-out 0.3s forwards, gradeShine 2s ease-in-out infinite;
+}
+.grade-b {
+  background: linear-gradient(90deg, var(--neon-yellow), #ffff00, var(--neon-yellow));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 20px var(--neon-yellow));
+  animation: gradeReveal 1s ease-out 0.3s forwards, gradeShine 2s ease-in-out infinite;
+}
+.grade-c {
+  background: linear-gradient(90deg, var(--neon-pink), #ff4488, var(--neon-pink));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px var(--neon-pink));
+  animation: gradeReveal 1s ease-out 0.3s forwards;
+}
+@keyframes gradeReveal {
+  0% { opacity: 0; transform: scale(0.3) rotate(-10deg); }
+  50% { opacity: 1; transform: scale(1.2) rotate(5deg); }
+  70% { transform: scale(0.95) rotate(-2deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@keyframes gradeShine {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes gradeShineS {
+  0%, 100% { background-position: 0% 50%; filter: drop-shadow(0 0 30px #00ff88) drop-shadow(0 0 60px #00ff88); }
+  50% { background-position: 100% 50%; filter: drop-shadow(0 0 50px #00ff88) drop-shadow(0 0 100px #00ffcc); }
+}
+
+/* Result score animation */
+#result-score {
+  animation: resultScoreReveal 0.8s ease-out 0.6s forwards;
+  opacity: 0;
+}
+@keyframes resultScoreReveal {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
 
 .result-stats {
   background: var(--bg-card);
@@ -838,23 +998,33 @@ body {
   color: var(--neon-primary);
 }
 
-/* Countdown */
+/* Countdown - Enhanced */
 .countdown {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   font-family: var(--font-en);
-  font-size: 100px;
+  font-size: 120px;
   font-weight: 900;
-  color: var(--neon-primary);
-  text-shadow: 0 0 40px var(--neon-primary);
-  animation: countdownPulse 1s ease-in-out;
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 40px var(--neon-primary)) drop-shadow(0 0 80px var(--neon-pink));
+  animation: countdownPulse 0.9s ease-in-out;
   z-index: 20;
+}
+.countdown.go {
+  font-size: 140px;
+  background: linear-gradient(90deg, #00ff88, #00ffcc, #00ff88);
+  filter: drop-shadow(0 0 50px #00ff88) drop-shadow(0 0 100px #00ffcc);
 }
 
 @keyframes countdownPulse {
-  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  0% { transform: translate(-50%, -50%) scale(0.3) rotate(-15deg); opacity: 0; }
+  40% { transform: translate(-50%, -50%) scale(1.3) rotate(5deg); opacity: 1; }
+  70% { transform: translate(-50%, -50%) scale(1.1) rotate(-2deg); }
   100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
 }
 
@@ -927,6 +1097,9 @@ body {
   <div class="tap-title">TAP TO START</div>
   <div class="tap-hint">タップして開始</div>
 </div>
+
+<!-- Screen transition fade -->
+<div id="screen-fade"></div>
 
 <div class="bg-image"></div>
 <div class="bg-noise"></div>
@@ -1070,11 +1243,11 @@ body {
 // ============================================================
 const SONGS = [
   {
-    id: 'cyber_rush',
-    title: 'Cyber Rush',
+    id: 'lumi_zero',
+    title: 'Lumi Zero',
     artist: 'eye-factory',
-    bpm: 140,
-    audioFile: null,
+    bpm: 128,
+    audioFile: 'lumi_zero.mp3',
     duration: 10,  // Test: 10 seconds
   },
   {
@@ -1211,9 +1384,103 @@ function playSE(audioElement) {
 }
 
 // ============================================================
-// SCREEN MANAGEMENT
+// BGM CONTROL
 // ============================================================
-function showScreen(screenId) {
+let titleBGM = null;
+let gameBGM = null;
+
+function initBGM() {
+  titleBGM = new Audio('taitoru.mp3');
+  titleBGM.loop = true;
+  titleBGM.volume = getVolume('bgm');
+}
+
+function playTitleBGM() {
+  if (!titleBGM) initBGM();
+  if (gameBGM) {
+    gameBGM.pause();
+    gameBGM.currentTime = 0;
+  }
+  titleBGM.volume = getVolume('bgm');
+  titleBGM.play().catch(() => {});
+}
+
+function stopTitleBGM() {
+  if (titleBGM) {
+    fadeOutAudio(titleBGM, 500);
+  }
+}
+
+function playGameBGM(audioFile) {
+  if (!audioFile) return;
+  gameBGM = new Audio(audioFile);
+  gameBGM.volume = getVolume('bgm');
+  gameBGM.play().catch(() => {});
+}
+
+function stopGameBGM() {
+  if (gameBGM) {
+    fadeOutAudio(gameBGM, 300);
+  }
+}
+
+function fadeOutAudio(audio, duration) {
+  const startVolume = audio.volume;
+  const steps = 20;
+  const stepTime = duration / steps;
+  const volumeStep = startVolume / steps;
+
+  let currentStep = 0;
+  const fadeInterval = setInterval(() => {
+    currentStep++;
+    audio.volume = Math.max(0, startVolume - (volumeStep * currentStep));
+    if (currentStep >= steps) {
+      clearInterval(fadeInterval);
+      audio.pause();
+      audio.currentTime = 0;
+      audio.volume = startVolume;
+    }
+  }, stepTime);
+}
+
+function fadeInAudio(audio, duration, targetVolume) {
+  audio.volume = 0;
+  audio.play().catch(() => {});
+
+  const steps = 20;
+  const stepTime = duration / steps;
+  const volumeStep = targetVolume / steps;
+
+  let currentStep = 0;
+  const fadeInterval = setInterval(() => {
+    currentStep++;
+    audio.volume = Math.min(targetVolume, volumeStep * currentStep);
+    if (currentStep >= steps) {
+      clearInterval(fadeInterval);
+    }
+  }, stepTime);
+}
+
+// ============================================================
+// SCREEN MANAGEMENT WITH FADE
+// ============================================================
+function showScreen(screenId, withFade = false) {
+  if (withFade) {
+    const fade = document.getElementById('screen-fade');
+    fade.classList.add('active');
+
+    setTimeout(() => {
+      doScreenSwitch(screenId);
+      setTimeout(() => {
+        fade.classList.remove('active');
+      }, 100);
+    }, 400);
+  } else {
+    doScreenSwitch(screenId);
+  }
+}
+
+function doScreenSwitch(screenId) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(screenId).classList.add('active');
   gameState.currentScreen = screenId;
@@ -1222,6 +1489,8 @@ function showScreen(screenId) {
     renderSongList();
   } else if (screenId === 'ranking') {
     renderRanking();
+  } else if (screenId === 'title-screen') {
+    playTitleBGM();
   }
 }
 
@@ -1255,6 +1524,9 @@ function selectSong(song) {
 // GAME START
 // ============================================================
 function startGame(difficulty) {
+  // Stop title BGM with fade
+  stopTitleBGM();
+
   gameState.selectedDifficulty = difficulty;
   gameState.score = 0;
   gameState.combo = 0;
@@ -1273,14 +1545,18 @@ function startGame(difficulty) {
   // Start GIF background rotation
   startGifBackground();
 
-  showScreen('play-screen');
+  // Show play screen with fade
+  showScreen('play-screen', true);
 
-  countdown(3, () => {
-    gameState.isPlaying = true;
-    gameState.startTime = Date.now();
-    generateCircles();
-    gameLoop();
-  });
+  // Wait for fade, then countdown
+  setTimeout(() => {
+    countdown(3, () => {
+      gameState.isPlaying = true;
+      gameState.startTime = Date.now();
+      generateCircles();
+      gameLoop();
+    });
+  }, 600);
 }
 
 // GIF background rotation
@@ -1309,12 +1585,27 @@ function stopGifBackground() {
 }
 
 function countdown(count, callback) {
+  const area = document.getElementById('play-area');
+
   if (count <= 0) {
-    callback();
+    // Show GO!
+    const goEl = document.createElement('div');
+    goEl.className = 'countdown go';
+    goEl.textContent = 'GO!';
+    area.appendChild(goEl);
+
+    // Start game BGM
+    if (gameState.selectedSong.audioFile) {
+      playGameBGM(gameState.selectedSong.audioFile);
+    }
+
+    setTimeout(() => {
+      goEl.remove();
+      callback();
+    }, 800);
     return;
   }
 
-  const area = document.getElementById('play-area');
   const countEl = document.createElement('div');
   countEl.className = 'countdown';
   countEl.textContent = count;
@@ -1323,7 +1614,7 @@ function countdown(count, callback) {
   setTimeout(() => {
     countEl.remove();
     countdown(count - 1, callback);
-  }, 1000);
+  }, 900);
 }
 
 // ============================================================
@@ -1559,6 +1850,7 @@ function showFeedback(result, x, y, score = 0) {
 function endGame() {
   gameState.isPlaying = false;
   stopGifBackground();
+  stopGameBGM();
 
   const totalNotes = gameState.circles.length;
   const hitNotes = gameState.hits.perfect + gameState.hits.great + gameState.hits.good;
@@ -1579,17 +1871,34 @@ function endGame() {
     gradeClass = 'grade-c';
   }
 
-  document.getElementById('result-grade').textContent = grade;
-  document.getElementById('result-grade').className = 'result-grade ' + gradeClass;
-  document.getElementById('result-score').textContent = gameState.score.toLocaleString();
-  document.getElementById('result-combo').textContent = gameState.maxCombo;
-  document.getElementById('result-perfect').textContent = gameState.hits.perfect;
-  document.getElementById('result-great').textContent = gameState.hits.great;
-  document.getElementById('result-good').textContent = gameState.hits.good;
-  document.getElementById('result-miss').textContent = gameState.hits.miss;
+  // Prepare result data before transition
+  const resultData = {
+    grade,
+    gradeClass,
+    score: gameState.score.toLocaleString(),
+    combo: gameState.maxCombo,
+    perfect: gameState.hits.perfect,
+    great: gameState.hits.great,
+    good: gameState.hits.good,
+    miss: gameState.hits.miss
+  };
 
   saveScore();
-  showScreen('result-screen');
+
+  // Show result screen with fade
+  showScreen('result-screen', true);
+
+  // Apply result data after fade starts
+  setTimeout(() => {
+    document.getElementById('result-grade').textContent = resultData.grade;
+    document.getElementById('result-grade').className = 'result-grade ' + resultData.gradeClass;
+    document.getElementById('result-score').textContent = resultData.score;
+    document.getElementById('result-combo').textContent = resultData.combo;
+    document.getElementById('result-perfect').textContent = resultData.perfect;
+    document.getElementById('result-great').textContent = resultData.great;
+    document.getElementById('result-good').textContent = resultData.good;
+    document.getElementById('result-miss').textContent = resultData.miss;
+  }, 300);
 }
 
 function retryGame() {
@@ -1708,6 +2017,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Load volume settings
   loadVolumeSettings();
 
+  // Initialize BGM
+  initBGM();
+
   // Show tap-to-start screen on mobile
   if (isMobileDevice()) {
     const tapScreen = document.getElementById('tap-start-screen');
@@ -1716,6 +2028,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const handleTap = () => {
       // Initialize audio
       initAudioContext();
+      // Start title BGM
+      playTitleBGM();
       // Hide tap screen
       tapScreen.classList.remove('show');
       // Remove listener
@@ -1725,6 +2039,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     tapScreen.addEventListener('click', handleTap);
     tapScreen.addEventListener('touchstart', handleTap, { passive: true });
+  } else {
+    // PC: Start title BGM immediately
+    playTitleBGM();
   }
 });
 </script>
