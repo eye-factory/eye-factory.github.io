@@ -1184,6 +1184,36 @@ body {
   100% { opacity: 1; transform: translateY(0); }
 }
 
+/* Difficulty bonus display */
+.score-with-bonus {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.difficulty-bonus {
+  font-family: var(--font-en);
+  font-size: clamp(10px, 1.5vw, 14px);
+  font-weight: 700;
+  background: linear-gradient(90deg, #00ffff, #ff00ff, #ffff00, #00ffff);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: bonusShimmer 2s linear infinite, bonusGlow 1.5s ease-in-out infinite alternate;
+  text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+  filter: drop-shadow(0 0 3px rgba(0, 255, 255, 0.8)) drop-shadow(0 0 6px rgba(255, 0, 255, 0.6));
+  opacity: 0;
+  animation: bonusReveal 0.5s ease-out 1s forwards, bonusShimmer 2s linear 1s infinite;
+}
+@keyframes bonusShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 300% 50%; }
+}
+@keyframes bonusReveal {
+  0% { opacity: 0; transform: translateX(-10px) scale(0.8); }
+  100% { opacity: 1; transform: translateX(0) scale(1); }
+}
+
 .result-stats {
   background: var(--bg-card);
   border: 1px solid rgba(0, 212, 255, 0.3);
@@ -1776,7 +1806,10 @@ body {
     <div class="result-stats">
       <div class="result-row">
         <span class="label">Score</span>
-        <span class="value score" id="result-score">0</span>
+        <span class="value score score-with-bonus">
+          <span id="result-score">0</span>
+          <span class="difficulty-bonus" id="result-bonus"></span>
+        </span>
       </div>
       <div class="result-row">
         <span class="label">Max Combo</span>
@@ -1953,6 +1986,14 @@ const CIRCLE_TYPES = {
 
 // Base scores
 const BASE_SCORES = { perfect: 300, great: 200, good: 100 };
+
+// Difficulty bonus
+const DIFFICULTY_BONUS = {
+  easy: 5000,
+  normal: 10000,
+  hard: 20000,
+  veryhard: 50000
+};
 
 // ============================================================
 // MOBILE ROTATION COORDINATE HELPERS
@@ -2984,12 +3025,17 @@ function endGame() {
     gradeClass = 'grade-d';
   }
 
+  // Calculate difficulty bonus (added to score, but doesn't affect grade)
+  const difficultyBonus = DIFFICULTY_BONUS[gameState.selectedDifficulty] || 0;
+  const totalScore = gameState.score + difficultyBonus;
+
   // Prepare result data before transition
   const resultData = {
     grade,
     gradeClass,
     isGod,
-    score: gameState.score.toLocaleString(),
+    score: totalScore.toLocaleString(),
+    bonus: '+' + difficultyBonus.toLocaleString(),
     combo: gameState.maxCombo,
     perfect: gameState.hits.perfect,
     great: gameState.hits.great,
@@ -2997,8 +3043,8 @@ function endGame() {
     miss: gameState.hits.miss
   };
 
-  // Save high score
-  saveBestScore(gameState.selectedSong.id, gameState.selectedDifficulty, gameState.score, grade);
+  // Save high score (with bonus included)
+  saveBestScore(gameState.selectedSong.id, gameState.selectedDifficulty, totalScore, grade);
 
   // Show result screen with fade
   showScreen('result-screen', true);
@@ -3008,6 +3054,7 @@ function endGame() {
     document.getElementById('result-grade').textContent = resultData.grade;
     document.getElementById('result-grade').className = 'result-grade ' + resultData.gradeClass;
     document.getElementById('result-score').textContent = resultData.score;
+    document.getElementById('result-bonus').textContent = resultData.bonus;
     document.getElementById('result-combo').textContent = resultData.combo;
     document.getElementById('result-perfect').textContent = resultData.perfect;
     document.getElementById('result-great').textContent = resultData.great;
