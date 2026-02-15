@@ -139,6 +139,13 @@ body.playing .bg-image {
   justify-content: center;
   text-align: center;
   padding: 40px;
+  opacity: 1;
+  transition: opacity 0.8s ease, filter 0.8s ease;
+}
+#rotate-guide.fade-out {
+  opacity: 0;
+  filter: blur(10px);
+  pointer-events: none;
 }
 #rotate-guide .icon {
   font-size: 80px;
@@ -161,8 +168,7 @@ body.playing .bg-image {
 }
 
 @media (orientation: portrait) and (max-width: 900px) {
-  #rotate-guide { display: flex; }
-  #game-container { display: none !important; }
+  #rotate-guide.show { display: flex; }
 }
 
 /* Game container - Landscape optimized */
@@ -2246,6 +2252,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Initialize BGM
   initBGM();
+
+  // Handle rotate guide for portrait mode
+  const rotateGuide = document.getElementById('rotate-guide');
+  function checkOrientation() {
+    const isPortrait = window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
+    if (isPortrait && !rotateGuide.classList.contains('fade-out')) {
+      rotateGuide.classList.add('show');
+      // Auto fade out after 1 second
+      setTimeout(() => {
+        rotateGuide.classList.add('fade-out');
+        // Hide completely after fade animation
+        setTimeout(() => {
+          rotateGuide.classList.remove('show');
+        }, 800);
+      }, 1000);
+    }
+  }
+  checkOrientation();
 
   // Always show TAP TO START screen (for both PC and mobile)
   // This ensures audio is properly initialized after user interaction
