@@ -2056,26 +2056,31 @@ function getBestRank(songId, difficulty = null) {
 }
 
 function saveBestScore(songId, difficulty, score, rank) {
+  // Ensure score is a number
+  const numScore = Number(score);
+
   // Save per-difficulty best
   const diffScoreKey = `cybertap_${songId}_${difficulty}_best_score`;
   const diffRankKey = `cybertap_${songId}_${difficulty}_best_rank`;
-  const currentDiffScore = localStorage.getItem(diffScoreKey);
+  const currentDiffScoreStr = localStorage.getItem(diffScoreKey);
+  const currentDiffScore = currentDiffScoreStr !== null ? parseInt(currentDiffScoreStr, 10) : -1;
 
-  if (!currentDiffScore || score > parseInt(currentDiffScore)) {
-    localStorage.setItem(diffScoreKey, score.toString());
+  if (numScore > currentDiffScore) {
+    localStorage.setItem(diffScoreKey, String(numScore));
     localStorage.setItem(diffRankKey, rank);
   }
 
   // Save overall song best
   const songScoreKey = `cybertap_${songId}_best_score`;
   const songRankKey = `cybertap_${songId}_best_rank`;
-  const currentSongScore = localStorage.getItem(songScoreKey);
+  const currentSongScoreStr = localStorage.getItem(songScoreKey);
+  const currentSongScore = currentSongScoreStr !== null ? parseInt(currentSongScoreStr, 10) : -1;
   const currentSongRank = localStorage.getItem(songRankKey);
 
-  if (!currentSongScore || score > parseInt(currentSongScore)) {
-    localStorage.setItem(songScoreKey, score.toString());
+  if (numScore > currentSongScore) {
+    localStorage.setItem(songScoreKey, String(numScore));
     localStorage.setItem(songRankKey, rank);
-  } else if (score === parseInt(currentSongScore) && getGradeRank(rank) > getGradeRank(currentSongRank)) {
+  } else if (numScore === currentSongScore && getGradeRank(rank) > getGradeRank(currentSongRank)) {
     // Same score but better rank
     localStorage.setItem(songRankKey, rank);
   }
