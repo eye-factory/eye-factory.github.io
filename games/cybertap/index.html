@@ -1987,7 +1987,7 @@ const CIRCLE_TYPES = {
 // Base scores
 const BASE_SCORES = { perfect: 300, great: 200, good: 100 };
 
-// Difficulty bonus
+// GOD rank bonus (only awarded when achieving GOD rank)
 const DIFFICULTY_BONUS = {
   easy: 5000,
   normal: 10000,
@@ -3025,9 +3025,9 @@ function endGame() {
     gradeClass = 'grade-d';
   }
 
-  // Calculate difficulty bonus (added to score, but doesn't affect grade)
-  const difficultyBonus = DIFFICULTY_BONUS[gameState.selectedDifficulty] || 0;
-  const totalScore = gameState.score + difficultyBonus;
+  // Calculate GOD rank bonus (only applies to GOD rank, not SS or below)
+  const godBonus = isGod ? (DIFFICULTY_BONUS[gameState.selectedDifficulty] || 0) : 0;
+  const totalScore = gameState.score + godBonus;
 
   // Prepare result data before transition
   const resultData = {
@@ -3035,7 +3035,7 @@ function endGame() {
     gradeClass,
     isGod,
     score: totalScore.toLocaleString(),
-    bonus: '+' + difficultyBonus.toLocaleString(),
+    bonus: isGod ? ('+' + godBonus.toLocaleString()) : '',
     combo: gameState.maxCombo,
     perfect: gameState.hits.perfect,
     great: gameState.hits.great,
@@ -3043,7 +3043,7 @@ function endGame() {
     miss: gameState.hits.miss
   };
 
-  // Save high score (with bonus included)
+  // Save high score (with GOD bonus if applicable)
   saveBestScore(gameState.selectedSong.id, gameState.selectedDifficulty, totalScore, grade);
 
   // Show result screen with fade
