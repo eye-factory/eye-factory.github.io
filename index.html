@@ -503,7 +503,6 @@ nav a:hover {
   align-items: center;
   gap: 8px;
   background: transparent;
-  color: var(--neon-primary);
   text-decoration: none;
   padding: 16px 36px;
   border-radius: 50px;
@@ -521,6 +520,21 @@ nav a:hover {
   background-size: 100% 100%, 200% 100%;
   animation: cyberBorderGlow 3s ease-in-out infinite;
   box-shadow: 0 0 15px rgba(0, 212, 255, 0.3), 0 0 30px rgba(255, 0, 170, 0.2);
+}
+.hero-cyber-btn span {
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary));
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 3s ease-in-out infinite;
+  transition: var(--transition);
+}
+.hero-cyber-btn:hover span {
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: #fff;
+  background-clip: unset;
 }
 @keyframes cyberBorderGlow {
   0%, 100% {
