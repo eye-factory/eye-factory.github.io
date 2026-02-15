@@ -674,6 +674,30 @@ body.playing .bg-image {
   transform: translate(-50%, -50%) scale(0.95);
 }
 
+/* Inactive circles (not current target) */
+.hit-circle.inactive {
+  opacity: 0.4;
+  filter: grayscale(0.5) brightness(0.6);
+  pointer-events: none;
+}
+.hit-circle.inactive::before {
+  animation: none;
+  opacity: 0.4;
+}
+
+/* Current target circle (highlighted) */
+.hit-circle.target {
+  animation: circleAppear 0.3s ease-out, targetPulse 0.8s ease-in-out infinite;
+}
+@keyframes targetPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 15px rgba(0, 255, 136, 0.8));
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(0, 255, 136, 1)) drop-shadow(0 0 40px rgba(0, 212, 255, 0.6));
+  }
+}
+
 /* Medium circle - Normal notes */
 .hit-circle.medium {
   width: 70px;
@@ -1885,6 +1909,7 @@ let gameState = {
   startTime: 0,
   circles: [],
   circleId: 0,
+  currentTargetNumber: 1, // Current note that can be tapped
   // Ranking state
   rankingSongIndex: 0,
   rankingDifficulty: 'easy',
@@ -2105,6 +2130,7 @@ function startGame(difficulty) {
   gameState.hits = { perfect: 0, great: 0, good: 0, miss: 0 };
   gameState.circles = [];
   gameState.circleId = 0;
+  gameState.currentTargetNumber = 1;
 
   document.getElementById('play-song-name').textContent = gameState.selectedSong.title;
   document.getElementById('play-difficulty').textContent = difficulty.toUpperCase();
@@ -2288,13 +2314,16 @@ function gameLoop() {
       spawnCircle(circle);
     }
 
-    // Check for missed circles
-    if (circle.active && !circle.hit) {
+    // Check for missed circles (only current target can be missed)
+    if (circle.active && !circle.hit && circle.number === gameState.currentTargetNumber) {
       const typeConfig = CIRCLE_TYPES[circle.type];
       if (elapsed > circle.hitTime + typeConfig.missWindow) {
         circle.hit = true;
         removeCircle(circle.id);
         registerHit('miss', circle.x, circle.y, circle.type);
+        // Advance to next target on miss
+        gameState.currentTargetNumber++;
+        updateCircleVisuals();
       }
     }
   });
@@ -2335,6 +2364,9 @@ function spawnCircle(circle) {
   el.addEventListener('touchstart', hitHandler, { passive: false });
 
   area.appendChild(el);
+
+  // Update visual state after spawning
+  updateCircleVisuals();
 }
 
 function removeCircle(id) {
@@ -2342,11 +2374,37 @@ function removeCircle(id) {
   if (el) el.remove();
 }
 
+// Update visual state of all active circles
+function updateCircleVisuals() {
+  gameState.circles.forEach(circle => {
+    if (!circle.active || circle.hit) return;
+
+    const el = document.getElementById('circle-' + circle.id);
+    if (!el) return;
+
+    if (circle.number === gameState.currentTargetNumber) {
+      // Current target - highlighted
+      el.classList.remove('inactive');
+      el.classList.add('target');
+    } else {
+      // Not current target - dimmed
+      el.classList.remove('target');
+      el.classList.add('inactive');
+    }
+  });
+}
+
 // ============================================================
 // HIT DETECTION
 // ============================================================
 function hitCircle(circle) {
   if (circle.hit) return;
+
+  // Only allow tapping the current target number
+  if (circle.number !== gameState.currentTargetNumber) {
+    return; // Not the current target, ignore tap
+  }
+
   circle.hit = true;
 
   const elapsed = Date.now() - gameState.startTime;
@@ -2384,6 +2442,10 @@ function hitCircle(circle) {
 
   removeCircle(circle.id);
   registerHit(result, feedbackX, feedbackY, circle.type, scoreGained);
+
+  // Advance to next target
+  gameState.currentTargetNumber++;
+  updateCircleVisuals();
 }
 
 function registerHit(result, x, y, circleType, scoreGained = 0) {
