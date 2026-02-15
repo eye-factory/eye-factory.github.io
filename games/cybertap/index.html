@@ -357,56 +357,6 @@ body {
     height: 100vw;
   }
 }
-/* Loading text - cyber glitch style */
-#tap-start-screen .loading-text {
-  font-family: var(--font-en);
-  font-size: clamp(28px, 7vw, 48px);
-  font-weight: 900;
-  background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary));
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
-  animation: loadingGlitch 0.5s infinite, gradientShift 2s ease-in-out infinite;
-}
-@keyframes loadingGlitch {
-  0%, 90%, 100% { transform: translate(0); }
-  92% { transform: translate(2px, -1px) skewX(1deg); }
-  94% { transform: translate(-2px, 1px); }
-  96% { transform: translate(1px, 0) skewX(-0.5deg); }
-  98% { transform: translate(-1px, -1px); }
-}
-/* Progress bar container */
-#tap-start-screen .progress-container {
-  width: 60%;
-  max-width: 400px;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-  margin-top: 30px;
-  overflow: hidden;
-  border: 1px solid rgba(0, 212, 255, 0.3);
-}
-#tap-start-screen .progress-bar-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-purple));
-  background-size: 200% 100%;
-  border-radius: 4px;
-  transition: width 0.1s ease-out;
-  animation: progressGlow 1s ease-in-out infinite;
-}
-@keyframes progressGlow {
-  0%, 100% { box-shadow: 0 0 10px var(--neon-primary); }
-  50% { box-shadow: 0 0 20px var(--neon-pink); }
-}
-#tap-start-screen .progress-text {
-  font-family: var(--font-en);
-  font-size: 12px;
-  color: var(--text-sub);
-  margin-top: 10px;
-}
 /* TAP TO START - cyber style */
 #tap-start-screen .tap-title {
   font-family: var(--font-en);
@@ -419,24 +369,11 @@ body {
   background-clip: text;
   filter: drop-shadow(0 0 25px rgba(0, 212, 255, 0.6));
   animation: tapPulse 1.5s ease-in-out infinite, gradientShift 3s ease-in-out infinite;
-  display: none;
-}
-#tap-start-screen.ready .tap-title {
-  display: block;
-}
-#tap-start-screen.ready .loading-text,
-#tap-start-screen.ready .progress-container,
-#tap-start-screen.ready .progress-text {
-  display: none;
 }
 #tap-start-screen .tap-hint {
   font-size: 14px;
   color: var(--text-sub);
   margin-top: 20px;
-  display: none;
-}
-#tap-start-screen.ready .tap-hint {
-  display: block;
 }
 @keyframes tapPulse {
   0%, 100% { opacity: 1; transform: scale(1); }
@@ -1454,23 +1391,23 @@ body {
     margin-bottom: 5px;
   }
   .song-list {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 6px;
     max-height: none;
     overflow-y: visible;
     padding: 4px;
   }
   .song-item {
-    padding: 12px 16px;
+    padding: 8px 6px;
   }
   .song-item .song-title {
-    font-size: 12px;
+    font-size: 11px;
   }
   .song-item .song-artist {
-    font-size: 10px;
+    font-size: 9px;
   }
   .song-item .song-bpm {
-    font-size: 9px;
+    font-size: 8px;
   }
 
   /* Difficulty select */
@@ -1717,11 +1654,6 @@ body {
 
 <!-- Tap to Start screen (all devices - for audio initialization) -->
 <div id="tap-start-screen">
-  <div class="loading-text">Loading...</div>
-  <div class="progress-container">
-    <div class="progress-bar-fill" id="preload-progress"></div>
-  </div>
-  <div class="progress-text" id="preload-text">0 / 0</div>
   <div class="tap-title">TAP TO START</div>
   <div class="tap-hint">タップして開始</div>
 </div>
@@ -2071,55 +2003,6 @@ function initBGM() {
   titleBGM = new Audio('taitoru.mp3');
   titleBGM.loop = true;
   titleBGM.volume = getVolume();
-}
-
-// ============================================================
-// AUDIO PRELOADING
-// ============================================================
-function preloadAllAudio() {
-  return new Promise((resolve) => {
-    // Collect all audio files to preload
-    const audioFiles = [
-      'taitoru.mp3',      // Title BGM
-      'wind.mp3',         // SE
-      'dj.mp3',           // SE
-      'god.mp3',          // SE
-      'low.mp3',          // Result BGM
-      'hi.mp3',           // Result BGM
-      'gm.mp3',           // Result BGM (GOD)
-      'kati.mp3',         // Button SE
-    ];
-
-    // Add all song audio files
-    SONGS.forEach(song => {
-      audioFiles.push(song.audioFile);
-    });
-
-    const totalFiles = audioFiles.length;
-    let loadedFiles = 0;
-
-    const progressBar = document.getElementById('preload-progress');
-    const progressText = document.getElementById('preload-text');
-
-    function updateProgress() {
-      loadedFiles++;
-      const percent = (loadedFiles / totalFiles) * 100;
-      progressBar.style.width = percent + '%';
-      progressText.textContent = `${loadedFiles} / ${totalFiles}`;
-
-      if (loadedFiles >= totalFiles) {
-        resolve();
-      }
-    }
-
-    audioFiles.forEach(file => {
-      const audio = new Audio();
-      audio.addEventListener('canplaythrough', updateProgress, { once: true });
-      audio.addEventListener('error', updateProgress, { once: true }); // Count errors too
-      audio.src = file;
-      audio.load();
-    });
-  });
 }
 
 function playTitleBGM() {
@@ -3028,30 +2911,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const tapScreen = document.getElementById('tap-start-screen');
   const titleScreen = document.getElementById('title-screen');
 
-  // Show loading screen
+  // Show TAP TO START screen
   tapScreen.classList.add('show');
 
-  // Preload all audio files
-  preloadAllAudio().then(() => {
-    // All files loaded - enable tap
-    tapScreen.classList.add('ready');
+  const handleTap = () => {
+    // Initialize audio context (required for all browsers)
+    initAudioContext();
+    // Hide tap screen
+    tapScreen.classList.remove('show');
+    // Remove listeners
+    tapScreen.removeEventListener('click', handleTap);
+    tapScreen.removeEventListener('touchstart', handleTap);
+    // Go to title screen with animations
+    titleScreen.classList.add('animate');
+    playTitleBGM();
+  };
 
-    const handleTap = () => {
-      // Initialize audio context (required for all browsers)
-      initAudioContext();
-      // Hide tap screen
-      tapScreen.classList.remove('show');
-      // Remove listeners
-      tapScreen.removeEventListener('click', handleTap);
-      tapScreen.removeEventListener('touchstart', handleTap);
-      // Go to title screen with animations
-      titleScreen.classList.add('animate');
-      playTitleBGM();
-    };
-
-    tapScreen.addEventListener('click', handleTap);
-    tapScreen.addEventListener('touchstart', handleTap, { passive: true });
-  });
+  tapScreen.addEventListener('click', handleTap);
+  tapScreen.addEventListener('touchstart', handleTap, { passive: true });
 });
 </script>
 
