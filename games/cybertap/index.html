@@ -477,6 +477,41 @@ body {
   color: var(--neon-pink);
   margin-top: 6px;
 }
+/* Best score display on song/difficulty */
+.best-score-display {
+  font-family: var(--font-en);
+  font-size: 10px;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.best-score-display .best-rank {
+  font-weight: 900;
+  font-size: 12px;
+}
+.best-score-display .best-score {
+  color: var(--text-sub);
+}
+.best-score-display.no-record {
+  color: var(--text-sub);
+  opacity: 0.5;
+}
+/* Difficulty button best score */
+.diff-btn .diff-best {
+  font-size: 9px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.diff-btn .diff-best .best-rank {
+  font-weight: 900;
+}
+.diff-btn .diff-best.no-record {
+  opacity: 0.5;
+}
 
 /* Difficulty select - Horizontal layout */
 #difficulty-select {
@@ -1997,6 +2032,77 @@ function saveVolumeSettings() {
   localStorage.setItem('cybertap_volume_v2', masterVolume.toString());
 }
 
+// ============================================================
+// HIGH SCORE SYSTEM
+// ============================================================
+function getGradeRank(grade) {
+  const ranks = { 'GOD': 7, 'SS': 6, 'S': 5, 'A': 4, 'B': 3, 'C': 2, 'D': 1 };
+  return ranks[grade] || 0;
+}
+
+function getBestScore(songId, difficulty = null) {
+  const key = difficulty
+    ? `cybertap_${songId}_${difficulty}_best_score`
+    : `cybertap_${songId}_best_score`;
+  const score = localStorage.getItem(key);
+  return score ? parseInt(score) : null;
+}
+
+function getBestRank(songId, difficulty = null) {
+  const key = difficulty
+    ? `cybertap_${songId}_${difficulty}_best_rank`
+    : `cybertap_${songId}_best_rank`;
+  return localStorage.getItem(key);
+}
+
+function saveBestScore(songId, difficulty, score, rank) {
+  // Save per-difficulty best
+  const diffScoreKey = `cybertap_${songId}_${difficulty}_best_score`;
+  const diffRankKey = `cybertap_${songId}_${difficulty}_best_rank`;
+  const currentDiffScore = localStorage.getItem(diffScoreKey);
+
+  if (!currentDiffScore || score > parseInt(currentDiffScore)) {
+    localStorage.setItem(diffScoreKey, score.toString());
+    localStorage.setItem(diffRankKey, rank);
+  }
+
+  // Save overall song best
+  const songScoreKey = `cybertap_${songId}_best_score`;
+  const songRankKey = `cybertap_${songId}_best_rank`;
+  const currentSongScore = localStorage.getItem(songScoreKey);
+  const currentSongRank = localStorage.getItem(songRankKey);
+
+  if (!currentSongScore || score > parseInt(currentSongScore)) {
+    localStorage.setItem(songScoreKey, score.toString());
+    localStorage.setItem(songRankKey, rank);
+  } else if (score === parseInt(currentSongScore) && getGradeRank(rank) > getGradeRank(currentSongRank)) {
+    // Same score but better rank
+    localStorage.setItem(songRankKey, rank);
+  }
+}
+
+function getGradeClass(grade) {
+  const classes = {
+    'GOD': 'grade-god',
+    'SS': 'grade-ss',
+    'S': 'grade-s',
+    'A': 'grade-a',
+    'B': 'grade-b',
+    'C': 'grade-c',
+    'D': 'grade-d'
+  };
+  return classes[grade] || '';
+}
+
+function formatBestScoreHTML(score, rank) {
+  if (!score && !rank) {
+    return '<div class="best-score-display no-record">---</div>';
+  }
+  const gradeClass = getGradeClass(rank);
+  const formattedScore = score ? score.toLocaleString() : '0';
+  return `<div class="best-score-display"><span class="best-rank ${gradeClass}">${rank}</span><span class="best-score">${formattedScore}</span></div>`;
+}
+
 function updateVolume(value) {
   masterVolume = parseInt(value);
   document.getElementById('volume-value').textContent = masterVolume + '%';
@@ -2168,10 +2274,13 @@ function renderSongList() {
   SONGS.forEach(song => {
     const item = document.createElement('div');
     item.className = 'song-item';
+    const bestScore = getBestScore(song.id);
+    const bestRank = getBestRank(song.id);
     item.innerHTML = `
       <div class="song-title">${song.title}</div>
       <div class="song-artist">${song.artist}</div>
       <div class="song-bpm">BPM ${song.bpm}</div>
+      ${formatBestScoreHTML(bestScore, bestRank)}
     `;
     item.onclick = () => selectSong(song);
     container.appendChild(item);
@@ -2182,7 +2291,34 @@ function selectSong(song) {
   playSE(SE.kati);
   gameState.selectedSong = song;
   document.getElementById('selected-song-name').textContent = song.title;
+  updateDifficultyBestScores(song.id);
   showScreen('difficulty-select');
+}
+
+function updateDifficultyBestScores(songId) {
+  const difficulties = ['easy', 'normal', 'hard', 'veryhard'];
+  difficulties.forEach(diff => {
+    const btn = document.querySelector(`.diff-btn.${diff}`);
+    if (!btn) return;
+
+    // Remove existing best display
+    const existing = btn.querySelector('.diff-best');
+    if (existing) existing.remove();
+
+    const bestScore = getBestScore(songId, diff);
+    const bestRank = getBestRank(songId, diff);
+
+    const bestDiv = document.createElement('div');
+    if (bestScore && bestRank) {
+      const gradeClass = getGradeClass(bestRank);
+      bestDiv.className = 'diff-best';
+      bestDiv.innerHTML = `<span class="best-rank ${gradeClass}">${bestRank}</span><span>${bestScore.toLocaleString()}</span>`;
+    } else {
+      bestDiv.className = 'diff-best no-record';
+      bestDiv.textContent = '---';
+    }
+    btn.appendChild(bestDiv);
+  });
 }
 
 // ============================================================
@@ -2861,6 +2997,9 @@ function endGame() {
     good: gameState.hits.good,
     miss: gameState.hits.miss
   };
+
+  // Save high score
+  saveBestScore(gameState.selectedSong.id, gameState.selectedDifficulty, gameState.score, grade);
 
   // Show result screen with fade
   showScreen('result-screen', true);
