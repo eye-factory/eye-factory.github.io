@@ -2476,11 +2476,11 @@ function spawnCircle(circle) {
   // Visual perfect timing = spawnTime + approachTime (adjusted for speed)
   circle.spawnTime = Date.now() - gameState.startTime;
   const adjustedApproachTime = typeConfig.approachTime / (gameState.speedMultiplier || 1);
-  // Mobile timing offset: CSS animation rendering is delayed compared to JS timing
-  // Mobile devices have ~100-150ms delay between DOM insertion and animation completion
-  // This shifts judgment to match when the approach ring visually reaches the circle
+  // Mobile timing offset: adjust judgment center to match visual ring alignment
+  // Negative value = judgment center is BEFORE animation completion (tap earlier for Perfect)
+  // Positive value = judgment center is AFTER animation completion (tap later for Perfect)
   const isMobile = window.innerWidth <= 480 || window.innerHeight <= 480;
-  const mobileTimingOffset = isMobile ? 120 : 0;
+  const mobileTimingOffset = isMobile ? -80 : 0;
   circle.visualHitTime = circle.spawnTime + adjustedApproachTime + mobileTimingOffset;
 
   // Get GIF display bounds for positioning
