@@ -2317,6 +2317,13 @@ function doScreenSwitch(screenId) {
 // ============================================================
 // SONG LIST
 // ============================================================
+// Format seconds to M:SS
+function formatDuration(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
 function renderSongList() {
   const container = document.getElementById('song-list');
   container.innerHTML = '';
@@ -2329,7 +2336,7 @@ function renderSongList() {
     item.innerHTML = `
       <div class="song-title">${song.title}</div>
       <div class="song-artist">${song.artist}</div>
-      <div class="song-bpm">BPM ${song.bpm}</div>
+      <div class="song-bpm">BPM ${song.bpm} / ${formatDuration(song.duration)}</div>
       ${formatBestScoreHTML(bestScore, bestRank)}
     `;
     item.onclick = () => selectSong(song);
