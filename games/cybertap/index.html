@@ -97,13 +97,13 @@ body {
   97% { opacity: 0; transform: translateY(0); }
 }
 
-/* Additional scan line effect */
-.bg-scanlines {
-  position: absolute;
+/* Global scan line effect - covers all screens */
+#global-scanlines {
+  position: fixed;
   top: 0; left: 0;
-  width: 100%; height: 100%;
+  width: 100vw; height: 100vh;
   pointer-events: none;
-  z-index: 100;
+  z-index: 99999;
   background: repeating-linear-gradient(
     transparent 0px,
     transparent 2px,
@@ -1709,6 +1709,9 @@ body {
 </head>
 <body>
 
+<!-- Global scanlines overlay - covers all screens -->
+<div id="global-scanlines"></div>
+
 <!-- Main app wrapper for rotation support -->
 <div id="app-wrapper">
 
@@ -1728,7 +1731,6 @@ body {
 
 <div class="bg-image"></div>
 <div class="bg-noise"></div>
-<div class="bg-scanlines"></div>
 <div class="bg-grid"></div>
 
 <div id="game-container">
@@ -1750,7 +1752,7 @@ body {
 
   <!-- Song Select Screen -->
   <div id="song-select" class="screen">
-    <button class="back-btn" onclick="showScreen('title-screen')">Back</button>
+    <button class="back-btn" onclick="playSE(SE.kati); showScreen('title-screen')">Back</button>
     <div class="song-select-left">
       <h2 class="section-title">Select Song</h2>
     </div>
@@ -1759,7 +1761,7 @@ body {
 
   <!-- Difficulty Select Screen -->
   <div id="difficulty-select" class="screen">
-    <button class="back-btn" onclick="showScreen('song-select')">Back</button>
+    <button class="back-btn" onclick="playSE(SE.kati); showScreen('song-select')">Back</button>
     <div class="difficulty-info">
       <h2 class="section-title">Select Difficulty</h2>
       <div class="selected-song-info">
@@ -1801,7 +1803,7 @@ body {
       <div class="result-grade" id="result-grade">S</div>
       <div class="result-buttons">
         <button class="btn" onclick="retryGame()">Retry</button>
-        <button class="btn secondary" onclick="stopResultBGM(); showScreen('title-screen')">Title</button>
+        <button class="btn secondary" onclick="playSE(SE.kati); stopResultBGM(); showScreen('title-screen')">Title</button>
       </div>
     </div>
     <div class="result-stats">
@@ -2061,7 +2063,8 @@ const SE = {
   god: new Audio('god.mp3'),
   low: new Audio('low.mp3'),
   hi: new Audio('hi.mp3'),
-  gm: new Audio('gm.mp3')
+  gm: new Audio('gm.mp3'),
+  kati: new Audio('kati.mp3')
 };
 
 function initBGM() {
@@ -2084,6 +2087,7 @@ function preloadAllAudio() {
       'low.mp3',          // Result BGM
       'hi.mp3',           // Result BGM
       'gm.mp3',           // Result BGM (GOD)
+      'kati.mp3',         // Button SE
     ];
 
     // Add all song audio files
@@ -2242,6 +2246,7 @@ function renderSongList() {
 }
 
 function selectSong(song) {
+  playSE(SE.kati);
   gameState.selectedSong = song;
   document.getElementById('selected-song-name').textContent = song.title;
   showScreen('difficulty-select');
