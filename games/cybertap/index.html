@@ -184,11 +184,19 @@ body.playing .bg-image {
   overflow: hidden;
   border: 3px solid transparent;
   border-radius: 8px;
-  background: linear-gradient(var(--bg), var(--bg)) padding-box,
+  background: linear-gradient(rgba(10, 10, 15, 0.85), rgba(10, 10, 15, 0.85)) padding-box,
               linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary)) border-box;
   background-size: 100% 100%, 200% 100%;
   animation: cyberBorderAnimation 4s ease-in-out infinite;
   box-shadow: 0 0 15px rgba(0, 212, 255, 0.4), 0 0 30px rgba(255, 0, 170, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Mobile landscape - fit in screen */
+@media (max-height: 450px) and (orientation: landscape) {
+  #game-container {
+    max-width: calc(100vw - 12px);
+    max-height: calc(100vh - 12px);
+  }
 }
 
 @keyframes cyberBorderAnimation {
@@ -571,7 +579,7 @@ body.playing .bg-image {
   width: 100%; height: 100%;
   background-size: cover;
   background-position: center;
-  opacity: 0.09;
+  opacity: 0.18;
   z-index: 0;
   pointer-events: none;
 }
