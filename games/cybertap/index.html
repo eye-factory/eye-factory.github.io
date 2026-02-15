@@ -1212,6 +1212,308 @@ body.playing .bg-image {
   #result-screen { gap: 20px; padding: 15px; }
   .result-stats { padding: 16px; }
 }
+
+/* ============================================================ */
+/* MOBILE RESPONSIVE - Portrait & Small screens */
+/* ============================================================ */
+
+/* Small mobile screens (portrait) */
+@media (max-width: 480px) {
+  /* Title screen */
+  #title-screen .game-title {
+    font-size: clamp(32px, 12vw, 48px);
+    margin-bottom: 5px;
+  }
+  #title-screen .subtitle {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    margin-bottom: 20px;
+  }
+  .title-buttons {
+    gap: 10px;
+  }
+  .btn {
+    font-size: 12px;
+    padding: 10px 24px;
+  }
+  .volume-settings {
+    width: 220px;
+    margin-top: 20px;
+  }
+  .volume-label {
+    font-size: 10px;
+    width: 45px;
+  }
+  .volume-value {
+    font-size: 10px;
+    width: 30px;
+  }
+
+  /* Song select */
+  #song-select {
+    flex-direction: column;
+    padding: 15px;
+    gap: 15px;
+  }
+  #song-select .section-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  .song-list {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    max-height: 50vh;
+  }
+  .song-item {
+    padding: 12px;
+  }
+  .song-item .song-title {
+    font-size: 14px;
+  }
+  .song-item .song-artist {
+    font-size: 11px;
+  }
+  .no-audio-warning {
+    font-size: 10px;
+    padding: 8px 12px;
+  }
+
+  /* Difficulty select */
+  #difficulty-select {
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+  }
+  .difficulty-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .diff-btn {
+    font-size: 14px;
+    padding: 14px 30px;
+    min-width: 120px;
+  }
+  .selected-song-info strong {
+    font-size: 18px;
+  }
+
+  /* Play screen */
+  .play-hud {
+    height: 45px;
+    padding: 6px 12px;
+  }
+  .play-hud .score {
+    font-size: 18px;
+  }
+  .play-hud .combo {
+    font-size: 12px;
+  }
+  .play-hud .song-info {
+    font-size: 10px;
+  }
+  #play-area {
+    top: 45px;
+    bottom: 20px;
+  }
+  .countdown {
+    font-size: 60px;
+  }
+  .countdown.go {
+    font-size: 70px;
+  }
+  .hit-circle.medium {
+    width: 55px;
+    height: 55px;
+    font-size: 14px;
+  }
+  .hit-circle.large {
+    width: 75px;
+    height: 75px;
+    font-size: 18px;
+  }
+  .hit-circle.xlarge {
+    width: 95px;
+    height: 95px;
+    font-size: 24px;
+  }
+  .hit-feedback {
+    font-size: 16px;
+  }
+
+  /* Result screen */
+  #result-screen {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+  }
+  .result-left {
+    order: 1;
+  }
+  .result-stats {
+    order: 2;
+    min-width: auto;
+    width: 100%;
+    max-width: 280px;
+    padding: 16px;
+  }
+  #result-screen .result-title {
+    font-size: 22px;
+    margin-bottom: 10px;
+  }
+  .result-grade {
+    font-size: 60px;
+  }
+  .result-row .label {
+    font-size: 12px;
+  }
+  .result-row .value.score {
+    font-size: 18px;
+  }
+  .result-buttons {
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  .result-buttons .btn {
+    padding: 10px 20px;
+    font-size: 11px;
+  }
+
+  /* Ranking screen */
+  #ranking-screen {
+    padding: 15px;
+  }
+  #ranking-screen .section-title {
+    font-size: 20px;
+  }
+  .ranking-header {
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .ranking-nav-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+  .ranking-song-title {
+    font-size: 14px;
+    min-width: 140px;
+  }
+  .ranking-diff-tabs {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .ranking-diff-tab {
+    font-size: 10px;
+    padding: 5px 12px;
+  }
+  .ranking-list {
+    max-height: 45vh;
+  }
+  .ranking-item {
+    padding: 8px 10px;
+  }
+  .ranking-item .rank {
+    font-size: 14px;
+    width: 28px;
+  }
+  .ranking-item .info .name {
+    font-size: 11px;
+  }
+  .ranking-item .score {
+    font-size: 13px;
+  }
+
+  /* Back button */
+  .back-btn {
+    top: 10px;
+    left: 10px;
+    font-size: 10px;
+    padding: 6px 12px;
+  }
+
+  /* Rotate guide */
+  #rotate-guide {
+    padding: 30px;
+  }
+  #rotate-guide .icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+  }
+  #rotate-guide .message {
+    font-size: 16px;
+  }
+  #rotate-guide .sub-message {
+    font-size: 12px;
+  }
+}
+
+/* Medium mobile screens */
+@media (min-width: 481px) and (max-width: 768px) {
+  #title-screen .game-title {
+    font-size: clamp(40px, 10vw, 60px);
+  }
+  #title-screen .subtitle {
+    font-size: 12px;
+    margin-bottom: 30px;
+  }
+  .btn {
+    font-size: 14px;
+    padding: 12px 32px;
+  }
+
+  #song-select {
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+  }
+  .song-list {
+    grid-template-columns: repeat(2, 1fr);
+    max-height: 55vh;
+  }
+
+  #difficulty-select {
+    flex-direction: column;
+    gap: 25px;
+  }
+  .diff-btn {
+    padding: 16px 35px;
+  }
+
+  #result-screen {
+    flex-direction: column;
+    gap: 25px;
+    padding: 20px;
+  }
+  .result-grade {
+    font-size: 70px;
+  }
+  .result-stats {
+    min-width: auto;
+    width: 90%;
+    max-width: 320px;
+  }
+}
+
+/* Portrait mode specific adjustments */
+@media (orientation: portrait) {
+  .screen {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #song-select {
+    flex-direction: column;
+  }
+
+  #difficulty-select {
+    flex-direction: column;
+  }
+
+  #result-screen {
+    flex-direction: column;
+  }
+}
 </style>
 </head>
 <body>
@@ -2253,42 +2555,76 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize BGM
   initBGM();
 
-  // Handle rotate guide for portrait mode
   const rotateGuide = document.getElementById('rotate-guide');
-  function checkOrientation() {
-    const isPortrait = window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
-    if (isPortrait && !rotateGuide.classList.contains('fade-out')) {
-      rotateGuide.classList.add('show');
-      // Auto fade out after 1 second
-      setTimeout(() => {
-        rotateGuide.classList.add('fade-out');
-        // Hide completely after fade animation
-        setTimeout(() => {
-          rotateGuide.classList.remove('show');
-        }, 800);
-      }, 1000);
-    }
+  const tapScreen = document.getElementById('tap-start-screen');
+  const titleScreen = document.getElementById('title-screen');
+  let rotateGuideTimeout = null;
+
+  // Check if portrait mode
+  function isPortraitMode() {
+    return window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
   }
-  checkOrientation();
+
+  // Show rotate guide, then fade to home
+  function showRotateGuideAndProceed() {
+    rotateGuide.classList.add('show');
+    rotateGuide.classList.remove('fade-out');
+
+    // Auto fade out after 1 second
+    rotateGuideTimeout = setTimeout(() => {
+      fadeOutRotateGuide();
+    }, 1000);
+  }
+
+  // Fade out rotate guide and show home
+  function fadeOutRotateGuide() {
+    if (rotateGuideTimeout) {
+      clearTimeout(rotateGuideTimeout);
+      rotateGuideTimeout = null;
+    }
+    rotateGuide.classList.add('fade-out');
+    // Start title screen animations
+    titleScreen.classList.add('animate');
+    // Start BGM
+    playTitleBGM();
+    // Hide completely after fade animation
+    setTimeout(() => {
+      rotateGuide.classList.remove('show');
+    }, 800);
+  }
+
+  // Listen for orientation change - if landscape, immediately fade out rotate guide
+  window.addEventListener('resize', () => {
+    if (!isPortraitMode() && rotateGuide.classList.contains('show') && !rotateGuide.classList.contains('fade-out')) {
+      fadeOutRotateGuide();
+    }
+  });
+  window.matchMedia('(orientation: portrait)').addEventListener('change', (e) => {
+    if (!e.matches && rotateGuide.classList.contains('show') && !rotateGuide.classList.contains('fade-out')) {
+      fadeOutRotateGuide();
+    }
+  });
 
   // Always show TAP TO START screen (for both PC and mobile)
-  // This ensures audio is properly initialized after user interaction
-  const tapScreen = document.getElementById('tap-start-screen');
   tapScreen.classList.add('show');
 
   const handleTap = () => {
     // Initialize audio context (required for all browsers)
     initAudioContext();
-    // Start title BGM
-    playTitleBGM();
     // Hide tap screen
     tapScreen.classList.remove('show');
-    // Start title screen animations
-    const titleScreen = document.getElementById('title-screen');
-    titleScreen.classList.add('animate');
     // Remove listeners
     tapScreen.removeEventListener('click', handleTap);
     tapScreen.removeEventListener('touchstart', handleTap);
+
+    // Check if portrait mode - show rotate guide first
+    if (isPortraitMode()) {
+      showRotateGuideAndProceed();
+    } else {
+      // Landscape or PC - go directly to home with animations
+      titleScreen.classList.add('animate');
+      playTitleBGM();
+    }
   };
 
   tapScreen.addEventListener('click', handleTap);
