@@ -627,11 +627,10 @@ body {
   font-family: var(--font-en);
   font-weight: 700;
   cursor: pointer;
-  animation: circleAppear 0.3s ease-out;
+  animation: circleAppear 0.3s ease-out forwards;
   transform: translate(-50%, -50%);
   /* Gradient border effect */
   background-clip: padding-box;
-  position: relative;
 }
 .hit-circle::before {
   content: '';
@@ -668,6 +667,7 @@ body {
 
 /* Inactive circles (not current target) */
 .hit-circle.inactive {
+  transform: translate(-50%, -50%);
   opacity: 0.6;
   filter: brightness(0.7);
   pointer-events: none;
@@ -684,6 +684,7 @@ body {
 /* Current target circle (highlighted) */
 .hit-circle.target {
   animation: targetPulse 0.8s ease-in-out infinite;
+  transform: translate(-50%, -50%);
   pointer-events: auto !important;
   opacity: 1 !important;
   filter: none !important;
