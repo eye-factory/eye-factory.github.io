@@ -529,6 +529,15 @@ body {
   color: #000;
   box-shadow: 0 0 20px var(--neon-pink);
 }
+.diff-btn.veryhard {
+  border-color: var(--neon-purple);
+  color: var(--neon-purple);
+}
+.diff-btn.veryhard:hover {
+  background: var(--neon-purple);
+  color: #000;
+  box-shadow: 0 0 20px var(--neon-purple);
+}
 
 .selected-song-info {
   font-size: 14px;
@@ -852,6 +861,31 @@ body {
 @keyframes approachXLarge {
   from { width: 320px; height: 320px; opacity: 1; }
   to { width: 140px; height: 140px; opacity: 0.3; }
+}
+
+/* Very Hard 1.5x faster approach animations */
+@keyframes approachMediumFast {
+  from { width: 200px; height: 200px; opacity: 1; }
+  to { width: 80px; height: 80px; opacity: 0.3; }
+}
+@keyframes approachLargeFast {
+  from { width: 260px; height: 260px; opacity: 1; }
+  to { width: 110px; height: 110px; opacity: 0.3; }
+}
+@keyframes approachXLargeFast {
+  from { width: 320px; height: 320px; opacity: 1; }
+  to { width: 140px; height: 140px; opacity: 0.3; }
+}
+
+/* Very Hard approach ring speeds (1.5x faster) */
+.veryhard-mode .hit-circle.medium .approach-ring {
+  animation: approachMediumFast 0.667s linear forwards;
+}
+.veryhard-mode .hit-circle.large .approach-ring {
+  animation: approachLargeFast 0.8s linear forwards;
+}
+.veryhard-mode .hit-circle.xlarge .approach-ring {
+  animation: approachXLargeFast 1s linear forwards;
 }
 
 /* Hit feedback - Enhanced */
@@ -1455,9 +1489,41 @@ body {
     height: 100px;
     font-size: 22px;
   }
-  .hit-circle.medium .approach-ring { width: 140px; height: 140px; }
-  .hit-circle.large .approach-ring { width: 180px; height: 180px; }
-  .hit-circle.xlarge .approach-ring { width: 220px; height: 220px; }
+  /* Mobile approach ring animations - match mobile circle sizes */
+  .hit-circle.medium .approach-ring {
+    width: 140px; height: 140px;
+    animation: approachMediumMobile 1s linear forwards;
+  }
+  .hit-circle.large .approach-ring {
+    width: 180px; height: 180px;
+    animation: approachLargeMobile 1.2s linear forwards;
+  }
+  .hit-circle.xlarge .approach-ring {
+    width: 220px; height: 220px;
+    animation: approachXLargeMobile 1.5s linear forwards;
+  }
+  /* Very Hard mobile animations */
+  .veryhard-mode .hit-circle.medium .approach-ring {
+    animation: approachMediumMobile 0.667s linear forwards;
+  }
+  .veryhard-mode .hit-circle.large .approach-ring {
+    animation: approachLargeMobile 0.8s linear forwards;
+  }
+  .veryhard-mode .hit-circle.xlarge .approach-ring {
+    animation: approachXLargeMobile 1s linear forwards;
+  }
+  @keyframes approachMediumMobile {
+    from { width: 140px; height: 140px; opacity: 1; }
+    to { width: 60px; height: 60px; opacity: 0.3; }
+  }
+  @keyframes approachLargeMobile {
+    from { width: 180px; height: 180px; opacity: 1; }
+    to { width: 80px; height: 80px; opacity: 0.3; }
+  }
+  @keyframes approachXLargeMobile {
+    from { width: 220px; height: 220px; opacity: 1; }
+    to { width: 100px; height: 100px; opacity: 0.3; }
+  }
   .hit-circle.medium .judgment-ring { width: 60px; height: 60px; }
   .hit-circle.large .judgment-ring { width: 80px; height: 80px; }
   .hit-circle.xlarge .judgment-ring { width: 100px; height: 100px; }
@@ -1651,6 +1717,7 @@ body {
       <button class="diff-btn easy" onclick="startGame('easy')">Easy</button>
       <button class="diff-btn normal" onclick="startGame('normal')">Normal</button>
       <button class="diff-btn hard" onclick="startGame('hard')">Hard</button>
+      <button class="diff-btn veryhard" onclick="startGame('veryhard')">Very Hard</button>
     </div>
   </div>
 
@@ -1725,30 +1792,6 @@ const SONGS = [
     artist: 'eye-factory',
     bpm: 128,
     audioFile: 'lumi_zero.mp3',
-    duration: 10,  // Test: 10 seconds
-  },
-  {
-    id: 'neon_drive',
-    title: 'Neon Drive',
-    artist: 'eye-factory',
-    bpm: 128,
-    audioFile: null,
-    duration: 10,  // Test: 10 seconds
-  },
-  {
-    id: 'digital_pulse',
-    title: 'Digital Pulse',
-    artist: 'eye-factory',
-    bpm: 150,
-    audioFile: null,
-    duration: 10,  // Test: 10 seconds
-  },
-  {
-    id: 'synth_wave',
-    title: 'Synth Wave',
-    artist: 'eye-factory',
-    bpm: 120,
-    audioFile: null,
     duration: 10,  // Test: 10 seconds
   },
 ];
@@ -2035,6 +2078,7 @@ function startGame(difficulty) {
   document.getElementById('game-container').classList.add('playing');
 
   gameState.selectedDifficulty = difficulty;
+  gameState.speedMultiplier = difficulty === 'veryhard' ? 1.5 : 1.0;
   gameState.score = 0;
   gameState.combo = 0;
   gameState.maxCombo = 0;
@@ -2044,11 +2088,20 @@ function startGame(difficulty) {
   gameState.currentTargetNumber = 1;
 
   document.getElementById('play-song-name').textContent = gameState.selectedSong.title;
-  document.getElementById('play-difficulty').textContent = difficulty.toUpperCase();
+  const displayDifficulty = difficulty === 'veryhard' ? 'VERY HARD' : difficulty.toUpperCase();
+  document.getElementById('play-difficulty').textContent = displayDifficulty;
   document.getElementById('current-score').textContent = '0';
   document.getElementById('current-combo').textContent = '';
   document.getElementById('progress-fill').style.width = '0%';
   document.getElementById('play-area').innerHTML = '';
+
+  // Add veryhard-mode class for faster animations
+  const playArea = document.getElementById('play-area');
+  if (difficulty === 'veryhard') {
+    playArea.classList.add('veryhard-mode');
+  } else {
+    playArea.classList.remove('veryhard-mode');
+  }
 
   // Start GIF background rotation
   startGifBackground();
@@ -2162,17 +2215,23 @@ function generateCircles() {
   // Easy: 1.5s interval, max 1 note on screen
   // Normal: 1.0s interval, max 2 notes on screen
   // Hard: 0.7s interval, max 3 notes on screen
+  // Very Hard: 0.5s interval, max 3 notes, 1.5x faster approach
   const difficultyConfig = {
-    easy:   { minInterval: 1500, maxOnScreen: 1 },
-    normal: { minInterval: 1000, maxOnScreen: 2 },
-    hard:   { minInterval: 700,  maxOnScreen: 3 },
+    easy:     { minInterval: 1500, maxOnScreen: 1, speedMultiplier: 1.0 },
+    normal:   { minInterval: 1000, maxOnScreen: 2, speedMultiplier: 1.0 },
+    hard:     { minInterval: 700,  maxOnScreen: 3, speedMultiplier: 1.0 },
+    veryhard: { minInterval: 500,  maxOnScreen: 3, speedMultiplier: 1.5 },
   }[difficulty];
+
+  // Store speed multiplier for later use in timing calculations
+  gameState.speedMultiplier = difficultyConfig.speedMultiplier;
 
   // Size distribution: medium (normal), large (strong beats), xlarge (accents)
   const sizeDistribution = {
-    easy:   { medium: 0.80, large: 0.18, xlarge: 0.02 },
-    normal: { medium: 0.70, large: 0.25, xlarge: 0.05 },
-    hard:   { medium: 0.60, large: 0.32, xlarge: 0.08 },
+    easy:     { medium: 0.80, large: 0.18, xlarge: 0.02 },
+    normal:   { medium: 0.70, large: 0.25, xlarge: 0.05 },
+    hard:     { medium: 0.60, large: 0.32, xlarge: 0.08 },
+    veryhard: { medium: 0.55, large: 0.35, xlarge: 0.10 },
   }[difficulty];
 
   // Calculate total circles based on interval (no rapid succession < 0.3s)
@@ -2184,11 +2243,12 @@ function generateCircles() {
   const padding = 80;
 
   // First hitTime starts after the longest approach time + buffer for START! display
+  // Apply speed multiplier for Very Hard (1.5x faster = divide by 1.5)
   const maxApproachTime = Math.max(
     CIRCLE_TYPES.medium.approachTime,
     CIRCLE_TYPES.large.approachTime,
     CIRCLE_TYPES.xlarge.approachTime
-  );
+  ) / difficultyConfig.speedMultiplier;
   // Add 1000ms buffer: 800ms for START! display + 200ms preparation
   const firstHitTime = maxApproachTime + 1000;
 
@@ -2210,7 +2270,9 @@ function generateCircles() {
     const hitTime = firstHitTime + (i * hitInterval);
 
     // AppearTime is calculated backwards from hitTime
-    const appearTime = hitTime - typeConfig.approachTime;
+    // Apply speed multiplier for Very Hard (faster approach)
+    const adjustedApproachTime = typeConfig.approachTime / difficultyConfig.speedMultiplier;
+    const appearTime = hitTime - adjustedApproachTime;
 
     // Position within play area - account for approach ring size
     // Approach ring sizes: medium=200, large=260, xlarge=320
@@ -2263,8 +2325,10 @@ function gameLoop() {
     if (circle.active && !circle.hit && circle.number === gameState.currentTargetNumber) {
       const typeConfig = CIRCLE_TYPES[circle.type];
       // Use visualHitTime for miss detection (based on actual spawn time)
+      // Adjust miss window for Very Hard (tighter timing)
       const targetTime = circle.visualHitTime || circle.hitTime;
-      if (elapsed > targetTime + typeConfig.missWindow) {
+      const adjustedMissWindow = typeConfig.missWindow / (gameState.speedMultiplier || 1);
+      if (elapsed > targetTime + adjustedMissWindow) {
         circle.hit = true;
         removeCircle(circle.id);
         registerHit('miss', circle.x, circle.y, circle.type);
@@ -2290,9 +2354,10 @@ function spawnCircle(circle) {
   const typeConfig = CIRCLE_TYPES[circle.type];
 
   // Record ACTUAL spawn time - this is when animation starts
-  // Visual perfect timing = spawnTime + approachTime
+  // Visual perfect timing = spawnTime + approachTime (adjusted for speed)
   circle.spawnTime = Date.now() - gameState.startTime;
-  circle.visualHitTime = circle.spawnTime + typeConfig.approachTime;
+  const adjustedApproachTime = typeConfig.approachTime / (gameState.speedMultiplier || 1);
+  circle.visualHitTime = circle.spawnTime + adjustedApproachTime;
 
   // Approach ring sizes: medium=200, large=260, xlarge=320
   const approachRingSize = { medium: 200, large: 260, xlarge: 320 }[circle.type];
@@ -2375,13 +2440,19 @@ function hitCircle(circle) {
   let scoreGained = 0;
 
   // Timing windows: Perfect ±100ms, Great ±200ms, Good ±300ms
-  if (timing <= TIMING_WINDOWS.perfect) {
+  // For Very Hard, timing windows are also 1.5x tighter
+  const speedMult = gameState.speedMultiplier || 1;
+  const adjustedPerfect = TIMING_WINDOWS.perfect / speedMult;
+  const adjustedGreat = TIMING_WINDOWS.great / speedMult;
+  const adjustedGood = TIMING_WINDOWS.good / speedMult;
+
+  if (timing <= adjustedPerfect) {
     result = 'perfect';
     scoreGained = Math.floor(BASE_SCORES.perfect * typeConfig.scoreMultiplier);
-  } else if (timing <= TIMING_WINDOWS.great) {
+  } else if (timing <= adjustedGreat) {
     result = 'great';
     scoreGained = Math.floor(BASE_SCORES.great * typeConfig.scoreMultiplier);
-  } else if (timing <= TIMING_WINDOWS.good) {
+  } else if (timing <= adjustedGood) {
     result = 'good';
     scoreGained = Math.floor(BASE_SCORES.good * typeConfig.scoreMultiplier);
   } else {
