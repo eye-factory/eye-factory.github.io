@@ -2059,67 +2059,25 @@ function saveBestScore(songId, difficulty, score, rank) {
   // スコアを整数に変換
   const newScore = Math.floor(Number(score)) || 0;
 
-  // 難易度別ベストスコア・ランク保存
+  // 難易度別ベストスコア保存（スコアが上回った場合のみ、スコアとランクを同時に保存）
   const diffScoreKey = `cybertap_${songId}_${difficulty}_best_score`;
   const diffRankKey = `cybertap_${songId}_${difficulty}_best_rank`;
+  const storedDiffScore = parseInt(localStorage.getItem(diffScoreKey), 10) || 0;
 
-  const storedDiffStr = localStorage.getItem(diffScoreKey);
-  const storedDiffScore = storedDiffStr ? (parseInt(storedDiffStr, 10) || 0) : 0;
-  const storedDiffRank = localStorage.getItem(diffRankKey) || '';
-
-  // スコアが上回った場合はスコアを更新
   if (newScore > storedDiffScore) {
     localStorage.setItem(diffScoreKey, String(newScore));
-  }
-
-  // ランクが上回った場合はランクを更新（スコアに関係なく）
-  if (getGradeRank(rank) > getGradeRank(storedDiffRank)) {
     localStorage.setItem(diffRankKey, rank);
   }
 
-  // 曲全体のベストスコア・ランク保存
-  // スコアとランクは独立して最高値を保存
+  // 曲全体ベストスコア保存（スコアが上回った場合のみ、スコアとランクを同時に保存）
   const songScoreKey = `cybertap_${songId}_best_score`;
   const songRankKey = `cybertap_${songId}_best_rank`;
+  const storedSongScore = parseInt(localStorage.getItem(songScoreKey), 10) || 0;
 
-  const storedSongStr = localStorage.getItem(songScoreKey);
-  const storedSongScore = storedSongStr ? (parseInt(storedSongStr, 10) || 0) : 0;
-  const storedSongRank = localStorage.getItem(songRankKey) || '';
-
-  // スコアが上回った場合はスコアを更新
   if (newScore > storedSongScore) {
     localStorage.setItem(songScoreKey, String(newScore));
-  }
-
-  // ランクが上回った場合はランクを更新（スコアに関係なく）
-  if (getGradeRank(rank) > getGradeRank(storedSongRank)) {
     localStorage.setItem(songRankKey, rank);
   }
-}
-
-// 曲全体のベストランクを各難易度の最高ランクと同期する
-function syncSongBestRanks() {
-  const difficulties = ['easy', 'normal', 'hard', 'veryhard'];
-
-  SONGS.forEach(song => {
-    const songRankKey = `cybertap_${song.id}_best_rank`;
-    const currentSongRank = localStorage.getItem(songRankKey) || '';
-    let highestRank = currentSongRank;
-
-    // 全難易度のランクをチェックして最高ランクを見つける
-    difficulties.forEach(diff => {
-      const diffRankKey = `cybertap_${song.id}_${diff}_best_rank`;
-      const diffRank = localStorage.getItem(diffRankKey);
-      if (diffRank && getGradeRank(diffRank) > getGradeRank(highestRank)) {
-        highestRank = diffRank;
-      }
-    });
-
-    // 曲全体ランクが最高ランクより低ければ更新
-    if (highestRank && getGradeRank(highestRank) > getGradeRank(currentSongRank)) {
-      localStorage.setItem(songRankKey, highestRank);
-    }
-  });
 }
 
 function getGradeClass(grade) {
@@ -3131,9 +3089,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('touchmove', e => {
     if (gameState.isPlaying) e.preventDefault();
   }, { passive: false });
-
-  // Sync song overall ranks with highest per-difficulty ranks (one-time fix)
-  syncSongBestRanks();
 
   // Load volume settings
   loadVolumeSettings();
