@@ -1122,34 +1122,74 @@ body.playing .bg-image {
   color: var(--neon-primary);
 }
 
-/* Countdown - Enhanced */
+/* Countdown - Cyber Enhanced */
 .countdown {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   font-family: var(--font-en);
-  font-size: 120px;
+  font-size: 140px;
   font-weight: 900;
-  background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary));
-  background-size: 200% 100%;
+  letter-spacing: 0.05em;
+  background: linear-gradient(180deg, var(--neon-primary) 0%, var(--neon-pink) 50%, var(--neon-primary) 100%);
+  background-size: 100% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 40px var(--neon-primary)) drop-shadow(0 0 80px var(--neon-pink));
-  animation: countdownPulse 0.9s ease-in-out;
+  filter: drop-shadow(0 0 30px var(--neon-primary)) drop-shadow(0 0 60px var(--neon-pink)) drop-shadow(0 0 100px var(--neon-primary));
+  animation: countdownPulse 0.9s ease-in-out, countdownGradient 0.9s ease-in-out;
   z-index: 20;
+  text-shadow: none;
+}
+.countdown::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: countdownShine 0.9s ease-in-out;
+  pointer-events: none;
 }
 .countdown.go {
-  font-size: 140px;
-  background: linear-gradient(90deg, #00ff88, #00ffcc, #00ff88);
-  filter: drop-shadow(0 0 50px #00ff88) drop-shadow(0 0 100px #00ffcc);
+  font-size: 100px;
+  letter-spacing: 0.1em;
+  background: linear-gradient(180deg, #00ff88 0%, #00ffcc 50%, #88ff00 100%);
+  background-size: 100% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 40px #00ff88) drop-shadow(0 0 80px #00ffcc) drop-shadow(0 0 120px #00ff88);
+  animation: countdownPulseGo 0.8s ease-out, countdownGradient 0.8s ease-in-out;
 }
 
 @keyframes countdownPulse {
-  0% { transform: translate(-50%, -50%) scale(0.3) rotate(-15deg); opacity: 0; }
-  40% { transform: translate(-50%, -50%) scale(1.3) rotate(5deg); opacity: 1; }
-  70% { transform: translate(-50%, -50%) scale(1.1) rotate(-2deg); }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+  0% { transform: translate(-50%, -50%) scale(0.3) rotate(-10deg); opacity: 0; }
+  30% { transform: translate(-50%, -50%) scale(1.4) rotate(3deg); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(1.1) rotate(-2deg); }
+  100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 0; }
+}
+
+@keyframes countdownPulseGo {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  40% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+  70% { transform: translate(-50%, -50%) scale(1.2); }
+  100% { transform: translate(-50%, -50%) scale(1.3); opacity: 0; }
+}
+
+@keyframes countdownGradient {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 0% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@keyframes countdownShine {
+  0% { background-position: -100% 0%; opacity: 0; }
+  50% { background-position: 100% 0%; opacity: 1; }
+  100% { background-position: 200% 0%; opacity: 0; }
 }
 
 /* Progress bar */
@@ -1207,7 +1247,8 @@ body.playing .bg-image {
   .play-hud { height: 50px; padding: 8px 15px; }
   .play-hud .score { font-size: 22px; }
   #play-area { top: 50px; bottom: 25px; }
-  .countdown { font-size: 80px; }
+  .countdown { font-size: 100px; }
+  .countdown.go { font-size: 70px; }
   .result-grade { font-size: 60px; }
   #result-screen { gap: 20px; padding: 15px; }
   .result-stats { padding: 16px; }
@@ -1316,10 +1357,10 @@ body.playing .bg-image {
     bottom: 20px;
   }
   .countdown {
-    font-size: 60px;
+    font-size: 80px;
   }
   .countdown.go {
-    font-size: 70px;
+    font-size: 60px;
   }
   .hit-circle.medium {
     width: 55px;
@@ -2017,10 +2058,11 @@ function countdown(count, callback) {
   const area = document.getElementById('play-area');
 
   if (count <= 0) {
-    // Show GO!
+    // Show START!
     const goEl = document.createElement('div');
     goEl.className = 'countdown go';
-    goEl.textContent = 'GO!';
+    goEl.textContent = 'START!';
+    goEl.setAttribute('data-text', 'START!');
     area.appendChild(goEl);
 
     // Start game BGM
@@ -2038,6 +2080,7 @@ function countdown(count, callback) {
   const countEl = document.createElement('div');
   countEl.className = 'countdown';
   countEl.textContent = count;
+  countEl.setAttribute('data-text', count);
   area.appendChild(countEl);
 
   setTimeout(() => {
