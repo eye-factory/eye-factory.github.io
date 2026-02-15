@@ -169,49 +169,37 @@ body.playing .bg-image {
 
 @media (orientation: portrait) and (max-width: 900px) {
   #rotate-guide.show { display: flex; }
-
-  /* Force landscape layout by rotating content 90 degrees */
-  body.force-landscape #game-container {
-    transform: rotate(90deg);
-    transform-origin: center center;
-    width: 100vh;
-    height: 100vw;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    margin-top: calc(-50vw);
-    margin-left: calc(-50vh);
-  }
-  body.force-landscape .bg-image,
-  body.force-landscape .bg-noise,
-  body.force-landscape .bg-scanlines,
-  body.force-landscape .bg-grid {
-    transform: rotate(90deg);
-    transform-origin: center center;
-    width: 100vh;
-    height: 100vw;
-    top: 50%;
-    left: 50%;
-    margin-top: calc(-50vw);
-    margin-left: calc(-50vh);
-  }
-  body.force-landscape #tap-start-screen,
-  body.force-landscape #screen-fade {
-    transform: rotate(90deg);
-  }
 }
 
-/* Game container - Landscape optimized */
+/* Game container with cyber border */
 #game-container {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: calc(100% - 12px);
+  height: calc(100% - 12px);
   max-width: 1200px;
-  max-height: 100vh;
+  max-height: calc(100vh - 12px);
   z-index: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border: 3px solid transparent;
+  border-radius: 8px;
+  background: linear-gradient(var(--bg), var(--bg)) padding-box,
+              linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary)) border-box;
+  background-size: 100% 100%, 200% 100%;
+  animation: cyberBorderAnimation 4s ease-in-out infinite;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.4), 0 0 30px rgba(255, 0, 170, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes cyberBorderAnimation {
+  0%, 100% {
+    background-position: 0 0, 0% 50%;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4), 0 0 30px rgba(255, 0, 170, 0.2), inset 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  50% {
+    background-position: 0 0, 100% 50%;
+    box-shadow: 0 0 25px rgba(0, 212, 255, 0.6), 0 0 50px rgba(255, 0, 170, 0.4), inset 0 0 20px rgba(0, 0, 0, 0.5);
+  }
 }
 
 /* Screens */
@@ -1288,239 +1276,314 @@ body.playing .bg-image {
 /* MOBILE RESPONSIVE - Portrait & Small screens */
 /* ============================================================ */
 
-/* Small mobile screens (portrait) */
-@media (max-width: 480px) {
+/* Portrait mode (all mobile) */
+@media (orientation: portrait) and (max-width: 900px) {
+  /* Screen padding adjustments */
+  .screen {
+    padding: 12px;
+    padding-top: 45px;
+    justify-content: flex-start;
+  }
+
+  /* Back button - always visible */
+  .back-btn {
+    top: 8px;
+    left: 8px;
+    font-size: 10px;
+    padding: 5px 10px;
+    z-index: 100;
+  }
+
   /* Title screen */
+  #title-screen {
+    padding-top: 15px;
+    justify-content: center;
+  }
   #title-screen .game-title {
-    font-size: clamp(32px, 12vw, 48px);
+    font-size: clamp(28px, 10vw, 42px);
     margin-bottom: 5px;
   }
   #title-screen .subtitle {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    margin-bottom: 20px;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    margin-bottom: 15px;
   }
   .title-buttons {
-    gap: 10px;
+    gap: 8px;
   }
   .btn {
-    font-size: 12px;
-    padding: 10px 24px;
+    font-size: 11px;
+    padding: 10px 22px;
   }
   .volume-settings {
-    width: 220px;
-    margin-top: 20px;
+    width: 200px;
+    margin-top: 15px;
   }
   .volume-label {
-    font-size: 10px;
-    width: 45px;
+    font-size: 9px;
+    width: 42px;
   }
   .volume-value {
-    font-size: 10px;
-    width: 30px;
+    font-size: 9px;
+    width: 28px;
+  }
+  .volume-slider {
+    height: 5px;
+  }
+  .volume-slider::-webkit-slider-thumb {
+    width: 16px;
+    height: 16px;
   }
 
-  /* Song select */
+  /* Song select - 2 columns */
   #song-select {
     flex-direction: column;
-    padding: 15px;
-    gap: 15px;
+    padding: 10px;
+    padding-top: 45px;
+    gap: 8px;
+  }
+  .song-select-left {
+    flex: 0;
   }
   #song-select .section-title {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  .song-list {
-    grid-template-columns: 1fr;
-    gap: 8px;
-    max-height: 50vh;
-  }
-  .song-item {
-    padding: 12px;
-  }
-  .song-item .song-title {
-    font-size: 14px;
-  }
-  .song-item .song-artist {
-    font-size: 11px;
+    font-size: 16px;
+    margin-bottom: 5px;
   }
   .no-audio-warning {
+    font-size: 9px;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+  }
+  .song-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    max-height: none;
+    overflow-y: visible;
+    padding: 4px;
+  }
+  .song-item {
+    padding: 10px 8px;
+  }
+  .song-item .song-title {
+    font-size: 12px;
+  }
+  .song-item .song-artist {
     font-size: 10px;
-    padding: 8px 12px;
+  }
+  .song-item .song-bpm {
+    font-size: 9px;
   }
 
   /* Difficulty select */
   #difficulty-select {
     flex-direction: column;
-    gap: 20px;
-    padding: 15px;
-  }
-  .difficulty-buttons {
-    flex-direction: column;
     gap: 12px;
+    padding: 10px;
+    padding-top: 50px;
   }
-  .diff-btn {
-    font-size: 14px;
-    padding: 14px 30px;
-    min-width: 120px;
+  .difficulty-info .section-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  .selected-song-info {
+    margin-bottom: 10px;
   }
   .selected-song-info strong {
-    font-size: 18px;
+    font-size: 16px;
+  }
+  .difficulty-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .diff-btn {
+    font-size: 12px;
+    padding: 12px 20px;
+    min-width: 90px;
   }
 
   /* Play screen */
   .play-hud {
-    height: 45px;
-    padding: 6px 12px;
+    height: 40px;
+    padding: 5px 10px;
   }
   .play-hud .score {
-    font-size: 18px;
+    font-size: 16px;
   }
   .play-hud .combo {
-    font-size: 12px;
+    font-size: 11px;
   }
   .play-hud .song-info {
-    font-size: 10px;
+    font-size: 9px;
   }
   #play-area {
-    top: 45px;
-    bottom: 20px;
+    top: 40px;
+    bottom: 18px;
   }
   .countdown {
-    font-size: 80px;
+    font-size: 70px;
   }
   .countdown.go {
-    font-size: 60px;
+    font-size: 50px;
   }
   .hit-circle.medium {
-    width: 55px;
-    height: 55px;
-    font-size: 14px;
+    width: 50px;
+    height: 50px;
+    font-size: 13px;
   }
   .hit-circle.large {
-    width: 75px;
-    height: 75px;
-    font-size: 18px;
+    width: 68px;
+    height: 68px;
+    font-size: 16px;
   }
   .hit-circle.xlarge {
-    width: 95px;
-    height: 95px;
-    font-size: 24px;
+    width: 85px;
+    height: 85px;
+    font-size: 20px;
   }
   .hit-feedback {
-    font-size: 16px;
+    font-size: 14px;
+  }
+  .progress-bar {
+    height: 4px;
   }
 
   /* Result screen */
   #result-screen {
     flex-direction: column;
-    gap: 15px;
-    padding: 15px;
+    gap: 10px;
+    padding: 10px;
+    padding-top: 15px;
   }
   .result-left {
     order: 1;
+  }
+  #result-screen .result-title {
+    font-size: 18px;
+    margin-bottom: 5px;
+  }
+  .result-grade {
+    font-size: 50px;
+  }
+  .result-buttons {
+    flex-direction: row;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .result-buttons .btn {
+    padding: 8px 16px;
+    font-size: 10px;
   }
   .result-stats {
     order: 2;
     min-width: auto;
     width: 100%;
-    max-width: 280px;
-    padding: 16px;
+    max-width: 260px;
+    padding: 12px;
   }
-  #result-screen .result-title {
-    font-size: 22px;
-    margin-bottom: 10px;
-  }
-  .result-grade {
-    font-size: 60px;
+  .result-row {
+    padding: 6px 0;
   }
   .result-row .label {
-    font-size: 12px;
+    font-size: 11px;
+  }
+  .result-row .value {
+    font-size: 13px;
   }
   .result-row .value.score {
-    font-size: 18px;
-  }
-  .result-buttons {
-    flex-direction: row;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  .result-buttons .btn {
-    padding: 10px 20px;
-    font-size: 11px;
+    font-size: 16px;
   }
 
   /* Ranking screen */
   #ranking-screen {
-    padding: 15px;
+    padding: 10px;
+    padding-top: 45px;
   }
   #ranking-screen .section-title {
-    font-size: 20px;
-  }
-  .ranking-header {
-    gap: 10px;
+    font-size: 18px;
     margin-bottom: 8px;
   }
+  .ranking-header {
+    gap: 8px;
+    margin-bottom: 6px;
+  }
   .ranking-nav-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
   }
   .ranking-song-title {
-    font-size: 14px;
-    min-width: 140px;
+    font-size: 12px;
+    min-width: 120px;
   }
   .ranking-diff-tabs {
-    gap: 6px;
-    margin-bottom: 10px;
+    gap: 5px;
+    margin-bottom: 8px;
   }
   .ranking-diff-tab {
-    font-size: 10px;
-    padding: 5px 12px;
+    font-size: 9px;
+    padding: 4px 10px;
   }
   .ranking-list {
-    max-height: 45vh;
+    max-height: 40vh;
   }
   .ranking-item {
-    padding: 8px 10px;
+    padding: 6px 8px;
+    margin-bottom: 4px;
   }
   .ranking-item .rank {
-    font-size: 14px;
-    width: 28px;
+    font-size: 12px;
+    width: 24px;
   }
   .ranking-item .info .name {
-    font-size: 11px;
+    font-size: 10px;
+  }
+  .ranking-item .info .meta {
+    font-size: 8px;
   }
   .ranking-item .score {
-    font-size: 13px;
-  }
-
-  /* Back button */
-  .back-btn {
-    top: 10px;
-    left: 10px;
-    font-size: 10px;
-    padding: 6px 12px;
+    font-size: 12px;
   }
 
   /* Rotate guide */
   #rotate-guide {
-    padding: 30px;
+    padding: 25px;
   }
   #rotate-guide .icon {
-    font-size: 60px;
-    margin-bottom: 20px;
+    font-size: 50px;
+    margin-bottom: 15px;
   }
   #rotate-guide .message {
-    font-size: 16px;
+    font-size: 14px;
   }
   #rotate-guide .sub-message {
-    font-size: 12px;
+    font-size: 11px;
   }
 }
 
-/* Medium mobile screens */
-@media (min-width: 481px) and (max-width: 768px) {
+/* Very small screens (< 380px width) */
+@media (max-width: 380px) and (orientation: portrait) {
+  #title-screen .game-title {
+    font-size: 26px;
+  }
+  .song-list {
+    grid-template-columns: 1fr;
+  }
+  .song-item {
+    padding: 8px;
+  }
+  .diff-btn {
+    min-width: 80px;
+    padding: 10px 16px;
+    font-size: 11px;
+  }
+  .result-grade {
+    font-size: 45px;
+  }
+}
+
+/* Medium mobile screens - Landscape */
+@media (min-width: 481px) and (max-width: 900px) and (orientation: landscape) {
   #title-screen .game-title {
     font-size: clamp(40px, 10vw, 60px);
   }
@@ -1534,17 +1597,17 @@ body.playing .bg-image {
   }
 
   #song-select {
-    flex-direction: column;
+    flex-direction: row;
     padding: 20px;
     gap: 20px;
   }
   .song-list {
     grid-template-columns: repeat(2, 1fr);
-    max-height: 55vh;
+    max-height: 70vh;
   }
 
   #difficulty-select {
-    flex-direction: column;
+    flex-direction: row;
     gap: 25px;
   }
   .diff-btn {
@@ -1552,7 +1615,7 @@ body.playing .bg-image {
   }
 
   #result-screen {
-    flex-direction: column;
+    flex-direction: row;
     gap: 25px;
     padding: 20px;
   }
@@ -2638,27 +2701,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
   }
 
-  // Try to lock screen orientation to landscape
-  function tryLockLandscape() {
-    // Try screen.orientation.lock API
-    if (screen.orientation && screen.orientation.lock) {
-      screen.orientation.lock('landscape').catch(() => {
-        // Lock failed - use CSS rotation fallback
-        enableForceLandscape();
-      });
-    } else {
-      // API not available - use CSS rotation fallback
-      enableForceLandscape();
-    }
-  }
-
-  // Enable CSS-based forced landscape mode
-  function enableForceLandscape() {
-    if (isPortraitMode()) {
-      document.body.classList.add('force-landscape');
-    }
-  }
-
   // Show rotate guide, then fade to home
   function showRotateGuideAndProceed() {
     rotateGuide.classList.add('show');
@@ -2677,8 +2719,6 @@ document.addEventListener('DOMContentLoaded', () => {
       rotateGuideTimeout = null;
     }
     rotateGuide.classList.add('fade-out');
-    // Try to lock landscape orientation
-    tryLockLandscape();
     // Start title screen animations
     titleScreen.classList.add('animate');
     // Start BGM
