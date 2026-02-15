@@ -1537,6 +1537,19 @@ body {
   box-shadow: none;
   border-radius: 0;
 }
+
+/* Mobile portrait (rotated to landscape) - use 90% of available space */
+@media (orientation: portrait) and (max-width: 900px) {
+  #app-wrapper {
+    /* After rotation: visible height = original vw, visible width = original vh */
+    /* Use 90% of the rotated viewport */
+    height: 90vw;
+    width: calc(90vw * 16 / 9);
+    max-width: 90vh;
+    max-height: calc(90vh * 9 / 16);
+    border-width: 3px;
+  }
+}
 </style>
 </head>
 <body>
