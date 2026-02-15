@@ -934,8 +934,8 @@ body {
 /* Result screen - Horizontal layout */
 #result-screen {
   flex-direction: row;
-  gap: 40px;
-  padding: 30px;
+  gap: clamp(20px, 5vw, 60px);
+  padding: clamp(15px, 3vh, 40px);
 }
 .result-left {
   display: flex;
@@ -944,16 +944,16 @@ body {
 }
 #result-screen .result-title {
   font-family: var(--font-en);
-  font-size: 32px;
+  font-size: clamp(24px, 5vw, 48px);
   font-weight: 900;
   color: var(--neon-primary);
-  margin-bottom: 20px;
+  margin-bottom: clamp(10px, 2vh, 25px);
   text-shadow: 0 0 20px var(--neon-primary);
 }
 
 .result-grade {
   font-family: var(--font-en);
-  font-size: 100px;
+  font-size: clamp(80px, 18vw, 180px);
   font-weight: 900;
   line-height: 1;
   opacity: 0;
@@ -1081,26 +1081,27 @@ body {
   background: var(--bg-card);
   border: 1px solid rgba(0, 212, 255, 0.3);
   border-radius: 16px;
-  padding: 24px;
-  min-width: 260px;
+  padding: clamp(16px, 3vw, 32px);
+  min-width: clamp(200px, 30vw, 320px);
 }
 .result-row {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
+  padding: clamp(6px, 1vh, 12px) 0;
   border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 .result-row:last-child { border-bottom: none; }
 .result-row .label {
   color: var(--text-sub);
-  font-size: 14px;
+  font-size: clamp(12px, 2vw, 18px);
 }
 .result-row .value {
   font-family: var(--font-en);
   font-weight: 700;
+  font-size: clamp(14px, 2.5vw, 22px);
 }
 .result-row .value.score {
-  font-size: 24px;
+  font-size: clamp(20px, 4vw, 36px);
   color: var(--neon-primary);
 }
 .result-row .value.perfect { color: var(--neon-secondary); }
@@ -1111,8 +1112,12 @@ body {
 .result-buttons {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 20px;
+  gap: clamp(8px, 1.5vh, 16px);
+  margin-top: clamp(15px, 3vh, 30px);
+}
+.result-buttons .btn {
+  font-size: clamp(12px, 2vw, 18px);
+  padding: clamp(10px, 1.5vh, 16px) clamp(20px, 3vw, 40px);
 }
 
 /* Countdown - Cyber Enhanced */
