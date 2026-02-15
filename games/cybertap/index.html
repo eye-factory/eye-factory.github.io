@@ -2336,7 +2336,7 @@ function renderSongList() {
     item.innerHTML = `
       <div class="song-title">${song.title}</div>
       <div class="song-artist">${song.artist}</div>
-      <div class="song-bpm">BPM ${song.bpm} / ${formatDuration(song.duration)}</div>
+      <div class="song-bpm">${formatDuration(song.duration)}</div>
       ${formatBestScoreHTML(bestScore, bestRank)}
     `;
     item.onclick = () => selectSong(song);
