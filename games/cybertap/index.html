@@ -2201,6 +2201,44 @@ function countdown(count, callback) {
 }
 
 // ============================================================
+// GIF BOUNDS CALCULATION
+// Calculate the actual displayed GIF area (background-size: contain)
+// ============================================================
+function getGifBounds() {
+  const playBg = document.getElementById('play-bg');
+  const rect = playBg.getBoundingClientRect();
+
+  // GIF aspect ratio (16:9)
+  const gifAspect = 16 / 9;
+  const containerAspect = rect.width / rect.height;
+
+  let gifWidth, gifHeight, gifLeft, gifTop;
+
+  if (containerAspect > gifAspect) {
+    // Container is wider - GIF fills height, centered horizontally
+    gifHeight = rect.height;
+    gifWidth = gifHeight * gifAspect;
+    gifLeft = (rect.width - gifWidth) / 2;
+    gifTop = 0;
+  } else {
+    // Container is taller - GIF fills width, centered vertically
+    gifWidth = rect.width;
+    gifHeight = gifWidth / gifAspect;
+    gifLeft = 0;
+    gifTop = (rect.height - gifHeight) / 2;
+  }
+
+  return {
+    left: gifLeft,
+    top: gifTop,
+    width: gifWidth,
+    height: gifHeight,
+    right: gifLeft + gifWidth,
+    bottom: gifTop + gifHeight
+  };
+}
+
+// ============================================================
 // CIRCLE GENERATION - With 3 sizes
 // Notes arrive in number order with minimum interval
 // ============================================================
@@ -2296,25 +2334,24 @@ function generateCircles() {
     const adjustedApproachTime = typeConfig.approachTime / difficultyConfig.speedMultiplier;
     const appearTime = hitTime - adjustedApproachTime;
 
-    // Position within play area - account for approach ring size
-    // Mobile (<=480px): medium=140, large=180, xlarge=220
-    // Desktop: medium=200, large=260, xlarge=320
+    // Get GIF display bounds (actual visible GIF area)
+    const gifBounds = getGifBounds();
+
+    // Approach ring sizes - mobile vs desktop
     const isMobile = window.innerWidth <= 480 || window.innerHeight <= 480;
     const approachRingSizes = isMobile
       ? { medium: 140, large: 180, xlarge: 220 }
       : { medium: 200, large: 260, xlarge: 320 };
     const approachRingSize = approachRingSizes[circleType];
     const halfRing = approachRingSize / 2;
-    // Margin must include half of approach ring so entire ring stays visible
-    const edgeMargin = halfRing + 15;
 
-    // Calculate valid spawn area - notes must be fully visible
-    // X: from left edge + margin to right edge - margin
-    const minX = edgeMargin;
-    const maxX = Math.max(edgeMargin + 30, areaRect.width - edgeMargin);
-    // Y: from top edge + margin to 65% height (above progress bar)
-    const minY = edgeMargin;
-    const maxY = Math.max(edgeMargin + 30, areaRect.height * 0.65 - edgeMargin);
+    // Spawn area: within GIF bounds, with margin for approach ring
+    // X: GIF左端+半径 から GIF右端-半径
+    const minX = gifBounds.left + halfRing + 10;
+    const maxX = gifBounds.right - halfRing - 10;
+    // Y: GIF上端+半径 から GIF下端*0.7（プログレスバーより上）
+    const minY = gifBounds.top + halfRing + 10;
+    const maxY = gifBounds.top + gifBounds.height * 0.70 - halfRing;
 
     gameState.circles.push({
       id: gameState.circleId++,
@@ -2389,23 +2426,25 @@ function spawnCircle(circle) {
   const adjustedApproachTime = typeConfig.approachTime / (gameState.speedMultiplier || 1);
   circle.visualHitTime = circle.spawnTime + adjustedApproachTime;
 
+  // Get GIF display bounds for positioning
+  const gifBounds = getGifBounds();
+
   // Approach ring sizes - mobile vs desktop
-  // Mobile (<=480px): medium=140, large=180, xlarge=220
-  // Desktop: medium=200, large=260, xlarge=320
   const isMobile = window.innerWidth <= 480 || window.innerHeight <= 480;
   const approachRingSizes = isMobile
     ? { medium: 140, large: 180, xlarge: 220 }
     : { medium: 200, large: 260, xlarge: 320 };
   const approachRingSize = approachRingSizes[circle.type];
   const halfRing = approachRingSize / 2;
-  // Edge margin ensures entire approach ring stays visible
-  const edgeMargin = halfRing + 15;
 
-  // Ensure circle + approach ring is fully within bounds
-  const x = Math.min(Math.max(edgeMargin, circle.x), areaRect.width - edgeMargin);
-  // Y bound: stay within play area, above progress bar (65% of height)
-  const maxYBound = areaRect.height * 0.65 - edgeMargin;
-  const y = Math.min(Math.max(edgeMargin, circle.y), Math.max(edgeMargin + 30, maxYBound));
+  // Clamp position within GIF bounds (with approach ring margin)
+  const minX = gifBounds.left + halfRing + 10;
+  const maxX = gifBounds.right - halfRing - 10;
+  const minY = gifBounds.top + halfRing + 10;
+  const maxY = gifBounds.top + gifBounds.height * 0.70 - halfRing;
+
+  const x = Math.min(Math.max(minX, circle.x), maxX);
+  const y = Math.min(Math.max(minY, circle.y), maxY);
 
   const el = document.createElement('div');
   // Immediately set target class if this is the current target
