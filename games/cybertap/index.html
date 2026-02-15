@@ -281,6 +281,41 @@ body {
   text-align: left;
 }
 
+/* Tap to Start screen (mobile only) */
+#tap-start-screen {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--bg);
+  z-index: 10000;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+#tap-start-screen.show {
+  display: flex;
+}
+#tap-start-screen .tap-title {
+  font-family: var(--font-en);
+  font-size: clamp(32px, 8vw, 56px);
+  font-weight: 900;
+  color: var(--neon-primary);
+  text-shadow: 0 0 20px var(--neon-primary);
+  animation: tapPulse 1.5s ease-in-out infinite;
+}
+#tap-start-screen .tap-hint {
+  font-size: 14px;
+  color: var(--text-sub);
+  margin-top: 20px;
+}
+@keyframes tapPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
 /* Buttons */
 .btn {
   font-family: var(--font-en);
@@ -886,6 +921,12 @@ body {
 </style>
 </head>
 <body>
+
+<!-- Tap to Start screen (mobile only) -->
+<div id="tap-start-screen">
+  <div class="tap-title">TAP TO START</div>
+  <div class="tap-hint">タップして開始</div>
+</div>
 
 <div class="bg-image"></div>
 <div class="bg-noise"></div>
@@ -1633,6 +1674,32 @@ function changeRankingDiff(diff) {
 // ============================================================
 // INIT
 // ============================================================
+// Check if mobile device
+function isMobileDevice() {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+         ('ontouchstart' in window) ||
+         (navigator.maxTouchPoints > 0);
+}
+
+// Initialize audio context (required for mobile)
+function initAudioContext() {
+  // Create a silent audio context to unlock audio on mobile
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (AudioContext) {
+    const ctx = new AudioContext();
+    // Create a short silent buffer and play it
+    const buffer = ctx.createBuffer(1, 1, 22050);
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+    source.start(0);
+    // Resume context if suspended
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('touchmove', e => {
     if (gameState.isPlaying) e.preventDefault();
@@ -1640,6 +1707,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Load volume settings
   loadVolumeSettings();
+
+  // Show tap-to-start screen on mobile
+  if (isMobileDevice()) {
+    const tapScreen = document.getElementById('tap-start-screen');
+    tapScreen.classList.add('show');
+
+    const handleTap = () => {
+      // Initialize audio
+      initAudioContext();
+      // Hide tap screen
+      tapScreen.classList.remove('show');
+      // Remove listener
+      tapScreen.removeEventListener('click', handleTap);
+      tapScreen.removeEventListener('touchstart', handleTap);
+    };
+
+    tapScreen.addEventListener('click', handleTap);
+    tapScreen.addEventListener('touchstart', handleTap, { passive: true });
+  }
 });
 </script>
 
