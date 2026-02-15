@@ -34,16 +34,11 @@ html, body {
   user-select: none;
 }
 
-/* Mobile portrait -> force landscape via rotation */
+/* Mobile portrait -> scale down game to fit without rotation */
 @media (orientation: portrait) and (max-width: 900px) {
   html {
-    width: 100vh;
-    height: 100vw;
-    transform: rotate(90deg);
-    transform-origin: top left;
-    position: absolute;
-    top: 0;
-    left: 100%;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -349,12 +344,11 @@ body {
 #tap-start-screen.show {
   display: flex;
 }
-/* Mobile portrait: TAP TO START covers rotated viewport */
+/* Mobile portrait: TAP TO START covers viewport */
 @media (orientation: portrait) and (max-width: 900px) {
   #tap-start-screen {
-    /* After rotation: width becomes height, height becomes width */
-    width: 100vh;
-    height: 100vw;
+    width: 100vw;
+    height: 100vh;
   }
 }
 #tap-start-screen .tap-title {
@@ -1651,18 +1645,15 @@ body {
   border-radius: 0;
 }
 
-/* Mobile portrait (rotated to landscape) - use 95% of available space */
+/* Mobile portrait - scale game to fit width, maintain 16:9 aspect */
 @media (orientation: portrait) and (max-width: 900px) {
   #app-wrapper {
-    /* After rotation: visible height = original vw, visible width = original vh */
-    /* Use 95% of the rotated viewport */
-    height: 95vw;
-    width: calc(95vw * 16 / 9);
-    max-width: 95vh;
-    max-height: calc(95vh * 9 / 16);
-    border-width: 3px;
-    /* Shift slightly left for better centering (accounts for notch/rounded corners) */
-    margin-left: -3vw;
+    /* Use full width, calculate height from 16:9 aspect ratio */
+    width: calc(100vw - 20px);
+    height: calc((100vw - 20px) * 9 / 16);
+    /* Center vertically */
+    margin: auto;
+    border-width: 2px;
   }
 }
 </style>
