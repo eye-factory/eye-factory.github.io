@@ -525,6 +525,15 @@ body.playing .bg-image {
   text-transform: uppercase;
   min-width: 140px;
 }
+.diff-btn.baby {
+  border-color: #ff99cc;
+  color: #ff99cc;
+}
+.diff-btn.baby:hover {
+  background: #ff99cc;
+  color: #000;
+  box-shadow: 0 0 20px #ff99cc;
+}
 .diff-btn.easy {
   border-color: var(--neon-secondary);
   color: var(--neon-secondary);
@@ -1009,6 +1018,63 @@ body.playing .bg-image {
   background-clip: text;
   filter: drop-shadow(0 0 15px var(--neon-pink));
   animation: gradeReveal 1s ease-out 0.3s forwards;
+}
+.grade-d {
+  background: linear-gradient(90deg, #888888, #aaaaaa, #888888);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 10px #666666);
+  animation: gradeReveal 1s ease-out 0.3s forwards;
+}
+.grade-ss {
+  background: linear-gradient(90deg, #ffdd00, #00ff88, #00ffcc, #ffdd00);
+  background-size: 400% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 35px #ffdd00) drop-shadow(0 0 70px #00ff88);
+  animation: gradeReveal 1s ease-out 0.3s forwards, gradeShineSS 1.5s ease-in-out infinite;
+}
+@keyframes gradeShineSS {
+  0%, 100% { background-position: 0% 50%; filter: drop-shadow(0 0 35px #ffdd00) drop-shadow(0 0 70px #00ff88); }
+  50% { background-position: 100% 50%; filter: drop-shadow(0 0 50px #00ff88) drop-shadow(0 0 100px #ffdd00); }
+}
+.grade-god {
+  background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff, #00ffff, #ffff00);
+  background-size: 600% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 50px #ff00ff) drop-shadow(0 0 100px #00ffff) drop-shadow(0 0 150px #ffff00);
+  animation: gradeRevealGod 1.5s ease-out 0.3s forwards, gradeShineGod 1s linear infinite;
+}
+@keyframes gradeRevealGod {
+  0% { opacity: 0; transform: scale(0.1) rotate(-20deg); }
+  30% { opacity: 1; transform: scale(1.5) rotate(10deg); }
+  50% { transform: scale(1.3) rotate(-5deg); }
+  70% { transform: scale(1.1) rotate(3deg); }
+  100% { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+@keyframes gradeShineGod {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+/* GOD grade screen flash effect */
+.god-flash {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  animation: godFlashAnim 2s ease-out forwards;
+}
+@keyframes godFlashAnim {
+  0% { background: radial-gradient(circle, rgba(255,0,255,0.8) 0%, rgba(0,255,255,0.6) 30%, rgba(255,255,0,0.4) 60%, transparent 100%); }
+  30% { background: radial-gradient(circle, rgba(0,255,255,0.6) 0%, rgba(255,255,0,0.4) 30%, rgba(255,0,255,0.3) 60%, transparent 100%); }
+  60% { background: radial-gradient(circle, rgba(255,255,0,0.4) 0%, rgba(255,0,255,0.3) 30%, rgba(0,255,255,0.2) 60%, transparent 100%); }
+  100% { background: transparent; }
 }
 @keyframes gradeReveal {
   0% { opacity: 0; transform: scale(0.3) rotate(-10deg); }
@@ -1743,6 +1809,7 @@ body.playing .bg-image {
       </div>
     </div>
     <div class="difficulty-buttons">
+      <button class="diff-btn baby" onclick="startGame('baby')">Baby</button>
       <button class="diff-btn easy" onclick="startGame('easy')">Easy</button>
       <button class="diff-btn normal" onclick="startGame('normal')">Normal</button>
       <button class="diff-btn hard" onclick="startGame('hard')">Hard</button>
@@ -2225,10 +2292,33 @@ function generateCircles() {
   const difficulty = gameState.selectedDifficulty;
 
   // Circles per second based on difficulty
+  // Baby mode: only 1 note for testing GOD grade
+  if (difficulty === 'baby') {
+    const area = document.getElementById('play-area');
+    const areaRect = area.getBoundingClientRect();
+    const padding = 80;
+    const maxX = Math.max(100, areaRect.width - padding * 2);
+    const maxY = Math.max(100, areaRect.height - padding * 2);
+
+    gameState.circles.push({
+      id: gameState.circleId++,
+      type: 'large',
+      appearTime: 500,
+      hitTime: 2000,
+      x: padding + maxX / 2,
+      y: padding + maxY / 2,
+      number: 1,
+      active: false,
+      hit: false,
+    });
+    return;
+  }
+
   const circlesPerSecond = { easy: 1.2, normal: 2, hard: 3 }[difficulty];
 
   // Size distribution: medium (normal), large (strong beats), xlarge (accents)
   const sizeDistribution = {
+    baby:   { medium: 0.50, large: 0.50, xlarge: 0.00 },
     easy:   { medium: 0.75, large: 0.22, xlarge: 0.03 },
     normal: { medium: 0.65, large: 0.30, xlarge: 0.05 },
     hard:   { medium: 0.55, large: 0.38, xlarge: 0.07 },
@@ -2596,26 +2686,39 @@ function endGame() {
   const totalNotes = gameState.circles.length;
   const hitNotes = gameState.hits.perfect + gameState.hits.great + gameState.hits.good;
   const accuracy = totalNotes > 0 ? (hitNotes / totalNotes) * 100 : 0;
+  const allPerfect = gameState.hits.perfect === totalNotes && gameState.hits.great === 0 && gameState.hits.good === 0 && gameState.hits.miss === 0;
 
-  let grade, gradeClass;
-  if (accuracy >= 95 && gameState.hits.miss === 0) {
+  let grade, gradeClass, isGod = false;
+  if (allPerfect && totalNotes > 0) {
+    // GOD: All Perfect, no Great/Good/Miss
+    grade = 'GOD';
+    gradeClass = 'grade-god';
+    isGod = true;
+  } else if (accuracy >= 95 && gameState.hits.miss === 0) {
+    grade = 'SS';
+    gradeClass = 'grade-ss';
+  } else if (accuracy >= 90 && gameState.hits.miss === 0) {
     grade = 'S';
     gradeClass = 'grade-s';
-  } else if (accuracy >= 85) {
+  } else if (accuracy >= 80) {
     grade = 'A';
     gradeClass = 'grade-a';
-  } else if (accuracy >= 70) {
+  } else if (accuracy >= 65) {
     grade = 'B';
     gradeClass = 'grade-b';
-  } else {
+  } else if (accuracy >= 50) {
     grade = 'C';
     gradeClass = 'grade-c';
+  } else {
+    grade = 'D';
+    gradeClass = 'grade-d';
   }
 
   // Prepare result data before transition
   const resultData = {
     grade,
     gradeClass,
+    isGod,
     score: gameState.score.toLocaleString(),
     combo: gameState.maxCombo,
     perfect: gameState.hits.perfect,
@@ -2639,6 +2742,14 @@ function endGame() {
     document.getElementById('result-great').textContent = resultData.great;
     document.getElementById('result-good').textContent = resultData.good;
     document.getElementById('result-miss').textContent = resultData.miss;
+
+    // GOD grade special effect
+    if (resultData.isGod) {
+      const flash = document.createElement('div');
+      flash.className = 'god-flash';
+      document.body.appendChild(flash);
+      setTimeout(() => flash.remove(), 2000);
+    }
   }, 300);
 }
 
