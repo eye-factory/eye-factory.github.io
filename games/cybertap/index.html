@@ -2187,7 +2187,9 @@ function gameLoop() {
     // Check for missed circles (only current target can be missed)
     if (circle.active && !circle.hit && circle.number === gameState.currentTargetNumber) {
       const typeConfig = CIRCLE_TYPES[circle.type];
-      if (elapsed > circle.hitTime + typeConfig.missWindow) {
+      // Use visualHitTime for miss detection (based on actual spawn time)
+      const targetTime = circle.visualHitTime || circle.hitTime;
+      if (elapsed > targetTime + typeConfig.missWindow) {
         circle.hit = true;
         removeCircle(circle.id);
         registerHit('miss', circle.x, circle.y, circle.type);
@@ -2211,6 +2213,11 @@ function spawnCircle(circle) {
   const area = document.getElementById('play-area');
   const areaRect = area.getBoundingClientRect();
   const typeConfig = CIRCLE_TYPES[circle.type];
+
+  // Record ACTUAL spawn time - this is when animation starts
+  // Visual perfect timing = spawnTime + approachTime
+  circle.spawnTime = Date.now() - gameState.startTime;
+  circle.visualHitTime = circle.spawnTime + typeConfig.approachTime;
 
   // Ensure circle is within bounds
   const halfSize = typeConfig.size / 2;
@@ -2280,19 +2287,22 @@ function hitCircle(circle) {
   circle.hit = true;
 
   const elapsed = Date.now() - gameState.startTime;
-  const timing = Math.abs(elapsed - circle.hitTime);
+  // Use visualHitTime (based on actual spawn time) for accurate visual-to-judgment sync
+  const targetTime = circle.visualHitTime || circle.hitTime;
+  const timing = Math.abs(elapsed - targetTime);
   const typeConfig = CIRCLE_TYPES[circle.type];
 
   let result;
   let scoreGained = 0;
 
-  if (timing < typeConfig.timingWindow.perfect) {
+  // Timing windows: Perfect ±100ms, Great ±200ms, Good ±300ms
+  if (timing <= TIMING_WINDOWS.perfect) {
     result = 'perfect';
     scoreGained = Math.floor(BASE_SCORES.perfect * typeConfig.scoreMultiplier);
-  } else if (timing < typeConfig.timingWindow.great) {
+  } else if (timing <= TIMING_WINDOWS.great) {
     result = 'great';
     scoreGained = Math.floor(BASE_SCORES.great * typeConfig.scoreMultiplier);
-  } else if (timing < typeConfig.timingWindow.good) {
+  } else if (timing <= TIMING_WINDOWS.good) {
     result = 'good';
     scoreGained = Math.floor(BASE_SCORES.good * typeConfig.scoreMultiplier);
   } else {
