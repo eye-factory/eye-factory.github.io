@@ -658,6 +658,9 @@ body.playing .bg-image {
 /* Current target circle (highlighted) */
 .hit-circle.target {
   animation: circleAppear 0.3s ease-out, targetPulse 0.8s ease-in-out infinite;
+  pointer-events: auto !important;
+  opacity: 1 !important;
+  filter: none !important;
 }
 @keyframes targetPulse {
   0%, 100% {
@@ -1961,25 +1964,25 @@ const CIRCLE_TYPES = {
   medium: {
     size: 70,
     approachTime: 1000,  // Normal approach
-    timingWindow: { perfect: 50, great: 100, good: 180 },
+    timingWindow: { perfect: 80, great: 150, good: 280 },
     scoreMultiplier: 1.0, // Normal score
-    missWindow: 220,
+    missWindow: 350,
     effectScale: 1.0,    // Ripple effect scale
   },
   large: {
     size: 100,
     approachTime: 1200,  // Slightly slower
-    timingWindow: { perfect: 60, great: 120, good: 200 },
+    timingWindow: { perfect: 100, great: 180, good: 320 },
     scoreMultiplier: 1.5, // Higher score for stronger beats
-    missWindow: 250,
+    missWindow: 400,
     effectScale: 1.5,    // Larger ripple
   },
   xlarge: {
     size: 130,
     approachTime: 1500,  // Slow approach for accent
-    timingWindow: { perfect: 80, great: 150, good: 250 },
+    timingWindow: { perfect: 120, great: 220, good: 380 },
     scoreMultiplier: 3.0, // Highest score for accents
-    missWindow: 300,
+    missWindow: 450,
     effectScale: 2.5,    // Massive ripple + flash
   },
 };
@@ -2253,6 +2256,8 @@ function startGame(difficulty) {
   // Wait for fade, then countdown
   setTimeout(() => {
     countdown(3, () => {
+      // Ensure target number is reset before game starts
+      gameState.currentTargetNumber = 1;
       gameState.isPlaying = true;
       gameState.startTime = Date.now();
       generateCircles();
@@ -2476,7 +2481,9 @@ function spawnCircle(circle) {
   const y = Math.min(Math.max(halfSize + 10, circle.y), areaRect.height - halfSize - 10);
 
   const el = document.createElement('div');
-  el.className = `hit-circle ${circle.type}`;
+  // Immediately set target class if this is the current target
+  const isTarget = circle.number === gameState.currentTargetNumber;
+  el.className = `hit-circle ${circle.type}${isTarget ? ' target' : ' inactive'}`;
   el.id = 'circle-' + circle.id;
   el.style.left = x + 'px';
   el.style.top = y + 'px';
@@ -2493,7 +2500,7 @@ function spawnCircle(circle) {
 
   area.appendChild(el);
 
-  // Update visual state after spawning
+  // Update visual state after spawning (redundant but ensures consistency)
   updateCircleVisuals();
 }
 
