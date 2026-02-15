@@ -2215,7 +2215,6 @@ function renderSongList() {
 }
 
 function selectSong(song) {
-  playSE(SE.dj);
   gameState.selectedSong = song;
   document.getElementById('selected-song-name').textContent = song.title;
   showScreen('difficulty-select');
@@ -2225,6 +2224,9 @@ function selectSong(song) {
 // GAME START
 // ============================================================
 function startGame(difficulty) {
+  // Play difficulty select SE
+  playSE(SE.dj);
+
   // Stop title BGM with fade
   stopTitleBGM();
 
