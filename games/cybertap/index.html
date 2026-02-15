@@ -202,9 +202,19 @@ body.playing .bg-image {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: gradientShift 3s ease-in-out infinite;
   filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.5));
   margin-bottom: 10px;
+  /* Initial state - hidden for animation */
+  opacity: 0;
+  transform: translateX(-100px);
+}
+#title-screen.animate .game-title {
+  animation: titleSlideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards, gradientShift 3s ease-in-out 0.8s infinite;
+}
+
+@keyframes titleSlideIn {
+  0% { opacity: 0; transform: translateX(-100px); }
+  100% { opacity: 1; transform: translateX(0); }
 }
 
 @keyframes gradientShift {
@@ -218,6 +228,17 @@ body.playing .bg-image {
   color: var(--text-sub);
   letter-spacing: 0.3em;
   margin-bottom: 40px;
+  /* Initial state - hidden for animation */
+  opacity: 0;
+  transform: translateX(-80px);
+}
+#title-screen.animate .subtitle {
+  animation: subtitleSlideIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s forwards;
+}
+
+@keyframes subtitleSlideIn {
+  0% { opacity: 0; transform: translateX(-80px); }
+  100% { opacity: 1; transform: translateX(0); }
 }
 
 .title-buttons {
@@ -225,6 +246,18 @@ body.playing .bg-image {
   gap: 16px;
   flex-wrap: wrap;
   justify-content: center;
+  /* Initial state - hidden for animation */
+  opacity: 0;
+  transform: scale(0.5);
+}
+#title-screen.animate .title-buttons {
+  animation: buttonsBounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.7s forwards;
+}
+
+@keyframes buttonsBounceIn {
+  0% { opacity: 0; transform: scale(0.5); }
+  70% { transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
 }
 
 /* Volume settings */
@@ -234,7 +267,19 @@ body.playing .bg-image {
   flex-direction: column;
   gap: 12px;
   width: 280px;
+  /* Initial state - hidden for animation */
+  opacity: 0;
+  transform: translateY(40px);
 }
+#title-screen.animate .volume-settings {
+  animation: volumeSlideUp 0.5s ease-out 1.1s forwards;
+}
+
+@keyframes volumeSlideUp {
+  0% { opacity: 0; transform: translateY(40px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 .volume-row {
   display: flex;
   align-items: center;
@@ -244,7 +289,7 @@ body.playing .bg-image {
   font-family: var(--font-en);
   font-size: 12px;
   color: var(--text-sub);
-  width: 40px;
+  width: 55px;
   text-align: right;
 }
 .volume-slider {
@@ -1197,14 +1242,9 @@ body.playing .bg-image {
     </div>
     <div class="volume-settings">
       <div class="volume-row">
-        <span class="volume-label">BGM</span>
-        <input type="range" class="volume-slider" id="bgm-volume" min="0" max="100" value="80" oninput="updateVolume('bgm', this.value)">
-        <span class="volume-value" id="bgm-volume-value">80%</span>
-      </div>
-      <div class="volume-row">
-        <span class="volume-label">SE</span>
-        <input type="range" class="volume-slider" id="se-volume" min="0" max="100" value="80" oninput="updateVolume('se', this.value)">
-        <span class="volume-value" id="se-volume-value">80%</span>
+        <span class="volume-label">Volume</span>
+        <input type="range" class="volume-slider" id="master-volume" min="0" max="100" value="80" oninput="updateVolume(this.value)">
+        <span class="volume-value" id="volume-value">80%</span>
       </div>
     </div>
   </div>
@@ -1406,54 +1446,50 @@ let gameState = {
 // GIF backgrounds for play screen
 const PLAY_GIFS = ['ctap2.gif', 'ctap3.gif', 'ctap4.gif', 'ctap5.gif'];
 
-// Volume settings
-const volumeSettings = {
-  bgm: 80,
-  se: 80,
-};
+// Volume settings (unified master volume)
+let masterVolume = 80;
 
 function loadVolumeSettings() {
-  const saved = localStorage.getItem('cybertap_volume');
+  const saved = localStorage.getItem('cybertap_volume_v2');
   if (saved) {
-    const parsed = JSON.parse(saved);
-    volumeSettings.bgm = parsed.bgm ?? 80;
-    volumeSettings.se = parsed.se ?? 80;
+    masterVolume = parseInt(saved) || 80;
   }
   // Update UI
-  document.getElementById('bgm-volume').value = volumeSettings.bgm;
-  document.getElementById('bgm-volume-value').textContent = volumeSettings.bgm + '%';
-  document.getElementById('se-volume').value = volumeSettings.se;
-  document.getElementById('se-volume-value').textContent = volumeSettings.se + '%';
+  document.getElementById('master-volume').value = masterVolume;
+  document.getElementById('volume-value').textContent = masterVolume + '%';
 }
 
 function saveVolumeSettings() {
-  localStorage.setItem('cybertap_volume', JSON.stringify(volumeSettings));
+  localStorage.setItem('cybertap_volume_v2', masterVolume.toString());
 }
 
-function updateVolume(type, value) {
-  value = parseInt(value);
-  volumeSettings[type] = value;
-  document.getElementById(`${type}-volume-value`).textContent = value + '%';
+function updateVolume(value) {
+  masterVolume = parseInt(value);
+  document.getElementById('volume-value').textContent = masterVolume + '%';
   saveVolumeSettings();
   applyVolume();
 }
 
 function applyVolume() {
-  // Apply BGM volume (when audio is implemented)
-  if (window.bgmAudio) {
-    window.bgmAudio.volume = volumeSettings.bgm / 100;
+  const vol = masterVolume / 100;
+  // Apply to title BGM
+  if (titleBGM) {
+    titleBGM.volume = vol;
   }
-  // SE volume is applied when playing sound effects
+  // Apply to game BGM
+  if (gameBGM) {
+    gameBGM.volume = vol;
+  }
 }
 
-function getVolume(type) {
-  return volumeSettings[type] / 100;
+function getVolume() {
+  return masterVolume / 100;
 }
 
-// Play sound effect with SE volume
+// Play sound effect with master volume
 function playSE(audioElement) {
   if (audioElement) {
-    audioElement.volume = getVolume('se');
+    audioElement.volume = getVolume();
     audioElement.currentTime = 0;
     audioElement.play().catch(() => {});
   }
@@ -1468,7 +1504,7 @@ let gameBGM = null;
 function initBGM() {
   titleBGM = new Audio('taitoru.mp3');
   titleBGM.loop = true;
-  titleBGM.volume = getVolume('bgm');
+  titleBGM.volume = getVolume();
 }
 
 function playTitleBGM() {
@@ -1477,7 +1513,7 @@ function playTitleBGM() {
     gameBGM.pause();
     gameBGM.currentTime = 0;
   }
-  titleBGM.volume = getVolume('bgm');
+  titleBGM.volume = getVolume();
   titleBGM.play().catch(() => {});
 }
 
@@ -1490,7 +1526,7 @@ function stopTitleBGM() {
 function playGameBGM(audioFile) {
   if (!audioFile) return;
   gameBGM = new Audio(audioFile);
-  gameBGM.volume = getVolume('bgm');
+  gameBGM.volume = getVolume();
   gameBGM.play().catch(() => {});
 }
 
@@ -1567,6 +1603,12 @@ function doScreenSwitch(screenId) {
     renderRanking();
   } else if (screenId === 'title-screen') {
     playTitleBGM();
+    // Re-trigger animations when returning to title screen
+    const titleScreen = document.getElementById('title-screen');
+    titleScreen.classList.remove('animate');
+    // Force reflow to restart animations
+    void titleScreen.offsetWidth;
+    titleScreen.classList.add('animate');
   }
 }
 
@@ -2217,6 +2259,9 @@ document.addEventListener('DOMContentLoaded', () => {
     playTitleBGM();
     // Hide tap screen
     tapScreen.classList.remove('show');
+    // Start title screen animations
+    const titleScreen = document.getElementById('title-screen');
+    titleScreen.classList.add('animate');
     // Remove listeners
     tapScreen.removeEventListener('click', handleTap);
     tapScreen.removeEventListener('touchstart', handleTap);
