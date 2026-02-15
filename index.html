@@ -488,6 +488,69 @@ nav a:hover {
 }
 .hero-cta svg { width: 18px; height: 18px; }
 
+/* Hero buttons wrapper */
+.hero-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CyberTap cyber glow button */
+.hero-cyber-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--neon-primary);
+  text-decoration: none;
+  padding: 16px 36px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-en);
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background-image: linear-gradient(var(--bg), var(--bg)), linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary));
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-size: 100% 100%, 200% 100%;
+  animation: cyberBorderGlow 3s ease-in-out infinite;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3), 0 0 30px rgba(255, 0, 170, 0.2);
+}
+@keyframes cyberBorderGlow {
+  0%, 100% {
+    background-position: 0 0, 0% 50%;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3), 0 0 30px rgba(255, 0, 170, 0.2);
+  }
+  50% {
+    background-position: 0 0, 100% 50%;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 0 40px rgba(255, 0, 170, 0.3), 0 0 60px rgba(0, 212, 255, 0.2);
+  }
+}
+.hero-cyber-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 0, 170, 0.2), transparent);
+  transition: 0.5s;
+}
+.hero-cyber-btn:hover::before {
+  left: 100%;
+}
+.hero-cyber-btn:hover {
+  background-image: linear-gradient(rgba(0, 212, 255, 0.1), rgba(255, 0, 170, 0.1)), linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary));
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.6), 0 0 50px rgba(255, 0, 170, 0.4), 0 0 80px rgba(0, 212, 255, 0.3);
+  transform: translateY(-3px);
+}
+
 /* --- Section --- */
 section {
   position: relative;
@@ -810,6 +873,13 @@ footer {
     padding: 12px 28px;
     font-size: 12px;
   }
+  .hero-cyber-btn {
+    padding: 12px 24px;
+    font-size: 11px;
+  }
+  .hero-buttons {
+    gap: 12px;
+  }
   section {
     padding: 60px 16px;
   }
@@ -1046,10 +1116,15 @@ footer {
     <span data-i18n="de">Mit dieser großen Ambition erschafft ein Mann namens "SINNYA_HAIKAI" weiterhin erstaunliche Tools.<br>Seine Kreationen werden die Welt rocken und alle umhauen...! (Geplant)<br>Der Name seiner Entwicklungsseite ist...<br>"eye-factory" (auch bekannt als "aifaku")!</span>
     <span data-i18n="pt">Com essa grande ambição, um homem "SINNYA_HAIKAI" continua criando ferramentas incríveis.<br>Suas criações vão abalar o mundo e impressionar a todos...! (Planejado)<br>O nome do seu site de desenvolvimento é...<br>"eye-factory" (também conhecido como "aifaku")!</span>
   </p>
-  <a href="#products" class="hero-cta fade-in-delay-3">
-    <span data-i18n="ja">製品を見る</span><span data-i18n="en">View Products</span><span data-i18n="zh-CN">查看产品</span><span data-i18n="zh-TW">查看產品</span><span data-i18n="ko">제품 보기</span><span data-i18n="es">Ver productos</span><span data-i18n="fr">Voir les produits</span><span data-i18n="de">Produkte ansehen</span><span data-i18n="pt">Ver produtos</span>
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-  </a>
+  <div class="hero-buttons fade-in-delay-3">
+    <a href="#products" class="hero-cta">
+      <span data-i18n="ja">製品を見る</span><span data-i18n="en">View Products</span><span data-i18n="zh-CN">查看产品</span><span data-i18n="zh-TW">查看產品</span><span data-i18n="ko">제품 보기</span><span data-i18n="es">Ver productos</span><span data-i18n="fr">Voir les produits</span><span data-i18n="de">Produkte ansehen</span><span data-i18n="pt">Ver produtos</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="/games/cybertap/" class="hero-cyber-btn" target="_blank" rel="noopener">
+      <span data-i18n="ja">フリーゲーム CyberTap →</span><span data-i18n="en">Free Game CyberTap →</span><span data-i18n="zh-CN">免费游戏 CyberTap →</span><span data-i18n="zh-TW">免費遊戲 CyberTap →</span><span data-i18n="ko">무료 게임 CyberTap →</span><span data-i18n="es">Juego Gratis CyberTap →</span><span data-i18n="fr">Jeu Gratuit CyberTap →</span><span data-i18n="de">Kostenloses Spiel CyberTap →</span><span data-i18n="pt">Jogo Grátis CyberTap →</span>
+    </a>
+  </div>
 </div>
 
 <!-- ===== PRODUCTS ===== -->
