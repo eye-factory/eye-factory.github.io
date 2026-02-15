@@ -2424,7 +2424,11 @@ function spawnCircle(circle) {
   // Visual perfect timing = spawnTime + approachTime (adjusted for speed)
   circle.spawnTime = Date.now() - gameState.startTime;
   const adjustedApproachTime = typeConfig.approachTime / (gameState.speedMultiplier || 1);
-  circle.visualHitTime = circle.spawnTime + adjustedApproachTime;
+  // Mobile timing offset: CSS animation starts ~50-80ms after DOM insertion
+  // This shifts the judgment window to match visual animation completion
+  const isMobile = window.innerWidth <= 480 || window.innerHeight <= 480;
+  const mobileTimingOffset = isMobile ? 70 : 0;
+  circle.visualHitTime = circle.spawnTime + adjustedApproachTime + mobileTimingOffset;
 
   // Get GIF display bounds for positioning
   const gifBounds = getGifBounds();
