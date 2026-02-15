@@ -2045,7 +2045,7 @@ function getBestScore(songId, difficulty = null) {
     ? `cybertap_${songId}_${difficulty}_best_score`
     : `cybertap_${songId}_best_score`;
   const score = localStorage.getItem(key);
-  return score ? parseInt(score) : null;
+  return score ? parseInt(score, 10) : null;
 }
 
 function getBestRank(songId, difficulty = null) {
@@ -2056,32 +2056,56 @@ function getBestRank(songId, difficulty = null) {
 }
 
 function saveBestScore(songId, difficulty, score, rank) {
-  // Ensure score is a number
-  const numScore = Number(score);
+  // DEBUG: 問題特定のため一時的にログを追加
+  console.log('[DEBUG] saveBestScore called:', { songId, difficulty, score, rank });
 
-  // Save per-difficulty best
+  // スコアを整数に変換
+  const newScore = Math.floor(Number(score)) || 0;
+  console.log('[DEBUG] newScore:', newScore);
+
+  // 難易度別ベストスコア保存
   const diffScoreKey = `cybertap_${songId}_${difficulty}_best_score`;
   const diffRankKey = `cybertap_${songId}_${difficulty}_best_rank`;
-  const currentDiffScoreStr = localStorage.getItem(diffScoreKey);
-  const currentDiffScore = currentDiffScoreStr !== null ? parseInt(currentDiffScoreStr, 10) : -1;
 
-  if (numScore > currentDiffScore) {
-    localStorage.setItem(diffScoreKey, String(numScore));
+  // 現在の保存値を取得して数値化
+  const storedDiffStr = localStorage.getItem(diffScoreKey);
+  const storedDiffScore = storedDiffStr ? (parseInt(storedDiffStr, 10) || 0) : 0;
+
+  console.log('[DEBUG] diffScoreKey:', diffScoreKey);
+  console.log('[DEBUG] storedDiffStr:', storedDiffStr, 'storedDiffScore:', storedDiffScore);
+  console.log('[DEBUG] compare:', newScore, '>', storedDiffScore, '=', newScore > storedDiffScore);
+
+  // 現在の難易度別ランクを取得
+  const storedDiffRank = localStorage.getItem(diffRankKey) || '';
+
+  // 新しいスコアが既存を上回る場合、または同スコアでランクが上がった場合に保存
+  if (newScore > storedDiffScore) {
+    console.log('[DEBUG] Saving diff score (higher score)!');
+    localStorage.setItem(diffScoreKey, String(newScore));
+    localStorage.setItem(diffRankKey, rank);
+  } else if (newScore === storedDiffScore && getGradeRank(rank) > getGradeRank(storedDiffRank)) {
+    console.log('[DEBUG] Saving diff rank only (same score, better rank)!');
     localStorage.setItem(diffRankKey, rank);
   }
 
-  // Save overall song best
+  // 曲全体のベストスコア保存
   const songScoreKey = `cybertap_${songId}_best_score`;
   const songRankKey = `cybertap_${songId}_best_rank`;
-  const currentSongScoreStr = localStorage.getItem(songScoreKey);
-  const currentSongScore = currentSongScoreStr !== null ? parseInt(currentSongScoreStr, 10) : -1;
-  const currentSongRank = localStorage.getItem(songRankKey);
 
-  if (numScore > currentSongScore) {
-    localStorage.setItem(songScoreKey, String(numScore));
+  const storedSongStr = localStorage.getItem(songScoreKey);
+  const storedSongScore = storedSongStr ? (parseInt(storedSongStr, 10) || 0) : 0;
+  const storedSongRank = localStorage.getItem(songRankKey) || '';
+
+  console.log('[DEBUG] songScoreKey:', songScoreKey);
+  console.log('[DEBUG] storedSongStr:', storedSongStr, 'storedSongScore:', storedSongScore);
+  console.log('[DEBUG] compare:', newScore, '>', storedSongScore, '=', newScore > storedSongScore);
+
+  if (newScore > storedSongScore) {
+    console.log('[DEBUG] Saving song score!');
+    localStorage.setItem(songScoreKey, String(newScore));
     localStorage.setItem(songRankKey, rank);
-  } else if (numScore === currentSongScore && getGradeRank(rank) > getGradeRank(currentSongRank)) {
-    // Same score but better rank
+  } else if (newScore === storedSongScore && getGradeRank(rank) > getGradeRank(storedSongRank)) {
+    console.log('[DEBUG] Saving song rank only (same score, better rank)!');
     localStorage.setItem(songRankKey, rank);
   }
 }
