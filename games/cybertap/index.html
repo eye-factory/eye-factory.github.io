@@ -2708,33 +2708,43 @@ function endGame() {
   // Show static background again on result screen
   document.getElementById('game-container').classList.remove('playing');
 
-  const totalNotes = gameState.circles.length;
-  const hitNotes = gameState.hits.perfect + gameState.hits.great + gameState.hits.good;
-  const accuracy = totalNotes > 0 ? (hitNotes / totalNotes) * 100 : 0;
-  const allPerfect = gameState.hits.perfect === totalNotes && gameState.hits.great === 0 && gameState.hits.good === 0 && gameState.hits.miss === 0;
+  // Grade calculation based on Perfect rate and hit counts
+  const totalNotes = gameState.hits.perfect + gameState.hits.great + gameState.hits.good + gameState.hits.miss;
+  const perfectRate = totalNotes > 0 ? (gameState.hits.perfect / totalNotes) * 100 : 0;
+  const hasGreat = gameState.hits.great > 0;
+  const hasGood = gameState.hits.good > 0;
+  const hasMiss = gameState.hits.miss > 0;
 
   let grade, gradeClass, isGod = false;
-  if (allPerfect && totalNotes > 0) {
-    // GOD: All Perfect, no Great/Good/Miss
+
+  // Grade priority: GOD → SS → S → A → B → C → D
+  if (!hasGreat && !hasGood && !hasMiss && totalNotes > 0) {
+    // GOD: All Perfect (Great/Good/Miss all 0)
     grade = 'GOD';
     gradeClass = 'grade-god';
     isGod = true;
-  } else if (accuracy >= 93 && gameState.hits.miss === 0) {
+  } else if (perfectRate >= 95 && !hasGood && !hasMiss) {
+    // SS: Perfect 95%+ and no Good/Miss (Great is OK)
     grade = 'SS';
     gradeClass = 'grade-ss';
-  } else if (accuracy >= 85 && gameState.hits.miss === 0) {
+  } else if (perfectRate >= 85 && !hasGood && !hasMiss) {
+    // S: Perfect 85%+ and no Good/Miss (Great is OK)
     grade = 'S';
     gradeClass = 'grade-s';
-  } else if (accuracy >= 80) {
+  } else if (perfectRate >= 70 || (perfectRate >= 50 && !hasMiss)) {
+    // A: Perfect 70%+ or Perfect 50%+ with no Miss
     grade = 'A';
     gradeClass = 'grade-a';
-  } else if (accuracy >= 65) {
+  } else if (perfectRate >= 50 || (perfectRate >= 30 && gameState.hits.miss <= 3)) {
+    // B: Perfect 50%+ or Perfect 30%+ with few misses
     grade = 'B';
     gradeClass = 'grade-b';
-  } else if (accuracy >= 50) {
+  } else if (perfectRate >= 30 || gameState.hits.miss <= totalNotes * 0.3) {
+    // C: Perfect 30%+ or Miss rate under 30%
     grade = 'C';
     gradeClass = 'grade-c';
   } else {
+    // D: Everything else
     grade = 'D';
     gradeClass = 'grade-d';
   }
