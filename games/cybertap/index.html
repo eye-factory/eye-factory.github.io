@@ -43,6 +43,70 @@ body {
   justify-content: center;
 }
 
+/* Background image - lowest layer */
+.bg-image {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: url('ctap1.png') center center / cover no-repeat;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: -2;
+}
+
+/* Cyber noise overlay */
+.bg-noise {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 212, 255, 0.03) 0px,
+    rgba(0, 212, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  animation: cyberGlitch 4s infinite;
+}
+
+@keyframes cyberGlitch {
+  0%, 92%, 94%, 96%, 100% { opacity: 0; }
+  92.5% { opacity: 0.8; transform: translateX(2px); }
+  93% { opacity: 0; }
+  94.5% { opacity: 0.6; transform: translateX(-3px) skewX(1deg); }
+  95% { opacity: 0.9; transform: translateX(1px); }
+  95.5% { opacity: 0; transform: translateX(0); }
+  96.5% { opacity: 0.7; transform: translateY(1px); }
+  97% { opacity: 0; transform: translateY(0); }
+}
+
+/* Additional scan line effect */
+.bg-scanlines {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  background: repeating-linear-gradient(
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.1) 3px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  animation: scanFlicker 8s infinite;
+}
+
+@keyframes scanFlicker {
+  0%, 89%, 91%, 93%, 95%, 97%, 100% { opacity: 0.3; }
+  90% { opacity: 0.5; }
+  92% { opacity: 0.2; }
+  94% { opacity: 0.6; }
+  96% { opacity: 0.4; }
+}
+
 /* Background grid */
 .bg-grid {
   position: fixed;
@@ -698,6 +762,9 @@ body {
 </head>
 <body>
 
+<div class="bg-image"></div>
+<div class="bg-noise"></div>
+<div class="bg-scanlines"></div>
 <div class="bg-grid"></div>
 
 <!-- Rotate guide for portrait mode -->
@@ -819,7 +886,7 @@ const SONGS = [
     artist: 'eye-factory',
     bpm: 140,
     audioFile: null,
-    duration: 30,
+    duration: 10,  // Test: 10 seconds
   },
   {
     id: 'neon_drive',
@@ -827,7 +894,7 @@ const SONGS = [
     artist: 'eye-factory',
     bpm: 128,
     audioFile: null,
-    duration: 30,
+    duration: 10,  // Test: 10 seconds
   },
   {
     id: 'digital_pulse',
@@ -835,7 +902,7 @@ const SONGS = [
     artist: 'eye-factory',
     bpm: 150,
     audioFile: null,
-    duration: 30,
+    duration: 10,  // Test: 10 seconds
   },
   {
     id: 'synth_wave',
@@ -843,7 +910,7 @@ const SONGS = [
     artist: 'eye-factory',
     bpm: 120,
     audioFile: null,
-    duration: 30,
+    duration: 10,  // Test: 10 seconds
   },
 ];
 
