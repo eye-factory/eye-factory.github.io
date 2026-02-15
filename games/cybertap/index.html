@@ -2214,7 +2214,21 @@ function countdown(count, callback) {
 // ============================================================
 function getGifBounds() {
   const playBg = document.getElementById('play-bg');
-  const rect = playBg.getBoundingClientRect();
+  const playArea = document.getElementById('play-area');
+
+  // Fallback to play-area if play-bg not available
+  const element = playBg || playArea;
+  if (!element) {
+    // Return safe defaults if elements not found
+    return { left: 50, top: 50, width: 800, height: 450, right: 850, bottom: 500 };
+  }
+
+  const rect = element.getBoundingClientRect();
+
+  // If rect has no size, return safe defaults
+  if (rect.width <= 0 || rect.height <= 0) {
+    return { left: 50, top: 50, width: 800, height: 450, right: 850, bottom: 500 };
+  }
 
   // GIF aspect ratio (16:9)
   const gifAspect = 16 / 9;
