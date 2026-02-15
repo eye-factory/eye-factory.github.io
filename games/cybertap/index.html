@@ -49,8 +49,8 @@ html, body {
 
 body {
   font-family: var(--font-ja);
-  /* TEST: Red background outside game area */
-  background: red;
+  /* Outside game area - black */
+  background: black;
   color: var(--text);
   display: flex;
   align-items: center;
@@ -1645,8 +1645,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* TEST: Red border around game area */
-  border: 4px solid red;
+  /* Border around game area - black */
+  border: 4px solid black;
   box-shadow: none;
   border-radius: 0;
 }
@@ -1843,6 +1843,16 @@ const SONGS = [
     duration: 155,  // 154.92 seconds
     // Intense song - heavy on large/xlarge notes
     noteDistribution: { medium: 0.40, large: 0.45, xlarge: 0.15 },
+  },
+  {
+    id: 'celestia',
+    title: 'Celestia',
+    artist: 'eye-factory',
+    bpm: 120,
+    audioFile: 'celestia.mp3',
+    duration: 186,  // 185.92 seconds
+    // Heavenly song - mostly medium notes
+    noteDistribution: { medium: 0.75, large: 0.20, xlarge: 0.05 },
   },
 ];
 
