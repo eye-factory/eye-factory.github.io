@@ -43,9 +43,15 @@ body {
   justify-content: center;
 }
 
-/* Background image overlay - disabled for transparency */
+/* Background image overlay - subtle darkening */
 .bg-image {
-  display: none;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--bg);
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 0;
 }
 
 
@@ -115,10 +121,6 @@ body {
   z-index: 0;
 }
 
-/* Rotate guide for portrait mode - disabled, using CSS rotation */
-#rotate-guide {
-  display: none;
-}
 
 /* Game container with cyber border - fullscreen with transparent background */
 #game-container {
@@ -1080,154 +1082,6 @@ body {
   margin-top: 20px;
 }
 
-/* Ranking screen */
-#ranking-screen {
-  padding: 20px 40px;
-  flex-direction: column;
-}
-.ranking-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 10px;
-}
-.ranking-nav-btn {
-  font-family: var(--font-en);
-  font-size: 24px;
-  width: 40px;
-  height: 40px;
-  border: 2px solid var(--neon-primary);
-  background: transparent;
-  color: var(--neon-primary);
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.ranking-nav-btn:hover {
-  background: var(--neon-primary);
-  color: #000;
-}
-.ranking-song-title {
-  font-family: var(--font-en);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--neon-primary);
-  min-width: 200px;
-  text-align: center;
-}
-.ranking-diff-tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-.ranking-diff-tab {
-  font-family: var(--font-en);
-  font-size: 12px;
-  padding: 6px 16px;
-  border: 1px solid var(--text-sub);
-  background: transparent;
-  color: var(--text-sub);
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.ranking-diff-tab.active {
-  border-color: var(--neon-primary);
-  color: var(--neon-primary);
-  background: rgba(0, 212, 255, 0.1);
-}
-.ranking-list {
-  width: 100%;
-  max-width: 500px;
-  max-height: 60vh;
-  overflow-y: auto;
-  margin: 0 auto;
-}
-.ranking-item {
-  display: flex;
-  align-items: center;
-  padding: 10px 14px;
-  background: var(--bg-card);
-  border-radius: 8px;
-  margin-bottom: 6px;
-}
-.ranking-item .rank {
-  font-family: var(--font-en);
-  font-size: 18px;
-  font-weight: 700;
-  width: 36px;
-  color: var(--neon-primary);
-}
-.ranking-item .rank.gold { color: #ffd700; }
-.ranking-item .rank.silver { color: #c0c0c0; }
-.ranking-item .rank.bronze { color: #cd7f32; }
-.ranking-item .info {
-  flex: 1;
-  text-align: left;
-}
-.ranking-item .info .name {
-  font-size: 13px;
-}
-.ranking-item .info .meta {
-  font-size: 10px;
-  color: var(--text-sub);
-}
-.ranking-item .score {
-  font-family: var(--font-en);
-  font-weight: 700;
-  color: var(--neon-primary);
-}
-
-/* Ranking grade display */
-.ranking-grade {
-  font-family: var(--font-en);
-  font-size: 16px;
-  font-weight: 900;
-  width: 50px;
-  text-align: center;
-  margin-right: 10px;
-}
-.ranking-grade.rank-god {
-  background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradeShineGod 1s linear infinite;
-}
-.ranking-grade.rank-ss { color: #ffdd00; text-shadow: 0 0 10px #ffdd00; }
-.ranking-grade.rank-s { color: #00ff88; text-shadow: 0 0 10px #00ff88; }
-.ranking-grade.rank-a { color: var(--neon-primary); text-shadow: 0 0 8px var(--neon-primary); }
-.ranking-grade.rank-b { color: var(--neon-yellow); }
-.ranking-grade.rank-c { color: var(--neon-pink); }
-
-/* No records display */
-.no-records {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  text-align: center;
-}
-.no-records-icon {
-  font-size: 50px;
-  margin-bottom: 15px;
-  opacity: 0.6;
-}
-.no-records-text {
-  font-family: var(--font-en);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--neon-primary);
-  margin-bottom: 8px;
-}
-.no-records-hint {
-  font-size: 12px;
-  color: var(--text-sub);
-}
-
 /* Countdown - Cyber Enhanced */
 .countdown {
   position: absolute;
@@ -1582,71 +1436,6 @@ body {
     font-size: 16px;
   }
 
-  /* Ranking screen */
-  #ranking-screen {
-    padding: 10px;
-    padding-top: 45px;
-  }
-  #ranking-screen .section-title {
-    font-size: 18px;
-    margin-bottom: 8px;
-  }
-  .ranking-header {
-    gap: 8px;
-    margin-bottom: 6px;
-  }
-  .ranking-nav-btn {
-    width: 28px;
-    height: 28px;
-    font-size: 16px;
-  }
-  .ranking-song-title {
-    font-size: 12px;
-    min-width: 120px;
-  }
-  .ranking-diff-tabs {
-    gap: 5px;
-    margin-bottom: 8px;
-  }
-  .ranking-diff-tab {
-    font-size: 9px;
-    padding: 4px 10px;
-  }
-  .ranking-list {
-    max-height: 40vh;
-  }
-  .ranking-item {
-    padding: 6px 8px;
-    margin-bottom: 4px;
-  }
-  .ranking-item .rank {
-    font-size: 12px;
-    width: 24px;
-  }
-  .ranking-item .info .name {
-    font-size: 10px;
-  }
-  .ranking-item .info .meta {
-    font-size: 8px;
-  }
-  .ranking-item .score {
-    font-size: 12px;
-  }
-
-  /* Rotate guide */
-  #rotate-guide {
-    padding: 25px;
-  }
-  #rotate-guide .icon {
-    font-size: 50px;
-    margin-bottom: 15px;
-  }
-  #rotate-guide .message {
-    font-size: 14px;
-  }
-  #rotate-guide .sub-message {
-    font-size: 11px;
-  }
 }
 
 /* Very small screens (< 380px width) */
@@ -1670,54 +1459,7 @@ body {
   }
 }
 
-/* Medium mobile screens - Landscape */
-@media (min-width: 481px) and (max-width: 900px) and (orientation: landscape) {
-  #title-screen .game-title {
-    font-size: clamp(40px, 10vw, 60px);
-  }
-  #title-screen .subtitle {
-    font-size: 12px;
-    margin-bottom: 30px;
-  }
-  .btn {
-    font-size: 14px;
-    padding: 12px 32px;
-  }
-
-  #song-select {
-    flex-direction: row;
-    padding: 20px;
-    gap: 20px;
-  }
-  .song-list {
-    grid-template-columns: repeat(2, 1fr);
-    max-height: 70vh;
-  }
-
-  #difficulty-select {
-    flex-direction: row;
-    gap: 25px;
-  }
-  .diff-btn {
-    padding: 16px 35px;
-  }
-
-  #result-screen {
-    flex-direction: row;
-    gap: 25px;
-    padding: 20px;
-  }
-  .result-grade {
-    font-size: 70px;
-  }
-  .result-stats {
-    min-width: auto;
-    width: 90%;
-    max-width: 320px;
-  }
-}
-
-/* Portrait mode specific adjustments */
+/* Portrait/Mobile specific adjustments */
 @media (orientation: portrait) {
   .screen {
     overflow-y: auto;
@@ -1736,7 +1478,7 @@ body {
     flex-direction: column;
   }
 }
-/* Main wrapper for rotation */
+/* Main wrapper */
 #app-wrapper {
   width: 100%;
   height: 100%;
@@ -1744,16 +1486,6 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-/* Mobile portrait - rotate the app wrapper */
-@media screen and (orientation: portrait) and (max-width: 932px) {
-  #app-wrapper {
-    transform: rotate(90deg);
-    transform-origin: center center;
-    width: 100vh;
-    height: 100vw;
-  }
 }
 </style>
 </head>
@@ -1783,7 +1515,6 @@ body {
     <p class="subtitle">Rhythm Action Game</p>
     <div class="title-buttons">
       <button class="btn" onclick="playSE(SE.wind); showScreen('song-select')">Start</button>
-      <button class="btn secondary" onclick="playSE(SE.wind); showScreen('ranking')">Ranking</button>
     </div>
     <div class="volume-settings">
       <div class="volume-row">
@@ -1878,23 +1609,6 @@ body {
     </div>
   </div>
 
-  <!-- Ranking Screen -->
-  <div id="ranking-screen" class="screen">
-    <button class="back-btn" onclick="showScreen('title-screen')">Home</button>
-    <h2 class="section-title">Ranking</h2>
-    <div class="ranking-header">
-      <button class="ranking-nav-btn" onclick="changeRankingSong(-1)">&lt;</button>
-      <span class="ranking-song-title" id="ranking-song-title">Cyber Rush</span>
-      <button class="ranking-nav-btn" onclick="changeRankingSong(1)">&gt;</button>
-    </div>
-    <div class="ranking-diff-tabs">
-      <button class="ranking-diff-tab" onclick="changeRankingDiff('baby')">Baby</button>
-      <button class="ranking-diff-tab active" onclick="changeRankingDiff('easy')">Easy</button>
-      <button class="ranking-diff-tab" onclick="changeRankingDiff('normal')">Normal</button>
-      <button class="ranking-diff-tab" onclick="changeRankingDiff('hard')">Hard</button>
-    </div>
-    <div class="ranking-list" id="ranking-list"></div>
-  </div>
 </div>
 
 <script>
@@ -1983,9 +1697,6 @@ let gameState = {
   circles: [],
   circleId: 0,
   currentTargetNumber: 1, // Current note that can be tapped
-  // Ranking state
-  rankingSongIndex: 0,
-  rankingDifficulty: 'easy',
   // GIF background state
   currentGifIndex: 0,
   gifInterval: null,
@@ -1993,6 +1704,14 @@ let gameState = {
 
 // GIF backgrounds for play screen
 const PLAY_GIFS = ['ctap2.gif', 'ctap3.gif', 'ctap4.gif', 'ctap5.gif'];
+
+// Preload GIFs to prevent flickering
+const preloadedGifs = [];
+PLAY_GIFS.forEach(src => {
+  const img = new Image();
+  img.src = src;
+  preloadedGifs.push(img);
+});
 
 // Volume settings (unified master volume)
 let masterVolume = 80;
@@ -2158,8 +1877,6 @@ function doScreenSwitch(screenId) {
 
   if (screenId === 'song-select') {
     renderSongList();
-  } else if (screenId === 'ranking') {
-    renderRanking();
   } else if (screenId === 'title-screen') {
     playTitleBGM();
     // Re-trigger animations when returning to title screen
@@ -2751,8 +2468,6 @@ function endGame() {
     miss: gameState.hits.miss
   };
 
-  saveScore(grade);
-
   // Show result screen with fade
   showScreen('result-screen', true);
 
@@ -2801,100 +2516,6 @@ function retryGame() {
 }
 
 // ============================================================
-// RANKING (localStorage)
-// ============================================================
-function saveScore(grade) {
-  const key = `cybertap_ranking_${gameState.selectedSong.id}_${gameState.selectedDifficulty}`;
-  let rankings = JSON.parse(localStorage.getItem(key) || '[]');
-
-  rankings.push({
-    score: gameState.score,
-    combo: gameState.maxCombo,
-    grade: grade,
-    difficulty: gameState.selectedDifficulty,
-    date: new Date().toISOString(),
-  });
-
-  rankings.sort((a, b) => b.score - a.score);
-  rankings = rankings.slice(0, 10);
-
-  localStorage.setItem(key, JSON.stringify(rankings));
-}
-
-function renderRanking() {
-  const container = document.getElementById('ranking-list');
-  const song = SONGS[gameState.rankingSongIndex];
-  const diff = gameState.rankingDifficulty;
-
-  // Update title
-  document.getElementById('ranking-song-title').textContent = song.title;
-
-  // Update tab active state
-  document.querySelectorAll('.ranking-diff-tab').forEach(tab => {
-    tab.classList.toggle('active', tab.textContent.toLowerCase() === diff);
-  });
-
-  // Get rankings
-  const key = `cybertap_ranking_${song.id}_${diff}`;
-  const rankings = JSON.parse(localStorage.getItem(key) || '[]');
-
-  container.innerHTML = '';
-
-  if (rankings.length === 0) {
-    container.innerHTML = `
-      <div class="no-records">
-        <div class="no-records-icon">📊</div>
-        <div class="no-records-text">No Records</div>
-        <div class="no-records-hint">Play this song to set a record!</div>
-      </div>
-    `;
-    return;
-  }
-
-  // Show TOP 10
-  rankings.slice(0, 10).forEach((entry, idx) => {
-    const item = document.createElement('div');
-    item.className = 'ranking-item';
-
-    let rankClass = '';
-    if (idx === 0) rankClass = 'gold';
-    else if (idx === 1) rankClass = 'silver';
-    else if (idx === 2) rankClass = 'bronze';
-
-    // Get grade class for styling
-    const gradeDisplay = entry.grade || '-';
-    let gradeColorClass = '';
-    if (gradeDisplay === 'GOD') gradeColorClass = 'rank-god';
-    else if (gradeDisplay === 'SS') gradeColorClass = 'rank-ss';
-    else if (gradeDisplay === 'S') gradeColorClass = 'rank-s';
-    else if (gradeDisplay === 'A') gradeColorClass = 'rank-a';
-    else if (gradeDisplay === 'B') gradeColorClass = 'rank-b';
-    else if (gradeDisplay === 'C') gradeColorClass = 'rank-c';
-
-    item.innerHTML = `
-      <div class="rank ${rankClass}">#${idx + 1}</div>
-      <div class="ranking-grade ${gradeColorClass}">${gradeDisplay}</div>
-      <div class="info">
-        <div class="name">Combo: ${entry.combo}</div>
-        <div class="meta">${new Date(entry.date).toLocaleDateString()}</div>
-      </div>
-      <div class="score">${entry.score.toLocaleString()}</div>
-    `;
-    container.appendChild(item);
-  });
-}
-
-function changeRankingSong(direction) {
-  gameState.rankingSongIndex = (gameState.rankingSongIndex + direction + SONGS.length) % SONGS.length;
-  renderRanking();
-}
-
-function changeRankingDiff(diff) {
-  gameState.rankingDifficulty = diff;
-  renderRanking();
-}
-
-// ============================================================
 // INIT
 // ============================================================
 // Check if mobile device
@@ -2934,57 +2555,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize BGM
   initBGM();
 
-  const rotateGuide = document.getElementById('rotate-guide');
   const tapScreen = document.getElementById('tap-start-screen');
   const titleScreen = document.getElementById('title-screen');
-  let rotateGuideTimeout = null;
 
-  // Check if portrait mode
-  function isPortraitMode() {
-    return window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
-  }
-
-  // Show rotate guide, then fade to home
-  function showRotateGuideAndProceed() {
-    rotateGuide.classList.add('show');
-    rotateGuide.classList.remove('fade-out');
-
-    // Auto fade out after 2 seconds
-    rotateGuideTimeout = setTimeout(() => {
-      fadeOutRotateGuide();
-    }, 2000);
-  }
-
-  // Fade out rotate guide and show home
-  function fadeOutRotateGuide() {
-    if (rotateGuideTimeout) {
-      clearTimeout(rotateGuideTimeout);
-      rotateGuideTimeout = null;
-    }
-    rotateGuide.classList.add('fade-out');
-    // Start title screen animations
-    titleScreen.classList.add('animate');
-    // Start BGM
-    playTitleBGM();
-    // Hide completely after fade animation
-    setTimeout(() => {
-      rotateGuide.classList.remove('show');
-    }, 800);
-  }
-
-  // Listen for orientation change - if landscape, immediately fade out rotate guide
-  window.addEventListener('resize', () => {
-    if (!isPortraitMode() && rotateGuide.classList.contains('show') && !rotateGuide.classList.contains('fade-out')) {
-      fadeOutRotateGuide();
-    }
-  });
-  window.matchMedia('(orientation: portrait)').addEventListener('change', (e) => {
-    if (!e.matches && rotateGuide.classList.contains('show') && !rotateGuide.classList.contains('fade-out')) {
-      fadeOutRotateGuide();
-    }
-  });
-
-  // Always show TAP TO START screen (for both PC and mobile)
+  // Show TAP TO START screen
   tapScreen.classList.add('show');
 
   const handleTap = () => {
@@ -2995,15 +2569,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Remove listeners
     tapScreen.removeEventListener('click', handleTap);
     tapScreen.removeEventListener('touchstart', handleTap);
-
-    // Check if portrait mode - show rotate guide first
-    if (isPortraitMode()) {
-      showRotateGuideAndProceed();
-    } else {
-      // Landscape or PC - go directly to home with animations
-      titleScreen.classList.add('animate');
-      playTitleBGM();
-    }
+    // Go to title screen with animations
+    titleScreen.classList.add('animate');
+    playTitleBGM();
   };
 
   tapScreen.addEventListener('click', handleTap);
