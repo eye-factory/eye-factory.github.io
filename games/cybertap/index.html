@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>CyberTap | eye-factory</title>
-<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="icon" type="image/png" href="favicon.png">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -105,6 +105,17 @@ body {
   92% { opacity: 0.2; }
   94% { opacity: 0.6; }
   96% { opacity: 0.4; }
+}
+
+/* Sand/Static noise effect (CRT TV style) */
+#sand-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  mix-blend-mode: overlay;
 }
 
 /* Background grid */
@@ -765,6 +776,7 @@ body {
 <div class="bg-image"></div>
 <div class="bg-noise"></div>
 <div class="bg-scanlines"></div>
+<canvas id="sand-canvas"></canvas>
 <div class="bg-grid"></div>
 
 <!-- Rotate guide for portrait mode -->
@@ -1379,12 +1391,82 @@ function renderRanking() {
 }
 
 // ============================================================
+// SAND/STATIC NOISE EFFECT (CRT TV style)
+// ============================================================
+function initSandEffect() {
+  const canvas = document.getElementById('sand-canvas');
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Generate static noise frame
+  function drawNoise() {
+    const imageData = ctx.createImageData(canvas.width, canvas.height);
+    const data = imageData.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const noise = Math.random() * 255;
+      data[i] = noise;     // R
+      data[i + 1] = noise; // G
+      data[i + 2] = noise; // B
+      data[i + 3] = 40;    // A (low opacity)
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+  }
+
+  // Glitch burst animation
+  let glitchFrame = 0;
+  let glitchDuration = 0;
+  let isGlitching = false;
+
+  function scheduleNextGlitch() {
+    // Random interval: 2-4 seconds
+    const delay = 2000 + Math.random() * 2000;
+    setTimeout(() => {
+      isGlitching = true;
+      glitchFrame = 0;
+      // Random duration: 3-8 frames (short burst)
+      glitchDuration = 3 + Math.floor(Math.random() * 5);
+    }, delay);
+  }
+
+  function animate() {
+    if (isGlitching) {
+      drawNoise();
+      // Flicker opacity: jiri-jiri effect
+      const flicker = 0.15 + Math.random() * 0.2;
+      canvas.style.opacity = flicker;
+
+      glitchFrame++;
+      if (glitchFrame >= glitchDuration) {
+        isGlitching = false;
+        canvas.style.opacity = 0;
+        scheduleNextGlitch();
+      }
+    }
+    requestAnimationFrame(animate);
+  }
+
+  scheduleNextGlitch();
+  animate();
+}
+
+// ============================================================
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('touchmove', e => {
     if (gameState.isPlaying) e.preventDefault();
   }, { passive: false });
+
+  // Initialize sand effect
+  initSandEffect();
 });
 </script>
 
