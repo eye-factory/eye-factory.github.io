@@ -221,6 +221,66 @@ body {
   justify-content: center;
 }
 
+/* Volume settings */
+.volume-settings {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 280px;
+}
+.volume-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.volume-label {
+  font-family: var(--font-en);
+  font-size: 12px;
+  color: var(--text-sub);
+  width: 40px;
+  text-align: right;
+}
+.volume-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  outline: none;
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: var(--neon-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--neon-primary);
+  transition: transform 0.2s;
+}
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+.volume-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: var(--neon-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px var(--neon-primary);
+}
+.volume-value {
+  font-family: var(--font-en);
+  font-size: 12px;
+  color: var(--neon-primary);
+  width: 36px;
+  text-align: left;
+}
+
 /* Buttons */
 .btn {
   font-family: var(--font-en);
@@ -848,6 +908,18 @@ body {
       <button class="btn" onclick="showScreen('song-select')">Start</button>
       <button class="btn secondary" onclick="showScreen('ranking')">Ranking</button>
     </div>
+    <div class="volume-settings">
+      <div class="volume-row">
+        <span class="volume-label">BGM</span>
+        <input type="range" class="volume-slider" id="bgm-volume" min="0" max="100" value="80" oninput="updateVolume('bgm', this.value)">
+        <span class="volume-value" id="bgm-volume-value">80%</span>
+      </div>
+      <div class="volume-row">
+        <span class="volume-label">SE</span>
+        <input type="range" class="volume-slider" id="se-volume" min="0" max="100" value="80" oninput="updateVolume('se', this.value)">
+        <span class="volume-value" id="se-volume-value">80%</span>
+      </div>
+    </div>
   </div>
 
   <!-- Song Select Screen -->
@@ -1043,6 +1115,59 @@ let gameState = {
 
 // GIF backgrounds for play screen
 const PLAY_GIFS = ['ctap2.gif', 'ctap3.gif', 'ctap4.gif', 'ctap5.gif'];
+
+// Volume settings
+const volumeSettings = {
+  bgm: 80,
+  se: 80,
+};
+
+function loadVolumeSettings() {
+  const saved = localStorage.getItem('cybertap_volume');
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    volumeSettings.bgm = parsed.bgm ?? 80;
+    volumeSettings.se = parsed.se ?? 80;
+  }
+  // Update UI
+  document.getElementById('bgm-volume').value = volumeSettings.bgm;
+  document.getElementById('bgm-volume-value').textContent = volumeSettings.bgm + '%';
+  document.getElementById('se-volume').value = volumeSettings.se;
+  document.getElementById('se-volume-value').textContent = volumeSettings.se + '%';
+}
+
+function saveVolumeSettings() {
+  localStorage.setItem('cybertap_volume', JSON.stringify(volumeSettings));
+}
+
+function updateVolume(type, value) {
+  value = parseInt(value);
+  volumeSettings[type] = value;
+  document.getElementById(`${type}-volume-value`).textContent = value + '%';
+  saveVolumeSettings();
+  applyVolume();
+}
+
+function applyVolume() {
+  // Apply BGM volume (when audio is implemented)
+  if (window.bgmAudio) {
+    window.bgmAudio.volume = volumeSettings.bgm / 100;
+  }
+  // SE volume is applied when playing sound effects
+}
+
+function getVolume(type) {
+  return volumeSettings[type] / 100;
+}
+
+// Play sound effect with SE volume
+function playSE(audioElement) {
+  if (audioElement) {
+    audioElement.volume = getVolume('se');
+    audioElement.currentTime = 0;
+    audioElement.play().catch(() => {});
+  }
+}
 
 // ============================================================
 // SCREEN MANAGEMENT
@@ -1512,6 +1637,9 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('touchmove', e => {
     if (gameState.isPlaying) e.preventDefault();
   }, { passive: false });
+
+  // Load volume settings
+  loadVolumeSettings();
 });
 </script>
 
