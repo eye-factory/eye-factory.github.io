@@ -394,6 +394,18 @@ body {
   background: rgba(0, 0, 0, 0.5);
 }
 
+/* Play screen GIF background */
+#play-bg {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.09;
+  z-index: 0;
+  pointer-events: none;
+}
+
 #play-area {
   position: absolute;
   top: 60px; left: 0; right: 0; bottom: 30px;
@@ -635,13 +647,66 @@ body {
 /* Ranking screen */
 #ranking-screen {
   padding: 20px 40px;
+  flex-direction: column;
+}
+.ranking-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+.ranking-nav-btn {
+  font-family: var(--font-en);
+  font-size: 24px;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--neon-primary);
+  background: transparent;
+  color: var(--neon-primary);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.ranking-nav-btn:hover {
+  background: var(--neon-primary);
+  color: #000;
+}
+.ranking-song-title {
+  font-family: var(--font-en);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--neon-primary);
+  min-width: 200px;
+  text-align: center;
+}
+.ranking-diff-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.ranking-diff-tab {
+  font-family: var(--font-en);
+  font-size: 12px;
+  padding: 6px 16px;
+  border: 1px solid var(--text-sub);
+  background: transparent;
+  color: var(--text-sub);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.ranking-diff-tab.active {
+  border-color: var(--neon-primary);
+  color: var(--neon-primary);
+  background: rgba(0, 212, 255, 0.1);
 }
 .ranking-list {
   width: 100%;
-  max-width: 600px;
-  max-height: 70vh;
+  max-width: 500px;
+  max-height: 60vh;
   overflow-y: auto;
-  margin: 20px 0;
+  margin: 0 auto;
 }
 .ranking-item {
   display: flex;
@@ -813,6 +878,7 @@ body {
 
   <!-- Play Screen -->
   <div id="play-screen" class="screen">
+    <div id="play-bg"></div>
     <div class="play-hud">
       <div>
         <div class="score" id="current-score">0</div>
@@ -869,8 +935,18 @@ body {
 
   <!-- Ranking Screen -->
   <div id="ranking-screen" class="screen">
-    <button class="back-btn" onclick="showScreen('title-screen')">Back</button>
+    <button class="back-btn" onclick="showScreen('title-screen')">Home</button>
     <h2 class="section-title">Ranking</h2>
+    <div class="ranking-header">
+      <button class="ranking-nav-btn" onclick="changeRankingSong(-1)">&lt;</button>
+      <span class="ranking-song-title" id="ranking-song-title">Cyber Rush</span>
+      <button class="ranking-nav-btn" onclick="changeRankingSong(1)">&gt;</button>
+    </div>
+    <div class="ranking-diff-tabs">
+      <button class="ranking-diff-tab active" onclick="changeRankingDiff('easy')">Easy</button>
+      <button class="ranking-diff-tab" onclick="changeRankingDiff('normal')">Normal</button>
+      <button class="ranking-diff-tab" onclick="changeRankingDiff('hard')">Hard</button>
+    </div>
     <div class="ranking-list" id="ranking-list"></div>
   </div>
 </div>
@@ -957,7 +1033,16 @@ let gameState = {
   startTime: 0,
   circles: [],
   circleId: 0,
+  // Ranking state
+  rankingSongIndex: 0,
+  rankingDifficulty: 'easy',
+  // GIF background state
+  currentGifIndex: 0,
+  gifInterval: null,
 };
+
+// GIF backgrounds for play screen
+const PLAY_GIFS = ['ctap2.gif', 'ctap3.gif', 'ctap4.gif', 'ctap5.gif'];
 
 // ============================================================
 // SCREEN MANAGEMENT
@@ -1019,6 +1104,9 @@ function startGame(difficulty) {
   document.getElementById('progress-fill').style.width = '0%';
   document.getElementById('play-area').innerHTML = '';
 
+  // Start GIF background rotation
+  startGifBackground();
+
   showScreen('play-screen');
 
   countdown(3, () => {
@@ -1027,6 +1115,31 @@ function startGame(difficulty) {
     generateCircles();
     gameLoop();
   });
+}
+
+// GIF background rotation
+function startGifBackground() {
+  const playBg = document.getElementById('play-bg');
+  gameState.currentGifIndex = 0;
+  playBg.style.backgroundImage = `url('${PLAY_GIFS[0]}')`;
+
+  // Clear any existing interval
+  if (gameState.gifInterval) {
+    clearInterval(gameState.gifInterval);
+  }
+
+  // Rotate GIFs every 3 seconds
+  gameState.gifInterval = setInterval(() => {
+    gameState.currentGifIndex = (gameState.currentGifIndex + 1) % PLAY_GIFS.length;
+    playBg.style.backgroundImage = `url('${PLAY_GIFS[gameState.currentGifIndex]}')`;
+  }, 3000);
+}
+
+function stopGifBackground() {
+  if (gameState.gifInterval) {
+    clearInterval(gameState.gifInterval);
+    gameState.gifInterval = null;
+  }
 }
 
 function countdown(count, callback) {
@@ -1279,6 +1392,7 @@ function showFeedback(result, x, y, score = 0) {
 // ============================================================
 function endGame() {
   gameState.isPlaying = false;
+  stopGifBackground();
 
   const totalNotes = gameState.circles.length;
   const hitNotes = gameState.hits.perfect + gameState.hits.great + gameState.hits.good;
@@ -1337,45 +1451,58 @@ function saveScore() {
 
 function renderRanking() {
   const container = document.getElementById('ranking-list');
-  container.innerHTML = '';
+  const song = SONGS[gameState.rankingSongIndex];
+  const diff = gameState.rankingDifficulty;
 
-  SONGS.forEach(song => {
-    ['easy', 'normal', 'hard'].forEach(diff => {
-      const key = `cybertap_ranking_${song.id}_${diff}`;
-      const rankings = JSON.parse(localStorage.getItem(key) || '[]');
+  // Update title
+  document.getElementById('ranking-song-title').textContent = song.title;
 
-      if (rankings.length > 0) {
-        const header = document.createElement('div');
-        header.style.cssText = 'font-size: 12px; color: var(--neon-primary); margin: 14px 0 6px; text-transform: uppercase; font-family: var(--font-en);';
-        header.textContent = `${song.title} - ${diff}`;
-        container.appendChild(header);
-
-        rankings.slice(0, 3).forEach((entry, idx) => {
-          const item = document.createElement('div');
-          item.className = 'ranking-item';
-
-          let rankClass = '';
-          if (idx === 0) rankClass = 'gold';
-          else if (idx === 1) rankClass = 'silver';
-          else if (idx === 2) rankClass = 'bronze';
-
-          item.innerHTML = `
-            <div class="rank ${rankClass}">#${idx + 1}</div>
-            <div class="info">
-              <div class="name">Combo: ${entry.combo}</div>
-              <div class="meta">${new Date(entry.date).toLocaleDateString()}</div>
-            </div>
-            <div class="score">${entry.score.toLocaleString()}</div>
-          `;
-          container.appendChild(item);
-        });
-      }
-    });
+  // Update tab active state
+  document.querySelectorAll('.ranking-diff-tab').forEach(tab => {
+    tab.classList.toggle('active', tab.textContent.toLowerCase() === diff);
   });
 
-  if (container.children.length === 0) {
-    container.innerHTML = '<div style="color: var(--text-sub); padding: 40px;">No records yet. Play a song!</div>';
+  // Get rankings
+  const key = `cybertap_ranking_${song.id}_${diff}`;
+  const rankings = JSON.parse(localStorage.getItem(key) || '[]');
+
+  container.innerHTML = '';
+
+  if (rankings.length === 0) {
+    container.innerHTML = '<div style="color: var(--text-sub); padding: 40px; text-align: center;">No records yet.<br>Play this song!</div>';
+    return;
   }
+
+  // Show TOP 10
+  rankings.slice(0, 10).forEach((entry, idx) => {
+    const item = document.createElement('div');
+    item.className = 'ranking-item';
+
+    let rankClass = '';
+    if (idx === 0) rankClass = 'gold';
+    else if (idx === 1) rankClass = 'silver';
+    else if (idx === 2) rankClass = 'bronze';
+
+    item.innerHTML = `
+      <div class="rank ${rankClass}">#${idx + 1}</div>
+      <div class="info">
+        <div class="name">Combo: ${entry.combo}</div>
+        <div class="meta">${new Date(entry.date).toLocaleDateString()}</div>
+      </div>
+      <div class="score">${entry.score.toLocaleString()}</div>
+    `;
+    container.appendChild(item);
+  });
+}
+
+function changeRankingSong(direction) {
+  gameState.rankingSongIndex = (gameState.rankingSongIndex + direction + SONGS.length) % SONGS.length;
+  renderRanking();
+}
+
+function changeRankingDiff(diff) {
+  gameState.rankingDifficulty = diff;
+  renderRanking();
 }
 
 // ============================================================
