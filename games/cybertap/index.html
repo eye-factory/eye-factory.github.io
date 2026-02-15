@@ -52,6 +52,12 @@ body {
   opacity: 0.18;
   pointer-events: none;
   z-index: -2;
+  transition: opacity 0.4s ease;
+}
+
+/* Hide static background during play (GIF only) */
+body.playing .bg-image {
+  opacity: 0;
 }
 
 /* Cyber noise overlay */
@@ -281,7 +287,7 @@ body {
   text-align: left;
 }
 
-/* Tap to Start screen (mobile only) */
+/* Tap to Start screen (all devices - for audio initialization) */
 #tap-start-screen {
   display: none;
   position: fixed;
@@ -1159,7 +1165,7 @@ body {
 </head>
 <body>
 
-<!-- Tap to Start screen (mobile only) -->
+<!-- Tap to Start screen (all devices - for audio initialization) -->
 <div id="tap-start-screen">
   <div class="tap-title">TAP TO START</div>
   <div class="tap-hint">タップして開始</div>
@@ -1597,6 +1603,9 @@ function startGame(difficulty) {
   // Stop title BGM with fade
   stopTitleBGM();
 
+  // Hide static background, show GIF only
+  document.body.classList.add('playing');
+
   gameState.selectedDifficulty = difficulty;
   gameState.score = 0;
   gameState.combo = 0;
@@ -2025,6 +2034,9 @@ function endGame() {
   stopGifBackground();
   stopGameBGM();
 
+  // Show static background again on result screen
+  document.body.classList.remove('playing');
+
   const totalNotes = gameState.circles.length;
   const hitNotes = gameState.hits.perfect + gameState.hits.great + gameState.hits.good;
   const accuracy = totalNotes > 0 ? (hitNotes / totalNotes) * 100 : 0;
@@ -2193,29 +2205,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize BGM
   initBGM();
 
-  // Show tap-to-start screen on mobile
-  if (isMobileDevice()) {
-    const tapScreen = document.getElementById('tap-start-screen');
-    tapScreen.classList.add('show');
+  // Always show TAP TO START screen (for both PC and mobile)
+  // This ensures audio is properly initialized after user interaction
+  const tapScreen = document.getElementById('tap-start-screen');
+  tapScreen.classList.add('show');
 
-    const handleTap = () => {
-      // Initialize audio
-      initAudioContext();
-      // Start title BGM
-      playTitleBGM();
-      // Hide tap screen
-      tapScreen.classList.remove('show');
-      // Remove listener
-      tapScreen.removeEventListener('click', handleTap);
-      tapScreen.removeEventListener('touchstart', handleTap);
-    };
-
-    tapScreen.addEventListener('click', handleTap);
-    tapScreen.addEventListener('touchstart', handleTap, { passive: true });
-  } else {
-    // PC: Start title BGM immediately
+  const handleTap = () => {
+    // Initialize audio context (required for all browsers)
+    initAudioContext();
+    // Start title BGM
     playTitleBGM();
-  }
+    // Hide tap screen
+    tapScreen.classList.remove('show');
+    // Remove listeners
+    tapScreen.removeEventListener('click', handleTap);
+    tapScreen.removeEventListener('touchstart', handleTap);
+  };
+
+  tapScreen.addEventListener('click', handleTap);
+  tapScreen.addEventListener('touchstart', handleTap, { passive: true });
 });
 </script>
 
