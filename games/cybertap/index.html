@@ -652,53 +652,72 @@ body {
 
 /* Medium circle - Normal notes */
 .hit-circle.medium {
-  width: 70px;
-  height: 70px;
-  font-size: 18px;
+  width: 80px;
+  height: 80px;
+  font-size: 20px;
   box-shadow: 0 0 25px rgba(0, 212, 255, 0.5), 0 0 50px rgba(255, 0, 170, 0.3);
 }
 
 /* Large circle - Strong beats */
 .hit-circle.large {
-  width: 100px;
-  height: 100px;
-  font-size: 24px;
+  width: 110px;
+  height: 110px;
+  font-size: 26px;
   box-shadow: 0 0 35px rgba(0, 212, 255, 0.6), 0 0 70px rgba(255, 0, 170, 0.4);
 }
 
 /* XLarge circle - Accent notes (rare) */
 .hit-circle.xlarge {
-  width: 130px;
-  height: 130px;
-  font-size: 32px;
+  width: 140px;
+  height: 140px;
+  font-size: 34px;
   box-shadow: 0 0 50px rgba(0, 212, 255, 0.8), 0 0 100px rgba(255, 0, 170, 0.6), 0 0 150px rgba(0, 212, 255, 0.3);
 }
 .hit-circle.xlarge::before {
   animation: gradientBorder 1s ease-in-out infinite;
 }
 
+/* Judgment ring - shows perfect timing */
+.hit-circle .judgment-ring {
+  position: absolute;
+  border: 3px solid rgba(0, 255, 136, 0.9);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 15px rgba(0, 255, 136, 0.6), inset 0 0 10px rgba(0, 255, 136, 0.3);
+}
+.hit-circle.medium .judgment-ring {
+  width: 80px; height: 80px;
+}
+.hit-circle.large .judgment-ring {
+  width: 110px; height: 110px;
+}
+.hit-circle.xlarge .judgment-ring {
+  width: 140px; height: 140px;
+  border-width: 4px;
+}
+
 .hit-circle .approach-ring {
   position: absolute;
-  border: 2px solid var(--neon-primary);
+  border: 3px solid var(--neon-primary);
   border-radius: 50%;
-  opacity: 0.7;
+  opacity: 0.9;
   pointer-events: none;
-  box-shadow: 0 0 10px var(--neon-primary);
+  box-shadow: 0 0 15px var(--neon-primary), 0 0 30px rgba(0, 212, 255, 0.4);
 }
 
 /* Approach ring animations for each size */
 .hit-circle.medium .approach-ring {
-  width: 140px; height: 140px;
+  width: 200px; height: 200px;
   animation: approachMedium 1s linear forwards;
 }
 .hit-circle.large .approach-ring {
-  width: 200px; height: 200px;
+  width: 260px; height: 260px;
   animation: approachLarge 1.2s linear forwards;
 }
 .hit-circle.xlarge .approach-ring {
-  width: 260px; height: 260px;
+  width: 320px; height: 320px;
   animation: approachXLarge 1.5s linear forwards;
-  border-width: 3px;
+  border-width: 4px;
 }
 
 /* Ripple effect on tap */
@@ -775,16 +794,16 @@ body {
 }
 
 @keyframes approachMedium {
-  from { width: 140px; height: 140px; opacity: 0.8; }
-  to { width: 70px; height: 70px; opacity: 0; }
+  from { width: 200px; height: 200px; opacity: 1; }
+  to { width: 80px; height: 80px; opacity: 0.3; }
 }
 @keyframes approachLarge {
-  from { width: 200px; height: 200px; opacity: 0.8; }
-  to { width: 100px; height: 100px; opacity: 0; }
+  from { width: 260px; height: 260px; opacity: 1; }
+  to { width: 110px; height: 110px; opacity: 0.3; }
 }
 @keyframes approachXLarge {
-  from { width: 260px; height: 260px; opacity: 0.9; }
-  to { width: 130px; height: 130px; opacity: 0; }
+  from { width: 320px; height: 320px; opacity: 1; }
+  to { width: 140px; height: 140px; opacity: 0.3; }
 }
 
 /* Hit feedback - Enhanced */
@@ -1369,20 +1388,26 @@ body {
     font-size: 50px;
   }
   .hit-circle.medium {
-    width: 50px;
-    height: 50px;
-    font-size: 13px;
+    width: 60px;
+    height: 60px;
+    font-size: 14px;
   }
   .hit-circle.large {
-    width: 68px;
-    height: 68px;
-    font-size: 16px;
+    width: 80px;
+    height: 80px;
+    font-size: 18px;
   }
   .hit-circle.xlarge {
-    width: 85px;
-    height: 85px;
-    font-size: 20px;
+    width: 100px;
+    height: 100px;
+    font-size: 22px;
   }
+  .hit-circle.medium .approach-ring { width: 140px; height: 140px; }
+  .hit-circle.large .approach-ring { width: 180px; height: 180px; }
+  .hit-circle.xlarge .approach-ring { width: 220px; height: 220px; }
+  .hit-circle.medium .judgment-ring { width: 60px; height: 60px; }
+  .hit-circle.large .judgment-ring { width: 80px; height: 80px; }
+  .hit-circle.xlarge .judgment-ring { width: 100px; height: 100px; }
   .hit-feedback {
     font-size: 14px;
   }
@@ -1651,29 +1676,31 @@ const SONGS = [
 ];
 
 // Circle sizes configuration (medium, large, xlarge)
+// Unified timing windows: Perfect ±100ms, Great ±200ms, Good ±300ms
+const TIMING_WINDOWS = { perfect: 100, great: 200, good: 300 };
 const CIRCLE_TYPES = {
   medium: {
-    size: 70,
+    size: 80,
     approachTime: 1000,  // Normal approach
-    timingWindow: { perfect: 80, great: 150, good: 280 },
+    timingWindow: TIMING_WINDOWS,
     scoreMultiplier: 1.0, // Normal score
-    missWindow: 350,
+    missWindow: 400,
     effectScale: 1.0,    // Ripple effect scale
   },
   large: {
-    size: 100,
+    size: 110,
     approachTime: 1200,  // Slightly slower
-    timingWindow: { perfect: 100, great: 180, good: 320 },
+    timingWindow: TIMING_WINDOWS,
     scoreMultiplier: 1.5, // Higher score for stronger beats
-    missWindow: 400,
+    missWindow: 450,
     effectScale: 1.5,    // Larger ripple
   },
   xlarge: {
-    size: 130,
+    size: 140,
     approachTime: 1500,  // Slow approach for accent
-    timingWindow: { perfect: 120, great: 220, good: 380 },
+    timingWindow: TIMING_WINDOWS,
     scoreMultiplier: 3.0, // Highest score for accents
-    missWindow: 450,
+    missWindow: 500,
     effectScale: 2.5,    // Massive ripple + flash
   },
 };
@@ -1952,12 +1979,7 @@ function startGame(difficulty) {
   // Wait for fade, then countdown
   setTimeout(() => {
     countdown(3, () => {
-      // Ensure target number is reset before game starts
-      gameState.currentTargetNumber = 1;
-      gameState.isPlaying = true;
-      gameState.startTime = Date.now();
-      generateCircles();
-      gameLoop();
+      // Game already started in countdown, this is just cleanup
     });
   }, 600);
 }
@@ -1998,10 +2020,18 @@ function countdown(count, callback) {
     goEl.setAttribute('data-text', 'START!');
     area.appendChild(goEl);
 
-    // Start game BGM
+    // Set start time NOW (when music starts) to sync notes with music
+    gameState.startTime = Date.now();
+
+    // Start game BGM immediately
     if (gameState.selectedSong.audioFile) {
       playGameBGM(gameState.selectedSong.audioFile);
     }
+
+    // Start game logic immediately (notes sync with music)
+    gameState.isPlaying = true;
+    generateCircles();
+    gameLoop();
 
     setTimeout(() => {
       goEl.remove();
@@ -2076,13 +2106,14 @@ function generateCircles() {
   const rawInterval = (song.duration * 1000) / totalCircles;
   const hitInterval = Math.max(rawInterval, minHitInterval);
 
-  // First hitTime starts after the longest approach time to ensure all notes can appear
+  // First hitTime starts after the longest approach time + buffer for START! display
   const maxApproachTime = Math.max(
     CIRCLE_TYPES.medium.approachTime,
     CIRCLE_TYPES.large.approachTime,
     CIRCLE_TYPES.xlarge.approachTime
   );
-  const firstHitTime = maxApproachTime + 500; // Start 0.5s after max approach time
+  // Add 1000ms buffer: 800ms for START! display + 200ms preparation
+  const firstHitTime = maxApproachTime + 1000;
 
   for (let i = 0; i < totalCircles; i++) {
     // Determine circle size (medium, large, xlarge)
@@ -2183,7 +2214,7 @@ function spawnCircle(circle) {
   el.id = 'circle-' + circle.id;
   el.style.left = x + 'px';
   el.style.top = y + 'px';
-  el.innerHTML = `<div class="approach-ring"></div><span>${circle.number}</span>`;
+  el.innerHTML = `<div class="judgment-ring"></div><div class="approach-ring"></div><span>${circle.number}</span>`;
 
   const hitHandler = (e) => {
     e.preventDefault();
