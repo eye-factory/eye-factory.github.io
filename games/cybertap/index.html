@@ -1049,6 +1049,7 @@ function countdown(count, callback) {
 
 // ============================================================
 // CIRCLE GENERATION - With 3 sizes
+// Notes arrive in number order with minimum interval
 // ============================================================
 function generateCircles() {
   const song = gameState.selectedSong;
@@ -1070,6 +1071,21 @@ function generateCircles() {
   const areaRect = area.getBoundingClientRect();
   const padding = 60;
 
+  // Minimum interval between hitTimes (no simultaneous taps)
+  const minHitInterval = 300; // 0.3 seconds minimum
+
+  // Calculate hitTime interval (ensuring minimum interval)
+  const rawInterval = (song.duration * 1000) / totalCircles;
+  const hitInterval = Math.max(rawInterval, minHitInterval);
+
+  // First hitTime starts after the longest approach time to ensure all notes can appear
+  const maxApproachTime = Math.max(
+    CIRCLE_TYPES.small.approachTime,
+    CIRCLE_TYPES.medium.approachTime,
+    CIRCLE_TYPES.large.approachTime
+  );
+  const firstHitTime = maxApproachTime + 500; // Start 0.5s after max approach time
+
   for (let i = 0; i < totalCircles; i++) {
     // Determine circle size
     const rand = Math.random();
@@ -1083,9 +1099,12 @@ function generateCircles() {
     }
 
     const typeConfig = CIRCLE_TYPES[circleType];
-    const interval = (song.duration * 1000) / totalCircles;
-    const appearTime = i * interval;
-    const hitTime = appearTime + typeConfig.approachTime;
+
+    // HitTime is sequential (notes arrive in number order)
+    const hitTime = firstHitTime + (i * hitInterval);
+
+    // AppearTime is calculated backwards from hitTime
+    const appearTime = hitTime - typeConfig.approachTime;
 
     // Random position within play area
     const maxX = Math.max(100, areaRect.width - padding * 2);
