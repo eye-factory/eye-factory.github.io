@@ -157,6 +157,12 @@ body {
   opacity: 0.25;
   pointer-events: none;
   z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Hide static background during gameplay */
+#game-container.playing::before {
+  opacity: 0;
 }
 
 /* Cyber border animation - DISABLED for testing
@@ -564,6 +570,19 @@ body {
   background: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.5));
   z-index: 10;
 }
+.play-hud .score-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.play-hud .score-label {
+  font-family: var(--font-en);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--neon-pink);
+  text-shadow: 0 0 8px var(--neon-pink);
+  letter-spacing: 0.1em;
+}
 .play-hud .score {
   font-family: var(--font-en);
   font-size: 28px;
@@ -575,6 +594,7 @@ body {
   font-family: var(--font-en);
   font-size: 16px;
   color: var(--neon-secondary);
+  margin-left: 15px;
 }
 .play-hud .song-info {
   font-size: 12px;
@@ -1627,7 +1647,8 @@ body {
   <div id="play-screen" class="screen">
     <div id="play-bg"></div>
     <div class="play-hud">
-      <div>
+      <div class="score-area">
+        <span class="score-label">SCORE</span>
         <div class="score" id="current-score">0</div>
         <div class="combo" id="current-combo"></div>
       </div>
@@ -1849,7 +1870,9 @@ const SE = {
   wind: new Audio('wind.mp3'),
   dj: new Audio('dj.mp3'),
   god: new Audio('god.mp3'),
-  low: new Audio('low.mp3')
+  low: new Audio('low.mp3'),
+  hi: new Audio('hi.mp3'),
+  gm: new Audio('gm.mp3')
 };
 
 function initBGM() {
@@ -1997,8 +2020,8 @@ function startGame(difficulty) {
   // Stop title BGM with fade
   stopTitleBGM();
 
-  // Hide static background, show GIF only
-  document.body.classList.add('playing');
+  // Hide static background during gameplay
+  document.getElementById('game-container').classList.add('playing');
 
   gameState.selectedDifficulty = difficulty;
   gameState.score = 0;
@@ -2488,7 +2511,7 @@ function endGame() {
   stopGameBGM();
 
   // Show static background again on result screen
-  document.body.classList.remove('playing');
+  document.getElementById('game-container').classList.remove('playing');
 
   const totalNotes = gameState.circles.length;
   const hitNotes = gameState.hits.perfect + gameState.hits.great + gameState.hits.good;
@@ -2548,24 +2571,33 @@ function endGame() {
     document.getElementById('result-good').textContent = resultData.good;
     document.getElementById('result-miss').textContent = resultData.miss;
 
-    // GOD grade special effect
+    // Stop any existing result BGM
+    if (resultBGM) {
+      resultBGM.pause();
+      resultBGM.currentTime = 0;
+    }
+
+    // Result BGM based on grade
     if (resultData.isGod) {
+      // GOD: gm.mp3 + god.mp3 SE
       playSE(SE.god);
+      resultBGM = SE.gm;
       const flash = document.createElement('div');
       flash.className = 'god-flash';
       document.body.appendChild(flash);
       setTimeout(() => flash.remove(), 2000);
-    } else if (resultData.grade === 'C' || resultData.grade === 'D') {
-      // Low grade BGM
-      if (resultBGM) {
-        resultBGM.pause();
-        resultBGM.currentTime = 0;
-      }
+    } else if (resultData.grade === 'SS' || resultData.grade === 'S') {
+      // SS, S: hi.mp3
+      resultBGM = SE.hi;
+    } else {
+      // A, B, C, D: low.mp3
       resultBGM = SE.low;
-      resultBGM.loop = true;
-      resultBGM.volume = getVolume();
-      resultBGM.play().catch(() => {});
     }
+
+    // Play result BGM
+    resultBGM.loop = true;
+    resultBGM.volume = getVolume();
+    resultBGM.play().catch(() => {});
   }, 300);
 }
 
