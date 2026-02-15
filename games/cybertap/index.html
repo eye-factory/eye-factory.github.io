@@ -2456,8 +2456,7 @@ function spawnCircle(circle) {
   // Get GIF display bounds for positioning
   const gifBounds = getGifBounds();
 
-  // Approach ring sizes - mobile vs desktop
-  const isMobile = window.innerWidth <= 480 || window.innerHeight <= 480;
+  // Approach ring sizes - mobile vs desktop (reuse isMobile from above)
   const approachRingSizes = isMobile
     ? { medium: 140, large: 180, xlarge: 220 }
     : { medium: 200, large: 260, xlarge: 320 };
