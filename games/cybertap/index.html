@@ -2480,7 +2480,7 @@ function spawnCircle(circle) {
   // Negative value = judgment center is BEFORE animation completion (tap earlier for Perfect)
   // Positive value = judgment center is AFTER animation completion (tap later for Perfect)
   const isMobile = window.innerWidth <= 480 || window.innerHeight <= 480;
-  const mobileTimingOffset = isMobile ? -80 : 0;
+  const mobileTimingOffset = isMobile ? 20 : 0;
   circle.visualHitTime = circle.spawnTime + adjustedApproachTime + mobileTimingOffset;
 
   // Get GIF display bounds for positioning
