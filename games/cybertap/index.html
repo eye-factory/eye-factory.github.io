@@ -169,6 +169,36 @@ body.playing .bg-image {
 
 @media (orientation: portrait) and (max-width: 900px) {
   #rotate-guide.show { display: flex; }
+
+  /* Force landscape layout by rotating content 90 degrees */
+  body.force-landscape #game-container {
+    transform: rotate(90deg);
+    transform-origin: center center;
+    width: 100vh;
+    height: 100vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: calc(-50vw);
+    margin-left: calc(-50vh);
+  }
+  body.force-landscape .bg-image,
+  body.force-landscape .bg-noise,
+  body.force-landscape .bg-scanlines,
+  body.force-landscape .bg-grid {
+    transform: rotate(90deg);
+    transform-origin: center center;
+    width: 100vh;
+    height: 100vw;
+    top: 50%;
+    left: 50%;
+    margin-top: calc(-50vw);
+    margin-left: calc(-50vh);
+  }
+  body.force-landscape #tap-start-screen,
+  body.force-landscape #screen-fade {
+    transform: rotate(90deg);
+  }
 }
 
 /* Game container - Landscape optimized */
@@ -2608,15 +2638,36 @@ document.addEventListener('DOMContentLoaded', () => {
     return window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
   }
 
+  // Try to lock screen orientation to landscape
+  function tryLockLandscape() {
+    // Try screen.orientation.lock API
+    if (screen.orientation && screen.orientation.lock) {
+      screen.orientation.lock('landscape').catch(() => {
+        // Lock failed - use CSS rotation fallback
+        enableForceLandscape();
+      });
+    } else {
+      // API not available - use CSS rotation fallback
+      enableForceLandscape();
+    }
+  }
+
+  // Enable CSS-based forced landscape mode
+  function enableForceLandscape() {
+    if (isPortraitMode()) {
+      document.body.classList.add('force-landscape');
+    }
+  }
+
   // Show rotate guide, then fade to home
   function showRotateGuideAndProceed() {
     rotateGuide.classList.add('show');
     rotateGuide.classList.remove('fade-out');
 
-    // Auto fade out after 1 second
+    // Auto fade out after 2 seconds
     rotateGuideTimeout = setTimeout(() => {
       fadeOutRotateGuide();
-    }, 1000);
+    }, 2000);
   }
 
   // Fade out rotate guide and show home
@@ -2626,6 +2677,8 @@ document.addEventListener('DOMContentLoaded', () => {
       rotateGuideTimeout = null;
     }
     rotateGuide.classList.add('fade-out');
+    // Try to lock landscape orientation
+    tryLockLandscape();
     // Start title screen animations
     titleScreen.classList.add('animate');
     // Start BGM
