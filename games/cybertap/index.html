@@ -591,15 +591,7 @@ body {
   transform: translate(-50%, -50%) scale(0.95);
 }
 
-/* Small circle - Fast, high score */
-.hit-circle.small {
-  width: 50px;
-  height: 50px;
-  font-size: 14px;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 0 40px rgba(255, 0, 170, 0.3);
-}
-
-/* Medium circle - Normal */
+/* Medium circle - Normal notes */
 .hit-circle.medium {
   width: 70px;
   height: 70px;
@@ -607,51 +599,122 @@ body {
   box-shadow: 0 0 25px rgba(0, 212, 255, 0.5), 0 0 50px rgba(255, 0, 170, 0.3);
 }
 
-/* Large circle - Slow, low score */
+/* Large circle - Strong beats */
 .hit-circle.large {
   width: 100px;
   height: 100px;
   font-size: 24px;
-  box-shadow: 0 0 30px rgba(0, 212, 255, 0.5), 0 0 60px rgba(255, 0, 170, 0.3);
+  box-shadow: 0 0 35px rgba(0, 212, 255, 0.6), 0 0 70px rgba(255, 0, 170, 0.4);
+}
+
+/* XLarge circle - Accent notes (rare) */
+.hit-circle.xlarge {
+  width: 130px;
+  height: 130px;
+  font-size: 32px;
+  box-shadow: 0 0 50px rgba(0, 212, 255, 0.8), 0 0 100px rgba(255, 0, 170, 0.6), 0 0 150px rgba(0, 212, 255, 0.3);
+}
+.hit-circle.xlarge::before {
+  animation: gradientBorder 1s ease-in-out infinite;
 }
 
 .hit-circle .approach-ring {
   position: absolute;
-  border: 2px solid;
-  border-image: linear-gradient(90deg, var(--neon-primary), var(--neon-pink)) 1;
+  border: 2px solid var(--neon-primary);
   border-radius: 50%;
   opacity: 0.7;
   pointer-events: none;
-}
-/* Fix approach ring border */
-.hit-circle .approach-ring {
-  border: 2px solid var(--neon-primary);
   box-shadow: 0 0 10px var(--neon-primary);
 }
 
 /* Approach ring animations for each size */
-.hit-circle.small .approach-ring {
-  width: 100px; height: 100px;
-  animation: approachSmall 0.6s linear forwards;
-}
 .hit-circle.medium .approach-ring {
   width: 140px; height: 140px;
   animation: approachMedium 1s linear forwards;
 }
 .hit-circle.large .approach-ring {
   width: 200px; height: 200px;
-  animation: approachLarge 1.5s linear forwards;
+  animation: approachLarge 1.2s linear forwards;
+}
+.hit-circle.xlarge .approach-ring {
+  width: 260px; height: 260px;
+  animation: approachXLarge 1.5s linear forwards;
+  border-width: 3px;
+}
+
+/* Ripple effect on tap */
+.tap-ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 3px solid var(--neon-primary);
+  pointer-events: none;
+  animation: rippleExpand 0.5s ease-out forwards;
+  transform: translate(-50%, -50%);
+}
+.tap-ripple.perfect {
+  border-color: var(--neon-secondary);
+  box-shadow: 0 0 20px var(--neon-secondary);
+}
+
+@keyframes rippleExpand {
+  0% { width: 0; height: 0; opacity: 1; }
+  100% { width: 200px; height: 200px; opacity: 0; }
+}
+
+/* Large ripple effect */
+.tap-ripple.large-effect {
+  animation: rippleExpandLarge 0.6s ease-out forwards;
+}
+@keyframes rippleExpandLarge {
+  0% { width: 0; height: 0; opacity: 1; }
+  100% { width: 300px; height: 300px; opacity: 0; }
+}
+
+/* XLarge ripple + flash effect */
+.tap-ripple.xlarge-effect {
+  animation: rippleExpandXLarge 0.8s ease-out forwards;
+  border-width: 5px;
+}
+@keyframes rippleExpandXLarge {
+  0% { width: 0; height: 0; opacity: 1; }
+  50% { opacity: 0.8; }
+  100% { width: 500px; height: 500px; opacity: 0; }
+}
+
+/* Screen flash effect */
+.screen-flash {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.4) 0%, rgba(255, 0, 170, 0.2) 50%, transparent 70%);
+  pointer-events: none;
+  z-index: 50;
+  animation: screenFlash 0.3s ease-out forwards;
+}
+@keyframes screenFlash {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Particle effect */
+.tap-particle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particleBurst 0.6s ease-out forwards;
+}
+@keyframes particleBurst {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
 }
 
 @keyframes circleAppear {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
-@keyframes approachSmall {
-  from { width: 100px; height: 100px; opacity: 0.8; }
-  to { width: 50px; height: 50px; opacity: 0; }
-}
 @keyframes approachMedium {
   from { width: 140px; height: 140px; opacity: 0.8; }
   to { width: 70px; height: 70px; opacity: 0; }
@@ -659,6 +722,10 @@ body {
 @keyframes approachLarge {
   from { width: 200px; height: 200px; opacity: 0.8; }
   to { width: 100px; height: 100px; opacity: 0; }
+}
+@keyframes approachXLarge {
+  from { width: 260px; height: 260px; opacity: 0.9; }
+  to { width: 130px; height: 130px; opacity: 0; }
 }
 
 /* Hit feedback - Enhanced */
@@ -1276,28 +1343,31 @@ const SONGS = [
   },
 ];
 
-// Circle sizes configuration
+// Circle sizes configuration (medium, large, xlarge)
 const CIRCLE_TYPES = {
-  small: {
-    size: 50,
-    approachTime: 600,   // Fast approach
-    timingWindow: { perfect: 30, great: 60, good: 100 },
-    scoreMultiplier: 2.0, // High score
-    missWindow: 150,
-  },
   medium: {
     size: 70,
     approachTime: 1000,  // Normal approach
     timingWindow: { perfect: 50, great: 100, good: 180 },
     scoreMultiplier: 1.0, // Normal score
     missWindow: 220,
+    effectScale: 1.0,    // Ripple effect scale
   },
   large: {
     size: 100,
-    approachTime: 1500,  // Slow approach
+    approachTime: 1200,  // Slightly slower
+    timingWindow: { perfect: 60, great: 120, good: 200 },
+    scoreMultiplier: 1.5, // Higher score for stronger beats
+    missWindow: 250,
+    effectScale: 1.5,    // Larger ripple
+  },
+  xlarge: {
+    size: 130,
+    approachTime: 1500,  // Slow approach for accent
     timingWindow: { perfect: 80, great: 150, good: 250 },
-    scoreMultiplier: 0.5, // Low score
+    scoreMultiplier: 3.0, // Highest score for accents
     missWindow: 300,
+    effectScale: 2.5,    // Massive ripple + flash
   },
 };
 
@@ -1628,18 +1698,18 @@ function generateCircles() {
   // Circles per second based on difficulty
   const circlesPerSecond = { easy: 1.2, normal: 2, hard: 3 }[difficulty];
 
-  // Size distribution based on difficulty
+  // Size distribution: medium (normal), large (strong beats), xlarge (accents)
   const sizeDistribution = {
-    easy:   { small: 0.1, medium: 0.6, large: 0.3 },
-    normal: { small: 0.25, medium: 0.5, large: 0.25 },
-    hard:   { small: 0.4, medium: 0.45, large: 0.15 },
+    easy:   { medium: 0.75, large: 0.22, xlarge: 0.03 },
+    normal: { medium: 0.65, large: 0.30, xlarge: 0.05 },
+    hard:   { medium: 0.55, large: 0.38, xlarge: 0.07 },
   }[difficulty];
 
   const totalCircles = Math.floor(song.duration * circlesPerSecond);
 
   const area = document.getElementById('play-area');
   const areaRect = area.getBoundingClientRect();
-  const padding = 60;
+  const padding = 80;
 
   // Minimum interval between hitTimes (no simultaneous taps)
   const minHitInterval = 300; // 0.3 seconds minimum
@@ -1650,22 +1720,22 @@ function generateCircles() {
 
   // First hitTime starts after the longest approach time to ensure all notes can appear
   const maxApproachTime = Math.max(
-    CIRCLE_TYPES.small.approachTime,
     CIRCLE_TYPES.medium.approachTime,
-    CIRCLE_TYPES.large.approachTime
+    CIRCLE_TYPES.large.approachTime,
+    CIRCLE_TYPES.xlarge.approachTime
   );
   const firstHitTime = maxApproachTime + 500; // Start 0.5s after max approach time
 
   for (let i = 0; i < totalCircles; i++) {
-    // Determine circle size
+    // Determine circle size (medium, large, xlarge)
     const rand = Math.random();
     let circleType;
-    if (rand < sizeDistribution.small) {
-      circleType = 'small';
-    } else if (rand < sizeDistribution.small + sizeDistribution.medium) {
+    if (rand < sizeDistribution.medium) {
       circleType = 'medium';
-    } else {
+    } else if (rand < sizeDistribution.medium + sizeDistribution.large) {
       circleType = 'large';
+    } else {
+      circleType = 'xlarge';
     }
 
     const typeConfig = CIRCLE_TYPES[circleType];
@@ -1830,6 +1900,7 @@ function registerHit(result, x, y, circleType, scoreGained = 0) {
     gameState.combo > 1 ? `${gameState.combo} COMBO` : '';
 
   showFeedback(result, x, y, scoreGained);
+  spawnTapEffects(result, x, y, circleType);
 }
 
 function showFeedback(result, x, y, score = 0) {
@@ -1842,6 +1913,108 @@ function showFeedback(result, x, y, score = 0) {
   area.appendChild(feedback);
 
   setTimeout(() => feedback.remove(), 500);
+}
+
+// ============================================================
+// TAP EFFECTS - Ripple, Flash, Particles
+// ============================================================
+function spawnTapEffects(result, x, y, circleType) {
+  if (result === 'miss') return;
+
+  const area = document.getElementById('play-area');
+  const isPerfect = result === 'perfect';
+  const typeConfig = CIRCLE_TYPES[circleType];
+
+  // Create ripple effect
+  const ripple = document.createElement('div');
+  ripple.className = 'tap-ripple';
+  if (isPerfect) ripple.classList.add('perfect');
+
+  // Size-based effects
+  if (circleType === 'large') {
+    ripple.classList.add('large-effect');
+  } else if (circleType === 'xlarge') {
+    ripple.classList.add('xlarge-effect');
+  }
+
+  ripple.style.left = x + 'px';
+  ripple.style.top = y + 'px';
+  area.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 800);
+
+  // For large circles: add glow pulse
+  if (circleType === 'large') {
+    const glow = document.createElement('div');
+    glow.className = 'tap-ripple';
+    if (isPerfect) glow.classList.add('perfect');
+    glow.style.left = x + 'px';
+    glow.style.top = y + 'px';
+    glow.style.animationDelay = '0.1s';
+    area.appendChild(glow);
+    setTimeout(() => glow.remove(), 600);
+  }
+
+  // For xlarge circles: screen flash + particles
+  if (circleType === 'xlarge') {
+    // Screen flash
+    const flash = document.createElement('div');
+    flash.className = 'screen-flash';
+    if (isPerfect) {
+      flash.style.background = 'radial-gradient(circle, rgba(0, 255, 136, 0.5) 0%, rgba(0, 212, 255, 0.3) 50%, transparent 70%)';
+    }
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 300);
+
+    // Spawn particles
+    spawnParticles(x, y, isPerfect ? 16 : 10, area);
+
+    // Extra ripple wave for xlarge
+    const wave = document.createElement('div');
+    wave.className = 'tap-ripple xlarge-effect';
+    if (isPerfect) wave.classList.add('perfect');
+    wave.style.left = x + 'px';
+    wave.style.top = y + 'px';
+    wave.style.animationDelay = '0.15s';
+    area.appendChild(wave);
+    setTimeout(() => wave.remove(), 1000);
+  }
+
+  // Perfect bonus: extra mini ripple
+  if (isPerfect && circleType !== 'xlarge') {
+    const bonusRipple = document.createElement('div');
+    bonusRipple.className = 'tap-ripple perfect';
+    bonusRipple.style.left = x + 'px';
+    bonusRipple.style.top = y + 'px';
+    bonusRipple.style.animationDelay = '0.05s';
+    area.appendChild(bonusRipple);
+    setTimeout(() => bonusRipple.remove(), 600);
+  }
+}
+
+function spawnParticles(x, y, count, container) {
+  const colors = ['var(--neon-primary)', 'var(--neon-pink)', 'var(--neon-secondary)', 'var(--neon-purple)'];
+
+  for (let i = 0; i < count; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'tap-particle';
+
+    // Random angle for burst direction
+    const angle = (Math.PI * 2 * i) / count + (Math.random() * 0.5 - 0.25);
+    const distance = 60 + Math.random() * 80;
+    const tx = Math.cos(angle) * distance;
+    const ty = Math.sin(angle) * distance;
+
+    particle.style.left = x + 'px';
+    particle.style.top = y + 'px';
+    particle.style.setProperty('--tx', tx + 'px');
+    particle.style.setProperty('--ty', ty + 'px');
+    particle.style.background = colors[i % colors.length];
+    particle.style.boxShadow = `0 0 6px ${colors[i % colors.length]}`;
+    particle.style.animationDelay = `${i * 0.02}s`;
+
+    container.appendChild(particle);
+    setTimeout(() => particle.remove(), 800);
+  }
 }
 
 // ============================================================
