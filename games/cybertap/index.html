@@ -34,11 +34,16 @@ html, body {
   user-select: none;
 }
 
-/* Mobile portrait -> scale down game to fit without rotation */
+/* Mobile portrait -> force landscape via rotation */
 @media (orientation: portrait) and (max-width: 900px) {
   html {
-    width: 100%;
-    height: 100%;
+    width: 100vh;
+    height: 100vw;
+    transform: rotate(90deg);
+    transform-origin: top left;
+    position: absolute;
+    top: 0;
+    left: 100%;
   }
 }
 
@@ -344,11 +349,12 @@ body {
 #tap-start-screen.show {
   display: flex;
 }
-/* Mobile portrait: TAP TO START covers viewport */
+/* Mobile portrait: TAP TO START covers rotated viewport */
 @media (orientation: portrait) and (max-width: 900px) {
   #tap-start-screen {
-    width: 100vw;
-    height: 100vh;
+    /* After rotation: width becomes height, height becomes width */
+    width: 100vh;
+    height: 100vw;
   }
 }
 #tap-start-screen .tap-title {
@@ -1645,15 +1651,15 @@ body {
   border-radius: 0;
 }
 
-/* Mobile portrait - scale game to fit width, maintain 16:9 aspect */
+/* Mobile portrait (rotated to landscape) - use 95% of available space */
 @media (orientation: portrait) and (max-width: 900px) {
   #app-wrapper {
-    /* Use full width, calculate height from 16:9 aspect ratio */
-    width: calc(100vw - 20px);
-    height: calc((100vw - 20px) * 9 / 16);
-    /* Center vertically */
-    margin: auto;
-    border-width: 2px;
+    /* After rotation: visible height = original vw, visible width = original vh */
+    height: 95vw;
+    width: calc(95vw * 16 / 9);
+    max-width: 95vh;
+    max-height: calc(95vh * 9 / 16);
+    border-width: 3px;
   }
 }
 </style>
@@ -1842,6 +1848,35 @@ const CIRCLE_TYPES = {
 
 // Base scores
 const BASE_SCORES = { perfect: 300, great: 200, good: 100 };
+
+// ============================================================
+// MOBILE ROTATION COORDINATE HELPERS
+// When CSS rotate(90deg) is applied, getBoundingClientRect() returns
+// coordinates in the original (pre-rotation) system. We need to transform them.
+// ============================================================
+function isRotatedMode() {
+  return window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
+}
+
+// Get play area dimensions that work correctly in rotated mode
+function getPlayAreaDimensions() {
+  const playArea = document.getElementById('play-area');
+  if (!playArea) return { width: 800, height: 400 };
+
+  if (isRotatedMode()) {
+    // In rotated mode, use offsetWidth/offsetHeight which give CSS dimensions
+    return {
+      width: playArea.offsetWidth,
+      height: playArea.offsetHeight
+    };
+  } else {
+    const rect = playArea.getBoundingClientRect();
+    return {
+      width: rect.width,
+      height: rect.height
+    };
+  }
+}
 
 // ============================================================
 // GAME STATE
@@ -2202,6 +2237,7 @@ function countdown(count, callback) {
 // ============================================================
 // GIF BOUNDS CALCULATION
 // Calculate the actual displayed GIF area (background-size: contain)
+// Uses offsetWidth/offsetHeight to avoid CSS rotation coordinate issues
 // ============================================================
 function getGifBounds() {
   const playBg = document.getElementById('play-bg');
@@ -2214,31 +2250,34 @@ function getGifBounds() {
     return { left: 50, top: 50, width: 800, height: 450, right: 850, bottom: 500 };
   }
 
-  const rect = element.getBoundingClientRect();
+  // Use offsetWidth/offsetHeight - these give CSS pixel dimensions
+  // and work correctly regardless of CSS transforms
+  const containerWidth = element.offsetWidth;
+  const containerHeight = element.offsetHeight;
 
-  // If rect has no size, return safe defaults
-  if (rect.width <= 0 || rect.height <= 0) {
+  // If dimensions are invalid, return safe defaults
+  if (containerWidth <= 0 || containerHeight <= 0) {
     return { left: 50, top: 50, width: 800, height: 450, right: 850, bottom: 500 };
   }
 
   // GIF aspect ratio (16:9)
   const gifAspect = 16 / 9;
-  const containerAspect = rect.width / rect.height;
+  const containerAspect = containerWidth / containerHeight;
 
   let gifWidth, gifHeight, gifLeft, gifTop;
 
   if (containerAspect > gifAspect) {
     // Container is wider - GIF fills height, centered horizontally
-    gifHeight = rect.height;
+    gifHeight = containerHeight;
     gifWidth = gifHeight * gifAspect;
-    gifLeft = (rect.width - gifWidth) / 2;
+    gifLeft = (containerWidth - gifWidth) / 2;
     gifTop = 0;
   } else {
     // Container is taller - GIF fills width, centered vertically
-    gifWidth = rect.width;
+    gifWidth = containerWidth;
     gifHeight = gifWidth / gifAspect;
     gifLeft = 0;
-    gifTop = (rect.height - gifHeight) / 2;
+    gifTop = (containerHeight - gifHeight) / 2;
   }
 
   return {
@@ -2262,14 +2301,16 @@ function generateCircles() {
   // Baby mode: 1 note only for GOD grade testing
   if (difficulty === 'baby') {
     const area = document.getElementById('play-area');
-    const areaRect = area.getBoundingClientRect();
+    // Use offsetWidth/offsetHeight to avoid CSS rotation issues
+    const areaWidth = area.offsetWidth;
+    const areaHeight = area.offsetHeight;
     gameState.circles.push({
       id: gameState.circleId++,
       type: 'large',
       appearTime: 500,
       hitTime: 2000,
-      x: areaRect.width / 2,
-      y: areaRect.height / 3,
+      x: areaWidth / 2,
+      y: areaHeight / 3,
       number: 1,
       active: false,
       hit: false,
@@ -2312,7 +2353,6 @@ function generateCircles() {
   const totalCircles = Math.floor((song.duration * 1000) / hitInterval);
 
   const area = document.getElementById('play-area');
-  const areaRect = area.getBoundingClientRect();
   const padding = 80;
 
   // First hitTime starts after the longest approach time + buffer for START! display
@@ -2430,7 +2470,6 @@ function gameLoop() {
 
 function spawnCircle(circle) {
   const area = document.getElementById('play-area');
-  const areaRect = area.getBoundingClientRect();
   const typeConfig = CIRCLE_TYPES[circle.type];
 
   // Record ACTUAL spawn time - this is when animation starts
@@ -2558,14 +2597,11 @@ function hitCircle(circle) {
     gameState.score += scoreGained;
   }
 
+  // Use the circle's stored position (already correctly calculated)
+  // Don't use getBoundingClientRect() as it's unreliable with CSS rotation
+  const feedbackX = circle.x;
+  const feedbackY = circle.y;
   const el = document.getElementById('circle-' + circle.id);
-  let feedbackX = circle.x, feedbackY = circle.y;
-  if (el) {
-    const rect = el.getBoundingClientRect();
-    const area = document.getElementById('play-area').getBoundingClientRect();
-    feedbackX = rect.left - area.left + rect.width / 2;
-    feedbackY = rect.top - area.top + rect.height / 2;
-  }
 
   removeCircle(circle.id);
   registerHit(result, feedbackX, feedbackY, circle.type, scoreGained);
