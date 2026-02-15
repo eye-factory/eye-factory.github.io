@@ -1238,6 +1238,55 @@ body.playing .bg-image {
   color: var(--neon-primary);
 }
 
+/* Ranking grade display */
+.ranking-grade {
+  font-family: var(--font-en);
+  font-size: 16px;
+  font-weight: 900;
+  width: 50px;
+  text-align: center;
+  margin-right: 10px;
+}
+.ranking-grade.rank-god {
+  background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00);
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradeShineGod 1s linear infinite;
+}
+.ranking-grade.rank-ss { color: #ffdd00; text-shadow: 0 0 10px #ffdd00; }
+.ranking-grade.rank-s { color: #00ff88; text-shadow: 0 0 10px #00ff88; }
+.ranking-grade.rank-a { color: var(--neon-primary); text-shadow: 0 0 8px var(--neon-primary); }
+.ranking-grade.rank-b { color: var(--neon-yellow); }
+.ranking-grade.rank-c { color: var(--neon-pink); }
+
+/* No records display */
+.no-records {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+.no-records-icon {
+  font-size: 50px;
+  margin-bottom: 15px;
+  opacity: 0.6;
+}
+.no-records-text {
+  font-family: var(--font-en);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--neon-primary);
+  margin-bottom: 8px;
+}
+.no-records-hint {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+
 /* Countdown - Cyber Enhanced */
 .countdown {
   position: absolute;
@@ -1883,6 +1932,7 @@ body.playing .bg-image {
       <button class="ranking-nav-btn" onclick="changeRankingSong(1)">&gt;</button>
     </div>
     <div class="ranking-diff-tabs">
+      <button class="ranking-diff-tab" onclick="changeRankingDiff('baby')">Baby</button>
       <button class="ranking-diff-tab active" onclick="changeRankingDiff('easy')">Easy</button>
       <button class="ranking-diff-tab" onclick="changeRankingDiff('normal')">Normal</button>
       <button class="ranking-diff-tab" onclick="changeRankingDiff('hard')">Hard</button>
@@ -2727,7 +2777,7 @@ function endGame() {
     miss: gameState.hits.miss
   };
 
-  saveScore();
+  saveScore(grade);
 
   // Show result screen with fade
   showScreen('result-screen', true);
@@ -2760,13 +2810,15 @@ function retryGame() {
 // ============================================================
 // RANKING (localStorage)
 // ============================================================
-function saveScore() {
+function saveScore(grade) {
   const key = `cybertap_ranking_${gameState.selectedSong.id}_${gameState.selectedDifficulty}`;
   let rankings = JSON.parse(localStorage.getItem(key) || '[]');
 
   rankings.push({
     score: gameState.score,
     combo: gameState.maxCombo,
+    grade: grade,
+    difficulty: gameState.selectedDifficulty,
     date: new Date().toISOString(),
   });
 
@@ -2796,7 +2848,13 @@ function renderRanking() {
   container.innerHTML = '';
 
   if (rankings.length === 0) {
-    container.innerHTML = '<div style="color: var(--text-sub); padding: 40px; text-align: center;">No records yet.<br>Play this song!</div>';
+    container.innerHTML = `
+      <div class="no-records">
+        <div class="no-records-icon">📊</div>
+        <div class="no-records-text">No Records</div>
+        <div class="no-records-hint">Play this song to set a record!</div>
+      </div>
+    `;
     return;
   }
 
@@ -2810,8 +2868,19 @@ function renderRanking() {
     else if (idx === 1) rankClass = 'silver';
     else if (idx === 2) rankClass = 'bronze';
 
+    // Get grade class for styling
+    const gradeDisplay = entry.grade || '-';
+    let gradeColorClass = '';
+    if (gradeDisplay === 'GOD') gradeColorClass = 'rank-god';
+    else if (gradeDisplay === 'SS') gradeColorClass = 'rank-ss';
+    else if (gradeDisplay === 'S') gradeColorClass = 'rank-s';
+    else if (gradeDisplay === 'A') gradeColorClass = 'rank-a';
+    else if (gradeDisplay === 'B') gradeColorClass = 'rank-b';
+    else if (gradeDisplay === 'C') gradeColorClass = 'rank-c';
+
     item.innerHTML = `
       <div class="rank ${rankClass}">#${idx + 1}</div>
+      <div class="ranking-grade ${gradeColorClass}">${gradeDisplay}</div>
       <div class="info">
         <div class="name">Combo: ${entry.combo}</div>
         <div class="meta">${new Date(entry.date).toLocaleDateString()}</div>
