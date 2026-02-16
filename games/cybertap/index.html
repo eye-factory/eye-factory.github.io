@@ -415,21 +415,21 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 3px rgba(0, 255, 65, 0.6)) drop-shadow(0 0 8px rgba(0, 212, 255, 0.4));
-  animation: letterRevealGreen 0.3s ease-out forwards, textGradientFlow 2s linear infinite;
+  filter: drop-shadow(0 0 2px rgba(0, 255, 65, 0.5)) drop-shadow(0 0 6px rgba(0, 212, 255, 0.3));
+  animation: letterRevealGreen 0.2s ease-out forwards, textGradientFlow 2s linear infinite;
   animation-delay: 0s, 0s;
 }
 #cyber-transition .letter:nth-child(1) { animation-delay: 0s, 0s; }
-#cyber-transition .letter:nth-child(2) { animation-delay: 0.06s, 0s; }
-#cyber-transition .letter:nth-child(3) { animation-delay: 0.12s, 0s; }
-#cyber-transition .letter:nth-child(4) { animation-delay: 0.18s, 0s; }
-#cyber-transition .letter:nth-child(5) { animation-delay: 0.24s, 0s; }
-#cyber-transition .letter:nth-child(6) { animation-delay: 0.30s, 0s; }
-#cyber-transition .letter:nth-child(7) { animation-delay: 0.36s, 0s; }
-#cyber-transition .letter:nth-child(8) { animation-delay: 0.42s, 0s; }
-#cyber-transition .letter:nth-child(9) { animation-delay: 0.48s, 0s; }
-#cyber-transition .letter:nth-child(10) { animation-delay: 0.54s, 0s; }
-#cyber-transition .letter:nth-child(11) { animation-delay: 0.60s, 0s; }
+#cyber-transition .letter:nth-child(2) { animation-delay: 0.08s, 0s; }
+#cyber-transition .letter:nth-child(3) { animation-delay: 0.16s, 0s; }
+#cyber-transition .letter:nth-child(4) { animation-delay: 0.24s, 0s; }
+#cyber-transition .letter:nth-child(5) { animation-delay: 0.32s, 0s; }
+#cyber-transition .letter:nth-child(6) { animation-delay: 0.40s, 0s; }
+#cyber-transition .letter:nth-child(7) { animation-delay: 0.48s, 0s; }
+#cyber-transition .letter:nth-child(8) { animation-delay: 0.56s, 0s; }
+#cyber-transition .letter:nth-child(9) { animation-delay: 0.64s, 0s; }
+#cyber-transition .letter:nth-child(10) { animation-delay: 0.72s, 0s; }
+#cyber-transition .letter:nth-child(11) { animation-delay: 0.80s, 0s; }
 #cyber-transition .loading-bar {
   width: 220px;
   height: 10px;
@@ -445,22 +445,22 @@ body {
   width: 0%;
   background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary), var(--neon-pink));
   background-size: 300% 100%;
-  box-shadow: 0 0 15px var(--neon-primary), 0 0 30px var(--neon-pink);
+  box-shadow: 0 0 10px var(--neon-primary), 0 0 20px var(--neon-pink);
   border-radius: 3px;
-  animation: loadingFill 1.2s ease-out forwards, barGradientFlow 1s linear infinite;
+  animation: loadingFill 1.0s ease-out forwards, barGradientFlow 1s linear infinite;
 }
 @keyframes letterRevealGreen {
   0% {
     opacity: 0;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) blur(6px);
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.6)) blur(4px);
   }
-  50% {
+  60% {
     opacity: 1;
-    filter: drop-shadow(0 0 8px rgba(0, 255, 65, 0.5)) drop-shadow(0 0 15px rgba(0, 212, 255, 0.3)) blur(1px);
+    filter: drop-shadow(0 0 4px rgba(0, 255, 65, 0.4)) drop-shadow(0 0 8px rgba(0, 212, 255, 0.25)) blur(0);
   }
   100% {
     opacity: 1;
-    filter: drop-shadow(0 0 3px rgba(0, 255, 65, 0.6)) drop-shadow(0 0 8px rgba(0, 212, 255, 0.4)) blur(0);
+    filter: drop-shadow(0 0 2px rgba(0, 255, 65, 0.5)) drop-shadow(0 0 6px rgba(0, 212, 255, 0.3)) blur(0);
   }
 }
 @keyframes textGradientFlow {
