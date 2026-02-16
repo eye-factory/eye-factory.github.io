@@ -1569,6 +1569,17 @@ body {
   font-size: clamp(12px, 2vw, 18px);
   padding: clamp(10px, 1.5vh, 16px) clamp(20px, 3vw, 40px);
 }
+.result-buttons .btn.shot-btn {
+  background: linear-gradient(135deg, rgba(0, 255, 65, 0.15), rgba(0, 212, 255, 0.15));
+  border-color: #00ff41;
+  color: #00ff41;
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+  box-shadow: 0 0 15px rgba(0, 255, 65, 0.3), inset 0 0 20px rgba(0, 255, 65, 0.1);
+}
+.result-buttons .btn.shot-btn:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 65, 0.3), rgba(0, 212, 255, 0.3));
+  box-shadow: 0 0 25px rgba(0, 255, 65, 0.5), inset 0 0 30px rgba(0, 255, 65, 0.2);
+}
 
 /* Countdown - Cyber Enhanced */
 .countdown {
@@ -1990,12 +2001,15 @@ body {
   }
   .result-buttons {
     flex-direction: row;
-    gap: 8px;
+    gap: 6px;
     margin-top: 10px;
   }
   .result-buttons .btn {
-    padding: 8px 16px;
+    padding: 8px 12px;
     font-size: 10px;
+  }
+  .result-buttons .btn.shot-btn {
+    padding: 8px 10px;
   }
   .result-stats {
     order: 2;
@@ -2094,6 +2108,7 @@ body {
   }
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
@@ -2227,6 +2242,7 @@ body {
       <div class="result-grade" id="result-grade">S</div>
       <div class="result-buttons">
         <button class="btn" onclick="retryGame()">Retry</button>
+        <button class="btn shot-btn" onclick="takeScreenshot()">Shot</button>
         <button class="btn secondary" onclick="playSE(SE.kati); stopResultBGM(); showScreen('title-screen')">Title</button>
       </div>
     </div>
@@ -3701,6 +3717,44 @@ function stopResultBGM() {
 function retryGame() {
   stopResultBGM();
   startGame(gameState.selectedDifficulty);
+}
+
+// Screenshot function for result screen
+function takeScreenshot() {
+  playSE(SE.kati);
+
+  const appWrapper = document.getElementById('app-wrapper');
+
+  // Check if mobile portrait mode (rotated 90deg via CSS)
+  const isRotated = window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
+
+  html2canvas(appWrapper, {
+    backgroundColor: '#0a0a12',
+    scale: 2,
+    useCORS: true,
+    logging: false
+  }).then(canvas => {
+    let finalCanvas = canvas;
+
+    // If rotated, we need to rotate the image -90deg to get proper orientation
+    if (isRotated) {
+      finalCanvas = document.createElement('canvas');
+      finalCanvas.width = canvas.height;
+      finalCanvas.height = canvas.width;
+      const ctx = finalCanvas.getContext('2d');
+      ctx.translate(0, finalCanvas.height);
+      ctx.rotate(-90 * Math.PI / 180);
+      ctx.drawImage(canvas, 0, 0);
+    }
+
+    // Create download link
+    const link = document.createElement('a');
+    link.download = 'cybertap_screenshot.png';
+    link.href = finalCanvas.toDataURL('image/png');
+    link.click();
+  }).catch(err => {
+    console.error('Screenshot failed:', err);
+  });
 }
 
 // ============================================================
