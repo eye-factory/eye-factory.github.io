@@ -3613,6 +3613,27 @@ function initAudioContext() {
   }
 }
 
+// Unlock all audio elements (required for mobile browsers)
+function unlockAllAudio() {
+  // Unlock BGM
+  if (titleBGM) {
+    titleBGM.load();
+    titleBGM.play().then(() => {
+      titleBGM.pause();
+      titleBGM.currentTime = 0;
+    }).catch(() => {});
+  }
+
+  // Unlock all SE
+  Object.values(SE).forEach(audio => {
+    audio.load();
+    audio.play().then(() => {
+      audio.pause();
+      audio.currentTime = 0;
+    }).catch(() => {});
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('touchmove', e => {
     if (gameState.isPlaying) e.preventDefault();
@@ -3642,6 +3663,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleTap = () => {
     // Initialize audio context (required for all browsers)
     initAudioContext();
+    // Unlock all audio elements for mobile browsers
+    unlockAllAudio();
     // Hide tap screen
     tapScreen.classList.remove('show');
     // Remove listeners
@@ -3649,7 +3672,10 @@ document.addEventListener('DOMContentLoaded', () => {
     tapScreen.removeEventListener('touchstart', handleTap);
     // Go to title screen with animations
     titleScreen.classList.add('animate');
-    playTitleBGM();
+    // Play BGM after a short delay to ensure unlock completes
+    setTimeout(() => {
+      playTitleBGM();
+    }, 100);
   };
 
   tapScreen.addEventListener('click', handleTap);
