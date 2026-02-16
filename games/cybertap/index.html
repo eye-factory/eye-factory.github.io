@@ -2626,7 +2626,15 @@ function getVolume() {
 // Play sound effect with master volume
 function playSE(audioElement) {
   if (audioElement) {
-    audioElement.volume = getVolume();
+    let volume = getVolume();
+    // Apply volume scale for specific SE
+    for (const [key, scale] of Object.entries(SE_VOLUME_SCALE)) {
+      if (SE[key] === audioElement) {
+        volume *= scale;
+        break;
+      }
+    }
+    audioElement.volume = volume;
     audioElement.currentTime = 0;
     audioElement.play().catch(() => {});
   }
@@ -2645,11 +2653,16 @@ let resultBGM = null;
 const SE = {
   wind: new Audio('wind.mp3'),
   dj: new Audio('dj.mp3'),
+  dj_2: new Audio('dj_2.mp3'),
   god: new Audio('god.mp3'),
   low: new Audio('low.mp3'),
   hi: new Audio('hi.mp3'),
   gm: new Audio('gm.mp3'),
   kati: new Audio('kati.mp3')
+};
+// Volume scale for louder sound effects
+const SE_VOLUME_SCALE = {
+  dj_2: 0.5  // dj_2.mp3 is louder, reduce to 50%
 };
 
 function initBGM() {
@@ -2809,7 +2822,7 @@ function renderMusicList() {
           <span class="music-duration">${formatDuration(song.duration)}</span>
         </div>
       </div>
-      <a class="music-download-btn" href="${song.audioFile}" download="${song.audioFile}" onclick="event.stopPropagation(); playSE(SE.dj); showDownloadPopup()">Download</a>
+      <a class="music-download-btn" href="${song.audioFile}" download="${song.audioFile}" onclick="event.stopPropagation(); playSE(SE.dj_2); showDownloadPopup()">Download</a>
     `;
     item.onclick = () => playMusicTrack(index);
     container.appendChild(item);
@@ -3721,7 +3734,7 @@ function retryGame() {
 
 // Screenshot function for result screen
 function takeScreenshot() {
-  playSE(SE.kati);
+  playSE(SE.dj_2);
 
   const appWrapper = document.getElementById('app-wrapper');
 
