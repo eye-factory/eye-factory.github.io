@@ -603,6 +603,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  position: relative;
 }
 .music-item:hover, .music-item.playing {
   border-color: var(--neon-primary);
@@ -611,6 +612,37 @@ body {
 }
 .music-item.playing {
   background: rgba(0, 212, 255, 0.1);
+}
+
+/* Audio waveform animation */
+.audio-wave {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  height: 24px;
+  gap: 3px;
+  align-items: flex-end;
+}
+.music-item.playing .audio-wave {
+  display: flex;
+}
+.audio-wave-bar {
+  width: 3px;
+  background: var(--neon-primary);
+  border-radius: 2px;
+  box-shadow: 0 0 6px var(--neon-primary);
+}
+.audio-wave-bar:nth-child(1) { animation: waveBar 0.8s ease-in-out infinite; }
+.audio-wave-bar:nth-child(2) { animation: waveBar 0.6s ease-in-out 0.1s infinite; }
+.audio-wave-bar:nth-child(3) { animation: waveBar 0.9s ease-in-out 0.2s infinite; }
+.audio-wave-bar:nth-child(4) { animation: waveBar 0.5s ease-in-out 0.15s infinite; }
+.audio-wave-bar:nth-child(5) { animation: waveBar 0.7s ease-in-out 0.25s infinite; }
+.audio-wave-bar:nth-child(6) { animation: waveBar 0.85s ease-in-out 0.05s infinite; }
+
+@keyframes waveBar {
+  0%, 100% { height: 6px; }
+  50% { height: 22px; }
 }
 .music-item-info {
   flex: 1;
@@ -1583,6 +1615,19 @@ body {
     font-size: 8px;
     padding: 4px 8px;
   }
+  .audio-wave {
+    top: 5px;
+    right: 5px;
+    height: 16px;
+    gap: 2px;
+  }
+  .audio-wave-bar {
+    width: 2px;
+  }
+  @keyframes waveBar {
+    0%, 100% { height: 4px; }
+    50% { height: 14px; }
+  }
 
   /* Play screen */
   .play-hud {
@@ -2417,10 +2462,8 @@ let musicIsPlaying = false;
 function showMusicScreen() {
   showScreen('music-screen');
   renderMusicList();
-  // Stop title BGM when entering music screen
-  if (titleBGM) {
-    titleBGM.pause();
-  }
+  // Auto-play first song (Lumi Zero)
+  playMusicTrack(0);
 }
 
 function renderMusicList() {
@@ -2432,6 +2475,14 @@ function renderMusicList() {
     item.className = 'music-item';
     item.id = `music-item-${index}`;
     item.innerHTML = `
+      <div class="audio-wave">
+        <div class="audio-wave-bar"></div>
+        <div class="audio-wave-bar"></div>
+        <div class="audio-wave-bar"></div>
+        <div class="audio-wave-bar"></div>
+        <div class="audio-wave-bar"></div>
+        <div class="audio-wave-bar"></div>
+      </div>
       <div class="music-item-info">
         <div class="music-item-title">${song.title}</div>
         <div class="music-item-artist">${song.artist}</div>
