@@ -3745,45 +3745,110 @@ function takeScreenshot() {
   playSE(SE.dj_2);
 
   const appWrapper = document.getElementById('app-wrapper');
+  const htmlElement = document.documentElement;
 
   // Check if mobile portrait mode (rotated 90deg via CSS)
   const isRotated = window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
 
-  // Capture current screen state directly (no DOM modification)
-  html2canvas(appWrapper, {
-    backgroundColor: null,
-    scale: window.devicePixelRatio || 2,
-    useCORS: true,
-    allowTaint: true,
-    logging: false,
-    imageTimeout: 0,
-    removeContainer: true
-  }).then(canvas => {
-    let finalCanvas = canvas;
+  // Store original styles for mobile
+  let originalStyles = null;
+  if (isRotated) {
+    originalStyles = {
+      width: htmlElement.style.width,
+      height: htmlElement.style.height,
+      transform: htmlElement.style.transform,
+      transformOrigin: htmlElement.style.transformOrigin,
+      position: htmlElement.style.position,
+      top: htmlElement.style.top,
+      left: htmlElement.style.left
+    };
+    // Temporarily remove rotation for capture
+    htmlElement.style.width = '';
+    htmlElement.style.height = '';
+    htmlElement.style.transform = 'none';
+    htmlElement.style.transformOrigin = '';
+    htmlElement.style.position = '';
+    htmlElement.style.top = '';
+    htmlElement.style.left = '';
+  }
 
-    // If mobile rotated, rotate image -90deg to correct orientation
-    if (isRotated) {
-      finalCanvas = document.createElement('canvas');
-      finalCanvas.width = canvas.height;
-      finalCanvas.height = canvas.width;
-      const ctx = finalCanvas.getContext('2d');
-      ctx.translate(0, finalCanvas.height);
-      ctx.rotate(-90 * Math.PI / 180);
-      ctx.drawImage(canvas, 0, 0);
-    }
+  // Small delay to let styles apply
+  setTimeout(() => {
+    html2canvas(appWrapper, {
+      backgroundColor: '#0a0a12',
+      scale: window.devicePixelRatio || 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false
+    }).then(canvas => {
+      // Restore original styles immediately after capture
+      if (isRotated && originalStyles) {
+        htmlElement.style.width = originalStyles.width;
+        htmlElement.style.height = originalStyles.height;
+        htmlElement.style.transform = originalStyles.transform;
+        htmlElement.style.transformOrigin = originalStyles.transformOrigin;
+        htmlElement.style.position = originalStyles.position;
+        htmlElement.style.top = originalStyles.top;
+        htmlElement.style.left = originalStyles.left;
+      }
 
-    // Generate filename with numbering
-    const link = document.createElement('a');
-    const filename = screenshotCounter === 0
-      ? 'cybertap_score.png'
-      : `cybertap_score(${screenshotCounter}).png`;
-    screenshotCounter++;
-    link.download = filename;
-    link.href = finalCanvas.toDataURL('image/png');
-    link.click();
-  }).catch(err => {
-    console.error('Screenshot failed:', err);
-  });
+      let finalCanvas = canvas;
+
+      // For mobile, rotate canvas -90deg to get landscape orientation
+      if (isRotated) {
+        finalCanvas = document.createElement('canvas');
+        finalCanvas.width = canvas.height;
+        finalCanvas.height = canvas.width;
+        const ctx = finalCanvas.getContext('2d');
+        ctx.translate(finalCanvas.width, 0);
+        ctx.rotate(90 * Math.PI / 180);
+        ctx.drawImage(canvas, 0, 0);
+      }
+
+      // Generate filename
+      const filename = screenshotCounter === 0
+        ? 'cybertap_score.png'
+        : `cybertap_score(${screenshotCounter}).png`;
+      screenshotCounter++;
+
+      const dataUrl = finalCanvas.toDataURL('image/png');
+
+      // Try download with <a> tag
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = dataUrl;
+
+      // Check if download attribute is likely supported
+      const isDownloadSupported = 'download' in link &&
+        !(/X|Twitter/i.test(navigator.userAgent) && /Mobile/i.test(navigator.userAgent));
+
+      if (isDownloadSupported) {
+        link.click();
+      } else {
+        // Fallback: open image in new tab
+        const newTab = window.open();
+        if (newTab) {
+          newTab.document.write('<html><head><title>' + filename + '</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;"><img src="' + dataUrl + '" style="max-width:100%;max-height:100vh;"></body></html>');
+          newTab.document.close();
+        } else {
+          // If popup blocked, try opening directly
+          window.open(dataUrl, '_blank');
+        }
+      }
+    }).catch(err => {
+      console.error('Screenshot failed:', err);
+      // Restore styles on error
+      if (isRotated && originalStyles) {
+        htmlElement.style.width = originalStyles.width;
+        htmlElement.style.height = originalStyles.height;
+        htmlElement.style.transform = originalStyles.transform;
+        htmlElement.style.transformOrigin = originalStyles.transformOrigin;
+        htmlElement.style.position = originalStyles.position;
+        htmlElement.style.top = originalStyles.top;
+        htmlElement.style.left = originalStyles.left;
+      }
+    });
+  }, 50);
 }
 
 // ============================================================
