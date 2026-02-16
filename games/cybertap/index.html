@@ -678,6 +678,49 @@ body {
   box-shadow: 0 0 10px var(--neon-secondary);
 }
 
+/* Download popup notification */
+.download-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  background: var(--bg-card);
+  border: 2px solid var(--neon-secondary);
+  border-radius: 16px;
+  padding: 24px 40px;
+  z-index: 10000;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 0 30px rgba(0, 255, 136, 0.4), inset 0 0 20px rgba(0, 255, 136, 0.1);
+}
+.download-popup.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, -50%) scale(1);
+}
+.download-popup-text {
+  font-family: var(--font-en);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--neon-secondary);
+  text-shadow: 0 0 10px var(--neon-secondary);
+  letter-spacing: 0.05em;
+}
+.download-popup-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+.download-popup.complete {
+  border-color: var(--neon-primary);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.4), inset 0 0 20px rgba(0, 212, 255, 0.1);
+}
+.download-popup.complete .download-popup-text {
+  color: var(--neon-primary);
+  text-shadow: 0 0 10px var(--neon-primary);
+}
+
 /* Play screen */
 #play-screen {
   position: relative;
@@ -1628,6 +1671,17 @@ body {
     0%, 100% { height: 4px; }
     50% { height: 14px; }
   }
+  .download-popup {
+    padding: 16px 28px;
+    border-radius: 12px;
+  }
+  .download-popup-text {
+    font-size: 16px;
+  }
+  .download-popup-icon {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
 
   /* Play screen */
   .play-hud {
@@ -1849,6 +1903,12 @@ body {
 <div id="tap-start-screen">
   <div class="tap-title">TAP TO START</div>
   <div class="tap-hint">タップして開始</div>
+</div>
+
+<!-- Download popup notification -->
+<div id="download-popup" class="download-popup">
+  <div class="download-popup-icon">&#8595;</div>
+  <div class="download-popup-text" id="download-popup-text">Downloading...</div>
 </div>
 
 <!-- Screen transition fade -->
@@ -2487,7 +2547,7 @@ function renderMusicList() {
         <div class="music-item-title">${song.title}</div>
         <div class="music-item-artist">${song.artist}</div>
       </div>
-      <a class="music-download-btn" href="${song.audioFile}" download="${song.audioFile}" onclick="event.stopPropagation()">Download</a>
+      <a class="music-download-btn" href="${song.audioFile}" download="${song.audioFile}" onclick="event.stopPropagation(); showDownloadPopup()">Download</a>
     `;
     item.onclick = () => playMusicTrack(index);
     container.appendChild(item);
@@ -2535,6 +2595,32 @@ function stopMusicPlayer() {
   musicIsPlaying = false;
   // Restart title BGM
   playTitleBGM();
+}
+
+function showDownloadPopup() {
+  const popup = document.getElementById('download-popup');
+  const text = document.getElementById('download-popup-text');
+  const icon = popup.querySelector('.download-popup-icon');
+
+  // Reset state
+  popup.classList.remove('complete');
+  text.textContent = 'Downloading...';
+  icon.innerHTML = '&#8595;';
+
+  // Show popup
+  popup.classList.add('show');
+
+  // Change to complete after 800ms
+  setTimeout(() => {
+    popup.classList.add('complete');
+    text.textContent = 'Download Complete!';
+    icon.innerHTML = '&#10003;';
+  }, 800);
+
+  // Hide popup after 2.5 seconds
+  setTimeout(() => {
+    popup.classList.remove('show');
+  }, 2500);
 }
 
 // ============================================================
