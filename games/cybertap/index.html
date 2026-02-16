@@ -3680,6 +3680,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
   tapScreen.addEventListener('click', handleTap);
   tapScreen.addEventListener('touchstart', handleTap, { passive: true });
+
+  // Handle tab visibility change - pause/resume audio
+  let wasPlayingTitleBGM = false;
+  let wasPlayingGameBGM = false;
+  let wasPlayingMusicAudio = false;
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      // Tab became hidden - pause all audio
+      if (titleBGM && !titleBGM.paused) {
+        wasPlayingTitleBGM = true;
+        titleBGM.pause();
+      }
+      if (gameBGM && !gameBGM.paused) {
+        wasPlayingGameBGM = true;
+        gameBGM.pause();
+      }
+      if (musicAudio && !musicAudio.paused) {
+        wasPlayingMusicAudio = true;
+        musicAudio.pause();
+      }
+    } else {
+      // Tab became visible - resume audio that was playing
+      if (wasPlayingTitleBGM && titleBGM) {
+        titleBGM.play().catch(() => {});
+        wasPlayingTitleBGM = false;
+      }
+      if (wasPlayingGameBGM && gameBGM) {
+        gameBGM.play().catch(() => {});
+        wasPlayingGameBGM = false;
+      }
+      if (wasPlayingMusicAudio && musicAudio) {
+        musicAudio.play().catch(() => {});
+        wasPlayingMusicAudio = false;
+      }
+    }
+  });
 });
 </script>
 
