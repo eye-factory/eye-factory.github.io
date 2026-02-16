@@ -2674,7 +2674,7 @@ function renderMusicList() {
           <span class="music-duration">${formatDuration(song.duration)}</span>
         </div>
       </div>
-      <a class="music-download-btn" href="${song.audioFile}" download="${song.audioFile}" onclick="event.stopPropagation(); showDownloadPopup()">Download</a>
+      <a class="music-download-btn" href="${song.audioFile}" download="${song.audioFile}" onclick="event.stopPropagation(); playSE(SE.dj); showDownloadPopup()">Download</a>
     `;
     item.onclick = () => playMusicTrack(index);
     container.appendChild(item);
