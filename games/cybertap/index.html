@@ -382,8 +382,9 @@ body {
 
 /* Cyber transition overlay */
 #cyber-transition {
-  --matrix-green: #00ff41;
-  --matrix-green-dark: #00cc33;
+  --cyber-green: #00ff41;
+  --cyber-cyan: #00d4ff;
+  --cyber-emerald: #00ffa3;
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
@@ -409,25 +410,11 @@ body {
 #cyber-transition .letter {
   opacity: 0;
   position: relative;
-  background: repeating-linear-gradient(
-    0deg,
-    var(--matrix-green) 0px,
-    var(--matrix-green) 2px,
-    var(--matrix-green-dark) 2px,
-    var(--matrix-green-dark) 4px
-  ),
-  repeating-linear-gradient(
-    90deg,
-    var(--matrix-green) 0px,
-    var(--matrix-green) 2px,
-    transparent 2px,
-    transparent 8px
-  );
-  background-size: 100% 100%, 100% 100%;
+  background: linear-gradient(135deg, var(--cyber-green) 0%, var(--cyber-emerald) 50%, var(--cyber-cyan) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 8px var(--matrix-green)) drop-shadow(0 0 20px var(--matrix-green));
+  filter: drop-shadow(0 0 10px var(--cyber-green)) drop-shadow(0 0 25px var(--cyber-cyan));
   animation: letterRevealGreen 0.3s ease-out forwards;
 }
 #cyber-transition .letter:nth-child(1) { animation-delay: 0s; }
@@ -439,33 +426,35 @@ body {
 #cyber-transition .letter:nth-child(7) { animation-delay: 0.48s; }
 #cyber-transition .letter:nth-child(8) { animation-delay: 0.56s; }
 #cyber-transition .loading-bar {
-  width: 200px;
-  height: 4px;
-  background: rgba(0, 255, 65, 0.15);
-  border: 1px solid rgba(0, 255, 65, 0.3);
-  border-radius: 2px;
+  width: 220px;
+  height: 10px;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
   margin-top: 30px;
   overflow: hidden;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 #cyber-transition .loading-bar-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--matrix-green-dark), var(--matrix-green));
-  box-shadow: 0 0 10px var(--matrix-green), 0 0 20px var(--matrix-green);
+  background: linear-gradient(90deg, var(--cyber-green), var(--cyber-emerald), var(--cyber-cyan));
+  box-shadow: 0 0 15px var(--cyber-green), 0 0 30px var(--cyber-cyan);
+  border-radius: 3px;
   animation: loadingFillGreen 1.2s ease-out forwards;
 }
 @keyframes letterRevealGreen {
   0% {
     opacity: 0;
-    filter: drop-shadow(0 0 30px #fff) drop-shadow(0 0 60px var(--matrix-green)) blur(8px);
+    filter: drop-shadow(0 0 40px #fff) drop-shadow(0 0 80px var(--cyber-cyan)) blur(10px);
   }
   50% {
     opacity: 1;
-    filter: drop-shadow(0 0 20px var(--matrix-green)) drop-shadow(0 0 40px var(--matrix-green)) blur(2px);
+    filter: drop-shadow(0 0 25px var(--cyber-green)) drop-shadow(0 0 50px var(--cyber-cyan)) blur(3px);
   }
   100% {
     opacity: 1;
-    filter: drop-shadow(0 0 8px var(--matrix-green)) drop-shadow(0 0 20px var(--matrix-green)) blur(0);
+    filter: drop-shadow(0 0 10px var(--cyber-green)) drop-shadow(0 0 25px var(--cyber-cyan)) blur(0);
   }
 }
 @keyframes loadingFillGreen {
