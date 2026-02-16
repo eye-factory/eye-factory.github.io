@@ -416,34 +416,31 @@ body {
 
 /* Song select - Horizontal layout */
 #song-select {
-  flex-direction: row;
-  padding: 20px 40px;
-  gap: 30px;
-}
-.song-select-left {
-  flex: 0 0 auto;
-  display: flex;
   flex-direction: column;
-  justify-content: center;
+  padding: 20px 40px;
+  gap: 15px;
 }
-#song-select .section-title {
+#song-select .section-title,
+#music-screen .section-title {
   font-family: var(--font-en);
   font-size: 28px;
   font-weight: 700;
   color: var(--neon-primary);
-  margin-bottom: 20px;
   text-shadow: 0 0 10px var(--neon-primary);
+  text-align: center;
 }
 
-.song-list {
+.song-list,
+.music-list {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  max-height: 80vh;
+  max-height: 75vh;
   overflow-y: auto;
   padding: 10px;
   align-content: start;
+  width: 100%;
 }
 
 .song-item {
@@ -593,154 +590,40 @@ body {
 #music-screen {
   flex-direction: column;
   padding: 20px 40px;
-  gap: 20px;
-}
-.music-screen-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 600px;
-  gap: 20px;
-}
-.music-title {
-  font-family: var(--font-en);
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--neon-primary);
-  text-shadow: 0 0 10px var(--neon-primary);
-  text-align: center;
-}
-.music-player-box {
-  width: 100%;
-  background: var(--bg-card);
-  border: 1px solid rgba(0, 212, 255, 0.3);
-  border-radius: 16px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
   gap: 15px;
 }
-.now-playing {
-  text-align: center;
-}
-.now-playing-label {
-  font-size: 12px;
-  color: var(--text-sub);
-  margin-right: 8px;
-}
-.now-playing-title {
-  font-family: var(--font-en);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--neon-pink);
-}
-.music-controls {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-}
-.music-control-btn {
-  width: 50px;
-  height: 50px;
-  border: 2px solid var(--neon-primary);
-  background: transparent;
-  color: var(--neon-primary);
-  border-radius: 50%;
+.music-item {
+  background: var(--bg-card);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 12px;
+  padding: 16px;
   cursor: pointer;
-  font-size: 16px;
   transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.music-control-btn:hover {
-  background: var(--neon-primary);
-  color: #000;
-  box-shadow: 0 0 15px var(--neon-primary);
-}
-.music-control-btn.play-pause {
-  width: 60px;
-  height: 60px;
-  font-size: 20px;
-}
-.music-progress-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.music-time {
-  font-family: var(--font-en);
-  font-size: 12px;
-  color: var(--text-sub);
-  min-width: 40px;
-}
-.music-progress-bar {
-  flex: 1;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
-  outline: none;
-}
-.music-progress-bar::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  background: var(--neon-pink);
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: 0 0 8px var(--neon-pink);
-}
-.music-progress-bar::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
-  background: var(--neon-pink);
-  border-radius: 50%;
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 0 8px var(--neon-pink);
-}
-.music-list {
-  width: 100%;
-  max-height: 40vh;
-  overflow-y: auto;
+  text-align: left;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-.music-item {
-  display: flex;
-  align-items: center;
-  background: var(--bg-card);
-  border: 1px solid rgba(0, 212, 255, 0.2);
-  border-radius: 10px;
-  padding: 12px 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  gap: 12px;
-}
 .music-item:hover, .music-item.playing {
   border-color: var(--neon-primary);
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  transform: scale(1.02);
 }
 .music-item.playing {
   background: rgba(0, 212, 255, 0.1);
 }
 .music-item-info {
   flex: 1;
-  text-align: left;
 }
 .music-item-title {
   font-family: var(--font-en);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--neon-primary);
+  margin-bottom: 4px;
 }
 .music-item-artist {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--text-sub);
 }
 .music-download-btn {
@@ -754,6 +637,8 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
+  align-self: flex-start;
+  text-decoration: none;
 }
 .music-download-btn:hover {
   background: var(--neon-secondary);
@@ -1613,22 +1498,19 @@ body {
     height: 16px;
   }
 
-  /* Song select - 2 columns */
+  /* Song select - 4 columns */
   #song-select {
     flex-direction: column;
     padding: 10px;
     padding-top: 45px;
     gap: 8px;
   }
-  .song-select-left {
-    flex: 0;
-  }
   #song-select .section-title {
     font-size: 16px;
     margin-bottom: 5px;
   }
   .song-list {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 6px;
     max-height: none;
     overflow-y: visible;
@@ -1679,47 +1561,27 @@ body {
   #music-screen {
     padding: 10px;
     padding-top: 45px;
-    gap: 10px;
+    gap: 8px;
   }
-  .music-screen-content {
-    max-width: 100%;
-    gap: 10px;
-  }
-  .music-title {
+  #music-screen .section-title {
     font-size: 16px;
   }
-  .music-player-box {
-    padding: 12px;
-    gap: 10px;
-  }
-  .now-playing-title {
-    font-size: 14px;
-  }
-  .music-control-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 14px;
-  }
-  .music-control-btn.play-pause {
-    width: 50px;
-    height: 50px;
-    font-size: 18px;
-  }
   .music-list {
-    max-height: 35vh;
+    grid-template-columns: repeat(4, 1fr);
   }
   .music-item {
-    padding: 10px 12px;
+    padding: 8px 6px;
+    gap: 4px;
   }
   .music-item-title {
-    font-size: 12px;
+    font-size: 11px;
   }
   .music-item-artist {
-    font-size: 10px;
+    font-size: 9px;
   }
   .music-download-btn {
-    font-size: 9px;
-    padding: 5px 10px;
+    font-size: 8px;
+    padding: 4px 8px;
   }
 
   /* Play screen */
@@ -1859,11 +1721,13 @@ body {
   #title-screen .game-title {
     font-size: 26px;
   }
-  .song-list {
-    grid-template-columns: 1fr;
+  .song-list,
+  .music-list {
+    grid-template-columns: repeat(2, 1fr);
   }
-  .song-item {
-    padding: 8px;
+  .song-item,
+  .music-item {
+    padding: 6px;
   }
   .diff-btn {
     min-width: 80px;
@@ -1970,35 +1834,15 @@ body {
   <!-- Song Select Screen -->
   <div id="song-select" class="screen">
     <button class="back-btn" onclick="playSE(SE.kati); showScreen('title-screen')">Back</button>
-    <div class="song-select-left">
-      <h2 class="section-title">Select Song</h2>
-    </div>
+    <h2 class="section-title">Select Song</h2>
     <div class="song-list" id="song-list"></div>
   </div>
 
   <!-- Music Screen -->
   <div id="music-screen" class="screen">
     <button class="back-btn" onclick="playSE(SE.kati); stopMusicPlayer(); showScreen('title-screen')">Back</button>
-    <div class="music-screen-content">
-      <h2 class="music-title">Music Player & Free Download</h2>
-      <div class="music-player-box">
-        <div class="now-playing">
-          <span class="now-playing-label">Now Playing:</span>
-          <span class="now-playing-title" id="music-now-playing">-</span>
-        </div>
-        <div class="music-controls">
-          <button class="music-control-btn" id="music-prev-btn" onclick="musicPrev()">&#9664;&#9664;</button>
-          <button class="music-control-btn play-pause" id="music-play-btn" onclick="musicTogglePlay()">&#9654;</button>
-          <button class="music-control-btn" id="music-next-btn" onclick="musicNext()">&#9654;&#9654;</button>
-        </div>
-        <div class="music-progress-row">
-          <span class="music-time" id="music-current-time">0:00</span>
-          <input type="range" class="music-progress-bar" id="music-progress" min="0" max="100" value="0" oninput="seekMusic(this.value)">
-          <span class="music-time" id="music-duration">0:00</span>
-        </div>
-      </div>
-      <div class="music-list" id="music-list"></div>
-    </div>
+    <h2 class="section-title">Music Player & Free Download</h2>
+    <div class="music-list" id="music-list"></div>
   </div>
 
   <!-- Difficulty Select Screen -->
@@ -2569,14 +2413,13 @@ function doScreenSwitch(screenId) {
 let musicAudio = null;
 let musicCurrentIndex = 0;
 let musicIsPlaying = false;
-let musicProgressInterval = null;
 
 function showMusicScreen() {
   showScreen('music-screen');
   renderMusicList();
-  // Auto-play first song
-  if (SONGS.length > 0) {
-    playMusicTrack(0);
+  // Stop title BGM when entering music screen
+  if (titleBGM) {
+    titleBGM.pause();
   }
 }
 
@@ -2589,27 +2432,27 @@ function renderMusicList() {
     item.className = 'music-item';
     item.id = `music-item-${index}`;
     item.innerHTML = `
-      <div class="music-item-info" onclick="playMusicTrack(${index})">
+      <div class="music-item-info">
         <div class="music-item-title">${song.title}</div>
         <div class="music-item-artist">${song.artist}</div>
       </div>
-      <a class="music-download-btn" href="${song.audioFile}" download="${song.audioFile}">Download</a>
+      <a class="music-download-btn" href="${song.audioFile}" download="${song.audioFile}" onclick="event.stopPropagation()">Download</a>
     `;
+    item.onclick = () => playMusicTrack(index);
     container.appendChild(item);
   });
 }
 
 function playMusicTrack(index) {
   // Stop title BGM
-  if (bgmAudio) {
-    bgmAudio.pause();
+  if (titleBGM) {
+    titleBGM.pause();
   }
 
   musicCurrentIndex = index;
   const song = SONGS[index];
 
-  // Update UI
-  document.getElementById('music-now-playing').textContent = song.title;
+  // Update UI - highlight playing item
   document.querySelectorAll('.music-item').forEach((item, i) => {
     item.classList.toggle('playing', i === index);
   });
@@ -2623,80 +2466,14 @@ function playMusicTrack(index) {
   // Create and play new audio
   musicAudio = new Audio(song.audioFile);
   musicAudio.volume = getVolume();
-  musicAudio.play();
+  musicAudio.play().catch(e => console.log('Audio play failed:', e));
   musicIsPlaying = true;
-  updateMusicPlayButton();
-
-  // Setup progress update
-  clearInterval(musicProgressInterval);
-  musicProgressInterval = setInterval(updateMusicProgress, 100);
 
   // Auto-play next song when finished
   musicAudio.onended = () => {
-    musicNext();
+    const nextIndex = (musicCurrentIndex + 1) % SONGS.length;
+    playMusicTrack(nextIndex);
   };
-}
-
-function musicTogglePlay() {
-  if (!musicAudio) {
-    if (SONGS.length > 0) {
-      playMusicTrack(0);
-    }
-    return;
-  }
-
-  if (musicIsPlaying) {
-    musicAudio.pause();
-    musicIsPlaying = false;
-  } else {
-    musicAudio.play();
-    musicIsPlaying = true;
-  }
-  updateMusicPlayButton();
-}
-
-function updateMusicPlayButton() {
-  const btn = document.getElementById('music-play-btn');
-  btn.innerHTML = musicIsPlaying ? '&#10074;&#10074;' : '&#9654;';
-}
-
-function musicPrev() {
-  playSE(SE.kati);
-  let newIndex = musicCurrentIndex - 1;
-  if (newIndex < 0) newIndex = SONGS.length - 1;
-  playMusicTrack(newIndex);
-}
-
-function musicNext() {
-  playSE(SE.kati);
-  let newIndex = musicCurrentIndex + 1;
-  if (newIndex >= SONGS.length) newIndex = 0;
-  playMusicTrack(newIndex);
-}
-
-function updateMusicProgress() {
-  if (!musicAudio) return;
-
-  const current = musicAudio.currentTime;
-  const duration = musicAudio.duration || 0;
-  const progress = duration > 0 ? (current / duration) * 100 : 0;
-
-  document.getElementById('music-progress').value = progress;
-  document.getElementById('music-current-time').textContent = formatTime(current);
-  document.getElementById('music-duration').textContent = formatTime(duration);
-}
-
-function formatTime(seconds) {
-  if (isNaN(seconds)) return '0:00';
-  const mins = Math.floor(seconds / 60);
-  const secs = Math.floor(seconds % 60);
-  return `${mins}:${secs.toString().padStart(2, '0')}`;
-}
-
-function seekMusic(value) {
-  if (!musicAudio) return;
-  const duration = musicAudio.duration || 0;
-  musicAudio.currentTime = (value / 100) * duration;
 }
 
 function stopMusicPlayer() {
@@ -2705,7 +2482,6 @@ function stopMusicPlayer() {
     musicAudio = null;
   }
   musicIsPlaying = false;
-  clearInterval(musicProgressInterval);
   // Restart title BGM
   playTitleBGM();
 }
