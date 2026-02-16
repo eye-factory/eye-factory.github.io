@@ -883,23 +883,24 @@ body {
 }
 .home-header-support {
   font-family: var(--font-en);
-  font-size: 12px;
-  padding: 8px 16px;
-  border: 1px solid var(--neon-secondary);
-  background: transparent;
-  color: var(--neon-secondary);
+  font-size: 13px;
+  padding: 6px 14px;
+  border: 1px solid rgba(0, 212, 255, 0.4);
+  background: rgba(0, 212, 255, 0.15);
+  color: var(--neon-primary);
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   text-decoration: none;
   display: flex;
   align-items: center;
   gap: 6px;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
 }
 .home-header-support:hover {
-  background: var(--neon-secondary);
-  color: #000;
-  box-shadow: 0 0 15px var(--neon-secondary);
+  background: rgba(0, 212, 255, 0.25);
+  border-color: rgba(0, 212, 255, 0.6);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.3);
 }
 
 /* Play screen */
@@ -1742,7 +1743,7 @@ body {
   }
   .home-header-support {
     font-size: 10px;
-    padding: 5px 10px;
+    padding: 4px 10px;
   }
 
   /* Title screen */
@@ -2169,7 +2170,7 @@ body {
       <span class="home-header-name">eye-factory</span>
     </a>
     <a id="support-link" href="https://ofuse.me/eyefactory" target="_blank" class="home-header-support">
-      <span id="support-text">Support</span>
+      🪙 <span id="support-text">Support</span>
     </a>
   </div>
 
