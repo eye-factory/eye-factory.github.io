@@ -383,8 +383,8 @@ body {
 /* Cyber transition overlay */
 #cyber-transition {
   --cyber-green: #00ff41;
+  --cyber-blue: #0066ff;
   --cyber-cyan: #00d4ff;
-  --cyber-emerald: #00ffa3;
   position: fixed;
   top: 0; left: 0;
   width: 100%; height: 100%;
@@ -410,21 +410,23 @@ body {
 #cyber-transition .letter {
   opacity: 0;
   position: relative;
-  background: linear-gradient(135deg, var(--cyber-green) 0%, var(--cyber-emerald) 50%, var(--cyber-cyan) 100%);
+  background: linear-gradient(90deg, var(--cyber-green), var(--cyber-cyan), var(--cyber-blue), var(--cyber-cyan), var(--cyber-green));
+  background-size: 300% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 0 10px var(--cyber-green)) drop-shadow(0 0 25px var(--cyber-cyan));
-  animation: letterRevealGreen 0.3s ease-out forwards;
+  animation: letterRevealGreen 0.3s ease-out forwards, textGradientFlow 2s linear infinite;
+  animation-delay: 0s, 0s;
 }
-#cyber-transition .letter:nth-child(1) { animation-delay: 0s; }
-#cyber-transition .letter:nth-child(2) { animation-delay: 0.08s; }
-#cyber-transition .letter:nth-child(3) { animation-delay: 0.16s; }
-#cyber-transition .letter:nth-child(4) { animation-delay: 0.24s; }
-#cyber-transition .letter:nth-child(5) { animation-delay: 0.32s; }
-#cyber-transition .letter:nth-child(6) { animation-delay: 0.40s; }
-#cyber-transition .letter:nth-child(7) { animation-delay: 0.48s; }
-#cyber-transition .letter:nth-child(8) { animation-delay: 0.56s; }
+#cyber-transition .letter:nth-child(1) { animation-delay: 0s, 0s; }
+#cyber-transition .letter:nth-child(2) { animation-delay: 0.08s, 0s; }
+#cyber-transition .letter:nth-child(3) { animation-delay: 0.16s, 0s; }
+#cyber-transition .letter:nth-child(4) { animation-delay: 0.24s, 0s; }
+#cyber-transition .letter:nth-child(5) { animation-delay: 0.32s, 0s; }
+#cyber-transition .letter:nth-child(6) { animation-delay: 0.40s, 0s; }
+#cyber-transition .letter:nth-child(7) { animation-delay: 0.48s, 0s; }
+#cyber-transition .letter:nth-child(8) { animation-delay: 0.56s, 0s; }
 #cyber-transition .loading-bar {
   width: 220px;
   height: 10px;
@@ -438,10 +440,11 @@ body {
 #cyber-transition .loading-bar-fill {
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, var(--cyber-green), var(--cyber-emerald), var(--cyber-cyan));
-  box-shadow: 0 0 15px var(--cyber-green), 0 0 30px var(--cyber-cyan);
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary), var(--neon-pink));
+  background-size: 300% 100%;
+  box-shadow: 0 0 15px var(--neon-primary), 0 0 30px var(--neon-pink);
   border-radius: 3px;
-  animation: loadingFillGreen 1.2s ease-out forwards;
+  animation: loadingFill 1.2s ease-out forwards, barGradientFlow 1s linear infinite;
 }
 @keyframes letterRevealGreen {
   0% {
@@ -457,9 +460,17 @@ body {
     filter: drop-shadow(0 0 10px var(--cyber-green)) drop-shadow(0 0 25px var(--cyber-cyan)) blur(0);
   }
 }
-@keyframes loadingFillGreen {
+@keyframes textGradientFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+@keyframes loadingFill {
   0% { width: 0%; }
   100% { width: 100%; }
+}
+@keyframes barGradientFlow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 @keyframes transitionFadeOut {
   0% { opacity: 1; }
