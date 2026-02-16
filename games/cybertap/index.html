@@ -3737,7 +3737,6 @@ function retryGame() {
   startGame(gameState.selectedDifficulty);
 }
 
-// Screenshot function for result screen
 // Screenshot counter for unique filenames
 let screenshotCounter = 0;
 
@@ -3749,24 +3748,19 @@ function takeScreenshot() {
   // Check if mobile portrait mode (rotated 90deg via CSS)
   const isRotated = window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
 
+  // Capture current screen state directly (no DOM modification)
   html2canvas(appWrapper, {
-    backgroundColor: '#0a0a12',
-    scale: 2,
+    backgroundColor: null,
+    scale: window.devicePixelRatio || 2,
     useCORS: true,
-    logging: false,
     allowTaint: true,
-    onclone: function(clonedDoc) {
-      // Ensure grade element is visible in the clone
-      const grade = clonedDoc.getElementById('result-grade');
-      if (grade) {
-        grade.style.opacity = '1';
-        grade.style.animation = 'none';
-      }
-    }
+    logging: false,
+    imageTimeout: 0,
+    removeContainer: true
   }).then(canvas => {
     let finalCanvas = canvas;
 
-    // If rotated, we need to rotate the image -90deg to get proper orientation
+    // If mobile rotated, rotate image -90deg to correct orientation
     if (isRotated) {
       finalCanvas = document.createElement('canvas');
       finalCanvas.width = canvas.height;
@@ -3777,7 +3771,7 @@ function takeScreenshot() {
       ctx.drawImage(canvas, 0, 0);
     }
 
-    // Create download link with unique filename
+    // Generate filename with numbering
     const link = document.createElement('a');
     const filename = screenshotCounter === 0
       ? 'cybertap_score.png'
