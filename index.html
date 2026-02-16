@@ -629,16 +629,19 @@ section {
 .product-card::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--neon-primary), var(--neon-purple), var(--neon-pink));
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple), var(--neon-pink), var(--neon-primary));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
   opacity: 0;
   transition: var(--transition);
 }
 .product-card:hover {
-  border-color: var(--border-hover);
+  border-color: transparent;
   box-shadow: 0 0 40px rgba(0, 212, 255, 0.15), inset 0 0 60px rgba(0, 212, 255, 0.03);
   transform: translateY(-5px);
 }
