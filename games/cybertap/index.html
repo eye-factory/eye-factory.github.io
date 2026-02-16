@@ -3614,23 +3614,29 @@ function initAudioContext() {
 }
 
 // Unlock all audio elements (required for mobile browsers)
+let audioUnlocked = false;
+
 function unlockAllAudio() {
-  // Unlock BGM
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+
+  // For titleBGM, we just start playing it directly
+  // playTitleBGM will be called right after, which is fine
   if (titleBGM) {
-    titleBGM.load();
-    titleBGM.play().then(() => {
-      titleBGM.pause();
-      titleBGM.currentTime = 0;
-    }).catch(() => {});
+    titleBGM.volume = getVolume();
+    titleBGM.play().catch(() => {});
   }
 
-  // Unlock all SE
+  // Unlock all SE with play/pause
   Object.values(SE).forEach(audio => {
-    audio.load();
+    audio.muted = true;
     audio.play().then(() => {
       audio.pause();
       audio.currentTime = 0;
-    }).catch(() => {});
+      audio.muted = false;
+    }).catch(() => {
+      audio.muted = false;
+    });
   });
 }
 
@@ -3663,7 +3669,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const handleTap = () => {
     // Initialize audio context (required for all browsers)
     initAudioContext();
-    // Unlock all audio elements for mobile browsers
+    // Unlock all audio and start title BGM
     unlockAllAudio();
     // Hide tap screen
     tapScreen.classList.remove('show');
@@ -3672,10 +3678,6 @@ document.addEventListener('DOMContentLoaded', () => {
     tapScreen.removeEventListener('touchstart', handleTap);
     // Go to title screen with animations
     titleScreen.classList.add('animate');
-    // Play BGM after a short delay to ensure unlock completes
-    setTimeout(() => {
-      playTitleBGM();
-    }, 100);
   };
 
   tapScreen.addEventListener('click', handleTap);
