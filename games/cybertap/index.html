@@ -380,6 +380,82 @@ body {
   50% { opacity: 0.8; transform: scale(1.05); }
 }
 
+/* Cyber transition overlay */
+#cyber-transition {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: var(--bg);
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+#cyber-transition.active {
+  display: flex;
+  animation: cyberTransitionIn 1.5s ease-out forwards;
+}
+#cyber-transition .glitch-lines {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 212, 255, 0.03) 2px,
+    rgba(0, 212, 255, 0.03) 4px
+  );
+  animation: scanMove 0.1s linear infinite;
+}
+#cyber-transition .glitch-text {
+  font-family: var(--font-en);
+  font-size: clamp(24px, 6vw, 48px);
+  font-weight: 900;
+  color: var(--neon-primary);
+  text-shadow: 0 0 20px var(--neon-primary);
+  animation: glitchText 0.15s infinite;
+  z-index: 1;
+}
+#cyber-transition .loading-bar {
+  width: 200px;
+  height: 4px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  margin-top: 30px;
+  overflow: hidden;
+  z-index: 1;
+}
+#cyber-transition .loading-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-pink));
+  box-shadow: 0 0 10px var(--neon-primary);
+  animation: loadingFill 1.2s ease-out forwards;
+}
+@keyframes cyberTransitionIn {
+  0% { opacity: 1; }
+  80% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+@keyframes scanMove {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+@keyframes glitchText {
+  0%, 100% { transform: translate(0); text-shadow: 0 0 20px var(--neon-primary); }
+  20% { transform: translate(-2px, 1px); text-shadow: 2px 0 var(--neon-pink), -2px 0 var(--neon-primary); }
+  40% { transform: translate(2px, -1px); text-shadow: -2px 0 var(--neon-pink), 2px 0 var(--neon-primary); }
+  60% { transform: translate(-1px, 2px); text-shadow: 1px 0 var(--neon-pink), -1px 0 var(--neon-primary); }
+  80% { transform: translate(1px, -2px); text-shadow: -1px 0 var(--neon-pink), 1px 0 var(--neon-primary); }
+}
+@keyframes loadingFill {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+
 /* Buttons */
 .btn {
   font-family: var(--font-en);
@@ -2008,6 +2084,13 @@ body {
   <div class="tap-hint">タップして開始</div>
 </div>
 
+<!-- Cyber transition overlay -->
+<div id="cyber-transition">
+  <div class="glitch-lines"></div>
+  <div class="glitch-text">INITIALIZING</div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+</div>
+
 <!-- Download popup notification -->
 <div id="download-popup" class="download-popup">
   <div class="download-popup-icon">&#8595;</div>
@@ -3594,50 +3677,67 @@ function isMobileDevice() {
          (navigator.maxTouchPoints > 0);
 }
 
+// Global audio context
+let globalAudioContext = null;
+
 // Initialize audio context (required for mobile)
 function initAudioContext() {
-  // Create a silent audio context to unlock audio on mobile
+  // Create audio context and resume it synchronously
   const AudioContext = window.AudioContext || window.webkitAudioContext;
-  if (AudioContext) {
-    const ctx = new AudioContext();
-    // Create a short silent buffer and play it
-    const buffer = ctx.createBuffer(1, 1, 22050);
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
-    source.connect(ctx.destination);
-    source.start(0);
-    // Resume context if suspended
-    if (ctx.state === 'suspended') {
-      ctx.resume();
-    }
+  if (AudioContext && !globalAudioContext) {
+    globalAudioContext = new AudioContext();
+  }
+  if (globalAudioContext && globalAudioContext.state === 'suspended') {
+    globalAudioContext.resume();
+  }
+  // Also create and play a silent buffer to fully unlock
+  if (globalAudioContext) {
+    try {
+      const buffer = globalAudioContext.createBuffer(1, 1, 22050);
+      const source = globalAudioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(globalAudioContext.destination);
+      source.start(0);
+    } catch(e) {}
   }
 }
 
-// Unlock all audio elements (required for mobile browsers)
+// Unlock all audio elements (required for mobile browsers, especially X app WebView)
 let audioUnlocked = false;
 
 function unlockAllAudio() {
   if (audioUnlocked) return;
   audioUnlocked = true;
 
-  // For titleBGM, we just start playing it directly
-  // playTitleBGM will be called right after, which is fine
+  // Synchronously touch all audio elements during user gesture
+  // This is critical for X (Twitter) app in-app browser
+
+  // Unlock titleBGM
   if (titleBGM) {
-    titleBGM.volume = getVolume();
+    titleBGM.volume = 0;
     titleBGM.play().catch(() => {});
+    titleBGM.pause();
+    titleBGM.currentTime = 0;
+    titleBGM.volume = getVolume();
   }
 
-  // Unlock all SE with play/pause
+  // Unlock all SE synchronously
   Object.values(SE).forEach(audio => {
-    audio.muted = true;
-    audio.play().then(() => {
-      audio.pause();
-      audio.currentTime = 0;
-      audio.muted = false;
-    }).catch(() => {
-      audio.muted = false;
-    });
+    audio.volume = 0;
+    audio.play().catch(() => {});
+    audio.pause();
+    audio.currentTime = 0;
+    audio.volume = getVolume();
   });
+}
+
+// Start title BGM after transition
+function startTitleBGMDelayed() {
+  if (titleBGM) {
+    titleBGM.volume = getVolume();
+    titleBGM.currentTime = 0;
+    titleBGM.play().catch(() => {});
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -3667,17 +3767,36 @@ document.addEventListener('DOMContentLoaded', () => {
   tapScreen.classList.add('show');
 
   const handleTap = () => {
-    // Initialize audio context (required for all browsers)
+    // Initialize audio context synchronously (required for all browsers)
     initAudioContext();
-    // Unlock all audio and start title BGM
+    // Unlock all audio synchronously during user gesture (critical for X app browser)
     unlockAllAudio();
-    // Hide tap screen
-    tapScreen.classList.remove('show');
-    // Remove listeners
+
+    // Remove listeners immediately
     tapScreen.removeEventListener('click', handleTap);
     tapScreen.removeEventListener('touchstart', handleTap);
-    // Go to title screen with animations
-    titleScreen.classList.add('animate');
+
+    // Hide tap screen
+    tapScreen.classList.remove('show');
+
+    // Show cyber transition
+    const cyberTransition = document.getElementById('cyber-transition');
+    cyberTransition.classList.add('active');
+
+    // Start BGM after a short delay (after unlock takes effect)
+    setTimeout(() => {
+      startTitleBGMDelayed();
+    }, 200);
+
+    // Start title screen animations after transition
+    setTimeout(() => {
+      titleScreen.classList.add('animate');
+    }, 800);
+
+    // Remove transition overlay after animation completes
+    setTimeout(() => {
+      cyberTransition.classList.remove('active');
+    }, 1600);
   };
 
   tapScreen.addEventListener('click', handleTap);
