@@ -658,6 +658,15 @@ body {
   font-size: 12px;
   color: var(--text-sub);
 }
+.music-item-time {
+  font-family: var(--font-en);
+  font-size: 11px;
+  color: var(--neon-pink);
+  margin-top: 4px;
+}
+.music-current-time {
+  color: var(--neon-primary);
+}
 .music-download-btn {
   font-family: var(--font-en);
   font-size: 10px;
@@ -1747,6 +1756,10 @@ body {
   .music-item-artist {
     font-size: 9px;
   }
+  .music-item-time {
+    font-size: 8px;
+    margin-top: 2px;
+  }
   .music-download-btn {
     font-size: 8px;
     padding: 4px 8px;
@@ -2630,6 +2643,7 @@ function doScreenSwitch(screenId) {
 let musicAudio = null;
 let musicCurrentIndex = 0;
 let musicIsPlaying = false;
+let musicTimeInterval = null;
 
 function showMusicScreen() {
   showScreen('music-screen');
@@ -2658,6 +2672,10 @@ function renderMusicList() {
       <div class="music-item-info">
         <div class="music-item-title">${song.title}</div>
         <div class="music-item-artist">${song.artist}</div>
+        <div class="music-item-time">
+          <span class="music-current-time" id="music-time-${index}"></span>
+          <span class="music-duration">${formatDuration(song.duration)}</span>
+        </div>
       </div>
       <a class="music-download-btn" href="${song.audioFile}" download="${song.audioFile}" onclick="event.stopPropagation(); showDownloadPopup()">Download</a>
     `;
@@ -2671,6 +2689,17 @@ function playMusicTrack(index) {
   if (titleBGM) {
     titleBGM.pause();
   }
+
+  // Clear previous time interval
+  if (musicTimeInterval) {
+    clearInterval(musicTimeInterval);
+    musicTimeInterval = null;
+  }
+
+  // Clear all time displays
+  document.querySelectorAll('.music-current-time').forEach(el => {
+    el.textContent = '';
+  });
 
   musicCurrentIndex = index;
   const song = SONGS[index];
@@ -2692,6 +2721,10 @@ function playMusicTrack(index) {
   musicAudio.play().catch(e => console.log('Audio play failed:', e));
   musicIsPlaying = true;
 
+  // Start updating current time display
+  updateMusicTimeDisplay();
+  musicTimeInterval = setInterval(updateMusicTimeDisplay, 500);
+
   // Auto-play next song when finished
   musicAudio.onended = () => {
     const nextIndex = (musicCurrentIndex + 1) % SONGS.length;
@@ -2699,7 +2732,20 @@ function playMusicTrack(index) {
   };
 }
 
+function updateMusicTimeDisplay() {
+  if (!musicAudio) return;
+  const timeEl = document.getElementById(`music-time-${musicCurrentIndex}`);
+  if (timeEl) {
+    const current = Math.floor(musicAudio.currentTime);
+    timeEl.textContent = formatDuration(current) + ' / ';
+  }
+}
+
 function stopMusicPlayer() {
+  if (musicTimeInterval) {
+    clearInterval(musicTimeInterval);
+    musicTimeInterval = null;
+  }
   if (musicAudio) {
     musicAudio.pause();
     musicAudio = null;
