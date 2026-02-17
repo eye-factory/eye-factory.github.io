@@ -862,6 +862,74 @@ body {
   color: #000;
 }
 
+/* Song/Music tabs */
+.screen-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 10px;
+}
+.screen-tab {
+  font-family: var(--font-en);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 24px;
+  background: transparent;
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.screen-tab:first-child {
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+}
+.screen-tab:last-child {
+  border-radius: 0 8px 8px 0;
+}
+.screen-tab:hover {
+  color: var(--neon-primary);
+  border-color: rgba(0, 212, 255, 0.5);
+}
+.screen-tab.active {
+  background: rgba(0, 212, 255, 0.15);
+  border-color: var(--neon-primary);
+  color: var(--neon-primary);
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+.screen-tab.my-songs {
+  border-color: rgba(127, 255, 0, 0.3);
+}
+.screen-tab.my-songs:hover {
+  color: #7fff00;
+  border-color: rgba(127, 255, 0, 0.5);
+}
+.screen-tab.my-songs.active {
+  background: rgba(127, 255, 0, 0.15);
+  border-color: #7fff00;
+  color: #7fff00;
+  text-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
+}
+.tab-content {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+}
+.tab-content.active {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  align-content: start;
+}
+.no-songs-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--text-sub);
+  padding: 40px;
+  font-size: 14px;
+}
+
 /* Music screen */
 #music-screen {
   flex-direction: column;
@@ -2424,14 +2492,24 @@ body {
   <div id="song-select" class="screen">
     <button class="back-btn" onclick="playSE(SE.kati); showScreen('title-screen')">Back</button>
     <h2 class="section-title">Select Song</h2>
-    <div class="song-list" id="song-list"></div>
+    <div class="screen-tabs">
+      <button class="screen-tab active" onclick="switchSongTab('original')">Original</button>
+      <button class="screen-tab my-songs" onclick="switchSongTab('custom')">My Songs</button>
+    </div>
+    <div class="song-list tab-content active" id="song-list-original"></div>
+    <div class="song-list tab-content" id="song-list-custom"></div>
   </div>
 
   <!-- Music Screen -->
   <div id="music-screen" class="screen">
     <button class="back-btn" onclick="playSE(SE.kati); stopMusicPlayer(); showScreen('title-screen')">Back</button>
     <h2 class="section-title">Music Player & Free Download</h2>
-    <div class="music-list" id="music-list"></div>
+    <div class="screen-tabs">
+      <button class="screen-tab active" onclick="switchMusicTab('original')">Original</button>
+      <button class="screen-tab my-songs" onclick="switchMusicTab('custom')">My Songs</button>
+    </div>
+    <div class="music-list tab-content active" id="music-list-original"></div>
+    <div class="music-list tab-content" id="music-list-custom"></div>
   </div>
 
   <!-- Create Screen -->
@@ -3166,10 +3244,10 @@ function showMusicScreen() {
 }
 
 function renderMusicList() {
-  const container = document.getElementById('music-list');
-  container.innerHTML = '';
+  // Render original songs
+  const originalContainer = document.getElementById('music-list-original');
+  originalContainer.innerHTML = '';
 
-  // Built-in songs
   SONGS.forEach((song, index) => {
     const item = document.createElement('div');
     item.className = 'music-item';
@@ -3194,16 +3272,14 @@ function renderMusicList() {
       <button class="music-download-btn" onclick="event.stopPropagation(); downloadMusic('${song.audioFile}')">Download</button>
     `;
     item.onclick = () => playMusicTrack(index);
-    container.appendChild(item);
+    originalContainer.appendChild(item);
   });
 
-  // Custom songs section
-  if (customSongs.length > 0) {
-    const sectionTitle = document.createElement('div');
-    sectionTitle.className = 'music-section-title';
-    sectionTitle.textContent = 'My Songs';
-    container.appendChild(sectionTitle);
+  // Render custom songs
+  const customContainer = document.getElementById('music-list-custom');
+  customContainer.innerHTML = '';
 
+  if (customSongs.length > 0) {
     customSongs.forEach((song, index) => {
       const customIndex = SONGS.length + index;
       const item = document.createElement('div');
@@ -3229,8 +3305,29 @@ function renderMusicList() {
         <button class="music-delete-btn" onclick="event.stopPropagation(); deleteCustomSongConfirm('${song.id}')">Delete</button>
       `;
       item.onclick = () => playCustomMusicTrack(index);
-      container.appendChild(item);
+      customContainer.appendChild(item);
     });
+  } else {
+    customContainer.innerHTML = '<div class="no-songs-message">No custom songs yet.<br>Use CREATE to add your own songs!</div>';
+  }
+}
+
+function switchMusicTab(tab) {
+  playSE(SE.kati);
+  const tabs = document.querySelectorAll('#music-screen .screen-tab');
+  const originalContent = document.getElementById('music-list-original');
+  const customContent = document.getElementById('music-list-custom');
+
+  tabs.forEach(t => t.classList.remove('active'));
+  originalContent.classList.remove('active');
+  customContent.classList.remove('active');
+
+  if (tab === 'original') {
+    tabs[0].classList.add('active');
+    originalContent.classList.add('active');
+  } else {
+    tabs[1].classList.add('active');
+    customContent.classList.add('active');
   }
 }
 
@@ -3356,10 +3453,10 @@ function formatDuration(seconds) {
 }
 
 function renderSongList() {
-  const container = document.getElementById('song-list');
-  container.innerHTML = '';
+  // Render original songs
+  const originalContainer = document.getElementById('song-list-original');
+  originalContainer.innerHTML = '';
 
-  // Built-in songs
   SONGS.forEach(song => {
     const item = document.createElement('div');
     item.className = 'song-item';
@@ -3372,30 +3469,49 @@ function renderSongList() {
       ${formatBestScoreHTML(bestScore, bestRank)}
     `;
     item.onclick = () => selectSong(song);
-    container.appendChild(item);
+    originalContainer.appendChild(item);
   });
 
-  // Custom songs
-  if (customSongs.length > 0) {
-    const sectionTitle = document.createElement('div');
-    sectionTitle.className = 'music-section-title';
-    sectionTitle.textContent = 'My Songs';
-    container.appendChild(sectionTitle);
+  // Render custom songs
+  const customContainer = document.getElementById('song-list-custom');
+  customContainer.innerHTML = '';
 
+  if (customSongs.length > 0) {
     customSongs.forEach(song => {
       const item = document.createElement('div');
       item.className = 'song-item custom';
       const bestScore = getBestScore(song.id);
       const bestRank = getBestRank(song.id);
       item.innerHTML = `
-        <div class="song-title">${song.title}<span class="custom-badge">Custom</span></div>
+        <div class="song-title">${song.title}</div>
         <div class="song-artist">${song.artist}</div>
         <div class="song-bpm">${formatDuration(song.duration)}</div>
         ${formatBestScoreHTML(bestScore, bestRank)}
       `;
       item.onclick = () => selectCustomSong(song);
-      container.appendChild(item);
+      customContainer.appendChild(item);
     });
+  } else {
+    customContainer.innerHTML = '<div class="no-songs-message">No custom songs yet.<br>Use CREATE to add your own songs!</div>';
+  }
+}
+
+function switchSongTab(tab) {
+  playSE(SE.kati);
+  const tabs = document.querySelectorAll('#song-select .screen-tab');
+  const originalContent = document.getElementById('song-list-original');
+  const customContent = document.getElementById('song-list-custom');
+
+  tabs.forEach(t => t.classList.remove('active'));
+  originalContent.classList.remove('active');
+  customContent.classList.remove('active');
+
+  if (tab === 'original') {
+    tabs[0].classList.add('active');
+    originalContent.classList.add('active');
+  } else {
+    tabs[1].classList.add('active');
+    customContent.classList.add('active');
   }
 }
 
