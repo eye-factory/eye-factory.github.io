@@ -3921,138 +3921,91 @@ function takeScreenshot() {
   // Check if mobile portrait mode
   const isMobile = window.matchMedia('(orientation: portrait) and (max-width: 900px)').matches;
 
-  let finalCanvas;
-
   if (isMobile) {
-    // Mobile: Generate vertical result image
-    finalCanvas = generateMobileResultImage();
-    downloadScreenshot(finalCanvas);
+    // Mobile: Generate vertical result image in background and auto-save
+    const canvas = generateMobileResultImage();
+    downloadScreenshot(canvas);
   } else {
-    // PC: Use html2canvas to capture game screen
+    // PC: Use html2canvas with onclone to properly capture all elements
     const appWrapper = document.getElementById('app-wrapper');
     const gradeElement = document.getElementById('result-grade');
-    const scoreElement = document.getElementById('result-score');
-    const bonusElement = document.getElementById('result-bonus');
 
-    // Store original grade styles
-    let originalGradeStyles = null;
+    // Get grade color info before capture
+    let gradeColor = '#00ffff';
+    let glowColor = '#00d4ff';
     if (gradeElement) {
-      originalGradeStyles = {
-        background: gradeElement.style.background,
-        webkitBackgroundClip: gradeElement.style.webkitBackgroundClip,
-        backgroundClip: gradeElement.style.backgroundClip,
-        webkitTextFillColor: gradeElement.style.webkitTextFillColor,
-        color: gradeElement.style.color,
-        filter: gradeElement.style.filter,
-        opacity: gradeElement.style.opacity,
-        animation: gradeElement.style.animation,
-        transform: gradeElement.style.transform,
-        textShadow: gradeElement.style.textShadow
-      };
-
-      // Get bright grade color and glow color
-      let gradeColor = '#00ffff'; // bright cyan
-      let glowColor = '#00d4ff';
       if (gradeElement.classList.contains('grade-god')) {
-        gradeColor = '#ff66ff'; // bright magenta
+        gradeColor = '#ff66ff';
         glowColor = '#ff00ff';
       } else if (gradeElement.classList.contains('grade-ss')) {
-        gradeColor = '#ffee00'; // bright gold
+        gradeColor = '#ffee00';
         glowColor = '#ffdd00';
       } else if (gradeElement.classList.contains('grade-s')) {
-        gradeColor = '#00ff88'; // bright green
+        gradeColor = '#00ff88';
         glowColor = '#00ff88';
       } else if (gradeElement.classList.contains('grade-a')) {
-        gradeColor = '#00ffff'; // bright cyan
+        gradeColor = '#00ffff';
         glowColor = '#00d4ff';
       } else if (gradeElement.classList.contains('grade-b')) {
-        gradeColor = '#ffff00'; // bright yellow
+        gradeColor = '#ffff00';
         glowColor = '#ffff00';
       } else if (gradeElement.classList.contains('grade-c')) {
-        gradeColor = '#ff6688'; // bright pink
+        gradeColor = '#ff6688';
         glowColor = '#ff0066';
       } else if (gradeElement.classList.contains('grade-d')) {
         gradeColor = '#aaaaaa';
         glowColor = '#888888';
       }
-
-      // Make grade capturable with bright colors
-      gradeElement.style.background = 'none';
-      gradeElement.style.webkitBackgroundClip = 'unset';
-      gradeElement.style.backgroundClip = 'unset';
-      gradeElement.style.webkitTextFillColor = gradeColor;
-      gradeElement.style.color = gradeColor;
-      gradeElement.style.filter = 'none';
-      gradeElement.style.opacity = '1';
-      gradeElement.style.animation = 'none';
-      gradeElement.style.transform = 'none';
-      gradeElement.style.textShadow = `0 0 20px ${glowColor}, 0 0 40px ${glowColor}, 0 0 60px ${glowColor}, 0 0 80px ${gradeColor}`;
     }
 
-    // Store and fix score element styles
-    let originalScoreStyles = null;
-    if (scoreElement) {
-      originalScoreStyles = {
-        opacity: scoreElement.style.opacity,
-        animation: scoreElement.style.animation,
-        transform: scoreElement.style.transform
-      };
-      scoreElement.style.opacity = '1';
-      scoreElement.style.animation = 'none';
-      scoreElement.style.transform = 'none';
-    }
+    html2canvas(appWrapper, {
+      backgroundColor: '#0a0a12',
+      scale: window.devicePixelRatio || 2,
+      useCORS: true,
+      allowTaint: true,
+      logging: false,
+      onclone: function(clonedDoc) {
+        // Fix grade element in cloned document
+        const clonedGrade = clonedDoc.getElementById('result-grade');
+        if (clonedGrade) {
+          clonedGrade.style.cssText = `
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+            -webkit-text-fill-color: ${gradeColor} !important;
+            color: ${gradeColor} !important;
+            filter: none !important;
+            opacity: 1 !important;
+            animation: none !important;
+            transform: none !important;
+            text-shadow: 0 0 20px ${glowColor}, 0 0 40px ${glowColor}, 0 0 60px ${glowColor}, 0 0 80px ${gradeColor} !important;
+          `;
+        }
 
-    // Store and fix bonus element styles
-    let originalBonusStyles = null;
-    if (bonusElement) {
-      originalBonusStyles = {
-        opacity: bonusElement.style.opacity,
-        animation: bonusElement.style.animation
-      };
-      bonusElement.style.opacity = '1';
-      bonusElement.style.animation = 'none';
-    }
+        // Fix score element in cloned document
+        const clonedScore = clonedDoc.getElementById('result-score');
+        if (clonedScore) {
+          clonedScore.style.cssText = 'opacity: 1 !important; animation: none !important; transform: none !important;';
+        }
 
-    setTimeout(() => {
-      html2canvas(appWrapper, {
-        backgroundColor: '#0a0a12',
-        scale: window.devicePixelRatio || 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false
-      }).then(canvas => {
-        // Restore all styles
-        restoreScreenshotStyles(gradeElement, originalGradeStyles, scoreElement, originalScoreStyles, bonusElement, originalBonusStyles);
-        downloadScreenshot(canvas);
-      }).catch(err => {
-        console.error('Screenshot failed:', err);
-        restoreScreenshotStyles(gradeElement, originalGradeStyles, scoreElement, originalScoreStyles, bonusElement, originalBonusStyles);
-      });
-    }, 50);
-  }
-}
+        // Fix bonus element in cloned document
+        const clonedBonus = clonedDoc.getElementById('result-bonus');
+        if (clonedBonus) {
+          clonedBonus.style.cssText = 'opacity: 1 !important; animation: none !important;';
+        }
 
-function restoreScreenshotStyles(gradeElement, originalGradeStyles, scoreElement, originalScoreStyles, bonusElement, originalBonusStyles) {
-  if (gradeElement && originalGradeStyles) {
-    gradeElement.style.background = originalGradeStyles.background;
-    gradeElement.style.webkitBackgroundClip = originalGradeStyles.webkitBackgroundClip;
-    gradeElement.style.backgroundClip = originalGradeStyles.backgroundClip;
-    gradeElement.style.webkitTextFillColor = originalGradeStyles.webkitTextFillColor;
-    gradeElement.style.color = originalGradeStyles.color;
-    gradeElement.style.filter = originalGradeStyles.filter;
-    gradeElement.style.opacity = originalGradeStyles.opacity;
-    gradeElement.style.animation = originalGradeStyles.animation;
-    gradeElement.style.transform = originalGradeStyles.transform;
-    gradeElement.style.textShadow = originalGradeStyles.textShadow;
-  }
-  if (scoreElement && originalScoreStyles) {
-    scoreElement.style.opacity = originalScoreStyles.opacity;
-    scoreElement.style.animation = originalScoreStyles.animation;
-    scoreElement.style.transform = originalScoreStyles.transform;
-  }
-  if (bonusElement && originalBonusStyles) {
-    bonusElement.style.opacity = originalBonusStyles.opacity;
-    bonusElement.style.animation = originalBonusStyles.animation;
+        // Fix all result row values that might have animations
+        const resultRows = clonedDoc.querySelectorAll('.result-row .value');
+        resultRows.forEach(el => {
+          el.style.opacity = '1';
+          el.style.animation = 'none';
+        });
+      }
+    }).then(canvas => {
+      downloadScreenshot(canvas);
+    }).catch(err => {
+      console.error('Screenshot failed:', err);
+    });
   }
 }
 
@@ -4062,27 +4015,45 @@ function downloadScreenshot(canvas) {
     : `cybertap_score(${screenshotCounter}).png`;
   screenshotCounter++;
 
-  const dataUrl = canvas.toDataURL('image/png');
-  const link = document.createElement('a');
-  link.download = filename;
-  link.href = dataUrl;
-
-  // Check if download attribute is supported
-  const isDownloadSupported = 'download' in link &&
-    !(/X|Twitter/i.test(navigator.userAgent) && /Mobile/i.test(navigator.userAgent));
-
-  if (isDownloadSupported) {
-    link.click();
-  } else {
-    // Fallback: open image in new tab
-    const newTab = window.open();
-    if (newTab) {
-      newTab.document.write('<html><head><title>' + filename + '</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;"><img src="' + dataUrl + '" style="max-width:100%;max-height:100vh;"></body></html>');
-      newTab.document.close();
-    } else {
-      window.open(dataUrl, '_blank');
+  // Convert canvas to blob for better mobile support
+  canvas.toBlob(function(blob) {
+    if (!blob) {
+      console.error('Failed to create blob from canvas');
+      return;
     }
-  }
+
+    const blobUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = blobUrl;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+
+    // Check if X/Twitter in-app browser (doesn't support download attribute)
+    const isInAppBrowser = /X|Twitter/i.test(navigator.userAgent) && /Mobile/i.test(navigator.userAgent);
+
+    if (!isInAppBrowser) {
+      // Trigger download
+      link.click();
+      // Cleanup after download
+      setTimeout(function() {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+      }, 100);
+    } else {
+      // Fallback for X/Twitter in-app browser: open image in new tab
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+      const dataUrl = canvas.toDataURL('image/png');
+      const newTab = window.open();
+      if (newTab) {
+        newTab.document.write('<html><head><title>' + filename + '</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;"><img src="' + dataUrl + '" style="max-width:100%;max-height:100vh;"></body></html>');
+        newTab.document.close();
+      } else {
+        window.open(dataUrl, '_blank');
+      }
+    }
+  }, 'image/png');
 }
 
 // ============================================================
