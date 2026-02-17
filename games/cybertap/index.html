@@ -3923,8 +3923,202 @@ function takeScreenshot() {
 
   if (isMobile) {
     // Mobile: Generate vertical result image in background and auto-save
-    const canvas = generateMobileResultImage();
-    downloadScreenshot(canvas);
+    // 1. Create hidden canvas
+    const canvas = document.createElement('canvas');
+    canvas.style.display = 'none';
+    canvas.width = 540;
+    canvas.height = 960;
+    document.body.appendChild(canvas);
+
+    // 2. Draw result image on canvas
+    const ctx = canvas.getContext('2d');
+    const gradeElement = document.getElementById('result-grade');
+    const grade = gradeElement.textContent;
+    const score = document.getElementById('result-score').textContent;
+    const bonus = document.getElementById('result-bonus').textContent;
+    const combo = document.getElementById('result-combo').textContent;
+    const perfect = document.getElementById('result-perfect').textContent;
+    const great = document.getElementById('result-great').textContent;
+    const good = document.getElementById('result-good').textContent;
+    const miss = document.getElementById('result-miss').textContent;
+    const songName = gameState.selectedSong ? gameState.selectedSong.title : 'Unknown';
+    const difficulty = gameState.selectedDifficulty || 'normal';
+    const displayDifficulty = difficulty === 'veryhard' ? 'VERY HARD' : difficulty.toUpperCase();
+
+    // Get grade color
+    let gradeColor = '#00d4ff';
+    if (gradeElement.classList.contains('grade-god')) gradeColor = '#ff00ff';
+    else if (gradeElement.classList.contains('grade-ss')) gradeColor = '#ffdd00';
+    else if (gradeElement.classList.contains('grade-s')) gradeColor = '#00ff88';
+    else if (gradeElement.classList.contains('grade-a')) gradeColor = '#00d4ff';
+    else if (gradeElement.classList.contains('grade-b')) gradeColor = '#ffff00';
+    else if (gradeElement.classList.contains('grade-c')) gradeColor = '#ff0066';
+    else if (gradeElement.classList.contains('grade-d')) gradeColor = '#888888';
+
+    const width = 540;
+    const height = 960;
+
+    // Background
+    ctx.fillStyle = '#0a0a12';
+    ctx.fillRect(0, 0, width, height);
+
+    // Scanlines effect
+    ctx.strokeStyle = 'rgba(0, 212, 255, 0.03)';
+    for (let i = 0; i < height; i += 4) {
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(width, i);
+      ctx.stroke();
+    }
+
+    // CyberTap title
+    ctx.font = 'bold 48px "Orbitron", sans-serif';
+    ctx.fillStyle = '#00d4ff';
+    ctx.textAlign = 'center';
+    ctx.shadowColor = '#00d4ff';
+    ctx.shadowBlur = 20;
+    ctx.fillText('CyberTap', width / 2, 80);
+
+    // Song name
+    ctx.font = 'bold 28px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = '#ff0066';
+    ctx.shadowBlur = 10;
+    ctx.fillText(songName, width / 2, 140);
+
+    // Difficulty
+    ctx.font = 'bold 20px "Orbitron", sans-serif';
+    ctx.fillStyle = difficulty === 'veryhard' ? '#ff0066' : difficulty === 'hard' ? '#ffaa00' : '#00d4ff';
+    ctx.shadowBlur = 8;
+    ctx.fillText(displayDifficulty, width / 2, 175);
+
+    // Rank label
+    ctx.font = 'bold 24px "Orbitron", sans-serif';
+    ctx.fillStyle = '#00d4ff';
+    ctx.shadowColor = '#00d4ff';
+    ctx.shadowBlur = 10;
+    ctx.fillText('RANK', width / 2, 240);
+
+    // Grade (large)
+    ctx.font = 'bold 160px "Orbitron", sans-serif';
+    ctx.fillStyle = gradeColor;
+    ctx.shadowColor = gradeColor;
+    ctx.shadowBlur = 60;
+    ctx.fillText(grade, width / 2, 400);
+
+    // Reset shadow for stats
+    ctx.shadowBlur = 0;
+
+    // Stats box
+    const boxX = 40;
+    const boxY = 460;
+    const boxW = width - 80;
+    const boxH = 380;
+
+    ctx.fillStyle = 'rgba(0, 20, 40, 0.8)';
+    ctx.strokeStyle = 'rgba(0, 212, 255, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.roundRect(boxX, boxY, boxW, boxH, 16);
+    ctx.fill();
+    ctx.stroke();
+
+    // Stats content
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 22px sans-serif';
+    const labelX = boxX + 30;
+    const valueX = boxX + boxW - 30;
+    let y = boxY + 50;
+    const lineHeight = 52;
+
+    // Score
+    ctx.fillStyle = '#888888';
+    ctx.fillText('Score', labelX, y);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#00d4ff';
+    ctx.font = 'bold 28px "Orbitron", sans-serif';
+    ctx.fillText(score + (bonus ? ' ' + bonus : ''), valueX, y);
+
+    y += lineHeight;
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillStyle = '#888888';
+    ctx.fillText('Max Combo', labelX, y);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 26px "Orbitron", sans-serif';
+    ctx.fillText(combo, valueX, y);
+
+    y += lineHeight;
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillStyle = '#888888';
+    ctx.fillText('Perfect', labelX, y);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#00ff88';
+    ctx.font = 'bold 26px "Orbitron", sans-serif';
+    ctx.fillText(perfect, valueX, y);
+
+    y += lineHeight;
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillStyle = '#888888';
+    ctx.fillText('Great', labelX, y);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#00d4ff';
+    ctx.font = 'bold 26px "Orbitron", sans-serif';
+    ctx.fillText(great, valueX, y);
+
+    y += lineHeight;
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillStyle = '#888888';
+    ctx.fillText('Good', labelX, y);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#ffff00';
+    ctx.font = 'bold 26px "Orbitron", sans-serif';
+    ctx.fillText(good, valueX, y);
+
+    y += lineHeight;
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillStyle = '#888888';
+    ctx.fillText('Miss', labelX, y);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#ff0066';
+    ctx.font = 'bold 26px "Orbitron", sans-serif';
+    ctx.fillText(miss, valueX, y);
+
+    // Footer
+    ctx.textAlign = 'center';
+    ctx.font = '16px sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.fillText('eye-factory.net', width / 2, height - 30);
+
+    // 3. Generate PNG data URL
+    const dataUrl = canvas.toDataURL('image/png');
+
+    // 4. Create hidden link with download attribute
+    const filename = screenshotCounter === 0
+      ? 'cybertap_score.png'
+      : `cybertap_score(${screenshotCounter}).png`;
+    screenshotCounter++;
+
+    const link = document.createElement('a');
+    link.style.display = 'none';
+    link.download = filename;
+    link.href = dataUrl;
+    document.body.appendChild(link);
+
+    // 5. Click link (auto download)
+    link.click();
+
+    // 6. Remove canvas and link from DOM
+    document.body.removeChild(canvas);
+    document.body.removeChild(link);
+
+    // 7. Result screen unchanged - nothing else to do
+
   } else {
     // PC: Use html2canvas with onclone to properly capture all elements
     const appWrapper = document.getElementById('app-wrapper');
