@@ -4619,23 +4619,42 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function resumeAudio() {
+    // Resume AudioContext first (required for mobile)
+    if (globalAudioContext && globalAudioContext.state === 'suspended') {
+      globalAudioContext.resume();
+    }
+
     const screen = gameState.currentScreen;
+
+    // Helper function to play audio with retry for mobile
+    function playWithRetry(audio) {
+      if (!audio) return;
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          // Retry after a short delay (mobile may need this)
+          setTimeout(() => {
+            audio.play().catch(() => {});
+          }, 100);
+        });
+      }
+    }
 
     if (screen === 'title-screen' || screen === 'song-select' || screen === 'difficulty-select') {
       if (audioStateBeforeHidden.titleBGM && titleBGM) {
-        titleBGM.play().catch(() => {});
+        playWithRetry(titleBGM);
       }
     } else if (screen === 'play-screen' && gameState.isPlaying) {
       if (audioStateBeforeHidden.gameBGM && gameBGM) {
-        gameBGM.play().catch(() => {});
+        playWithRetry(gameBGM);
       }
     } else if (screen === 'music-screen') {
       if (audioStateBeforeHidden.musicAudio && musicAudio) {
-        musicAudio.play().catch(() => {});
+        playWithRetry(musicAudio);
       }
     } else if (screen === 'result-screen') {
       if (audioStateBeforeHidden.resultBGM && resultBGM) {
-        resultBGM.play().catch(() => {});
+        playWithRetry(resultBGM);
       }
     }
 
