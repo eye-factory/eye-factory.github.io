@@ -4443,7 +4443,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let audioStateBeforeHidden = {
     titleBGM: false,
     gameBGM: false,
-    musicAudio: false
+    musicAudio: false,
+    resultBGM: false
   };
 
   document.addEventListener('visibilitychange', () => {
@@ -4452,10 +4453,12 @@ document.addEventListener('DOMContentLoaded', () => {
       audioStateBeforeHidden.titleBGM = titleBGM && !titleBGM.paused;
       audioStateBeforeHidden.gameBGM = gameBGM && !gameBGM.paused;
       audioStateBeforeHidden.musicAudio = musicAudio && !musicAudio.paused;
+      audioStateBeforeHidden.resultBGM = resultBGM && !resultBGM.paused;
 
       if (titleBGM) titleBGM.pause();
       if (gameBGM) gameBGM.pause();
       if (musicAudio) musicAudio.pause();
+      if (resultBGM) resultBGM.pause();
     } else {
       // Tab became visible - resume based on current screen state
       const screen = gameState.currentScreen;
@@ -4476,14 +4479,14 @@ document.addEventListener('DOMContentLoaded', () => {
           musicAudio.play().catch(() => {});
         }
       } else if (screen === 'result-screen') {
-        // Result screen uses title BGM
-        if (audioStateBeforeHidden.titleBGM && titleBGM) {
-          titleBGM.play().catch(() => {});
+        // Result screen - resume result BGM
+        if (audioStateBeforeHidden.resultBGM && resultBGM) {
+          resultBGM.play().catch(() => {});
         }
       }
 
       // Reset state
-      audioStateBeforeHidden = { titleBGM: false, gameBGM: false, musicAudio: false };
+      audioStateBeforeHidden = { titleBGM: false, gameBGM: false, musicAudio: false, resultBGM: false };
     }
   });
 });
