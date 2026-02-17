@@ -510,6 +510,15 @@ body {
   color: #000;
   box-shadow: 0 0 20px var(--neon-pink);
 }
+.btn.tertiary {
+  border-color: #7fff00;
+  color: #7fff00;
+}
+.btn.tertiary:hover, .btn.tertiary:active {
+  background: #7fff00;
+  color: #000;
+  box-shadow: 0 0 20px #7fff00;
+}
 .btn.small {
   font-size: 12px;
   padding: 10px 24px;
@@ -685,6 +694,172 @@ body {
   color: var(--neon-primary);
   font-family: var(--font-en);
   font-size: 24px;
+}
+
+/* Create screen */
+#create-screen {
+  flex-direction: column;
+  padding: 20px 40px;
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+.create-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+.create-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.create-row label {
+  font-family: var(--font-en);
+  font-size: 12px;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.create-row input[type="text"],
+.create-row input[type="file"] {
+  font-family: var(--font-ja);
+  font-size: 16px;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.3s;
+}
+.create-row input[type="text"]:focus {
+  border-color: var(--neon-primary);
+}
+.create-row input[type="file"] {
+  cursor: pointer;
+}
+.create-row input[type="file"]::file-selector-button {
+  font-family: var(--font-en);
+  font-size: 12px;
+  padding: 8px 16px;
+  margin-right: 12px;
+  background: var(--neon-primary);
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.preset-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.preset-option {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(127, 255, 0, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.preset-option:hover {
+  border-color: rgba(127, 255, 0, 0.6);
+}
+.preset-option.selected {
+  border-color: #7fff00;
+  background: rgba(127, 255, 0, 0.1);
+  box-shadow: 0 0 10px rgba(127, 255, 0, 0.3);
+}
+.preset-option input[type="radio"] {
+  display: none;
+}
+.preset-name {
+  font-family: var(--font-en);
+  font-size: 14px;
+  font-weight: 700;
+  color: #7fff00;
+  margin-bottom: 4px;
+}
+.preset-desc {
+  font-size: 11px;
+  color: var(--text-sub);
+}
+.create-file-info {
+  font-size: 12px;
+  color: var(--neon-primary);
+  margin-top: 4px;
+}
+.create-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 10px;
+}
+.create-buttons .btn {
+  min-width: 120px;
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.btn:disabled:hover {
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Custom song indicator in song list */
+.song-item.custom {
+  border-color: rgba(127, 255, 0, 0.4);
+}
+.song-item.custom:hover {
+  border-color: #7fff00;
+}
+.custom-badge {
+  font-size: 10px;
+  color: #7fff00;
+  background: rgba(127, 255, 0, 0.2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+/* Music list custom songs section */
+.music-section-title {
+  grid-column: 1 / -1;
+  font-family: var(--font-en);
+  font-size: 16px;
+  font-weight: 700;
+  color: #7fff00;
+  text-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
+  padding: 10px 0;
+  border-top: 1px solid rgba(127, 255, 0, 0.3);
+  margin-top: 10px;
+}
+.music-item.custom {
+  border-color: rgba(127, 255, 0, 0.3);
+}
+.music-item.custom:hover {
+  border-color: #7fff00;
+}
+.music-delete-btn {
+  font-family: var(--font-en);
+  font-size: 11px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid var(--neon-pink);
+  color: var(--neon-pink);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-left: 8px;
+}
+.music-delete-btn:hover {
+  background: var(--neon-pink);
+  color: #000;
 }
 
 /* Music screen */
@@ -2234,6 +2409,7 @@ body {
     <div class="title-buttons">
       <button class="btn" onclick="playSE(SE.wind); showScreen('song-select')">Start</button>
       <button class="btn secondary" onclick="playSE(SE.wind); showMusicScreen()">Music</button>
+      <button class="btn tertiary" onclick="playSE(SE.wind); showCreateScreen()">Create</button>
     </div>
     <div class="volume-settings">
       <div class="volume-row">
@@ -2256,6 +2432,55 @@ body {
     <button class="back-btn" onclick="playSE(SE.kati); stopMusicPlayer(); showScreen('title-screen')">Back</button>
     <h2 class="section-title">Music Player & Free Download</h2>
     <div class="music-list" id="music-list"></div>
+  </div>
+
+  <!-- Create Screen -->
+  <div id="create-screen" class="screen">
+    <button class="back-btn" onclick="playSE(SE.kati); showScreen('title-screen')">Back</button>
+    <h2 class="section-title">Create Custom Song</h2>
+    <div class="create-form">
+      <div class="create-row">
+        <label>MP3 File</label>
+        <input type="file" id="create-file" accept=".mp3,audio/mpeg" onchange="handleCreateFileSelect(this)">
+        <div class="create-file-info" id="create-file-info"></div>
+      </div>
+      <div class="create-row">
+        <label>Title</label>
+        <input type="text" id="create-title" placeholder="Song title" maxlength="50" oninput="updateCreatePlayButton()">
+      </div>
+      <div class="create-row">
+        <label>Artist</label>
+        <input type="text" id="create-artist" placeholder="Artist name" maxlength="50" oninput="updateCreatePlayButton()">
+      </div>
+      <div class="create-row">
+        <label>Notes Preset</label>
+        <div class="preset-options">
+          <label class="preset-option selected" onclick="selectPreset(this, 'calm')">
+            <input type="radio" name="preset" value="calm" checked>
+            <span class="preset-name">Calm</span>
+            <span class="preset-desc">Medium 80% / Large 18% / XL 2%</span>
+          </label>
+          <label class="preset-option" onclick="selectPreset(this, 'standard')">
+            <input type="radio" name="preset" value="standard">
+            <span class="preset-name">Standard</span>
+            <span class="preset-desc">Medium 60% / Large 30% / XL 10%</span>
+          </label>
+          <label class="preset-option" onclick="selectPreset(this, 'aggressive')">
+            <input type="radio" name="preset" value="aggressive">
+            <span class="preset-name">Aggressive</span>
+            <span class="preset-desc">Medium 40% / Large 45% / XL 15%</span>
+          </label>
+          <label class="preset-option" onclick="selectPreset(this, 'chaos')">
+            <input type="radio" name="preset" value="chaos">
+            <span class="preset-name">Chaos</span>
+            <span class="preset-desc">Medium 30% / Large 40% / XL 30%</span>
+          </label>
+        </div>
+      </div>
+      <div class="create-buttons">
+        <button class="btn tertiary" id="create-play-btn" onclick="playCustomSong()" disabled>Play</button>
+      </div>
+    </div>
   </div>
 
   <!-- Difficulty Select Screen -->
@@ -2474,6 +2699,81 @@ const SONGS = [
     noteDistribution: { medium: 0.75, large: 0.20, xlarge: 0.05 },
   },
 ];
+
+// ============================================================
+// CUSTOM SONGS (from IndexedDB)
+// ============================================================
+let customSongs = [];
+
+const NOTE_PRESETS = {
+  calm:       { medium: 0.80, large: 0.18, xlarge: 0.02 },
+  standard:   { medium: 0.60, large: 0.30, xlarge: 0.10 },
+  aggressive: { medium: 0.40, large: 0.45, xlarge: 0.15 },
+  chaos:      { medium: 0.30, large: 0.40, xlarge: 0.30 },
+};
+
+// IndexedDB setup
+const DB_NAME = 'CyberTapDB';
+const DB_VERSION = 1;
+const STORE_NAME = 'customSongs';
+let db = null;
+
+function initDB() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      db = request.result;
+      resolve(db);
+    };
+    request.onupgradeneeded = (e) => {
+      const database = e.target.result;
+      if (!database.objectStoreNames.contains(STORE_NAME)) {
+        database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+      }
+    };
+  });
+}
+
+function loadCustomSongs() {
+  return new Promise((resolve, reject) => {
+    if (!db) { resolve([]); return; }
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+    const request = store.getAll();
+    request.onsuccess = () => {
+      customSongs = request.result || [];
+      resolve(customSongs);
+    };
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function saveCustomSong(song) {
+  return new Promise((resolve, reject) => {
+    if (!db) { reject(new Error('DB not ready')); return; }
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const request = store.put(song);
+    request.onsuccess = () => {
+      loadCustomSongs().then(resolve);
+    };
+    request.onerror = () => reject(request.error);
+  });
+}
+
+function deleteCustomSong(id) {
+  return new Promise((resolve, reject) => {
+    if (!db) { reject(new Error('DB not ready')); return; }
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+    const request = store.delete(id);
+    request.onsuccess = () => {
+      loadCustomSongs().then(resolve);
+    };
+    request.onerror = () => reject(request.error);
+  });
+}
 
 // Circle sizes configuration (medium, large, xlarge)
 // Unified timing windows: Perfect ±100ms, Great ±200ms, Good ±300ms
@@ -2869,6 +3169,7 @@ function renderMusicList() {
   const container = document.getElementById('music-list');
   container.innerHTML = '';
 
+  // Built-in songs
   SONGS.forEach((song, index) => {
     const item = document.createElement('div');
     item.className = 'music-item';
@@ -2895,6 +3196,42 @@ function renderMusicList() {
     item.onclick = () => playMusicTrack(index);
     container.appendChild(item);
   });
+
+  // Custom songs section
+  if (customSongs.length > 0) {
+    const sectionTitle = document.createElement('div');
+    sectionTitle.className = 'music-section-title';
+    sectionTitle.textContent = 'My Songs';
+    container.appendChild(sectionTitle);
+
+    customSongs.forEach((song, index) => {
+      const customIndex = SONGS.length + index;
+      const item = document.createElement('div');
+      item.className = 'music-item custom';
+      item.id = `music-item-${customIndex}`;
+      item.innerHTML = `
+        <div class="audio-wave">
+          <div class="audio-wave-bar"></div>
+          <div class="audio-wave-bar"></div>
+          <div class="audio-wave-bar"></div>
+          <div class="audio-wave-bar"></div>
+          <div class="audio-wave-bar"></div>
+          <div class="audio-wave-bar"></div>
+        </div>
+        <div class="music-item-info">
+          <div class="music-item-title">${song.title}</div>
+          <div class="music-item-artist">${song.artist}</div>
+          <div class="music-item-time">
+            <span class="music-current-time" id="music-time-${customIndex}"></span>
+            <span class="music-duration">${formatDuration(song.duration)}</span>
+          </div>
+        </div>
+        <button class="music-delete-btn" onclick="event.stopPropagation(); deleteCustomSongConfirm('${song.id}')">Delete</button>
+      `;
+      item.onclick = () => playCustomMusicTrack(index);
+      container.appendChild(item);
+    });
+  }
 }
 
 function playMusicTrack(index) {
@@ -2918,8 +3255,8 @@ function playMusicTrack(index) {
   const song = SONGS[index];
 
   // Update UI - highlight playing item
-  document.querySelectorAll('.music-item').forEach((item, i) => {
-    item.classList.toggle('playing', i === index);
+  document.querySelectorAll('.music-item').forEach(item => {
+    item.classList.toggle('playing', item.id === `music-item-${index}`);
   });
 
   // Stop previous audio
@@ -3022,6 +3359,7 @@ function renderSongList() {
   const container = document.getElementById('song-list');
   container.innerHTML = '';
 
+  // Built-in songs
   SONGS.forEach(song => {
     const item = document.createElement('div');
     item.className = 'song-item';
@@ -3036,6 +3374,44 @@ function renderSongList() {
     item.onclick = () => selectSong(song);
     container.appendChild(item);
   });
+
+  // Custom songs
+  if (customSongs.length > 0) {
+    const sectionTitle = document.createElement('div');
+    sectionTitle.className = 'music-section-title';
+    sectionTitle.textContent = 'My Songs';
+    container.appendChild(sectionTitle);
+
+    customSongs.forEach(song => {
+      const item = document.createElement('div');
+      item.className = 'song-item custom';
+      const bestScore = getBestScore(song.id);
+      const bestRank = getBestRank(song.id);
+      item.innerHTML = `
+        <div class="song-title">${song.title}<span class="custom-badge">Custom</span></div>
+        <div class="song-artist">${song.artist}</div>
+        <div class="song-bpm">${formatDuration(song.duration)}</div>
+        ${formatBestScoreHTML(bestScore, bestRank)}
+      `;
+      item.onclick = () => selectCustomSong(song);
+      container.appendChild(item);
+    });
+  }
+}
+
+function selectCustomSong(song) {
+  playSE(SE.kati);
+  // Create audio URL from stored data
+  const audioBlob = new Blob([song.audioData], { type: 'audio/mpeg' });
+  const audioUrl = URL.createObjectURL(audioBlob);
+  gameState.selectedSong = {
+    ...song,
+    audioFile: audioUrl,
+    isCustom: true
+  };
+  document.getElementById('selected-song-name').textContent = song.title;
+  updateDifficultyBestScores(song.id);
+  showScreen('difficulty-select');
 }
 
 function selectSong(song) {
@@ -4554,6 +4930,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize BGM
   initBGM();
 
+  // Initialize IndexedDB and load custom songs
+  initDB().then(() => {
+    return loadCustomSongs();
+  }).catch(err => {
+    console.log('IndexedDB init error:', err);
+  });
+
   const tapScreen = document.getElementById('tap-start-screen');
   const titleScreen = document.getElementById('title-screen');
 
@@ -4689,6 +5072,201 @@ document.addEventListener('DOMContentLoaded', () => {
     resumeAudio();
   });
 });
+
+// ============================================================
+// CREATE SCREEN FUNCTIONS
+// ============================================================
+let createFileData = null;
+let createFileDuration = 0;
+let createSelectedPreset = 'calm';
+
+function showCreateScreen() {
+  // Reset form
+  document.getElementById('create-file').value = '';
+  document.getElementById('create-title').value = '';
+  document.getElementById('create-artist').value = '';
+  document.getElementById('create-file-info').textContent = '';
+  createFileData = null;
+  createFileDuration = 0;
+  createSelectedPreset = 'calm';
+
+  // Reset preset selection
+  document.querySelectorAll('.preset-option').forEach(opt => opt.classList.remove('selected'));
+  document.querySelector('.preset-option').classList.add('selected');
+
+  updateCreatePlayButton();
+  showScreen('create-screen');
+}
+
+function handleCreateFileSelect(input) {
+  const file = input.files[0];
+  const fileInfo = document.getElementById('create-file-info');
+
+  if (!file) {
+    createFileData = null;
+    createFileDuration = 0;
+    fileInfo.textContent = '';
+    updateCreatePlayButton();
+    return;
+  }
+
+  // Read file as ArrayBuffer
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    createFileData = e.target.result;
+
+    // Get duration using Audio element
+    const audioBlob = new Blob([createFileData], { type: 'audio/mpeg' });
+    const audioUrl = URL.createObjectURL(audioBlob);
+    const audio = new Audio(audioUrl);
+
+    audio.onloadedmetadata = () => {
+      createFileDuration = Math.floor(audio.duration);
+      fileInfo.textContent = `${file.name} (${formatDuration(createFileDuration)})`;
+      URL.revokeObjectURL(audioUrl);
+      updateCreatePlayButton();
+    };
+
+    audio.onerror = () => {
+      fileInfo.textContent = 'Error: Invalid audio file';
+      createFileData = null;
+      createFileDuration = 0;
+      URL.revokeObjectURL(audioUrl);
+      updateCreatePlayButton();
+    };
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
+function selectPreset(element, preset) {
+  document.querySelectorAll('.preset-option').forEach(opt => opt.classList.remove('selected'));
+  element.classList.add('selected');
+  createSelectedPreset = preset;
+}
+
+function updateCreatePlayButton() {
+  const title = document.getElementById('create-title').value.trim();
+  const artist = document.getElementById('create-artist').value.trim();
+  const playBtn = document.getElementById('create-play-btn');
+
+  playBtn.disabled = !(createFileData && title && artist && createFileDuration > 0);
+}
+
+function playCustomSong() {
+  const title = document.getElementById('create-title').value.trim();
+  const artist = document.getElementById('create-artist').value.trim();
+
+  if (!createFileData || !title || !artist) return;
+
+  playSE(SE.dj);
+
+  // Generate unique ID
+  const id = 'custom_' + Date.now();
+
+  // Create song object
+  const song = {
+    id: id,
+    title: title,
+    artist: artist,
+    duration: createFileDuration,
+    noteDistribution: NOTE_PRESETS[createSelectedPreset],
+    preset: createSelectedPreset,
+    audioData: createFileData,
+    isCustom: true,
+    createdAt: Date.now()
+  };
+
+  // Save to IndexedDB
+  saveCustomSong(song).then(() => {
+    // Create audio URL
+    const audioBlob = new Blob([createFileData], { type: 'audio/mpeg' });
+    const audioUrl = URL.createObjectURL(audioBlob);
+
+    // Set as selected song
+    gameState.selectedSong = {
+      ...song,
+      audioFile: audioUrl
+    };
+
+    document.getElementById('selected-song-name').textContent = song.title;
+    updateDifficultyBestScores(song.id);
+    showScreen('difficulty-select');
+  }).catch(err => {
+    console.error('Failed to save custom song:', err);
+  });
+}
+
+function playCustomMusicTrack(customIndex) {
+  const song = customSongs[customIndex];
+  if (!song) return;
+
+  // Stop title BGM
+  if (titleBGM) {
+    titleBGM.pause();
+  }
+
+  // Clear previous time interval
+  if (musicTimeInterval) {
+    clearInterval(musicTimeInterval);
+    musicTimeInterval = null;
+  }
+
+  // Clear all time displays
+  document.querySelectorAll('.music-current-time').forEach(el => {
+    el.textContent = '';
+  });
+
+  const realIndex = SONGS.length + customIndex;
+  musicCurrentIndex = realIndex;
+
+  // Update UI - highlight playing item
+  document.querySelectorAll('.music-item').forEach((item, i) => {
+    item.classList.toggle('playing', item.id === `music-item-${realIndex}`);
+  });
+
+  // Stop previous audio
+  if (musicAudio) {
+    musicAudio.pause();
+    musicAudio = null;
+  }
+
+  // Create audio from stored data
+  const audioBlob = new Blob([song.audioData], { type: 'audio/mpeg' });
+  const audioUrl = URL.createObjectURL(audioBlob);
+
+  musicAudio = new Audio(audioUrl);
+  musicAudio.volume = getVolume();
+  musicAudio.play().catch(e => console.log('Audio play failed:', e));
+  musicIsPlaying = true;
+
+  // Start updating current time display
+  updateMusicTimeDisplay();
+  musicTimeInterval = setInterval(updateMusicTimeDisplay, 500);
+
+  // Handle end of song - play next
+  musicAudio.onended = () => {
+    // For custom songs, just stop at the end
+    musicIsPlaying = false;
+    document.querySelectorAll('.music-item').forEach(item => {
+      item.classList.remove('playing');
+    });
+  };
+}
+
+function deleteCustomSongConfirm(id) {
+  playSE(SE.kati);
+  if (confirm('Delete this custom song?')) {
+    deleteCustomSong(id).then(() => {
+      renderMusicList();
+      // If currently playing this song, stop it
+      if (musicAudio) {
+        musicAudio.pause();
+        musicAudio = null;
+      }
+    });
+  }
+}
 </script>
 
 </div><!-- /app-wrapper -->
