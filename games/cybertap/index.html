@@ -842,8 +842,22 @@ body {
 .music-item.custom {
   border-color: rgba(127, 255, 0, 0.3);
 }
-.music-item.custom:hover {
+.music-item.custom:hover, .music-item.custom.playing {
   border-color: #7fff00;
+  box-shadow: 0 0 20px rgba(127, 255, 0, 0.3);
+}
+.music-item.custom.playing {
+  background: rgba(127, 255, 0, 0.1);
+}
+.music-item.custom .music-item-title {
+  color: #7fff00;
+}
+.music-item.custom .audio-wave-bar {
+  background: #7fff00;
+  box-shadow: 0 0 6px #7fff00;
+}
+.music-item.custom .music-item-time {
+  color: #7fff00;
 }
 .music-delete-btn {
   font-family: var(--font-en);
@@ -860,6 +874,74 @@ body {
 .music-delete-btn:hover {
   background: var(--neon-pink);
   color: #000;
+}
+
+/* Custom confirm modal */
+.confirm-modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+}
+.confirm-modal-overlay.show {
+  display: flex;
+}
+.confirm-modal {
+  background: var(--bg-card);
+  border: 2px solid var(--neon-pink);
+  border-radius: 16px;
+  padding: 30px 40px;
+  text-align: center;
+  box-shadow: 0 0 40px rgba(255, 0, 170, 0.3);
+  max-width: 400px;
+}
+.confirm-modal-title {
+  font-family: var(--font-en);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--neon-pink);
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(255, 0, 170, 0.5);
+}
+.confirm-modal-buttons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+.confirm-modal-btn {
+  font-family: var(--font-en);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+}
+.confirm-modal-btn.ok {
+  background: transparent;
+  border: 2px solid var(--neon-pink);
+  color: var(--neon-pink);
+}
+.confirm-modal-btn.ok:hover {
+  background: var(--neon-pink);
+  color: #000;
+  box-shadow: 0 0 20px var(--neon-pink);
+}
+.confirm-modal-btn.cancel {
+  background: transparent;
+  border: 2px solid var(--text-sub);
+  color: var(--text-sub);
+}
+.confirm-modal-btn.cancel:hover {
+  border-color: var(--text);
+  color: var(--text);
 }
 
 /* Song/Music tabs */
@@ -2411,6 +2493,17 @@ body {
 
 <!-- Global scanlines overlay - covers all screens -->
 <div id="global-scanlines"></div>
+
+<!-- Delete confirm modal -->
+<div id="delete-confirm-modal" class="confirm-modal-overlay">
+  <div class="confirm-modal">
+    <div class="confirm-modal-title">Delete this custom song?</div>
+    <div class="confirm-modal-buttons">
+      <button class="confirm-modal-btn ok" onclick="confirmDeleteSong()">OK</button>
+      <button class="confirm-modal-btn cancel" onclick="cancelDeleteSong()">Cancel</button>
+    </div>
+  </div>
+</div>
 
 <!-- Main app wrapper for rotation support -->
 <div id="app-wrapper">
@@ -5363,20 +5456,37 @@ function playCustomMusicTrack(customIndex) {
   };
 }
 
+let pendingDeleteSongId = null;
+
 function deleteCustomSongConfirm(id) {
   playSE(SE.kati);
-  if (confirm('Delete this custom song?')) {
-    deleteCustomSong(id).then(() => {
+  pendingDeleteSongId = id;
+  document.getElementById('delete-confirm-modal').classList.add('show');
+}
+
+function confirmDeleteSong() {
+  playSE(SE.dj);
+  document.getElementById('delete-confirm-modal').classList.remove('show');
+
+  if (pendingDeleteSongId) {
+    deleteCustomSong(pendingDeleteSongId).then(() => {
       // Delete high score data from localStorage
-      deleteHighScores(id);
+      deleteHighScores(pendingDeleteSongId);
       renderMusicList();
       // If currently playing this song, stop it
       if (musicAudio) {
         musicAudio.pause();
         musicAudio = null;
       }
+      pendingDeleteSongId = null;
     });
   }
+}
+
+function cancelDeleteSong() {
+  playSE(SE.kati);
+  document.getElementById('delete-confirm-modal').classList.remove('show');
+  pendingDeleteSongId = null;
 }
 
 function deleteHighScores(songId) {
