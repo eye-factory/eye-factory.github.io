@@ -3822,12 +3822,33 @@ function generateMobileResultImage() {
   ctx.shadowBlur = 10;
   ctx.fillText('RANK', width / 2, 240);
 
-  // Grade (large)
+  // Grade (large) - GOD rank gets special gradient treatment
   ctx.font = 'bold 160px "Orbitron", sans-serif';
-  ctx.fillStyle = gradeColor;
-  ctx.shadowColor = gradeColor;
-  ctx.shadowBlur = 60;
-  ctx.fillText(grade, width / 2, 400);
+  if (grade === 'GOD') {
+    // GOD rank: luxurious multi-color gradient
+    const godGradient = ctx.createLinearGradient(width / 2 - 150, 300, width / 2 + 150, 400);
+    godGradient.addColorStop(0, '#ff00ff');
+    godGradient.addColorStop(0.25, '#00ffff');
+    godGradient.addColorStop(0.5, '#ffff00');
+    godGradient.addColorStop(0.75, '#ff00ff');
+    godGradient.addColorStop(1, '#00ffff');
+    ctx.fillStyle = godGradient;
+    ctx.shadowColor = '#ff00ff';
+    ctx.shadowBlur = 80;
+    ctx.fillText(grade, width / 2, 400);
+    // Add extra glow layers
+    ctx.shadowColor = '#00ffff';
+    ctx.shadowBlur = 60;
+    ctx.fillText(grade, width / 2, 400);
+    ctx.shadowColor = '#ffff00';
+    ctx.shadowBlur = 40;
+    ctx.fillText(grade, width / 2, 400);
+  } else {
+    ctx.fillStyle = gradeColor;
+    ctx.shadowColor = gradeColor;
+    ctx.shadowBlur = 60;
+    ctx.fillText(grade, width / 2, 400);
+  }
 
   // Reset shadow for stats
   ctx.shadowBlur = 0;
@@ -4020,12 +4041,33 @@ function takeScreenshot() {
     ctx.shadowBlur = 10;
     ctx.fillText('RANK', width / 2, 240);
 
-    // Grade (large)
+    // Grade (large) - GOD rank gets special gradient treatment
     ctx.font = 'bold 160px "Orbitron", sans-serif';
-    ctx.fillStyle = gradeColor;
-    ctx.shadowColor = gradeColor;
-    ctx.shadowBlur = 60;
-    ctx.fillText(grade, width / 2, 400);
+    if (grade === 'GOD') {
+      // GOD rank: luxurious multi-color gradient
+      const godGradient = ctx.createLinearGradient(width / 2 - 150, 300, width / 2 + 150, 400);
+      godGradient.addColorStop(0, '#ff00ff');
+      godGradient.addColorStop(0.25, '#00ffff');
+      godGradient.addColorStop(0.5, '#ffff00');
+      godGradient.addColorStop(0.75, '#ff00ff');
+      godGradient.addColorStop(1, '#00ffff');
+      ctx.fillStyle = godGradient;
+      ctx.shadowColor = '#ff00ff';
+      ctx.shadowBlur = 80;
+      ctx.fillText(grade, width / 2, 400);
+      // Add extra glow layers
+      ctx.shadowColor = '#00ffff';
+      ctx.shadowBlur = 60;
+      ctx.fillText(grade, width / 2, 400);
+      ctx.shadowColor = '#ffff00';
+      ctx.shadowBlur = 40;
+      ctx.fillText(grade, width / 2, 400);
+    } else {
+      ctx.fillStyle = gradeColor;
+      ctx.shadowColor = gradeColor;
+      ctx.shadowBlur = 60;
+      ctx.fillText(grade, width / 2, 400);
+    }
 
     // Reset shadow for stats
     ctx.shadowBlur = 0;
@@ -4232,19 +4274,35 @@ function takeScreenshot() {
       onclone: function(clonedDoc) {
         // Fix grade element in cloned document
         const clonedGrade = clonedDoc.getElementById('result-grade');
+        const isGodRank = gradeElement && gradeElement.classList.contains('grade-god');
         if (clonedGrade) {
-          clonedGrade.style.cssText = `
-            background: none !important;
-            -webkit-background-clip: unset !important;
-            background-clip: unset !important;
-            -webkit-text-fill-color: ${gradeColor} !important;
-            color: ${gradeColor} !important;
-            filter: none !important;
-            opacity: 1 !important;
-            animation: none !important;
-            transform: none !important;
-            text-shadow: 0 0 20px ${glowColor}, 0 0 40px ${glowColor}, 0 0 60px ${glowColor}, 0 0 80px ${gradeColor} !important;
-          `;
+          if (isGodRank) {
+            // GOD rank: luxurious rainbow gradient effect
+            clonedGrade.style.cssText = `
+              background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff) !important;
+              background-size: 100% 100% !important;
+              -webkit-background-clip: text !important;
+              -webkit-text-fill-color: transparent !important;
+              background-clip: text !important;
+              filter: drop-shadow(0 0 30px #ff00ff) drop-shadow(0 0 60px #00ffff) drop-shadow(0 0 90px #ffff00) !important;
+              opacity: 1 !important;
+              animation: none !important;
+              transform: none !important;
+            `;
+          } else {
+            clonedGrade.style.cssText = `
+              background: none !important;
+              -webkit-background-clip: unset !important;
+              background-clip: unset !important;
+              -webkit-text-fill-color: ${gradeColor} !important;
+              color: ${gradeColor} !important;
+              filter: none !important;
+              opacity: 1 !important;
+              animation: none !important;
+              transform: none !important;
+              text-shadow: 0 0 20px ${glowColor}, 0 0 40px ${glowColor}, 0 0 60px ${glowColor}, 0 0 80px ${gradeColor} !important;
+            `;
+          }
         }
 
         // Fix score element in cloned document
