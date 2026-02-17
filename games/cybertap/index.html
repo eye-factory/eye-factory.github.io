@@ -3789,12 +3789,17 @@ function generateMobileResultImage() {
     ctx.stroke();
   }
 
-  // CyberTap title
+  // CyberTap title with gradient (cyan → pink → cyan like home screen)
   ctx.font = 'bold 48px "Orbitron", sans-serif';
-  ctx.fillStyle = '#00d4ff';
   ctx.textAlign = 'center';
   ctx.shadowColor = '#00d4ff';
   ctx.shadowBlur = 20;
+  // Create horizontal gradient for text
+  const titleGradient = ctx.createLinearGradient(width / 2 - 120, 0, width / 2 + 120, 0);
+  titleGradient.addColorStop(0, '#00d4ff');
+  titleGradient.addColorStop(0.5, '#ff00aa');
+  titleGradient.addColorStop(1, '#00d4ff');
+  ctx.fillStyle = titleGradient;
   ctx.fillText('CyberTap', width / 2, 80);
 
   // Song name
@@ -3977,13 +3982,18 @@ function takeScreenshot() {
         ctx.stroke();
       }
 
-      // CyberTap title
-    ctx.font = 'bold 48px "Orbitron", sans-serif';
-    ctx.fillStyle = '#00d4ff';
-    ctx.textAlign = 'center';
-    ctx.shadowColor = '#00d4ff';
-    ctx.shadowBlur = 20;
-    ctx.fillText('CyberTap', width / 2, 80);
+      // CyberTap title with gradient (cyan → pink → cyan like home screen)
+      ctx.font = 'bold 48px "Orbitron", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.shadowColor = '#00d4ff';
+      ctx.shadowBlur = 20;
+      // Create horizontal gradient for text
+      const titleGradient = ctx.createLinearGradient(width / 2 - 120, 0, width / 2 + 120, 0);
+      titleGradient.addColorStop(0, '#00d4ff');
+      titleGradient.addColorStop(0.5, '#ff00aa');
+      titleGradient.addColorStop(1, '#00d4ff');
+      ctx.fillStyle = titleGradient;
+      ctx.fillText('CyberTap', width / 2, 80);
 
     // Song name
     ctx.font = 'bold 28px sans-serif';
@@ -4110,11 +4120,15 @@ function takeScreenshot() {
       // 3. Generate PNG data URL
       const dataUrl = canvas.toDataURL('image/png');
 
-      // 4. Create hidden link with download attribute
-      const filename = screenshotCounter === 0
-        ? 'cybertap_score.png'
-        : `cybertap_score(${screenshotCounter}).png`;
-      screenshotCounter++;
+      // 4. Create hidden link with download attribute (with timestamp filename)
+      const now = new Date();
+      const timestamp = now.getFullYear().toString() +
+        String(now.getMonth() + 1).padStart(2, '0') +
+        String(now.getDate()).padStart(2, '0') + '_' +
+        String(now.getHours()).padStart(2, '0') +
+        String(now.getMinutes()).padStart(2, '0') +
+        String(now.getSeconds()).padStart(2, '0');
+      const filename = `cybertap_score_${timestamp}.png`;
 
       const link = document.createElement('a');
       link.style.display = 'none';
