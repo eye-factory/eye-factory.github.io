@@ -3931,6 +3931,8 @@ function takeScreenshot() {
     // PC: Use html2canvas to capture game screen
     const appWrapper = document.getElementById('app-wrapper');
     const gradeElement = document.getElementById('result-grade');
+    const scoreElement = document.getElementById('result-score');
+    const bonusElement = document.getElementById('result-bonus');
 
     // Store original grade styles
     let originalGradeStyles = null;
@@ -3944,20 +3946,37 @@ function takeScreenshot() {
         filter: gradeElement.style.filter,
         opacity: gradeElement.style.opacity,
         animation: gradeElement.style.animation,
-        transform: gradeElement.style.transform
+        transform: gradeElement.style.transform,
+        textShadow: gradeElement.style.textShadow
       };
 
-      // Get grade color
-      let gradeColor = '#00d4ff';
-      if (gradeElement.classList.contains('grade-god')) gradeColor = '#ff00ff';
-      else if (gradeElement.classList.contains('grade-ss')) gradeColor = '#ffdd00';
-      else if (gradeElement.classList.contains('grade-s')) gradeColor = '#00ff88';
-      else if (gradeElement.classList.contains('grade-a')) gradeColor = '#00d4ff';
-      else if (gradeElement.classList.contains('grade-b')) gradeColor = '#ffff00';
-      else if (gradeElement.classList.contains('grade-c')) gradeColor = '#ff0066';
-      else if (gradeElement.classList.contains('grade-d')) gradeColor = '#888888';
+      // Get bright grade color and glow color
+      let gradeColor = '#00ffff'; // bright cyan
+      let glowColor = '#00d4ff';
+      if (gradeElement.classList.contains('grade-god')) {
+        gradeColor = '#ff66ff'; // bright magenta
+        glowColor = '#ff00ff';
+      } else if (gradeElement.classList.contains('grade-ss')) {
+        gradeColor = '#ffee00'; // bright gold
+        glowColor = '#ffdd00';
+      } else if (gradeElement.classList.contains('grade-s')) {
+        gradeColor = '#00ff88'; // bright green
+        glowColor = '#00ff88';
+      } else if (gradeElement.classList.contains('grade-a')) {
+        gradeColor = '#00ffff'; // bright cyan
+        glowColor = '#00d4ff';
+      } else if (gradeElement.classList.contains('grade-b')) {
+        gradeColor = '#ffff00'; // bright yellow
+        glowColor = '#ffff00';
+      } else if (gradeElement.classList.contains('grade-c')) {
+        gradeColor = '#ff6688'; // bright pink
+        glowColor = '#ff0066';
+      } else if (gradeElement.classList.contains('grade-d')) {
+        gradeColor = '#aaaaaa';
+        glowColor = '#888888';
+      }
 
-      // Make grade capturable
+      // Make grade capturable with bright colors
       gradeElement.style.background = 'none';
       gradeElement.style.webkitBackgroundClip = 'unset';
       gradeElement.style.backgroundClip = 'unset';
@@ -3967,7 +3986,31 @@ function takeScreenshot() {
       gradeElement.style.opacity = '1';
       gradeElement.style.animation = 'none';
       gradeElement.style.transform = 'none';
-      gradeElement.style.textShadow = `0 0 30px ${gradeColor}, 0 0 60px ${gradeColor}`;
+      gradeElement.style.textShadow = `0 0 20px ${glowColor}, 0 0 40px ${glowColor}, 0 0 60px ${glowColor}, 0 0 80px ${gradeColor}`;
+    }
+
+    // Store and fix score element styles
+    let originalScoreStyles = null;
+    if (scoreElement) {
+      originalScoreStyles = {
+        opacity: scoreElement.style.opacity,
+        animation: scoreElement.style.animation,
+        transform: scoreElement.style.transform
+      };
+      scoreElement.style.opacity = '1';
+      scoreElement.style.animation = 'none';
+      scoreElement.style.transform = 'none';
+    }
+
+    // Store and fix bonus element styles
+    let originalBonusStyles = null;
+    if (bonusElement) {
+      originalBonusStyles = {
+        opacity: bonusElement.style.opacity,
+        animation: bonusElement.style.animation
+      };
+      bonusElement.style.opacity = '1';
+      bonusElement.style.animation = 'none';
     }
 
     setTimeout(() => {
@@ -3978,37 +4021,38 @@ function takeScreenshot() {
         allowTaint: true,
         logging: false
       }).then(canvas => {
-        // Restore grade styles
-        if (gradeElement && originalGradeStyles) {
-          gradeElement.style.background = originalGradeStyles.background;
-          gradeElement.style.webkitBackgroundClip = originalGradeStyles.webkitBackgroundClip;
-          gradeElement.style.backgroundClip = originalGradeStyles.backgroundClip;
-          gradeElement.style.webkitTextFillColor = originalGradeStyles.webkitTextFillColor;
-          gradeElement.style.color = originalGradeStyles.color;
-          gradeElement.style.filter = originalGradeStyles.filter;
-          gradeElement.style.opacity = originalGradeStyles.opacity;
-          gradeElement.style.animation = originalGradeStyles.animation;
-          gradeElement.style.transform = originalGradeStyles.transform;
-          gradeElement.style.textShadow = '';
-        }
+        // Restore all styles
+        restoreScreenshotStyles(gradeElement, originalGradeStyles, scoreElement, originalScoreStyles, bonusElement, originalBonusStyles);
         downloadScreenshot(canvas);
       }).catch(err => {
         console.error('Screenshot failed:', err);
-        // Restore grade styles on error
-        if (gradeElement && originalGradeStyles) {
-          gradeElement.style.background = originalGradeStyles.background;
-          gradeElement.style.webkitBackgroundClip = originalGradeStyles.webkitBackgroundClip;
-          gradeElement.style.backgroundClip = originalGradeStyles.backgroundClip;
-          gradeElement.style.webkitTextFillColor = originalGradeStyles.webkitTextFillColor;
-          gradeElement.style.color = originalGradeStyles.color;
-          gradeElement.style.filter = originalGradeStyles.filter;
-          gradeElement.style.opacity = originalGradeStyles.opacity;
-          gradeElement.style.animation = originalGradeStyles.animation;
-          gradeElement.style.transform = originalGradeStyles.transform;
-          gradeElement.style.textShadow = '';
-        }
+        restoreScreenshotStyles(gradeElement, originalGradeStyles, scoreElement, originalScoreStyles, bonusElement, originalBonusStyles);
       });
     }, 50);
+  }
+}
+
+function restoreScreenshotStyles(gradeElement, originalGradeStyles, scoreElement, originalScoreStyles, bonusElement, originalBonusStyles) {
+  if (gradeElement && originalGradeStyles) {
+    gradeElement.style.background = originalGradeStyles.background;
+    gradeElement.style.webkitBackgroundClip = originalGradeStyles.webkitBackgroundClip;
+    gradeElement.style.backgroundClip = originalGradeStyles.backgroundClip;
+    gradeElement.style.webkitTextFillColor = originalGradeStyles.webkitTextFillColor;
+    gradeElement.style.color = originalGradeStyles.color;
+    gradeElement.style.filter = originalGradeStyles.filter;
+    gradeElement.style.opacity = originalGradeStyles.opacity;
+    gradeElement.style.animation = originalGradeStyles.animation;
+    gradeElement.style.transform = originalGradeStyles.transform;
+    gradeElement.style.textShadow = originalGradeStyles.textShadow;
+  }
+  if (scoreElement && originalScoreStyles) {
+    scoreElement.style.opacity = originalScoreStyles.opacity;
+    scoreElement.style.animation = originalScoreStyles.animation;
+    scoreElement.style.transform = originalScoreStyles.transform;
+  }
+  if (bonusElement && originalBonusStyles) {
+    bonusElement.style.opacity = originalBonusStyles.opacity;
+    bonusElement.style.animation = originalBonusStyles.animation;
   }
 }
 
