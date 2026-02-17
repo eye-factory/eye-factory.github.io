@@ -5363,6 +5363,8 @@ function deleteCustomSongConfirm(id) {
   playSE(SE.kati);
   if (confirm('Delete this custom song?')) {
     deleteCustomSong(id).then(() => {
+      // Delete high score data from localStorage
+      deleteHighScores(id);
       renderMusicList();
       // If currently playing this song, stop it
       if (musicAudio) {
@@ -5371,6 +5373,18 @@ function deleteCustomSongConfirm(id) {
       }
     });
   }
+}
+
+function deleteHighScores(songId) {
+  const difficulties = ['easy', 'normal', 'hard', 'veryhard'];
+  // Delete difficulty-specific scores
+  difficulties.forEach(diff => {
+    localStorage.removeItem(`cybertap_${songId}_${diff}_best_score`);
+    localStorage.removeItem(`cybertap_${songId}_${diff}_best_rank`);
+  });
+  // Delete overall song scores
+  localStorage.removeItem(`cybertap_${songId}_best_score`);
+  localStorage.removeItem(`cybertap_${songId}_best_rank`);
 }
 </script>
 
