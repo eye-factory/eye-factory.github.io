@@ -4604,6 +4604,40 @@ document.addEventListener('DOMContentLoaded', () => {
     resultBGM: false
   };
 
+  // Debug mode (?debug=1)
+  const isDebugMode = new URLSearchParams(window.location.search).get('debug') === '1';
+  let debugPanel = null;
+  let debugPlayResult = '-';
+
+  if (isDebugMode) {
+    debugPanel = document.createElement('div');
+    debugPanel.id = 'debug-panel';
+    debugPanel.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.8);color:#0f0;font-size:10px;font-family:monospace;padding:8px;z-index:99999;max-height:30vh;overflow-y:auto;';
+    debugPanel.innerHTML = '<div style="font-weight:bold;color:#ff0;margin-bottom:4px;">スマホデバッグ中</div><div id="debug-content"></div>';
+    document.body.appendChild(debugPanel);
+
+    function updateDebugInfo() {
+      const content = document.getElementById('debug-content');
+      if (!content) return;
+      content.innerHTML = `
+        <div>document.hidden: <span style="color:#0ff">${document.hidden}</span></div>
+        <div>audioState.titleBGM: <span style="color:#0ff">${audioStateBeforeHidden.titleBGM}</span></div>
+        <div>titleBGM exists: <span style="color:#0ff">${!!titleBGM}</span></div>
+        <div>titleBGM.paused: <span style="color:#0ff">${titleBGM ? titleBGM.paused : 'N/A'}</span></div>
+        <div>AudioContext.state: <span style="color:#0ff">${globalAudioContext ? globalAudioContext.state : 'N/A'}</span></div>
+        <div>play() result: <span style="color:#0ff">${debugPlayResult}</span></div>
+      `;
+    }
+
+    setInterval(updateDebugInfo, 200);
+  }
+
+  function debugLog(msg) {
+    if (isDebugMode) {
+      debugPlayResult = msg;
+    }
+  }
+
   function pauseAllAudio() {
     // Save state before pausing
     audioStateBeforeHidden.titleBGM = titleBGM && !titleBGM.paused;
@@ -4627,14 +4661,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const screen = gameState.currentScreen;
 
     // Helper function to play audio with retry for mobile
-    function playWithRetry(audio) {
+    function playWithRetry(audio, name) {
       if (!audio) return;
+      debugLog(name + ': trying...');
       const playPromise = audio.play();
       if (playPromise !== undefined) {
-        playPromise.catch(() => {
+        playPromise.then(() => {
+          debugLog(name + ': SUCCESS');
+        }).catch((err) => {
+          debugLog(name + ': FAIL1 ' + err.name);
           // Retry after a short delay (mobile may need this)
           setTimeout(() => {
-            audio.play().catch(() => {});
+            audio.play().then(() => {
+              debugLog(name + ': RETRY OK');
+            }).catch((err2) => {
+              debugLog(name + ': RETRY FAIL ' + err2.name);
+            });
           }, 100);
         });
       }
@@ -4642,19 +4684,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (screen === 'title-screen' || screen === 'song-select' || screen === 'difficulty-select') {
       if (audioStateBeforeHidden.titleBGM && titleBGM) {
-        playWithRetry(titleBGM);
+        playWithRetry(titleBGM, 'titleBGM');
       }
     } else if (screen === 'play-screen' && gameState.isPlaying) {
       if (audioStateBeforeHidden.gameBGM && gameBGM) {
-        playWithRetry(gameBGM);
+        playWithRetry(gameBGM, 'gameBGM');
       }
     } else if (screen === 'music-screen') {
       if (audioStateBeforeHidden.musicAudio && musicAudio) {
-        playWithRetry(musicAudio);
+        playWithRetry(musicAudio, 'musicAudio');
       }
     } else if (screen === 'result-screen') {
       if (audioStateBeforeHidden.resultBGM && resultBGM) {
-        playWithRetry(resultBGM);
+        playWithRetry(resultBGM, 'resultBGM');
       }
     }
 
