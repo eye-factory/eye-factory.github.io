@@ -3860,9 +3860,14 @@ function generateMobileResultImage() {
   ctx.fillText('Score', labelX, y);
   ctx.textAlign = 'right';
   if (bonus) {
-    // Draw bonus above score
-    ctx.fillStyle = '#00ffff';
+    // Draw bonus above score with gradient (cyan → magenta → yellow → cyan like PC)
     ctx.font = 'bold 14px "Orbitron", sans-serif';
+    const bonusGradient = ctx.createLinearGradient(valueX - 80, 0, valueX, 0);
+    bonusGradient.addColorStop(0, '#00ffff');
+    bonusGradient.addColorStop(0.33, '#ff00ff');
+    bonusGradient.addColorStop(0.66, '#ffff00');
+    bonusGradient.addColorStop(1, '#00ffff');
+    ctx.fillStyle = bonusGradient;
     ctx.fillText(bonus, valueX, y - 18);
   }
   ctx.fillStyle = '#00d4ff';
@@ -4052,9 +4057,14 @@ function takeScreenshot() {
     ctx.fillText('Score', labelX, y);
     ctx.textAlign = 'right';
     if (bonus) {
-      // Draw bonus above score
-      ctx.fillStyle = '#00ffff';
+      // Draw bonus above score with gradient (cyan → magenta → yellow → cyan like PC)
       ctx.font = 'bold 14px "Orbitron", sans-serif';
+      const bonusGradient = ctx.createLinearGradient(valueX - 80, 0, valueX, 0);
+      bonusGradient.addColorStop(0, '#00ffff');
+      bonusGradient.addColorStop(0.33, '#ff00ff');
+      bonusGradient.addColorStop(0.66, '#ffff00');
+      bonusGradient.addColorStop(1, '#00ffff');
+      ctx.fillStyle = bonusGradient;
       ctx.fillText(bonus, valueX, y - 18);
     }
     ctx.fillStyle = '#00d4ff';
