@@ -4137,21 +4137,24 @@ function takeScreenshot() {
     // Load background image and draw semi-transparent
     const bgImg = new Image();
     bgImg.onload = function() {
-      // Draw background image with transparency (contain mode, centered)
+      // Draw background image with transparency (cover mode - fill and crop)
       ctx.globalAlpha = 0.25;
       const imgAspect = bgImg.width / bgImg.height;
       const canvasAspect = width / height;
       let drawW, drawH, drawX, drawY;
+      // Cover: fill entire canvas, crop excess
       if (imgAspect > canvasAspect) {
-        drawW = width;
-        drawH = width / imgAspect;
-        drawX = 0;
-        drawY = (height - drawH) / 2;
-      } else {
+        // Image is wider - fit height, crop width
         drawH = height;
         drawW = height * imgAspect;
         drawX = (width - drawW) / 2;
         drawY = 0;
+      } else {
+        // Image is taller - fit width, crop height
+        drawW = width;
+        drawH = width / imgAspect;
+        drawX = 0;
+        drawY = (height - drawH) / 2;
       }
       ctx.drawImage(bgImg, drawX, drawY, drawW, drawH);
       ctx.globalAlpha = 1.0;
@@ -4263,45 +4266,30 @@ function downloadScreenshot(canvas) {
     : `cybertap_score(${screenshotCounter}).png`;
   screenshotCounter++;
 
-  // Convert canvas to blob for better mobile support
-  canvas.toBlob(function(blob) {
-    if (!blob) {
-      console.error('Failed to create blob from canvas');
-      return;
-    }
+  // Check if X/Twitter in-app browser (doesn't support download attribute)
+  const isInAppBrowser = /X|Twitter/i.test(navigator.userAgent) && /Mobile/i.test(navigator.userAgent);
 
-    const blobUrl = URL.createObjectURL(blob);
+  if (isInAppBrowser) {
+    // Fallback for X/Twitter in-app browser: open image in new tab
+    const dataUrl = canvas.toDataURL('image/png');
+    const newTab = window.open();
+    if (newTab) {
+      newTab.document.write('<html><head><title>' + filename + '</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;"><img src="' + dataUrl + '" style="max-width:100%;max-height:100vh;"></body></html>');
+      newTab.document.close();
+    } else {
+      window.open(dataUrl, '_blank');
+    }
+  } else {
+    // Use data URL with a tag download attribute (works on PC and mobile)
+    const dataUrl = canvas.toDataURL('image/png');
     const link = document.createElement('a');
     link.download = filename;
-    link.href = blobUrl;
+    link.href = dataUrl;
     link.style.display = 'none';
     document.body.appendChild(link);
-
-    // Check if X/Twitter in-app browser (doesn't support download attribute)
-    const isInAppBrowser = /X|Twitter/i.test(navigator.userAgent) && /Mobile/i.test(navigator.userAgent);
-
-    if (!isInAppBrowser) {
-      // Trigger download
-      link.click();
-      // Cleanup after download
-      setTimeout(function() {
-        document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
-      }, 100);
-    } else {
-      // Fallback for X/Twitter in-app browser: open image in new tab
-      document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
-      const dataUrl = canvas.toDataURL('image/png');
-      const newTab = window.open();
-      if (newTab) {
-        newTab.document.write('<html><head><title>' + filename + '</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;"><img src="' + dataUrl + '" style="max-width:100%;max-height:100vh;"></body></html>');
-        newTab.document.close();
-      } else {
-        window.open(dataUrl, '_blank');
-      }
-    }
-  }, 'image/png');
+    link.click();
+    document.body.removeChild(link);
+  }
 }
 
 // ============================================================
@@ -4439,7 +4427,7 @@ document.addEventListener('DOMContentLoaded', () => {
   tapScreen.addEventListener('click', handleTap);
   tapScreen.addEventListener('touchstart', handleTap, { passive: true });
 
-  // Handle tab visibility change - pause/resume audio
+  // Handle tab visibility change and window blur/focus - pause/resume audio
   let audioStateBeforeHidden = {
     titleBGM: false,
     gameBGM: false,
@@ -4447,47 +4435,61 @@ document.addEventListener('DOMContentLoaded', () => {
     resultBGM: false
   };
 
+  function pauseAllAudio() {
+    // Save state before pausing
+    audioStateBeforeHidden.titleBGM = titleBGM && !titleBGM.paused;
+    audioStateBeforeHidden.gameBGM = gameBGM && !gameBGM.paused;
+    audioStateBeforeHidden.musicAudio = musicAudio && !musicAudio.paused;
+    audioStateBeforeHidden.resultBGM = resultBGM && !resultBGM.paused;
+
+    // Pause all audio
+    if (titleBGM) titleBGM.pause();
+    if (gameBGM) gameBGM.pause();
+    if (musicAudio) musicAudio.pause();
+    if (resultBGM) resultBGM.pause();
+  }
+
+  function resumeAudio() {
+    const screen = gameState.currentScreen;
+
+    if (screen === 'title-screen' || screen === 'song-select' || screen === 'difficulty-select') {
+      if (audioStateBeforeHidden.titleBGM && titleBGM) {
+        titleBGM.play().catch(() => {});
+      }
+    } else if (screen === 'play-screen' && gameState.isPlaying) {
+      if (audioStateBeforeHidden.gameBGM && gameBGM) {
+        gameBGM.play().catch(() => {});
+      }
+    } else if (screen === 'music-screen') {
+      if (audioStateBeforeHidden.musicAudio && musicAudio) {
+        musicAudio.play().catch(() => {});
+      }
+    } else if (screen === 'result-screen') {
+      if (audioStateBeforeHidden.resultBGM && resultBGM) {
+        resultBGM.play().catch(() => {});
+      }
+    }
+
+    // Reset state
+    audioStateBeforeHidden = { titleBGM: false, gameBGM: false, musicAudio: false, resultBGM: false };
+  }
+
+  // Visibility change (tab switch)
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-      // Tab became hidden - pause all audio and save state
-      audioStateBeforeHidden.titleBGM = titleBGM && !titleBGM.paused;
-      audioStateBeforeHidden.gameBGM = gameBGM && !gameBGM.paused;
-      audioStateBeforeHidden.musicAudio = musicAudio && !musicAudio.paused;
-      audioStateBeforeHidden.resultBGM = resultBGM && !resultBGM.paused;
-
-      if (titleBGM) titleBGM.pause();
-      if (gameBGM) gameBGM.pause();
-      if (musicAudio) musicAudio.pause();
-      if (resultBGM) resultBGM.pause();
+      pauseAllAudio();
     } else {
-      // Tab became visible - resume based on current screen state
-      const screen = gameState.currentScreen;
-
-      if (screen === 'title-screen' || screen === 'song-select' || screen === 'difficulty-select') {
-        // Home-related screens - resume title BGM
-        if (audioStateBeforeHidden.titleBGM && titleBGM) {
-          titleBGM.play().catch(() => {});
-        }
-      } else if (screen === 'play-screen' && gameState.isPlaying) {
-        // Game is playing - resume game BGM
-        if (audioStateBeforeHidden.gameBGM && gameBGM) {
-          gameBGM.play().catch(() => {});
-        }
-      } else if (screen === 'music-screen') {
-        // Music screen - resume music player
-        if (audioStateBeforeHidden.musicAudio && musicAudio) {
-          musicAudio.play().catch(() => {});
-        }
-      } else if (screen === 'result-screen') {
-        // Result screen - resume result BGM
-        if (audioStateBeforeHidden.resultBGM && resultBGM) {
-          resultBGM.play().catch(() => {});
-        }
-      }
-
-      // Reset state
-      audioStateBeforeHidden = { titleBGM: false, gameBGM: false, musicAudio: false, resultBGM: false };
+      resumeAudio();
     }
+  });
+
+  // Window blur/focus (PC: window loses focus, e.g. Alt+Tab, click outside)
+  window.addEventListener('blur', () => {
+    pauseAllAudio();
+  });
+
+  window.addEventListener('focus', () => {
+    resumeAudio();
   });
 });
 </script>
