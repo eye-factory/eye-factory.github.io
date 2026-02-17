@@ -4605,65 +4605,13 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   let isAudioPaused = false; // Flag to prevent double-pause overwriting state
 
-  // Debug mode (?debug=1)
-  const isDebugMode = new URLSearchParams(window.location.search).get('debug') === '1';
-  let debugPanel = null;
-  let debugPlayResult = '-';
-  let debugEventLog = [];
-  let debugBranch = '-';
-
-  function addDebugEvent(msg) {
-    if (!isDebugMode) return;
-    const now = new Date();
-    const time = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
-    debugEventLog.unshift(time + ' ' + msg);
-    if (debugEventLog.length > 8) debugEventLog.pop();
-  }
-
-  if (isDebugMode) {
-    debugPanel = document.createElement('div');
-    debugPanel.id = 'debug-panel';
-    debugPanel.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:rgba(0,0,0,0.85);color:#0f0;font-size:9px;font-family:monospace;padding:6px;z-index:99999;max-height:45vh;overflow-y:auto;';
-    debugPanel.innerHTML = '<div style="font-weight:bold;color:#ff0;margin-bottom:4px;">スマホデバッグ中</div><div id="debug-content"></div><div id="debug-events" style="margin-top:6px;border-top:1px solid #444;padding-top:4px;color:#aaa;"></div>';
-    document.body.appendChild(debugPanel);
-
-    function updateDebugInfo() {
-      const content = document.getElementById('debug-content');
-      const events = document.getElementById('debug-events');
-      if (!content) return;
-      content.innerHTML = `
-        <div>hidden: <span style="color:#0ff">${document.hidden}</span> | screen: <span style="color:#0ff">${gameState.currentScreen}</span></div>
-        <div>audioState: title=<span style="color:#0ff">${audioStateBeforeHidden.titleBGM}</span> game=<span style="color:#0ff">${audioStateBeforeHidden.gameBGM}</span> music=<span style="color:#0ff">${audioStateBeforeHidden.musicAudio}</span> result=<span style="color:#0ff">${audioStateBeforeHidden.resultBGM}</span></div>
-        <div>titleBGM: exists=<span style="color:#0ff">${!!titleBGM}</span> paused=<span style="color:#0ff">${titleBGM ? titleBGM.paused : 'N/A'}</span></div>
-        <div>AudioCtx: <span style="color:#0ff">${globalAudioContext ? globalAudioContext.state : 'N/A'}</span> | isAudioPaused: <span style="color:#0ff">${isAudioPaused}</span></div>
-        <div>branch: <span style="color:#ff0">${debugBranch}</span></div>
-        <div>play(): <span style="color:#0ff">${debugPlayResult}</span></div>
-      `;
-      if (events) {
-        events.innerHTML = debugEventLog.map(e => '<div>' + e + '</div>').join('');
-      }
-    }
-
-    setInterval(updateDebugInfo, 200);
-  }
-
-  function debugLog(msg) {
-    if (isDebugMode) {
-      debugPlayResult = msg;
-      addDebugEvent('play: ' + msg);
-    }
-  }
-
-  function pauseAllAudio(source) {
-    addDebugEvent('pauseAllAudio(' + source + ') isAudioPaused=' + isAudioPaused);
-
+  function pauseAllAudio() {
     // Only save state if not already paused (prevent blur overwriting visibilitychange state)
     if (!isAudioPaused) {
       audioStateBeforeHidden.titleBGM = titleBGM && !titleBGM.paused;
       audioStateBeforeHidden.gameBGM = gameBGM && !gameBGM.paused;
       audioStateBeforeHidden.musicAudio = musicAudio && !musicAudio.paused;
       audioStateBeforeHidden.resultBGM = resultBGM && !resultBGM.paused;
-      addDebugEvent('saved: title=' + audioStateBeforeHidden.titleBGM);
     }
 
     // Pause all audio
@@ -4675,71 +4623,47 @@ document.addEventListener('DOMContentLoaded', () => {
     isAudioPaused = true;
   }
 
-  function resumeAudio(source) {
-    addDebugEvent('resumeAudio(' + source + ') isAudioPaused=' + isAudioPaused);
-
+  function resumeAudio() {
     // Only resume if actually paused
-    if (!isAudioPaused) {
-      addDebugEvent('skip: not paused');
-      return;
-    }
+    if (!isAudioPaused) return;
 
     // Resume AudioContext first (required for mobile)
     if (globalAudioContext && globalAudioContext.state === 'suspended') {
       globalAudioContext.resume();
-      addDebugEvent('AudioContext.resume()');
     }
 
     const screen = gameState.currentScreen;
-    debugBranch = 'screen=' + screen;
 
     // Helper function to play audio with retry for mobile
-    function playWithRetry(audio, name) {
+    function playWithRetry(audio) {
       if (!audio) return;
-      debugLog(name + ': trying...');
       const playPromise = audio.play();
       if (playPromise !== undefined) {
-        playPromise.then(() => {
-          debugLog(name + ': SUCCESS');
-        }).catch((err) => {
-          debugLog(name + ': FAIL1 ' + err.name);
+        playPromise.catch(() => {
           // Retry after a short delay (mobile may need this)
           setTimeout(() => {
-            audio.play().then(() => {
-              debugLog(name + ': RETRY OK');
-            }).catch((err2) => {
-              debugLog(name + ': RETRY FAIL ' + err2.name);
-            });
+            audio.play().catch(() => {});
           }, 100);
         });
       }
     }
 
     if (screen === 'title-screen' || screen === 'song-select' || screen === 'difficulty-select') {
-      debugBranch = 'title/song/diff, state=' + audioStateBeforeHidden.titleBGM;
       if (audioStateBeforeHidden.titleBGM && titleBGM) {
-        debugBranch += ' -> PLAY';
-        playWithRetry(titleBGM, 'titleBGM');
-      } else {
-        debugBranch += ' -> SKIP';
+        playWithRetry(titleBGM);
       }
     } else if (screen === 'play-screen' && gameState.isPlaying) {
-      debugBranch = 'play-screen';
       if (audioStateBeforeHidden.gameBGM && gameBGM) {
-        playWithRetry(gameBGM, 'gameBGM');
+        playWithRetry(gameBGM);
       }
     } else if (screen === 'music-screen') {
-      debugBranch = 'music-screen';
       if (audioStateBeforeHidden.musicAudio && musicAudio) {
-        playWithRetry(musicAudio, 'musicAudio');
+        playWithRetry(musicAudio);
       }
     } else if (screen === 'result-screen') {
-      debugBranch = 'result-screen';
       if (audioStateBeforeHidden.resultBGM && resultBGM) {
-        playWithRetry(resultBGM, 'resultBGM');
+        playWithRetry(resultBGM);
       }
-    } else {
-      debugBranch = 'NO MATCH: ' + screen;
     }
 
     // Reset state
@@ -4749,23 +4673,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Visibility change (tab switch)
   document.addEventListener('visibilitychange', () => {
-    addDebugEvent('visibilitychange hidden=' + document.hidden);
     if (document.hidden) {
-      pauseAllAudio('visibility');
+      pauseAllAudio();
     } else {
-      resumeAudio('visibility');
+      resumeAudio();
     }
   });
 
   // Window blur/focus (PC: window loses focus, e.g. Alt+Tab, click outside)
   window.addEventListener('blur', () => {
-    addDebugEvent('blur');
-    pauseAllAudio('blur');
+    pauseAllAudio();
   });
 
   window.addEventListener('focus', () => {
-    addDebugEvent('focus');
-    resumeAudio('focus');
+    resumeAudio();
   });
 });
 </script>
