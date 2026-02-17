@@ -3988,10 +3988,20 @@ function takeScreenshot() {
           clonedScore.style.cssText = 'opacity: 1 !important; animation: none !important; transform: none !important;';
         }
 
-        // Fix bonus element in cloned document
+        // Fix bonus element in cloned document - static glow effect
         const clonedBonus = clonedDoc.getElementById('result-bonus');
         if (clonedBonus) {
-          clonedBonus.style.cssText = 'opacity: 1 !important; animation: none !important;';
+          clonedBonus.style.cssText = `
+            opacity: 1 !important;
+            animation: none !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+            -webkit-text-fill-color: #00ffff !important;
+            color: #00ffff !important;
+            filter: none !important;
+            text-shadow: 0 0 8px #00ffff, 0 0 15px #00ffff, 0 0 25px #ff00ff, 0 0 35px #ff00ff !important;
+          `;
         }
 
         // Fix all result row values that might have animations
