@@ -3938,7 +3938,7 @@ function takeScreenshot() {
     canvas.height = 960;
     document.body.appendChild(canvas);
 
-    // 2. Draw result image on canvas
+    // 2. Get result data
     const ctx = canvas.getContext('2d');
     const gradeElement = document.getElementById('result-grade');
     const grade = gradeElement.textContent;
@@ -3966,20 +3966,18 @@ function takeScreenshot() {
     const width = 540;
     const height = 960;
 
-    // Background
-    ctx.fillStyle = '#0a0a12';
-    ctx.fillRect(0, 0, width, height);
+    // Function to draw content after background is ready
+    function drawContent() {
+      // Scanlines effect
+      ctx.strokeStyle = 'rgba(0, 212, 255, 0.03)';
+      for (let i = 0; i < height; i += 4) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(width, i);
+        ctx.stroke();
+      }
 
-    // Scanlines effect
-    ctx.strokeStyle = 'rgba(0, 212, 255, 0.03)';
-    for (let i = 0; i < height; i += 4) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(width, i);
-      ctx.stroke();
-    }
-
-    // CyberTap title
+      // CyberTap title
     ctx.font = 'bold 48px "Orbitron", sans-serif';
     ctx.fillStyle = '#00d4ff';
     ctx.textAlign = 'center';
@@ -4103,35 +4101,67 @@ function takeScreenshot() {
     ctx.font = 'bold 26px "Orbitron", sans-serif';
     ctx.fillText(miss, valueX, y);
 
-    // Footer
-    ctx.textAlign = 'center';
-    ctx.font = '16px sans-serif';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
-    ctx.fillText('eye-factory.net', width / 2, height - 30);
+      // Footer
+      ctx.textAlign = 'center';
+      ctx.font = '16px sans-serif';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.fillText('eye-factory.net', width / 2, height - 30);
 
-    // 3. Generate PNG data URL
-    const dataUrl = canvas.toDataURL('image/png');
+      // 3. Generate PNG data URL
+      const dataUrl = canvas.toDataURL('image/png');
 
-    // 4. Create hidden link with download attribute
-    const filename = screenshotCounter === 0
-      ? 'cybertap_score.png'
-      : `cybertap_score(${screenshotCounter}).png`;
-    screenshotCounter++;
+      // 4. Create hidden link with download attribute
+      const filename = screenshotCounter === 0
+        ? 'cybertap_score.png'
+        : `cybertap_score(${screenshotCounter}).png`;
+      screenshotCounter++;
 
-    const link = document.createElement('a');
-    link.style.display = 'none';
-    link.download = filename;
-    link.href = dataUrl;
-    document.body.appendChild(link);
+      const link = document.createElement('a');
+      link.style.display = 'none';
+      link.download = filename;
+      link.href = dataUrl;
+      document.body.appendChild(link);
 
-    // 5. Click link (auto download)
-    link.click();
+      // 5. Click link (auto download)
+      link.click();
 
-    // 6. Remove canvas and link from DOM
-    document.body.removeChild(canvas);
-    document.body.removeChild(link);
+      // 6. Remove canvas and link from DOM
+      document.body.removeChild(canvas);
+      document.body.removeChild(link);
+    }
 
-    // 7. Result screen unchanged - nothing else to do
+    // Draw black background first
+    ctx.fillStyle = '#0a0a12';
+    ctx.fillRect(0, 0, width, height);
+
+    // Load background image and draw semi-transparent
+    const bgImg = new Image();
+    bgImg.onload = function() {
+      // Draw background image with transparency (contain mode, centered)
+      ctx.globalAlpha = 0.25;
+      const imgAspect = bgImg.width / bgImg.height;
+      const canvasAspect = width / height;
+      let drawW, drawH, drawX, drawY;
+      if (imgAspect > canvasAspect) {
+        drawW = width;
+        drawH = width / imgAspect;
+        drawX = 0;
+        drawY = (height - drawH) / 2;
+      } else {
+        drawH = height;
+        drawW = height * imgAspect;
+        drawX = (width - drawW) / 2;
+        drawY = 0;
+      }
+      ctx.drawImage(bgImg, drawX, drawY, drawW, drawH);
+      ctx.globalAlpha = 1.0;
+      drawContent();
+    };
+    bgImg.onerror = function() {
+      // If image fails to load, just draw content without background
+      drawContent();
+    };
+    bgImg.src = 'ctap1.png';
 
   } else {
     // PC: Use html2canvas with onclone to properly capture all elements
