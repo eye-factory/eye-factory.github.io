@@ -825,7 +825,8 @@ body {
 }
 
 /* Custom tab active - section title color */
-#music-screen.custom-tab-active .section-title {
+#music-screen.custom-tab-active .section-title,
+#song-select.custom-tab-active .section-title {
   color: #7fff00;
   text-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
 }
@@ -3612,6 +3613,7 @@ function renderSongList() {
 
 function switchSongTab(tab) {
   playSE(SE.kati);
+  const songSelect = document.getElementById('song-select');
   const tabs = document.querySelectorAll('#song-select .screen-tab');
   const originalContent = document.getElementById('song-list-original');
   const customContent = document.getElementById('song-list-custom');
@@ -3623,9 +3625,11 @@ function switchSongTab(tab) {
   if (tab === 'original') {
     tabs[0].classList.add('active');
     originalContent.classList.add('active');
+    songSelect.classList.remove('custom-tab-active');
   } else {
     tabs[1].classList.add('active');
     customContent.classList.add('active');
+    songSelect.classList.add('custom-tab-active');
   }
 }
 
