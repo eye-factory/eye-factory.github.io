@@ -1365,6 +1365,37 @@ body {
   flex-direction: column;
   align-items: center;
 }
+.result-song-info {
+  text-align: center;
+  margin-bottom: clamp(10px, 2vh, 20px);
+}
+.result-song-name {
+  font-family: var(--font-en);
+  font-size: clamp(16px, 3vw, 28px);
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 0 10px var(--neon-pink);
+  margin-bottom: 5px;
+}
+.result-difficulty {
+  font-family: var(--font-en);
+  font-size: clamp(12px, 2vw, 18px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.result-difficulty.normal {
+  color: var(--neon-primary);
+  text-shadow: 0 0 8px var(--neon-primary);
+}
+.result-difficulty.hard {
+  color: #ffaa00;
+  text-shadow: 0 0 8px #ffaa00;
+}
+.result-difficulty.veryhard {
+  color: var(--neon-pink);
+  text-shadow: 0 0 8px var(--neon-pink);
+}
 #result-screen .result-title {
   font-family: var(--font-en);
   font-size: clamp(24px, 5vw, 48px);
@@ -1999,6 +2030,15 @@ body {
   .result-left {
     order: 1;
   }
+  .result-song-info {
+    margin-bottom: 5px;
+  }
+  .result-song-name {
+    font-size: 14px;
+  }
+  .result-difficulty {
+    font-size: 10px;
+  }
   #result-screen .result-title {
     font-size: 18px;
     margin-bottom: 5px;
@@ -2246,6 +2286,10 @@ body {
   <!-- Result Screen -->
   <div id="result-screen" class="screen">
     <div class="result-left">
+      <div class="result-song-info">
+        <div class="result-song-name" id="result-song-name"></div>
+        <div class="result-difficulty" id="result-difficulty"></div>
+      </div>
       <h2 class="result-title">Rank</h2>
       <div class="result-grade" id="result-grade">S</div>
       <div class="result-buttons">
@@ -3702,6 +3746,15 @@ function endGame() {
 
   // Apply result data after fade starts
   setTimeout(() => {
+    // Set song name and difficulty
+    const songName = gameState.selectedSong ? gameState.selectedSong.title : 'Unknown';
+    const difficulty = gameState.selectedDifficulty || 'normal';
+    const displayDifficulty = difficulty === 'veryhard' ? 'VERY HARD' : difficulty.toUpperCase();
+    document.getElementById('result-song-name').textContent = songName;
+    const diffElement = document.getElementById('result-difficulty');
+    diffElement.textContent = displayDifficulty;
+    diffElement.className = 'result-difficulty ' + difficulty;
+
     document.getElementById('result-grade').textContent = resultData.grade;
     document.getElementById('result-grade').className = 'result-grade ' + resultData.gradeClass;
     document.getElementById('result-score').textContent = resultData.score;
