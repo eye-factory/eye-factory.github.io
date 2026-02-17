@@ -3740,9 +3740,6 @@ function retryGame() {
   startGame(gameState.selectedDifficulty);
 }
 
-// Screenshot counter for unique filenames
-let screenshotCounter = 0;
-
 // Generate mobile vertical result image using Canvas API
 function generateMobileResultImage() {
   const canvas = document.createElement('canvas');
@@ -4277,17 +4274,21 @@ function takeScreenshot() {
         const isGodRank = gradeElement && gradeElement.classList.contains('grade-god');
         if (clonedGrade) {
           if (isGodRank) {
-            // GOD rank: luxurious rainbow gradient effect
+            // GOD rank: luxurious effect with multi-color glow (html2canvas doesn't support background-clip:text)
             clonedGrade.style.cssText = `
-              background: linear-gradient(90deg, #ff00ff, #00ffff, #ffff00, #ff00ff) !important;
-              background-size: 100% 100% !important;
-              -webkit-background-clip: text !important;
-              -webkit-text-fill-color: transparent !important;
-              background-clip: text !important;
-              filter: drop-shadow(0 0 30px #ff00ff) drop-shadow(0 0 60px #00ffff) drop-shadow(0 0 90px #ffff00) !important;
+              background: none !important;
+              -webkit-background-clip: unset !important;
+              background-clip: unset !important;
+              -webkit-text-fill-color: #ff66ff !important;
+              color: #ff66ff !important;
+              filter: none !important;
               opacity: 1 !important;
               animation: none !important;
               transform: none !important;
+              text-shadow:
+                0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 60px #ff00ff,
+                0 0 80px #00ffff, 0 0 100px #00ffff,
+                0 0 120px #ffff00, 0 0 140px #ffff00 !important;
             `;
           } else {
             clonedGrade.style.cssText = `
@@ -4343,10 +4344,8 @@ function takeScreenshot() {
 }
 
 function downloadScreenshot(canvas) {
-  const filename = screenshotCounter === 0
-    ? 'cybertap_score.png'
-    : `cybertap_score(${screenshotCounter}).png`;
-  screenshotCounter++;
+  // Fixed filename - browser handles duplicates automatically
+  const filename = 'cybertap_score.png';
 
   // Check if X/Twitter in-app browser (doesn't support download attribute)
   const isInAppBrowser = /X|Twitter/i.test(navigator.userAgent) && /Mobile/i.test(navigator.userAgent);
