@@ -1369,6 +1369,12 @@ body {
   text-align: center;
   margin-bottom: clamp(10px, 2vh, 20px);
 }
+.result-song-info.mobile-only {
+  display: none;
+}
+.result-song-info.pc-only {
+  display: block;
+}
 .result-song-name {
   font-family: var(--font-en);
   font-size: clamp(16px, 3vw, 28px);
@@ -2033,6 +2039,12 @@ body {
   .result-song-info {
     margin-bottom: 5px;
   }
+  .result-song-info.mobile-only {
+    display: block;
+  }
+  .result-song-info.pc-only {
+    display: none;
+  }
   .result-song-name {
     font-size: 14px;
   }
@@ -2286,9 +2298,9 @@ body {
   <!-- Result Screen -->
   <div id="result-screen" class="screen">
     <div class="result-left">
-      <div class="result-song-info">
-        <div class="result-song-name" id="result-song-name"></div>
-        <div class="result-difficulty" id="result-difficulty"></div>
+      <div class="result-song-info mobile-only">
+        <div class="result-song-name" id="result-song-name-mobile"></div>
+        <div class="result-difficulty" id="result-difficulty-mobile"></div>
       </div>
       <h2 class="result-title">Rank</h2>
       <div class="result-grade" id="result-grade">S</div>
@@ -2299,6 +2311,10 @@ body {
       </div>
     </div>
     <div class="result-stats">
+      <div class="result-song-info pc-only">
+        <div class="result-song-name" id="result-song-name"></div>
+        <div class="result-difficulty" id="result-difficulty"></div>
+      </div>
       <div class="result-row">
         <span class="label">Score</span>
         <span class="value score score-with-bonus">
@@ -3750,10 +3766,15 @@ function endGame() {
     const songName = gameState.selectedSong ? gameState.selectedSong.title : 'Unknown';
     const difficulty = gameState.selectedDifficulty || 'normal';
     const displayDifficulty = difficulty === 'veryhard' ? 'VERY HARD' : difficulty.toUpperCase();
+    // Set song name and difficulty for both PC and mobile elements
     document.getElementById('result-song-name').textContent = songName;
+    document.getElementById('result-song-name-mobile').textContent = songName;
     const diffElement = document.getElementById('result-difficulty');
+    const diffElementMobile = document.getElementById('result-difficulty-mobile');
     diffElement.textContent = displayDifficulty;
     diffElement.className = 'result-difficulty ' + difficulty;
+    diffElementMobile.textContent = displayDifficulty;
+    diffElementMobile.className = 'result-difficulty ' + difficulty;
 
     document.getElementById('result-grade').textContent = resultData.grade;
     document.getElementById('result-grade').className = 'result-grade ' + resultData.gradeClass;
