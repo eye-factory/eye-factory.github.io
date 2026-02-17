@@ -2830,7 +2830,7 @@ function renderMusicList() {
           <span class="music-duration">${formatDuration(song.duration)}</span>
         </div>
       </div>
-      <a class="music-download-btn" href="${song.audioFile}" download="${song.audioFile}" onclick="event.stopPropagation(); playSE(SE.dj_2); showDownloadPopup()">Download</a>
+      <button class="music-download-btn" onclick="event.stopPropagation(); downloadMusic('${song.audioFile}')">Download</button>
     `;
     item.onclick = () => playMusicTrack(index);
     container.appendChild(item);
@@ -2932,6 +2932,20 @@ function showDownloadPopup() {
   setTimeout(() => {
     popup.classList.remove('show');
   }, 2500);
+}
+
+function downloadMusic(audioFile) {
+  playSE(SE.dj_2);
+  showDownloadPopup();
+
+  // Create hidden link and trigger download
+  const link = document.createElement('a');
+  link.href = audioFile;
+  link.download = audioFile;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
 // ============================================================
