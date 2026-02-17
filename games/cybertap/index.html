@@ -1503,8 +1503,9 @@ body {
 /* Difficulty bonus display */
 .score-with-bonus {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
 }
 .difficulty-bonus {
   font-family: var(--font-en);
@@ -1520,14 +1521,15 @@ body {
   filter: drop-shadow(0 0 3px rgba(0, 255, 255, 0.8)) drop-shadow(0 0 6px rgba(255, 0, 255, 0.6));
   opacity: 0;
   animation: bonusReveal 0.5s ease-out 1s forwards, bonusShimmer 2s linear 1s infinite;
+  min-height: 1em;
 }
 @keyframes bonusShimmer {
   0% { background-position: 0% 50%; }
   100% { background-position: 300% 50%; }
 }
 @keyframes bonusReveal {
-  0% { opacity: 0; transform: translateX(-10px) scale(0.8); }
-  100% { opacity: 1; transform: translateX(0) scale(1); }
+  0% { opacity: 0; transform: translateY(5px) scale(0.8); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .result-stats {
@@ -2256,8 +2258,8 @@ body {
       <div class="result-row">
         <span class="label">Score</span>
         <span class="value score score-with-bonus">
-          <span id="result-score">0</span>
           <span class="difficulty-bonus" id="result-bonus"></span>
+          <span id="result-score">0</span>
         </span>
       </div>
       <div class="result-row">
@@ -3848,13 +3850,19 @@ function generateMobileResultImage() {
   let y = boxY + 50;
   const lineHeight = 52;
 
-  // Score
+  // Score (with bonus above if exists)
   ctx.fillStyle = '#888888';
   ctx.fillText('Score', labelX, y);
   ctx.textAlign = 'right';
+  if (bonus) {
+    // Draw bonus above score
+    ctx.fillStyle = '#00ffff';
+    ctx.font = 'bold 14px "Orbitron", sans-serif';
+    ctx.fillText(bonus, valueX, y - 18);
+  }
   ctx.fillStyle = '#00d4ff';
   ctx.font = 'bold 28px "Orbitron", sans-serif';
-  ctx.fillText(score + (bonus ? ' ' + bonus : ''), valueX, y);
+  ctx.fillText(score, valueX, y);
 
   y += lineHeight;
   ctx.textAlign = 'left';
@@ -4031,13 +4039,19 @@ function takeScreenshot() {
     let y = boxY + 50;
     const lineHeight = 52;
 
-    // Score
+    // Score (with bonus above if exists)
     ctx.fillStyle = '#888888';
     ctx.fillText('Score', labelX, y);
     ctx.textAlign = 'right';
+    if (bonus) {
+      // Draw bonus above score
+      ctx.fillStyle = '#00ffff';
+      ctx.font = 'bold 14px "Orbitron", sans-serif';
+      ctx.fillText(bonus, valueX, y - 18);
+    }
     ctx.fillStyle = '#00d4ff';
     ctx.font = 'bold 28px "Orbitron", sans-serif';
-    ctx.fillText(score + (bonus ? ' ' + bonus : ''), valueX, y);
+    ctx.fillText(score, valueX, y);
 
     y += lineHeight;
     ctx.textAlign = 'left';
