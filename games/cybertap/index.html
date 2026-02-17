@@ -816,8 +816,24 @@ body {
 .song-item.custom {
   border-color: rgba(127, 255, 0, 0.4);
 }
-.song-item.custom:hover {
+.song-item.custom:hover, .song-item.custom.selected {
   border-color: #7fff00;
+  box-shadow: 0 0 20px rgba(127, 255, 0, 0.3);
+}
+.song-item.custom .song-title {
+  color: #7fff00;
+}
+
+/* Custom tab active - section title color */
+#music-screen.custom-tab-active .section-title {
+  color: #7fff00;
+  text-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
+}
+
+/* Difficulty select - custom song name */
+#selected-song-name.custom {
+  color: #7fff00 !important;
+  text-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
 }
 .custom-badge {
   font-size: 10px;
@@ -3409,6 +3425,7 @@ function renderMusicList() {
 
 function switchMusicTab(tab) {
   playSE(SE.kati);
+  const musicScreen = document.getElementById('music-screen');
   const tabs = document.querySelectorAll('#music-screen .screen-tab');
   const originalContent = document.getElementById('music-list-original');
   const customContent = document.getElementById('music-list-custom');
@@ -3420,9 +3437,11 @@ function switchMusicTab(tab) {
   if (tab === 'original') {
     tabs[0].classList.add('active');
     originalContent.classList.add('active');
+    musicScreen.classList.remove('custom-tab-active');
   } else {
     tabs[1].classList.add('active');
     customContent.classList.add('active');
+    musicScreen.classList.add('custom-tab-active');
   }
 }
 
@@ -3620,7 +3639,9 @@ function selectCustomSong(song) {
     audioFile: audioUrl,
     isCustom: true
   };
-  document.getElementById('selected-song-name').textContent = song.title;
+  const songNameEl = document.getElementById('selected-song-name');
+  songNameEl.textContent = song.title;
+  songNameEl.classList.add('custom');
   updateDifficultyBestScores(song.id);
   showScreen('difficulty-select');
 }
@@ -3628,7 +3649,9 @@ function selectCustomSong(song) {
 function selectSong(song) {
   playSE(SE.kati);
   gameState.selectedSong = song;
-  document.getElementById('selected-song-name').textContent = song.title;
+  const songNameEl = document.getElementById('selected-song-name');
+  songNameEl.textContent = song.title;
+  songNameEl.classList.remove('custom');
   updateDifficultyBestScores(song.id);
   showScreen('difficulty-select');
 }
