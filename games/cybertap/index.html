@@ -5119,6 +5119,14 @@ function initAudioContext() {
       source.start(0);
     } catch(e) {}
   }
+  // Auto-resume AudioContext when suspended during gameplay (iOS Safari fix)
+  if (globalAudioContext) {
+    globalAudioContext.onstatechange = () => {
+      if (globalAudioContext.state === 'suspended' && gameState.isPlaying) {
+        globalAudioContext.resume();
+      }
+    };
+  }
 }
 
 // Unlock all audio elements (required for mobile browsers, especially X app WebView)
@@ -5162,6 +5170,13 @@ function startTitleBGMDelayed() {
 document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('touchmove', e => {
     if (gameState.isPlaying) e.preventDefault();
+  }, { passive: false });
+
+  // Prevent double-tap zoom on play screen (iOS Safari fix)
+  document.getElementById('play-screen').addEventListener('touchstart', (e) => {
+    if (gameState.isPlaying) {
+      e.preventDefault();
+    }
   }, { passive: false });
 
   // Load volume settings
