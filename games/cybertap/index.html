@@ -3943,6 +3943,9 @@ function generateCircles() {
     // HitTime is sequential (notes arrive in number order)
     const hitTime = firstHitTime + (i * hitInterval);
 
+    // Stop generating notes if hitTime exceeds 1 second before song end
+    if (hitTime > (song.duration * 1000) - 1000) break;
+
     // AppearTime is calculated backwards from hitTime
     // Apply speed multiplier for Very Hard (faster approach)
     const adjustedApproachTime = typeConfig.approachTime / difficultyConfig.speedMultiplier;
