@@ -2621,7 +2621,7 @@ body {
     <div class="create-form">
       <div class="create-row">
         <label>MP3 File</label>
-        <input type="file" id="create-file" accept="audio/mpeg,.mp3" onchange="handleCreateFileSelect(this)">
+        <input type="file" id="create-file" accept="audio/*" onchange="handleCreateFileSelect(this)">
         <div class="create-file-info" id="create-file-info"></div>
       </div>
       <div class="create-row">
@@ -3551,11 +3551,32 @@ function showDownloadPopup() {
   }, 2500);
 }
 
-function downloadMusic(audioFile) {
+async function downloadMusic(audioFile) {
   playSE(SE.dj_2);
   showDownloadPopup();
 
-  // Create hidden link and trigger download
+  // iOS Safari: Use Web Share API
+  const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  if (isIOS) {
+    if (navigator.share && navigator.canShare) {
+      try {
+        const response = await fetch(audioFile);
+        const blob = await response.blob();
+        const file = new File([blob], audioFile, { type: 'audio/mpeg' });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file] });
+          return;
+        }
+      } catch (e) {
+        // Fall through to fallback
+      }
+    }
+    // Fallback: open in new tab
+    window.open(audioFile, '_blank');
+    return;
+  }
+
+  // Android/PC: Create hidden link and trigger download
   const link = document.createElement('a');
   link.href = audioFile;
   link.download = audioFile;
@@ -4882,7 +4903,7 @@ function takeScreenshot() {
       // 3. Generate PNG data URL
       const dataUrl = canvas.toDataURL('image/png');
 
-      // 4. Create hidden link with download attribute (with timestamp filename)
+      // 4. Create filename with timestamp
       const now = new Date();
       const timestamp = now.getFullYear().toString() +
         String(now.getMonth() + 1).padStart(2, '0') +
@@ -4892,6 +4913,31 @@ function takeScreenshot() {
         String(now.getSeconds()).padStart(2, '0');
       const filename = `cybertap_score_${timestamp}.png`;
 
+      // iOS Safari: Use Web Share API
+      const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+      if (isIOS) {
+        (async () => {
+          if (navigator.share && navigator.canShare) {
+            try {
+              const blob = await (await fetch(dataUrl)).blob();
+              const file = new File([blob], filename, { type: 'image/png' });
+              if (navigator.canShare({ files: [file] })) {
+                await navigator.share({ files: [file] });
+                document.body.removeChild(canvas);
+                return;
+              }
+            } catch (e) {
+              // Fall through to fallback
+            }
+          }
+          // Fallback: open image in new tab
+          window.open(dataUrl, '_blank');
+          document.body.removeChild(canvas);
+        })();
+        return;
+      }
+
+      // Android/PC: Create hidden link and trigger download
       const link = document.createElement('a');
       link.style.display = 'none';
       link.download = filename;
