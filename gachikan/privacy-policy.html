@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>プライバシーポリシー | ガチカン - eye-factory</title>
+<meta name="description" content="ガチカン -設定推測収支帳カスタム機能付き小役カウンター- のプライバシーポリシー">
+<link rel="canonical" href="https://eye-factory.net/gachikan/privacy-policy.html">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="256x256" href="/favicon.png">
+<link rel="apple-touch-icon" sizes="256x256" href="/favicon.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg-card: rgba(15, 15, 25, 0.8);
+  --text: #e0e0e0;
+  --text-sub: #8a8a9a;
+  --neon-primary: #00d4ff;
+  --neon-secondary: #00ff88;
+  --neon-pink: #ff00aa;
+  --neon-purple: #8b5cf6;
+  --border: rgba(0, 212, 255, 0.2);
+  --border-hover: rgba(0, 212, 255, 0.6);
+  --radius: 12px;
+  --glow-soft: 0 0 5px var(--neon-primary), 0 0 10px rgba(0, 212, 255, 0.5);
+  --font-en: 'Orbitron', sans-serif;
+  --font-display: 'Rajdhani', sans-serif;
+  --font-ja: 'Noto Sans JP', sans-serif;
+  --font-body: var(--font-ja);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* --- Header --- */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(10, 10, 15, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+.header-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: var(--text);
+}
+.logo-icon {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-family: var(--font-en);
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+.logo-text {
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.back-link {
+  font-size: 13px;
+  font-family: var(--font-en);
+  color: var(--text-sub);
+  text-decoration: none;
+  transition: var(--transition);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.back-link:hover {
+  color: var(--neon-primary);
+  text-shadow: 0 0 10px var(--neon-primary);
+}
+
+/* --- Main Content --- */
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+}
+
+.page-title {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  margin-bottom: 20px;
+  color: var(--text);
+  text-align: center;
+}
+
+.app-name {
+  font-size: 14px;
+  color: var(--neon-primary);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.last-updated {
+  font-size: 12px;
+  color: var(--text-sub);
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.content-section {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px;
+  margin-bottom: 30px;
+  backdrop-filter: blur(10px);
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--neon-primary);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-content {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--text);
+}
+
+.section-content p {
+  margin-bottom: 12px;
+}
+
+.section-content p:last-child {
+  margin-bottom: 0;
+}
+
+.section-content a {
+  color: var(--neon-primary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.section-content a:hover {
+  text-shadow: 0 0 10px var(--neon-primary);
+}
+
+/* --- Footer --- */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 50px 24px;
+  text-align: center;
+  background: rgba(5, 5, 10, 0.8);
+}
+.footer-inner {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.footer-copy {
+  font-size: 12px;
+  color: var(--text-sub);
+  font-family: var(--font-en);
+  letter-spacing: 0.1em;
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .header-inner {
+    height: 54px;
+    padding: 0 16px;
+  }
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+  .logo-text {
+    font-size: 16px;
+  }
+  main {
+    padding: 40px 16px 80px;
+  }
+  .content-section {
+    padding: 24px;
+  }
+  .section-title {
+    font-size: 16px;
+  }
+  .section-content {
+    font-size: 13px;
+  }
+  footer {
+    padding: 30px 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="header-inner">
+    <a href="/" class="logo">
+      <div class="logo-icon">ef</div>
+      <span class="logo-text">eye-factory</span>
+    </a>
+    <a href="/" class="back-link">Back to Top</a>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<main>
+  <p class="app-name">ガチカン -設定推測収支帳カスタム機能付き小役カウンター-</p>
+  <h1 class="page-title">プライバシーポリシー</h1>
+  <p class="last-updated">最終更新日: 2026年3月1日</p>
+
+  <!-- 1. はじめに -->
+  <section class="content-section">
+    <h2 class="section-title">1. はじめに</h2>
+    <div class="section-content">
+      <p>このプライバシーポリシーは、eye-factoryが提供するAndroidアプリ「ガチカン -設定推測収支帳カスタム機能付き小役カウンター-」（以下「本アプリ」）に適用されます。</p>
+      <p>本アプリをご利用いただくことで、このプライバシーポリシーに同意したものとみなします。</p>
+    </div>
+  </section>
+
+  <!-- 2. 収集する情報 -->
+  <section class="content-section">
+    <h2 class="section-title">2. 収集する情報</h2>
+    <div class="section-content">
+      <p>本アプリはユーザーの個人情報を収集しません。</p>
+      <p>カウントデータや収支データなど、アプリ内で入力・生成されるすべてのデータは、ユーザーの端末内にローカル保存されます。これらのデータが外部サーバーへ送信されることはありません。</p>
+    </div>
+  </section>
+
+  <!-- 3. 広告について -->
+  <section class="content-section">
+    <h2 class="section-title">3. 広告について</h2>
+    <div class="section-content">
+      <p>本アプリには広告は含まれていません。</p>
+      <p>そのため、広告配信に関連する情報収集やトラッキングは行われません。</p>
+    </div>
+  </section>
+
+  <!-- 4. 第三者へのデータ提供 -->
+  <section class="content-section">
+    <h2 class="section-title">4. 第三者へのデータ提供</h2>
+    <div class="section-content">
+      <p>ユーザーのデータを第三者に提供、販売、共有することはありません。</p>
+    </div>
+  </section>
+
+  <!-- 5. データの保存 -->
+  <section class="content-section">
+    <h2 class="section-title">5. データの保存</h2>
+    <div class="section-content">
+      <p>すべてのデータはユーザーの端末内にのみ保存されます。</p>
+      <p>本アプリをアンインストール（削除）すると、アプリに関連するすべてのデータも端末から削除されます。</p>
+    </div>
+  </section>
+
+  <!-- 6. お子様のプライバシー -->
+  <section class="content-section">
+    <h2 class="section-title">6. お子様のプライバシー</h2>
+    <div class="section-content">
+      <p>本アプリは13歳未満のお子様から意図的に個人情報を収集することはありません。</p>
+      <p>13歳未満のお子様からの個人情報を誤って収集したことが判明した場合は、速やかに該当情報を削除するための措置を講じます。</p>
+    </div>
+  </section>
+
+  <!-- 7. プライバシーポリシーの変更 -->
+  <section class="content-section">
+    <h2 class="section-title">7. プライバシーポリシーの変更</h2>
+    <div class="section-content">
+      <p>本プライバシーポリシーは、必要に応じて変更されることがあります。</p>
+      <p>変更がある場合は、このページを更新し、最終更新日を変更します。定期的にこのページをご確認いただくことをお勧めします。</p>
+    </div>
+  </section>
+
+  <!-- 8. お問い合わせ -->
+  <section class="content-section">
+    <h2 class="section-title">8. お問い合わせ</h2>
+    <div class="section-content">
+      <p>本プライバシーポリシーに関するご質問やお問い合わせは、以下のメールアドレスまでご連絡ください。</p>
+      <p><a href="mailto:eye.factory.info@gmail.com">eye.factory.info@gmail.com</a></p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-copy">&copy; 2026 eye-factory. All rights reserved.</div>
+  </div>
+</footer>
+
+</body>
+</html>
