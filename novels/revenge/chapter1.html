@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>復讐の館 - 1人目「運が悪かった、ただそれだけだ」| eye-factory</title>
+    <meta name="description" content="短編小説シリーズ「復讐の館」第一話。信頼していた上司に裏切られた男の物語。">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080808;
+            --bg-darker: #040404;
+            --bg-card: rgba(12, 8, 8, 0.95);
+            --text: #d8d8d8;
+            --text-dim: #a0a0a0;
+            --text-muted: #606060;
+            --blood: #8b0000;
+            --blood-bright: #cc0000;
+            --blood-dark: #4a0000;
+            --blood-glow: rgba(139, 0, 0, 0.6);
+            --border: rgba(80, 0, 0, 0.4);
+            --font-body: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+            --font-serif: 'Noto Serif JP', 'Yu Mincho', serif;
+            --transition: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 2.2;
+            min-height: 100vh;
+        }
+
+        /* Dark Vignette Background */
+        .bg-effect {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            background:
+                radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.4) 70%, rgba(0, 0, 0, 0.8) 100%),
+                radial-gradient(ellipse at 20% 80%, rgba(60, 0, 0, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(40, 0, 0, 0.1) 0%, transparent 40%),
+                var(--bg);
+        }
+
+        /* Blood Drip Effect (Top of Page) */
+        .blood-drip {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(180deg, var(--blood) 0%, transparent 100%);
+            z-index: 99;
+        }
+
+        .blood-drip::before,
+        .blood-drip::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            background: var(--blood);
+            border-radius: 0 0 50% 50%;
+        }
+
+        .blood-drip::before {
+            left: 15%;
+            width: 6px;
+            height: 35px;
+            animation: drip 4s ease-in-out infinite;
+        }
+
+        .blood-drip::after {
+            left: 75%;
+            width: 4px;
+            height: 25px;
+            animation: drip 5s ease-in-out infinite 1s;
+        }
+
+        @keyframes drip {
+            0%, 100% { height: 25px; opacity: 0.8; }
+            50% { height: 45px; opacity: 1; }
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 8px;
+            left: 0;
+            right: 0;
+            padding: 1rem 2rem;
+            background: rgba(4, 4, 4, 0.95);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            transition: var(--transition);
+        }
+
+        .header-logo:hover {
+            opacity: 1;
+            color: var(--blood-bright);
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .header-nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .header-nav a:hover {
+            color: var(--blood-bright);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 7rem 1.5rem 4rem;
+        }
+
+        /* Cover Image */
+        .cover-wrapper {
+            width: 100%;
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 10px 40px rgba(0, 0, 0, 0.8),
+                0 0 60px rgba(139, 0, 0, 0.2);
+        }
+
+        .cover-wrapper::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 2px solid transparent;
+            border-image: linear-gradient(135deg, var(--blood) 0%, transparent 50%, var(--blood-dark) 100%) 1;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .cover-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            filter: brightness(0.9) contrast(1.1);
+        }
+
+        .cover-placeholder {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, #0c0808 0%, #080404 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border: 1px solid var(--border);
+        }
+
+        /* Title Section with Blood Splatter */
+        .title-section {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-bottom: 3rem;
+            position: relative;
+        }
+
+        .title-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--blood), transparent);
+        }
+
+        /* Blood Splatter behind title */
+        .series-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            margin-bottom: 1.5rem;
+            color: var(--text);
+            position: relative;
+            display: inline-block;
+        }
+
+        .series-title::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 150%;
+            background:
+                radial-gradient(ellipse 8px 12px at 10% 30%, var(--blood) 0%, transparent 70%),
+                radial-gradient(ellipse 6px 8px at 85% 25%, var(--blood-dark) 0%, transparent 70%),
+                radial-gradient(ellipse 10px 6px at 90% 70%, var(--blood) 0%, transparent 70%),
+                radial-gradient(ellipse 5px 10px at 5% 75%, var(--blood-dark) 0%, transparent 70%),
+                radial-gradient(ellipse 4px 4px at 30% 10%, var(--blood-bright) 0%, transparent 70%),
+                radial-gradient(ellipse 3px 6px at 70% 85%, var(--blood) 0%, transparent 70%);
+            opacity: 0.7;
+            z-index: -1;
+            filter: blur(1px);
+        }
+
+        .episode-title {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: var(--text-dim);
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+
+        .chapter-indicator {
+            display: inline-block;
+            margin-top: 2rem;
+            padding: 0.5rem 1.5rem;
+            background: rgba(139, 0, 0, 0.15);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            letter-spacing: 0.1em;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .chapter-indicator::before,
+        .chapter-indicator::after {
+            content: '';
+            position: absolute;
+            background: var(--blood);
+            border-radius: 50%;
+        }
+
+        .chapter-indicator::before {
+            top: -3px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            opacity: 0.8;
+        }
+
+        .chapter-indicator::after {
+            bottom: -2px;
+            left: -4px;
+            width: 5px;
+            height: 5px;
+            opacity: 0.6;
+        }
+
+        /* Novel Content */
+        .novel-content {
+            font-family: var(--font-body);
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+            font-weight: 400;
+            color: var(--text);
+            line-height: 2.4;
+        }
+
+        .novel-content p {
+            margin-bottom: 0;
+            text-indent: 0;
+        }
+
+        .novel-content .line {
+            display: block;
+            margin-bottom: 0.5em;
+        }
+
+        .novel-content .scene-break {
+            display: block;
+            height: 3em;
+        }
+
+        .novel-content .dialogue {
+            color: var(--text);
+        }
+
+        .novel-content .emphasis {
+            color: #c0c0c0;
+            font-weight: 500;
+        }
+
+        /* Section Divider with Blood */
+        .section-divider {
+            text-align: center;
+            margin: 3rem 0;
+            position: relative;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 20px;
+            background:
+                radial-gradient(ellipse 15px 8px at 30% 50%, var(--blood) 0%, transparent 70%),
+                radial-gradient(ellipse 10px 5px at 70% 40%, var(--blood-dark) 0%, transparent 70%),
+                radial-gradient(ellipse 8px 4px at 50% 60%, var(--blood-bright) 0%, transparent 70%);
+            opacity: 0.5;
+            filter: blur(2px);
+        }
+
+        .section-divider span {
+            color: var(--blood);
+            font-size: 1.2rem;
+            letter-spacing: 0.5em;
+            opacity: 0.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Navigation with Blood Accent */
+        .chapter-nav {
+            margin-top: 5rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            position: relative;
+        }
+
+        .chapter-nav::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 30%;
+            width: 40%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--blood), transparent);
+        }
+
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(139, 0, 0, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .nav-button:hover::before {
+            left: 100%;
+        }
+
+        .nav-button:hover {
+            border-color: var(--blood);
+            color: var(--text);
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.3);
+        }
+
+        .nav-button.primary {
+            background: rgba(139, 0, 0, 0.15);
+            border-color: var(--blood);
+            color: var(--text);
+        }
+
+        .nav-button.primary:hover {
+            background: rgba(139, 0, 0, 0.3);
+            box-shadow: 0 0 20px rgba(139, 0, 0, 0.4);
+        }
+
+        .nav-button.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer a:hover {
+            color: var(--blood-bright);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 6rem 1rem 3rem;
+            }
+
+            .header {
+                padding: 0.8rem 1rem;
+            }
+
+            .header-nav {
+                gap: 1rem;
+            }
+
+            .chapter-nav {
+                flex-direction: column;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .novel-content {
+                line-height: 2.2;
+            }
+
+            .series-title::before {
+                display: none;
+            }
+        }
+
+        /* Reading Progress - Blood Red */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--blood-dark), var(--blood), var(--blood-bright));
+            z-index: 101;
+            transition: width 0.1s;
+            box-shadow: 0 0 10px var(--blood-glow);
+        }
+
+        /* Scroll to top */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 48px;
+            height: 48px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text-dim);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: rgba(139, 0, 0, 0.3);
+            border-color: var(--blood);
+            color: var(--text);
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-effect"></div>
+    <div class="blood-drip"></div>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <header class="header">
+        <a href="../../index.html" class="header-logo">eye-factory</a>
+        <nav class="header-nav">
+            <a href="index.html">目次</a>
+            <a href="../../index.html">トップ</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Cover Image -->
+        <div class="cover-wrapper">
+            <img src="revenge_cover.png" alt="復讐の館 表紙" class="cover-image"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="cover-placeholder" style="display:none;">表紙画像 (revenge_cover.png)</div>
+        </div>
+
+        <!-- Title -->
+        <section class="title-section">
+            <h1 class="series-title">復讐の館</h1>
+            <p class="episode-title">1人目「運が悪かった、ただそれだけだ」</p>
+            <span class="chapter-indicator">第一章</span>
+        </section>
+
+        <!-- Novel Content -->
+        <article class="novel-content">
+            <p>
+                <span class="line">小さい頃から、勉強だけは得意だった。</span>
+                <span class="line">田舎で居酒屋を営む親父とお袋は、通知表を持って帰るたびにお袋はいつも頭を撫でてくれた。</span>
+                <span class="line">親父は何も言わなかったけど、その夜だけは晩酌のペースが早くなる。</span>
+                <span class="line">それが褒め言葉だって、なんとなくわかってた。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">夕食の時間に、ずっと気になっていたことがあった。</span>
+                <span class="line">俺の前には必ず肉や魚が並ぶのに、親父とお袋の前には漬物と味噌汁だけのことが多かった。</span>
+                <span class="line">気になりながらも聞けずにいたけど、ある夜思い切って声に出した。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line dialogue">「なんで二人はそれだけなの」</span>
+            </p>
+
+            <p>
+                <span class="line">お袋は箸を止めて、柔らかく笑った。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「少食だからいいんだよ。ありがとうね、サトシ」</span>
+            </p>
+
+            <p>
+                <span class="line">親父は何も言わず、黙って茶碗を持ち上げた。</span>
+                <span class="line">その答えを、俺はずっと信じていた。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">高校三年の春、進路が固まったころに奨学金の話を出した。</span>
+                <span class="line">学費のことが心配だった。</span>
+                <span class="line">でも親父がそれを聞いた瞬間、珍しく強い口調で言った。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「いらん」</span>
+            </p>
+
+            <p>
+                <span class="line">それだけだった。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">大学に入学する前、お袋から封筒を渡された。</span>
+                <span class="line">中を見て、言葉が出なかった。</span>
+                <span class="line">四年分の学費と、一人暮らしの初期費用が、全部入っていた。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「いつの間に」</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「少しずつためてたから、心配しないで」</span>
+            </p>
+
+            <p>
+                <span class="line">そう言ってお袋は笑った。</span>
+                <span class="line">あの夕食の意味が、その瞬間やっとわかった。</span>
+                <span class="line">少食だから、じゃなかった。</span>
+                <span class="line emphasis">俺のために、ずっと切り詰めて生きてきたんだ。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">だから頑張った。</span>
+                <span class="line">二人を幸せにしたかった。</span>
+                <span class="line">ただ、それだけだった。</span>
+            </p>
+
+            <p>
+                <span class="line">四年間死ぬ気で勉強した。</span>
+                <span class="line">内定通知を見た夜、お袋が電話口で泣いた。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「サトシ、本当によかった。本当に、よかったね」</span>
+            </p>
+
+            <p>
+                <span class="line">声が震えていた。</span>
+                <span class="line">俺は受話器を握りしめたまま、天井を見上げた。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">親父からは後日、小包が届いた。</span>
+                <span class="line">手紙は短かった。</span>
+            </p>
+
+            <p>
+                <span class="line">――社会人になるんだから、いい時計をしていけ。</span>
+            </p>
+
+            <p>
+                <span class="line">箱を開けると、丁寧に梱包された腕時計が入っていた。</span>
+                <span class="line">高級品じゃない。</span>
+                <span class="line">でも居酒屋の親父が買うには少し背伸びした値段のやつだって、すぐわかった。</span>
+            </p>
+
+            <p>
+                <span class="line">泣かなかった。</span>
+                <span class="line">泣いたら負けな気がして、その時計を左手首にはめて、東京に出た。</span>
+            </p>
+
+            <div class="section-divider"><span>†</span></div>
+
+            <p>
+                <span class="line emphasis">東和証券。</span>
+                <span class="line">誰もが知っている名前だ。</span>
+            </p>
+
+            <p>
+                <span class="line">配属先の営業二課で、最初に声をかけてきたのが剛山課長だった。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「杉本、飯行くぞ」</span>
+            </p>
+
+            <p>
+                <span class="line">入社三日目の昼休み。</span>
+                <span class="line">有無を言わさない口調だったけど、悪い気はしなかった。</span>
+                <span class="line">剛山課長は部下の面倒見がいいと課内で通っていた。</span>
+                <span class="line">四十代半ば、豪快な笑い方をする人だった。</span>
+            </p>
+
+            <p>
+                <span class="line">おごってもらった焼肉屋で、剛山課長はビールを傾けながら口の端を上げた。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「お前、見込みあるわ。俺が育ててやる」</span>
+            </p>
+
+            <p>
+                <span class="line">素直にそれを信じた。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">最初の一年は、本当にそうだった。</span>
+                <span class="line">顧客の攻略法、上の人間との付き合い方、数字の作り方。</span>
+                <span class="line">飲み会に連れていってもらい、ある夜は行きつけのキャバクラにも連れていってもらった。</span>
+            </p>
+
+            <p>
+                <span class="line">店に入るなり、ナナと名乗る女の子が剛山課長に飛びついた。</span>
+                <span class="line">慣れた様子で、常連だとすぐわかった。</span>
+                <span class="line">俺の隣にはイオリという子が座った。</span>
+                <span class="line">おとなしそうな、素朴な笑顔の子だった。</span>
+            </p>
+
+            <p>
+                <span class="line">しばらくして剛山課長が俺を指さしながら笑った。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「こいつ、うちの課で一番伸びしろあるんだよ」</span>
+            </p>
+
+            <p>
+                <span class="line">ナナが間髪入れずに乗っかった。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「そうなんですか。剛山課長が言うなら間違いないですよ」</span>
+            </p>
+
+            <p>
+                <span class="line">剛山課長は上機嫌で笑った。</span>
+            </p>
+
+            <p>
+                <span class="line">その時、隣に座っていたイオリが俺の方を向いて静かに言った。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「頑張り屋さんなんですね。素敵です」</span>
+            </p>
+
+            <p>
+                <span class="line">お世辞じゃない笑顔だった。</span>
+                <span class="line">俺は少し戸惑って、曖昧に笑い返した。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">場違いな空間だったけど、剛山課長は楽しそうに笑っていた。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「たまには羽伸ばさないとな。真面目すぎるんだよ、お前は」</span>
+            </p>
+
+            <p>
+                <span class="line">俺も笑った。</span>
+                <span class="line">その頃はまだ、剛山課長のことを信頼していた。</span>
+                <span class="line">こんな上司の下で働けるなら、頑張れると思っていた。</span>
+            </p>
+
+            <p>
+                <span class="line">その感覚が、どれだけ高くつくか。</span>
+                <span class="line emphasis">この時はまだ、何も知らなかった。</span>
+            </p>
+
+            <div class="section-divider"><span>†</span></div>
+
+            <p>
+                <span class="line">問題が起きたのは、入社二年目の秋だった。</span>
+            </p>
+
+            <p>
+                <span class="line">剛山課長に呼ばれたのは、ある月曜の朝だった。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「杉本、ちょっといいか」</span>
+            </p>
+
+            <p>
+                <span class="line">会議室に連れていかれた。</span>
+                <span class="line">剛山課長は珍しく声を落として話し始めた。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「上のお客さんに、いい商品があるんだが」</span>
+            </p>
+
+            <p>
+                <span class="line">資産家の老夫婦への提案だった。</span>
+                <span class="line">仕組債。</span>
+                <span class="line">複雑な金融商品で、条件次第では元本が大きく目減りする。</span>
+                <span class="line">俺には少し難しい案件だと思った。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「課長、リスクの説明は」</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「俺が全部やる。お前は書類の処理だけしとけ」</span>
+            </p>
+
+            <p>
+                <span class="line">そう言われた。</span>
+                <span class="line">課長の指示だった。</span>
+                <span class="line">信頼していた。</span>
+                <span class="line">だから従った。</span>
+            </p>
+
+            <p>
+                <span class="line">それだけだった。</span>
+                <span class="line">それだけのはずだった。</span>
+            </p>
+
+            <div class="section-divider"><span>†</span></div>
+
+            <p>
+                <span class="line">最初の電話が来たのは、三ヶ月後だった。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「どういうことだ。話が違う」</span>
+            </p>
+
+            <p>
+                <span class="line">老人の声だった。</span>
+                <span class="line">低く、抑えた怒りが滲んでいた。</span>
+                <span class="line">仕組債の条件が悪化して、老後のために貯めた1億円のうち8千万以上が消えたという。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「リスクなんて聞いていない。説明もなかった」</span>
+            </p>
+
+            <p>
+                <span class="line">血の気が引いた。</span>
+                <span class="line">すぐに剛山課長に相談しに行った。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「課長、例の件なんですが、お客様から——」</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「は？　それお前が担当だろ」</span>
+            </p>
+
+            <p>
+                <span class="line">書類から目を上げずに言った。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「俺は関係ない。お前が処理しろ」</span>
+            </p>
+
+            <p>
+                <span class="line">その言葉の意味が、すぐには理解できなかった。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">後で稟議書を確認して、やっとわかった。</span>
+                <span class="line emphasis">書類が変わっていた。</span>
+                <span class="line">剛山課長の名前が消えていた。</span>
+                <span class="line">代わりに、俺の名前だけが残っていた。</span>
+                <span class="line">リスク説明を行ったのは担当の杉本、と。</span>
+                <span class="line">そう書いてあった。</span>
+            </p>
+
+            <p>
+                <span class="line">手が震えた。</span>
+                <span class="line emphasis">俺は、はめられた。</span>
+            </p>
+
+            <div class="section-divider"><span>†</span></div>
+
+            <p>
+                <span class="line">それからの日々は、地獄だった。</span>
+            </p>
+
+            <p>
+                <span class="line">毎朝、デスクに着くたびに携帯が震えた。</span>
+                <span class="line">老夫婦からの着信。</span>
+                <span class="line">出るたびに怒鳴り声が耳を貫く。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「人生を返せ」</span>
+                <span class="line dialogue">「お前のせいだ」</span>
+                <span class="line dialogue">「どう責任を取るんだ」</span>
+            </p>
+
+            <p>
+                <span class="line">一時間、二時間。</span>
+                <span class="line">電話が終わっても耳の奥に声が残った。</span>
+                <span class="line">頭が痛かった。</span>
+                <span class="line">飯が喉を通らなかった。</span>
+                <span class="line">夜、布団に入っても眠れなかった。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">剛山課長は何事もなかったように振る舞っていた。</span>
+                <span class="line">朝は颯爽と出社して、昼は得意先と笑いながら飯を食って、夕方には部長と談笑して、夜になると颯爽と退社する。</span>
+                <span class="line">俺が電話対応で消耗しているデスクの横を、一度も立ち止まらずに通り過ぎていった。</span>
+            </p>
+
+            <p>
+                <span class="line">左手首の時計が、ふと目に入った。</span>
+                <span class="line">親父が送ってくれたやつだ。</span>
+                <span class="line">あの時の気持ちを思い出して、奥歯を噛んだ。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">同僚の木村が、ある日そっと声をかけてきた。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「杉本、大丈夫か？」</span>
+            </p>
+
+            <p>
+                <span class="line">顔を上げると、木村が心配そうにこっちを見ていた。</span>
+                <span class="line">その瞬間、何かが弾けた。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「大丈夫じゃねえよ」</span>
+            </p>
+
+            <p>
+                <span class="line">低い声が出た。</span>
+                <span class="line">自分でも驚くくらい、冷たい声だった。</span>
+            </p>
+
+            <p>
+                <span class="line dialogue">「あんたも見てたくせに。誰も何もしないくせに、今さら大丈夫かって、そういうのいいんで」</span>
+            </p>
+
+            <p>
+                <span class="line">木村は何も言わなかった。</span>
+                <span class="line">静かに自分のデスクに戻っていった。</span>
+            </p>
+
+            <p>
+                <span class="line">その背中を見ながら、俺は視線をモニターに戻した。</span>
+                <span class="line">胸の奥が痛かった。</span>
+                <span class="line">八つ当たりだってわかってた。</span>
+                <span class="line">それでも止められなかった。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">心が、もうどこかおかしくなっていた。</span>
+            </p>
+        </article>
+
+        <!-- Chapter Navigation -->
+        <nav class="chapter-nav">
+            <a href="#" class="nav-button disabled">
+                <span>&larr;</span>
+                <span>前の章へ</span>
+            </a>
+            <a href="chapter2.html" class="nav-button primary">
+                <span>次の章へ</span>
+                <span>&rarr;</span>
+            </a>
+        </nav>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; eye-factory. All rights reserved.</p>
+        <p><a href="../../index.html">eye-factory トップへ戻る</a></p>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop" aria-label="トップへ戻る">↑</button>
+
+    <script>
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = (window.scrollY / docHeight) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+
+            // Scroll to top button visibility
+            const scrollTop = document.getElementById('scrollTop');
+            if (window.scrollY > 500) {
+                scrollTop.classList.add('visible');
+            } else {
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        // Scroll to top
+        document.getElementById('scrollTop').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
