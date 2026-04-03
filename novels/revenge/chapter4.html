@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>復讐の館 - 1人目「運が悪かった、ただそれだけだ」| eye-factory</title>
-    <meta name="description" content="短編小説シリーズ「復讐の館」第三章。憎しみに溺れた者が辿り着く、夢と現実の狭間の館。">
+    <meta name="description" content="短編小説シリーズ「復讐の館」第四章。憎しみに溺れた者が辿り着く、夢と現実の狭間の館。">
     <link rel="icon" type="image/png" href="../../favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -69,15 +69,12 @@
             width: 100%;
             height: 100%;
             background:
-                /* Subtle noise texture */
                 repeating-radial-gradient(circle at 17% 32%, rgba(40, 30, 20, 0.03) 0px, transparent 1px),
                 repeating-radial-gradient(circle at 73% 68%, rgba(30, 20, 15, 0.04) 0px, transparent 1px),
                 repeating-radial-gradient(circle at 41% 89%, rgba(50, 35, 25, 0.03) 0px, transparent 1px),
-                /* Stain marks */
                 radial-gradient(ellipse 300px 200px at 15% 25%, rgba(60, 30, 20, 0.08) 0%, transparent 70%),
                 radial-gradient(ellipse 250px 350px at 85% 60%, rgba(50, 25, 15, 0.06) 0%, transparent 70%),
                 radial-gradient(ellipse 400px 250px at 50% 85%, rgba(40, 20, 10, 0.07) 0%, transparent 70%),
-                /* Subtle water damage marks */
                 radial-gradient(ellipse 150px 400px at 5% 50%, rgba(35, 25, 20, 0.1) 0%, transparent 60%),
                 radial-gradient(ellipse 180px 300px at 95% 30%, rgba(30, 20, 15, 0.08) 0%, transparent 60%);
         }
@@ -90,13 +87,11 @@
             width: 100%;
             height: 100%;
             background:
-                /* Vignette */
                 radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.7) 100%),
-                /* Aged paper feel */
                 linear-gradient(180deg, rgba(20, 15, 10, 0.3) 0%, transparent 15%, transparent 85%, rgba(10, 5, 0, 0.4) 100%);
         }
 
-        /* Blood Drip Effect - More Refined */
+        /* Blood Drip Effect */
         .blood-drip {
             position: fixed;
             top: 0;
@@ -241,7 +236,7 @@
             border: 1px solid var(--border);
         }
 
-        /* Title Section - Blood Dripping Text Effect */
+        /* Title Section */
         .title-section {
             text-align: center;
             margin-bottom: 5rem;
@@ -263,7 +258,6 @@
                 0 2px 4px rgba(0, 0, 0, 0.8);
         }
 
-        /* Blood drip from text */
         .series-title::before {
             content: '';
             position: absolute;
@@ -299,7 +293,6 @@
             }
         }
 
-        /* Blood splatter behind title */
         .title-splatter {
             position: absolute;
             top: 50%;
@@ -338,7 +331,6 @@
             margin-bottom: 0.5rem;
         }
 
-        /* Chapter Indicator with Blood Drip */
         .chapter-indicator {
             display: inline-block;
             margin-top: 2.5rem;
@@ -373,7 +365,6 @@
             border-radius: 0 0 50% 50%;
         }
 
-        /* Title Section Bottom Border */
         .title-section::after {
             content: '';
             position: absolute;
@@ -414,7 +405,6 @@
             height: 3.5em;
         }
 
-        /* Dialogue Styling - Distinguished */
         .novel-content .dialogue {
             color: var(--dialogue);
             font-weight: 500;
@@ -434,18 +424,15 @@
             opacity: 0.4;
         }
 
-        /* Dialogue paragraph spacing - 2 lines before/after */
         .novel-content .dialogue-p {
             margin-top: 2.5em;
             margin-bottom: 2.5em;
         }
 
-        /* Reduce spacing between consecutive dialogues */
         .novel-content .dialogue-p + .dialogue-p {
             margin-top: 0.8em;
         }
 
-        /* Letter/Quote block - bold with spacing */
         .novel-content .letter-p {
             margin-top: 2.5em;
             margin-bottom: 2.5em;
@@ -453,13 +440,11 @@
             color: var(--text-bright);
         }
 
-        /* Emphasis */
         .novel-content .emphasis {
             color: var(--text-bright);
             font-weight: 600;
         }
 
-        /* Section Divider - Ominous Design */
         .section-divider {
             text-align: center;
             margin: 4rem 0;
@@ -512,7 +497,7 @@
             padding: 0 1rem;
         }
 
-        /* Navigation - Elegant Horror */
+        /* Navigation */
         .chapter-nav {
             margin-top: 6rem;
             padding-top: 4rem;
@@ -687,7 +672,6 @@
             }
         }
 
-        /* Reading Progress - Refined Blood */
         .progress-bar {
             position: fixed;
             top: 0;
@@ -699,7 +683,6 @@
             box-shadow: 0 0 15px rgba(107, 15, 15, 0.6);
         }
 
-        /* Scroll to top */
         .scroll-top {
             position: fixed;
             bottom: 2rem;
@@ -758,341 +741,364 @@
             <div class="title-splatter"></div>
             <h1 class="series-title">復讐の館</h1>
             <p class="episode-title">1人目「運が悪かった、ただそれだけだ」</p>
-            <span class="chapter-indicator">第三章：重なる痛み</span>
+            <span class="chapter-indicator">第四章：引き金</span>
         </section>
 
         <!-- Novel Content -->
         <article class="novel-content">
             <p>
-                <span class="line">冷たい感触が、手のひらに馴染んでいた。</span>
+                <span class="line">朝、目が覚めると枕元に人形があった。もう驚かない。</span>
             </p>
 
             <p>
-                <span class="line">あの館が、あの人影が、本当にあったのか。頭の中で反芻しながら、手の中の人形を見つめた。片目のない日本人形が、まっすぐこちらを見ていた。血が滲んだ口元が、かすかに笑っているように見えた。</span>
+                <span class="line">スーツを着てネクタイを締める。鏡を見る気にもなれなかった。</span>
             </p>
 
             <p>
-                <span class="line">しばらく、そのまま動けなかった。</span>
+                <span class="line">会社に着くと、木村が近づいてきた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「今日の午後、緊急の対策会議が入ってる。杉本も出席するようにと」</span>
             </p>
 
             <p>
-                <span class="line">結局、人形を枕元に置いてスーツを着た。</span>
+                <span class="line">嫌な予感がした。</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p>
+                <span class="line">会議室に入った瞬間、空気が変わる。</span>
             </p>
 
             <p>
-                <span class="line">鏡の前でネクタイを締めながら、自分の顔を見た。目の下にくまができていた。頬がこけていた。いつからこんな顔になったんだろうと思ったけど、すぐにどうでもよくなった。</span>
+                <span class="line">会長、社長、営業本部長、コンプライアンス担当役員、法務部長、三ツ木部長、そして剛山課長。全員がすでに着席していて、俺だけが最後に入る形になっていた。一番端の席に座るよう、法務部長が無言で示す。</span>
+            </p>
+
+            <p>
+                <span class="line">資料が配られる。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">中を見た瞬間、手が止まった。全ての書類に俺の名前が記されている。リスク説明義務違反、担当者の不適切な対応、顧客への説明不足——全部、俺の名前だった。剛山課長の名前はどこにもない。</span>
+            </p>
+
+            <p>
+                <span class="line">法務部長が淡々と経緯を説明し始める。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「今回の件につきましては、担当者である杉本君による説明義務違反が主因と判断しております」</span>
+            </p>
+
+            <p>
+                <span class="line">室内の視線が、一斉に俺に向かう。</span>
+            </p>
+
+            <p>
+                <span class="line">剛山課長は神妙な顔をして手元の資料に目を落としている。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「私も管理職として監督が行き届かず、大変申し訳なく思っております」</span>
+            </p>
+
+            <p>
+                <span class="line">静かな、殊勝な声だった。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「違います」</span>
+            </p>
+
+            <p>
+                <span class="line">気づいたら声が出ていた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「私はただ、課長の指示通りに動いただけです。書類も、元々は課長の名前が——」</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「もういい」</span>
+            </p>
+
+            <p>
+                <span class="line">社長が低い声で遮る。テーブルに手をつき、こちらを見ていた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「調査の結果については法務部長から説明があった通りだ。今この場での言い訳は聞く必要はない」</span>
+            </p>
+
+            <p>
+                <span class="line">コンプライアンス担当役員が続ける。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「処分については追って正式に通知します。本件の再発防止策と顧客対応については——」</span>
+            </p>
+
+            <p>
+                <span class="line">会議はそのまま続いていく。</span>
+            </p>
+
+            <p>
+                <span class="line">再発防止策、顧客への謝罪窓口、社内調査の今後の方針。言葉が次々と飛び交う中、俺はただ座っていた。資料を見ていた。でも何も頭に入らない。</span>
             </p>
 
             <span class="scene-break"></span>
 
             <p>
-                <span class="line">デスクに座った瞬間、電話が鳴った。</span>
+                <span class="line">会議が終わり、重役たちが次々と会議室を出ていく。</span>
             </p>
 
             <p>
-                <span class="line">受付から回ってきた老夫婦からの着信だった。出た瞬間に怒鳴り声が耳を貫く。昨日と同じ声、同じ言葉、同じ怒り。俺は受話器を握りしめながら、窓の外を見ていた。何も見えていなかった。</span>
+                <span class="line">最後に立ち上がった剛山課長が、出口でふと振り返る。</span>
             </p>
 
             <p>
-                <span class="line">剛山課長は今日も何事もなかったように出社して、昼は部長の席でゴルフの話で盛り上がり、夕方には大口顧客との接待の予約を取り付け、夜になると真っ先に消えた。</span>
+                <span class="line">俺と視線が交わった。</span>
             </p>
 
             <p>
-                <span class="line">俺はその背中を見ながら、奥歯を噛んだ。</span>
+                <span class="line emphasis">一瞬だけ、口の端が動く。笑ったのか、それとも別の何かだったのか。次の瞬間には背中を向けて、廊下を歩いていく。</span>
             </p>
 
             <p>
-                <span class="line">夜、部屋の棚の上に人形を置いて、布団に入った。目を閉じると、すぐに眠りの底に落ちていった。</span>
+                <span class="line">その背中が角を曲がって見えなくなるまで、椅子から立ち上がれなかった。</span>
+            </p>
+
+            <p>
+                <span class="line">手のひらに、爪の跡が残っていた。</span>
+            </p>
+
+            <span class="scene-break"></span>
+
+            <p>
+                <span class="line">会議室を出ると、廊下に木村が立っていた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「杉本」</span>
+            </p>
+
+            <p>
+                <span class="line">呼ばれた気がした。でも足が止まらない。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「杉本、ちょっと待って——」</span>
+            </p>
+
+            <p>
+                <span class="line">木村の声が、どこか遠くから聞こえる。エレベーターのボタンを押すと、すぐに扉が開いた。乗り込んで、閉じるボタンを押す。</span>
+            </p>
+
+            <p>
+                <span class="line">ゆっくりと扉が閉まっていく。</span>
+            </p>
+
+            <p>
+                <span class="line">閉まる直前、木村がまだ何か言っていた。</span>
+            </p>
+
+            <p>
+                <span class="line">でも今の俺には、言葉として入ってこなかった。</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p>
+                <span class="line">その夜、気づいたら外を歩いていた。</span>
+            </p>
+
+            <p>
+                <span class="line">どこへ向かうつもりだったのか、自分でもわからない。ただ部屋にいられなかった。壁と天井に囲まれているだけで、息が詰まる気がした。</span>
+            </p>
+
+            <p>
+                <span class="line">繁華街の灯りが見えてきた。ネオンが滲んで見える。</span>
+            </p>
+
+            <p>
+                <span class="line">足が勝手にそちらへ向かっていく。</span>
+            </p>
+
+            <p>
+                <span class="line">人の声、笑い声、酒の匂い。全部が遠かった。全部が別の世界の話に聞こえる。</span>
+            </p>
+
+            <p>
+                <span class="line">あのキャバクラの前を通りかかった時、扉が開いた。</span>
+            </p>
+
+            <p>
+                <span class="line">客を見送りに出てきたらしい女の子と、目が合う。</span>
+            </p>
+
+            <p>
+                <span class="line">見覚えがある顔だった。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「……杉本さん、お久しぶりですね」</span>
+            </p>
+
+            <p>
+                <span class="line">名前まで覚えていた。</span>
+            </p>
+
+            <p>
+                <span class="line">こちらは名前が出てこない。でも顔は確かに知っていた。剛山課長に連れてこられたあの夜、隣に座っていた子だ。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「よかったら、どうぞ」</span>
+            </p>
+
+            <p>
+                <span class="line">断る理由も、断る気力もなかった。</span>
+            </p>
+
+            <p>
+                <span class="line">その子に案内されて席に着く。グラスにシャンパンが注がれる。俺は黙って口に含んだ。</span>
+            </p>
+
+            <p>
+                <span class="line">その子がやわらかい声で話してくれた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「イオリの弟がね、最近サッカー始めたんですよ。もう毎日泥だらけで帰ってきて、洗濯が大変で……」</span>
+            </p>
+
+            <p>
+                <span class="line">返事をしなくても話し続けてくれる。</span>
+            </p>
+
+            <p>
+                <span class="line">イオリ、そういえばそんな名前だったな、と心の中で思い出した。</span>
+            </p>
+
+            <p>
+                <span class="line">俺はただグラスを傾けながら、その声を聞いていた。</span>
+            </p>
+
+            <p>
+                <span class="line">しばらくして、イオリが静かに聞いてくる。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「今日、何かありました？」</span>
+            </p>
+
+            <p>
+                <span class="line">答えようとした瞬間——</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「よお、杉本じゃねえか」</span>
+            </p>
+
+            <p>
+                <span class="line">聞き間違えるはずがなかった。</span>
+            </p>
+
+            <p>
+                <span class="line">振り返ると、剛山が立っている。スーツのジャケットを肩にかけて、上機嫌な顔をしていた。隣には剛山のお気に入りのキャバ嬢、ナナがいた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「奇遇だな。一人か？」</span>
+            </p>
+
+            <p>
+                <span class="line">俺は立ち上がっていた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「なぜですか」</span>
+            </p>
+
+            <p>
+                <span class="line">自分の声が、妙に落ち着いて聞こえた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「なぜ、俺なんですか。課長がやったことじゃないですか」</span>
+            </p>
+
+            <p>
+                <span class="line">店内の空気が変わる。ナナが固まった。イオリが息を呑む気配がした。</span>
+            </p>
+
+            <p>
+                <span class="line">剛山はしばらく俺を見ていた。</span>
+            </p>
+
+            <p>
+                <span class="line">それからゆっくりと、口の端を上げる。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「お前は運が悪かった。ただ、それだけだ」</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">笑っていた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「そういうこともある。社会ってのはそういうもんだ」</span>
+            </p>
+
+            <p>
+                <span class="line">言葉が続く。でも俺の耳には、最初の一言しか残らなかった。</span>
             </p>
 
             <p class="letter-p">
-                <span class="line emphasis">その夜、夢を見た。</span>
-            </p>
-
-            <div class="section-divider"><span class="divider-symbol">†</span></div>
-
-            <p>
-                <span class="line">知らない場所だった。</span>
-            </p>
-
-            <p>
-                <span class="line">でも俺はそこにいた。いや、正確には違う。見ていた。まるで誰かの記憶の中に入り込んで、その人の目を通して世界を眺めているような感覚だった。</span>
-            </p>
-
-            <p>
-                <span class="line">廊下の板が軋む音。着物の袖が揺れる感触。漂う香の匂い。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">大奥だと、すぐにわかった。</span>
-            </p>
-
-            <p>
-                <span class="line">一人の女がいた。将軍の寵愛を一身に受け、周りの女たちの羨望の目が、その背中に注がれている。</span>
-            </p>
-
-            <p>
-                <span class="line">その女の隣に、もう一人。同じ部屋に仕える女で、幼い頃から共に過ごしてきたような親しさがある。何かあれば相談し合い、本当のことを話せる唯一の相手。</span>
+                <span class="line emphasis">運が悪かった。</span>
+                <span class="line emphasis">ただ、それだけだ。</span>
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「そなたがいれば、何も怖くはない」</span>
+                <span class="line dialogue">「——絶対に、許さない」</span>
             </p>
 
             <p>
-                <span class="line">女は笑っていた。</span>
-            </p>
-
-            <span class="scene-break"></span>
-
-            <p>
-                <span class="line">目が覚めると、朝だった。</span>
+                <span class="line">気づいたら口から出ていた。</span>
             </p>
 
             <p>
-                <span class="line emphasis">棚に置いたはずの人形が、枕元にあった。</span>
-            </p>
-
-            <div class="section-divider"><span class="divider-symbol">†</span></div>
-
-            <p>
-                <span class="line">出社すると、すぐに剛山課長に呼ばれた。</span>
+                <span class="line">鼻で笑う剛山。</span>
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「お前、毎日あの老夫婦から電話かかってきてるだろ。直接謝りに行ってこい」</span>
+                <span class="line dialogue">「今日は気分がいいから、お前の分も俺が奢ってやる。感謝しろよ、杉本」</span>
             </p>
 
             <p>
-                <span class="line">それだけ言って、課長は自分のデスクに戻った。</span>
+                <span class="line">ナナを連れて奥の席へ向かっていく。不快な笑い声が徐々に遠ざかる。</span>
             </p>
 
             <p>
-                <span class="line">納得はできなかった。でも反論できなかった。もう何も言い返す気力が残っていなかった。</span>
-            </p>
-
-            <span class="scene-break"></span>
-
-            <p>
-                <span class="line">老夫婦の家は、都内の静かな住宅街にあった。</span>
+                <span class="line">財布を取り出してテーブルに金を置き立ち上がった。その瞬間、「杉本さん」とイオリが呼んだ気がした。でも足は止まらなかった。</span>
             </p>
 
             <p>
-                <span class="line">インターホンを押す前に、深呼吸した。何度も深呼吸した。</span>
-            </p>
-
-            <p>
-                <span class="line">扉が開いた瞬間、老人の顔が見えた。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「あなたが杉本さんですか」</span>
-            </p>
-
-            <p>
-                <span class="line">その声は低く、震えていた。</span>
-            </p>
-
-            <p>
-                <span class="line">俺は頭を下げた。玄関先で土下座した。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「申し訳ございません。本当に、申し訳ございません」</span>
-            </p>
-
-            <p>
-                <span class="line">しばらく沈黙があった。</span>
-            </p>
-
-            <p>
-                <span class="line">それから、泣き声が聞こえた。</span>
-            </p>
-
-            <p>
-                <span class="line">奥から出てきた老婦人が、顔を覆って泣いていた。嗚咽を漏らしながら、それでも言葉が出てくる。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「老後のために、二人でずっとためてきたんです。あなたたちに任せれば安心だって、そう信じていたのに」</span>
-            </p>
-
-            <p>
-                <span class="line">声が裏返っていた。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「返してください。返してください。私たちの、人生を返してください」</span>
-            </p>
-
-            <p>
-                <span class="line">怒鳴り声じゃなかった。泣きながら、訴えていた。それが、怒鳴られるより何倍も胸に刺さった。俺はただ頭を下げ続けた。謝り続けた。でも何を言っても、何も変わらなかった。</span>
-            </p>
-
-            <p>
-                <span class="line">帰り道、電車の中で窓の外を見ていた。何も考えられなかった。</span>
-            </p>
-
-            <span class="scene-break"></span>
-
-            <p>
-                <span class="line">帰って、靴を脱ぐのも億劫だった。それでもなんとか部屋に入ると、棚の上の人形がこちらを向いている。</span>
-            </p>
-
-            <p>
-                <span class="line">手に取ると、あの冷たさがまた指先に広がる。誰かの悲しみがそのまま温度になったような冷たさ。</span>
-            </p>
-
-            <p>
-                <span class="line">今日の老婦人の顔が頭から離れなかった。怒鳴られた訳じゃない。泣きながら訴えられた。それが何より辛かった。あの人たちは悪くない。ただ、誰かが間違ったことをして、その皺寄せがあの老夫婦に、そして俺に来ただけだ。</span>
-            </p>
-
-            <p>
-                <span class="line">頑張れば報われると信じていた。それだけだったのに。</span>
-            </p>
-
-            <p>
-                <span class="line">スーツのまま布団に倒れ込んで、目を閉じた。</span>
-            </p>
-
-            <p class="letter-p">
-                <span class="line emphasis">その夜も、夢を見た。</span>
-            </p>
-
-            <div class="section-divider"><span class="divider-symbol">†</span></div>
-
-            <p>
-                <span class="line">ある夜、将軍の食事を口にした毒見役が倒れた。<ruby>附子<rt>ぶし</rt></ruby>だった。猛毒だ。</span>
-            </p>
-
-            <p>
-                <span class="line">大奥中が騒然となる。誰が盛ったのか。調べが入り、女の部屋から同じ<ruby>附子<rt>ぶし</rt></ruby>が見つかる。身に覚えはなかった。誰かが仕組んだと訴えても、誰も聞き入れようとはしなかった。ただ引き摺られるように、連れていかれた。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「白状せい」</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「身に覚えはございませぬ」</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「やったと申せ」</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「致しておりませぬ」</span>
-            </p>
-
-            <p>
-                <span class="line">海老責めだった。後ろ手に縛られ、膝を抱えて丸まらせられ、全身をきつく縛り上げられる。血流が止まり、全身が燃えるように痛んだ。それでも答えは変わらなかった。</span>
-            </p>
-
-            <p>
-                <span class="line">やっていないから、やっていないと言い続けた。ただそれだけだった。</span>
-            </p>
-
-            <p>
-                <span class="line">執行人の手が顔に伸びた。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">痛みは一瞬だった。でもその後に来た感覚が何より恐ろしかった。視界の半分が、永遠に消えた。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「次は逆の目を頂戴するぞ。忘れるな」</span>
-            </p>
-
-            <p>
-                <span class="line">牢屋に戻された。</span>
-            </p>
-
-            <p>
-                <span class="line">暗く、冷たい場所だった。片目を失った視界で壁を見つめながら、それでも女は信じていた。共に過ごしてきたあの女だけは、自分の無実を信じてくれていると。</span>
-            </p>
-
-            <span class="scene-break"></span>
-
-            <p>
-                <span class="line">扉が開いた。</span>
-            </p>
-
-            <p>
-                <span class="line">信頼していた女が、水を持って入ってくる。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「喉が渇いたであろう」</span>
-            </p>
-
-            <p>
-                <span class="line">いつもと同じ優しい声だった。差し出された椀を受け取り、一口飲んだ瞬間に気づいた。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">苦かった。</span>
-            </p>
-
-            <p>
-                <span class="line">体の奥から何かがじわじわと広がっていく。手足の感覚が遠のいていく。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「気づいたか？」</span>
-            </p>
-
-            <p>
-                <span class="line">その女が、静かに笑う。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「将軍の御膳に<ruby>附子<rt>ぶし</rt></ruby>を仕込んだのも、そなたの部屋に<ruby>附子<rt>ぶし</rt></ruby>を置いたのも、全てわらわが仕組んだことよ」</span>
-            </p>
-
-            <p>
-                <span class="line">毒が回っていく。体が動かなくなっていく。残った片目で、女をまっすぐ見つめた。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「そなたが寵愛を受けるのが、ずっと許せなかった。ずっとね」</span>
-            </p>
-
-            <p>
-                <span class="line">言葉が続く。でも何もできなかった。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">ただ、憎しみだけが研ぎ澄まされていった。</span>
-            </p>
-
-            <p>
-                <span class="line">女が床に倒れる瞬間、俺はその憎しみを全身で受け取った。</span>
-            </p>
-
-            <div class="section-divider"><span class="divider-symbol">†</span></div>
-
-            <p>
-                <span class="line">目が覚めると、朝だった。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">また枕元に人形があった。</span>
-            </p>
-
-            <p>
-                <span class="line">息が上がっていた。自分が泣いていることに、起き上がってから気づいた。</span>
+                <span class="line">店を出ると、夜の空気が頬に刺さる。</span>
             </p>
         </article>
 
         <!-- Chapter Navigation -->
         <nav class="chapter-nav">
-            <a href="chapter2.html" class="nav-button">
+            <a href="chapter3.html" class="nav-button">
                 <span class="nav-arrow">&larr;</span>
                 <span>前の章へ</span>
             </a>
-            <a href="chapter4.html" class="nav-button primary">
+            <a href="chapter5.html" class="nav-button primary disabled">
                 <span>次の章へ</span>
                 <span class="nav-arrow">&rarr;</span>
             </a>
