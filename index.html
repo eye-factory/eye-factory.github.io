@@ -565,6 +565,78 @@ nav a:hover {
   transform: translateY(-3px);
 }
 
+/* Blood-red novel button */
+.hero-blood-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  text-decoration: none;
+  padding: 16px 36px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: var(--font-ja);
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  background-image: linear-gradient(var(--bg), var(--bg)), linear-gradient(90deg, #8b1a1a, #3d0808, #8b1a1a);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  background-size: 100% 100%, 200% 100%;
+  animation: bloodBorderGlow 3s ease-in-out infinite;
+  box-shadow: 0 0 15px rgba(139, 26, 26, 0.3), 0 0 30px rgba(61, 8, 8, 0.2);
+}
+.hero-blood-btn span {
+  background: linear-gradient(90deg, #a82020, #6b0f0f, #a82020);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: bloodGradientShift 3s ease-in-out infinite;
+  transition: var(--transition);
+}
+.hero-blood-btn:hover span {
+  background: none;
+  -webkit-background-clip: unset;
+  -webkit-text-fill-color: #e8e4dc;
+  background-clip: unset;
+}
+@keyframes bloodBorderGlow {
+  0%, 100% {
+    background-position: 0 0, 0% 50%;
+    box-shadow: 0 0 15px rgba(139, 26, 26, 0.3), 0 0 30px rgba(61, 8, 8, 0.2);
+  }
+  50% {
+    background-position: 0 0, 100% 50%;
+    box-shadow: 0 0 20px rgba(139, 26, 26, 0.5), 0 0 40px rgba(107, 15, 15, 0.3), 0 0 60px rgba(139, 26, 26, 0.2);
+  }
+}
+@keyframes bloodGradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.hero-blood-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(139, 26, 26, 0.2), transparent);
+  transition: 0.5s;
+}
+.hero-blood-btn:hover::before {
+  left: 100%;
+}
+.hero-blood-btn:hover {
+  background-image: linear-gradient(rgba(139, 26, 26, 0.1), rgba(61, 8, 8, 0.1)), linear-gradient(90deg, #8b1a1a, #3d0808, #8b1a1a);
+  box-shadow: 0 0 25px rgba(139, 26, 26, 0.6), 0 0 50px rgba(107, 15, 15, 0.4), 0 0 80px rgba(139, 26, 26, 0.3);
+  transform: translateY(-3px);
+}
+
 /* --- Section --- */
 section {
   position: relative;
@@ -1141,6 +1213,9 @@ footer {
     </a>
     <a href="/games/cybertap/" class="hero-cyber-btn" target="_blank" rel="noopener">
       <span data-i18n="ja">フリーゲーム CyberTap →</span><span data-i18n="en">Free Game CyberTap →</span><span data-i18n="zh-CN">免费游戏 CyberTap →</span><span data-i18n="zh-TW">免費遊戲 CyberTap →</span><span data-i18n="ko">무료 게임 CyberTap →</span><span data-i18n="es">Juego Gratis CyberTap →</span><span data-i18n="fr">Jeu Gratuit CyberTap →</span><span data-i18n="de">Kostenloses Spiel CyberTap →</span><span data-i18n="pt">Jogo Grátis CyberTap →</span>
+    </a>
+    <a href="/novels/revenge/" class="hero-blood-btn">
+      <span data-i18n="ja">AI小説 復讐の館 →</span><span data-i18n="en">AI Novel Revenge Mansion →</span><span data-i18n="zh-CN">AI小说 复仇之馆 →</span><span data-i18n="zh-TW">AI小說 復仇之館 →</span><span data-i18n="ko">AI 소설 복수의 관 →</span><span data-i18n="es">Novela IA La Mansión de la Venganza →</span><span data-i18n="fr">Roman IA Le Manoir de la Vengeance →</span><span data-i18n="de">KI-Roman Das Haus der Rache →</span><span data-i18n="pt">Romance IA A Mansão da Vingança →</span>
     </a>
   </div>
 </div>
