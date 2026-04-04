@@ -91,7 +91,7 @@
                 linear-gradient(180deg, rgba(20, 15, 10, 0.3) 0%, transparent 15%, transparent 85%, rgba(10, 5, 0, 0.4) 100%);
         }
 
-        /* Blood Drip Effect */
+        /* Blood Line Effect */
         .blood-drip {
             position: fixed;
             top: 0;
@@ -100,43 +100,6 @@
             height: 4px;
             background: linear-gradient(180deg, var(--blood-dark) 0%, transparent 100%);
             z-index: 99;
-        }
-
-        .blood-drip::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 12%;
-            width: 3px;
-            height: 45px;
-            background: linear-gradient(180deg, var(--blood) 0%, var(--blood-dark) 60%, transparent 100%);
-            border-radius: 0 0 50% 50%;
-            animation: drip 6s ease-in-out infinite;
-            opacity: 0.8;
-        }
-
-        .blood-drip::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 78%;
-            width: 2px;
-            height: 30px;
-            background: linear-gradient(180deg, var(--blood) 0%, var(--blood-dark) 70%, transparent 100%);
-            border-radius: 0 0 50% 50%;
-            animation: drip 8s ease-in-out infinite 2s;
-            opacity: 0.6;
-        }
-
-        @keyframes drip {
-            0%, 100% {
-                height: 30px;
-                opacity: 0.5;
-            }
-            50% {
-                height: 55px;
-                opacity: 0.9;
-            }
         }
 
         /* Header */
