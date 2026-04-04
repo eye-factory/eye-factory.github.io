@@ -720,6 +720,24 @@
             color: var(--text);
             box-shadow: 0 0 20px rgba(107, 15, 15, 0.3);
         }
+
+        @keyframes unknownPulse {
+            0%, 100% {
+                opacity: 1;
+                text-shadow: 0 0 8px #8b0000, 0 0 16px #cc0000;
+            }
+            50% {
+                opacity: 0.3;
+                text-shadow: 0 0 4px #8b0000;
+            }
+        }
+
+        .unknown-voice {
+            color: #ffffff;
+            text-shadow: 0 0 8px #8b0000, 0 0 16px #cc0000;
+            letter-spacing: 0.1em;
+            animation: unknownPulse 3s ease-in-out infinite;
+        }
     </style>
 </head>
 <body>
@@ -1098,7 +1116,7 @@
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「ለᚱكᛟመهᚾረᛏقበᚫነᛗ」</span>
+                <span class="line unknown-voice">「ለᚱكᛟመهᚾረᛏقበᚫነᛗወᚢنᛊሀᚦمጸᚨድ」</span>
             </p>
 
             <p>
