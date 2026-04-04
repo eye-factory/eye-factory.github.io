@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>復讐の館 - 1人目「運が悪かった、ただそれだけだ」| eye-factory</title>
-    <meta name="description" content="短編小説シリーズ「復讐の館」第六章。憎しみに溺れた者が辿り着く、夢と現実の狭間の館。">
+    <meta name="description" content="短編小説シリーズ「復讐の館」第七章。憎しみに溺れた者が辿り着く、夢と現実の狭間の館。">
     <link rel="icon" type="image/png" href="../../favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -438,66 +438,6 @@
             font-weight: 600;
         }
 
-        /* Glitched/Corrupted text effect */
-        .novel-content .glitch-text {
-            color: var(--blood-bright);
-            font-weight: 500;
-            letter-spacing: 0.15em;
-            position: relative;
-            display: inline-block;
-            animation: glitchFlicker 3s infinite;
-            text-shadow:
-                0 0 5px rgba(139, 26, 26, 0.8),
-                0 0 10px rgba(139, 26, 26, 0.5),
-                2px 0 0 rgba(107, 15, 15, 0.3),
-                -2px 0 0 rgba(61, 8, 8, 0.3);
-        }
-
-        .novel-content .glitch-text::before {
-            content: attr(data-text);
-            position: absolute;
-            left: 2px;
-            top: 0;
-            color: var(--blood-dark);
-            opacity: 0.5;
-            clip-path: inset(0 0 50% 0);
-            animation: glitchTop 2s infinite linear alternate-reverse;
-        }
-
-        .novel-content .glitch-text::after {
-            content: attr(data-text);
-            position: absolute;
-            left: -2px;
-            top: 0;
-            color: var(--blood-vivid);
-            opacity: 0.3;
-            clip-path: inset(50% 0 0 0);
-            animation: glitchBottom 2.5s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitchFlicker {
-            0%, 90%, 100% { opacity: 1; }
-            91% { opacity: 0.8; }
-            92% { opacity: 1; }
-            93% { opacity: 0.6; }
-            94% { opacity: 1; }
-        }
-
-        @keyframes glitchTop {
-            0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-1px); }
-            40% { transform: translateX(1px); }
-            60% { transform: translateX(-1px); }
-            80% { transform: translateX(1px); }
-        }
-
-        @keyframes glitchBottom {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(1px); }
-            50% { transform: translateX(-1px); }
-            75% { transform: translateX(1px); }
-        }
-
         .section-divider {
             text-align: center;
             margin: 4rem 0;
@@ -791,346 +731,212 @@
             <div class="title-splatter"></div>
             <h1 class="series-title">復讐の館</h1>
             <p class="episode-title">1人目「運が悪かった、ただそれだけだ」</p>
-            <span class="chapter-indicator">第六章：<ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>と時計</span>
+            <span class="chapter-indicator">第七章：遅すぎた真実</span>
         </section>
 
         <!-- Novel Content -->
         <article class="novel-content">
             <p>
-                <span class="line">気づくと、館の外、門の前に立っていた。</span>
+                <span class="line emphasis">杉本サトシ、享年二十四歳。</span>
             </p>
 
             <p>
-                <span class="line">門に手をかけ、館へ向かう。石畳を踏んで歩く。足音が館に吸い込まれていく。</span>
+                <span class="line">死因は急性心不全。</span>
             </p>
 
             <p>
-                <span class="line">扉を開いた瞬間、聞き覚えのある、この世で一番不快な声が聞こえた。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「な、なんだここは。おい、誰かいるか。頼む、ここから出してくれ」</span>
+                <span class="line">無断欠勤が続いた翌日、心配した木村が自宅を訪ねた。返事がなく、管理人に開けてもらった部屋の中で、杉本はベッドの上に横たわっていた。眠るように、穏やかな顔をしていた。左手首には、腕時計がはめられていたままだった。</span>
             </p>
 
             <p>
-                <span class="line emphasis">開かれた<ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>の中に、剛山がいた。</span>
+                <span class="line">外傷はなし。死亡推定時刻は、前日の深夜だった。</span>
             </p>
 
             <p>
-                <span class="line">両腕と足を固定されたまま扉が半開きの状態で、顔は青ざめ、額に汗が滲んでいる。</span>
-            </p>
-
-            <p>
-                <span class="line">俺を見た瞬間、剛山の目が変わった。縋るような目だった。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「杉本——お前か。助けてくれ。頼む、助けてくれ」</span>
-            </p>
-
-            <p>
-                <span class="line">返事をしなかった。</span>
-            </p>
-
-            <div class="section-divider"><span class="divider-symbol">†</span></div>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「チッ」</span>
-            </p>
-
-            <p>
-                <span class="line">舌打ちをする剛山。</span>
-            </p>
-
-            <p>
-                <span class="line">振り返ると、館の主がいた。</span>
-            </p>
-
-            <p>
-                <span class="line">深くフードを被り、顔が見えない。その腕の中に、黒猫が収まっていた。金色の目がこちらを見ている。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「久しいな」</span>
-            </p>
-
-            <p>
-                <span class="line">子供とも大人ともつかない、性別すら判断のつかない、不思議なあの時と同じ声。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「お前に伝えることがある」</span>
-            </p>
-
-            <p>
-                <span class="line">黒猫を抱いたまま、ゆっくりと近づいてくる。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「復讐を果たした者の魂は、人形の中に幽閉される。永遠に。二度と外には出られない。苦しみの中で、ただ存在し続けることになる」</span>
-            </p>
-
-            <p>
-                <span class="line">静かな声で、脅しでも警告でもなく、ただ事実を告げるような口調で。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「それでも、望むか」</span>
-            </p>
-
-            <p>
-                <span class="line">沈黙が館を満たした。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">俺は、コクリと頷いた。</span>
-            </p>
-
-            <p>
-                <span class="line">黒猫が、小さく鳴いた。</span>
-            </p>
-
-            <div class="section-divider"><span class="divider-symbol">†</span></div>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「おい、杉本。何の話をしてるんだ。俺を出してくれ。頼む」</span>
-            </p>
-
-            <p>
-                <span class="line">剛山の声が響く。</span>
-            </p>
-
-            <p>
-                <span class="line">俺は<ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>の前に立った。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「なぜですか」</span>
-            </p>
-
-            <p>
-                <span class="line">自分の声が、妙に落ち着いて聞こえた。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「なぜ、俺だったんですか」</span>
-            </p>
-
-            <p>
-                <span class="line">剛山の目が泳ぐ。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「な、何の話だ。俺は何も——」</span>
-            </p>
-
-            <p>
-                <span class="line">低い音を鳴らし、<ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>の扉が、わずかに動く。</span>
-            </p>
-
-            <p>
-                <span class="line">剛山の顔が強張る。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「な、なんだ。おい、なんだこれは」</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「なぜ、俺だったんですか」</span>
-            </p>
-
-            <p>
-                <span class="line">もう一度、同じ言葉を繰り返した。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「し、知らん。お前が勝手にやったことだろ。俺は関係——」</span>
-            </p>
-
-            <p>
-                <span class="line">また扉が動く。剛山の肩に、棘の先端が触れる。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「いっ——」</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「わ、わかった。わかった。話す。全部話す」</span>
-            </p>
-
-            <p>
-                <span class="line">剛山の声が裏返った。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「俺が書類を書き換えた。根回しもした。俺の地位のためにお前には犠牲になってもらった」</span>
-            </p>
-
-            <p>
-                <span class="line">言葉が溢れ出す。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">ギイ。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「な——なんで閉まるんだ。話してるだろ。話してるのになんで——」</span>
-            </p>
-
-            <p>
-                <span class="line">扉はゆっくりと、ゆっくりと閉まっていく。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「やめてくれ。頼む。家族がいるんだ。子供がいるんだ。頼む、杉本——」</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「それが何だ。俺にもいる。生活を切り詰めて、俺のために全てを注ぎ込んでくれた親父とお袋が。……大切な家族が俺にもいる」</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「杉本。お前とは長い付き合いだろ。飯も食った。キャバクラにも連れていってやった。頼む、助けてくれ——」</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「全てを押し付けたお前を助ける？　俺が？　お前を？」</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「す、すまない。本当にすまない……。全て俺がやったことだと認める。だから、ここから出して——」</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">ギイ。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「いやだ。いやだ、いやだ——」</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">ギイ。</span>
-            </p>
-
-            <p>
-                <span class="line">扉が閉まっていく。棘が、少しずつ体に食い込んでいく。</span>
-            </p>
-
-            <p>
-                <span class="line">剛山の声が、叫びに変わった。</span>
-            </p>
-
-            <p>
-                <span class="line">それでも、扉は閉まり続けた。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">やがて、<ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>が完全に閉じた。</span>
-            </p>
-
-            <p>
-                <span class="line">一瞬の静寂。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis"><ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>の扉から、ゆっくりと血が溢れ始める。扉の隙間から、床へ、静かに広がっていく。</span>
+                <span class="line">同じ頃、剛山も自宅で家族に発見された。こちらも急性心不全。外傷はなし。死亡推定時刻は、杉本とほぼ同時刻だった。</span>
             </p>
 
             <div class="section-divider"><span class="divider-symbol">†</span></div>
 
             <p>
-                <span class="line">館の主がゆっくりと近づいてきた。</span>
+                <span class="line">二人の死は、すぐに世間の注目を集めた。</span>
             </p>
 
             <p>
-                <span class="line">黒猫を抱いたまま、口を開く。</span>
+                <span class="line">東和証券の営業社員と課長が同日に急死。その直前、顧客の老後資金一億円近くが消失していたという事実が重なり、連日大きく報道された。</span>
+            </p>
+
+            <p>
+                <span class="line">噂が飛び交った。</span>
+            </p>
+
+            <p>
+                <span class="line">杉本が横領をして、良心の呵責に耐えられなかったのではないか。二人で共謀していたのではないか。真相は闇の中だ。</span>
+            </p>
+
+            <p>
+                <span class="line">根も葉もない話ばかりだった。</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p>
+                <span class="line">杉本の葬式は、地方の小さな斎場で執り行われた。</span>
+            </p>
+
+            <p>
+                <span class="line">参列者は少なかった。会社からの花輪が並んでいたが、同僚の姿はほとんどなかった。木村の姿もない。</span>
+            </p>
+
+            <p>
+                <span class="line">ヒソヒソとした声が、式の間も絶えなかった。</span>
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「あの者の魂は無へ。永遠に苦しみの中を彷徨うことになる」</span>
-            </p>
-
-            <p>
-                <span class="line">視線が、俺に向いた。</span>
+                <span class="line dialogue">「やっぱり何かやってたんじゃないか」</span>
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「そしてお前の魂は——」</span>
+                <span class="line dialogue">「若いのに急死なんて、ねえ」</span>
             </p>
 
             <p>
-                <span class="line">俺はそれを遮るように、左手首を見た。</span>
+                <span class="line">棺の前に座った母親は、何も言わなかった。ただ、杉本の顔をずっと見ていた。父親は無言で、その隣に座っていた。</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p>
+                <span class="line">一ヶ月後、剛山のPCから回収した改ざん前の稟議書、メールの履歴、社内システムのログが匿名でメディアにリークされた。</span>
             </p>
 
             <p>
-                <span class="line emphasis">親父が送ってくれた時計。</span>
+                <span class="line">報道は一夜にして変わった。</span>
+            </p>
+
+            <p class="letter-p">
+                <span class="line">「東和証券不正問題、剛山課長による単独犯と判明」</span>
             </p>
 
             <p>
-                <span class="line">あの封筒を渡してくれた時のお袋の顔が浮かんだ。</span>
+                <span class="line emphasis">剛山が全ての書類を改ざんし、部下に罪をなすりつけていたことが白日の下に晒された。</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p>
+                <span class="line">リビングのテレビに、釘付けになる老夫婦。</span>
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「ありがとう」</span>
+                <span class="line dialogue">「あの時、あんなに怒鳴りつけてしまって……」</span>
             </p>
 
             <p>
-                <span class="line">声が震えた。</span>
+                <span class="line">老婦人の声が震えていた。</span>
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「ごめん」</span>
+                <span class="line dialogue">「杉本さんは何も悪くなかったのに。私たちは、何てことを……」</span>
             </p>
 
             <p>
-                <span class="line emphasis">涙が、床に落ちた。</span>
+                <span class="line">老夫婦は肩を寄せ合い、嗚咽を漏らした。罵倒した日のことを、後悔していた。</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p>
+                <span class="line">剛山の単独犯が明らかになった翌週、木村は杉本の実家へ訪れる。</span>
             </p>
 
             <p>
-                <span class="line">その瞬間、体がふっと軽くなる。</span>
+                <span class="line">居酒屋の暖簾をくぐると、父親が一人でカウンターを拭いていた。</span>
             </p>
 
-            <span class="scene-break"></span>
-
             <p>
-                <span class="line emphasis">全身を棘に貫かれた馬の人形が、かすかに揺れた。</span>
-            </p>
-
-            <span class="scene-break"></span>
-
-            <p>
-                <span class="line">館の主が口を開く。</span>
+                <span class="line">仏間に漂う線香の煙。木村は杉本の遺影をじっと見つめる。</span>
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「<span class="glitch-text" data-text="ᛞ͈̊ᚫ̶͂ᛗ̷̀ᚾ̴̎ᚪ̶̆ᛏ̵̊ᛁ̴̿ᛟ̷͝ᚾ̶̀ᛊ̸̈">ᛞ͈̊ᚫ̶͂ᛗ̷̀ᚾ̴̎ᚪ̶̆ᛏ̵̊ᛁ̴̿ᛟ̷͝ᚾ̶̀ᛊ̸̈</span>」</span>
+                <span class="line dialogue">「あの時、俺が早く動いていれば」</span>
             </p>
 
             <p>
-                <span class="line">しばらくの沈黙。</span>
-            </p>
-
-            <p>
-                <span class="line">悲しみをたたえた表情で、館の主はつぶやいた。</span>
+                <span class="line">木村の声が詰まった。</span>
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「……今回も同じ結果だったか」</span>
+                <span class="line dialogue">「本当に申し訳ありませんでした」</span>
+            </p>
+
+            <p>
+                <span class="line">しばらく、誰も喋らなかった。</span>
+            </p>
+
+            <p>
+                <span class="line">母親が、嗚咽を漏らしながら言った。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「サトシは……サトシは、何も悪くなかったんですね」</span>
+            </p>
+
+            <p>
+                <span class="line">木村は頷いた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「はい。全て、剛山課長が仕組んだことでした。杉本は最後まで、何も悪いことはしていません」</span>
+            </p>
+
+            <p>
+                <span class="line">父親が、拳をテーブルに置いたまま、天井を見上げた。</span>
+            </p>
+
+            <p>
+                <span class="line">母親が、木村の手を両手で握った。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「ありがとう。本当に、ありがとうございます」</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p>
+                <span class="line">夢と現実の狭間にある館。</span>
+            </p>
+
+            <p>
+                <span class="line">血なまぐさい拷問器具。棚に並ぶ不気味な人形たち。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">その右端に、新たな一体が加わっていた。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">全身を棘に貫かれた、馬の人形。</span>
+            </p>
+
+            <p>
+                <span class="line">館の外から、猫の鳴き声が聴こえる。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">扉が、ゆっくりと、開く。</span>
             </p>
         </article>
 
         <!-- Chapter Navigation -->
         <nav class="chapter-nav">
-            <a href="chapter5.html" class="nav-button">
+            <a href="chapter6.html" class="nav-button">
                 <span class="nav-arrow">&larr;</span>
                 <span>前の章へ</span>
             </a>
-            <a href="chapter7.html" class="nav-button primary">
-                <span>次の章へ</span>
+            <a href="index.html" class="nav-button primary">
+                <span>目次へ</span>
                 <span class="nav-arrow">&rarr;</span>
             </a>
         </nav>
