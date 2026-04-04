@@ -35,6 +35,11 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
         body {
             font-family: var(--font-body);
             background: var(--bg);
@@ -525,7 +530,10 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 6rem 1.2rem 4rem;
+                max-width: 100%;
+                width: 100%;
+                padding: 6rem 1rem 4rem;
+                overflow-x: hidden;
             }
 
             .header {
@@ -543,6 +551,20 @@
 
             .episode-link {
                 padding: 1.5rem;
+                max-width: 100%;
+            }
+
+            .cover-wrapper {
+                max-width: 100%;
+            }
+
+            .title-section {
+                max-width: 100%;
+                overflow: hidden;
+            }
+
+            .series-description {
+                max-width: 100%;
             }
         }
     </style>
