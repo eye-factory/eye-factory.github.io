@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>復讐の館 - 1人目「運が悪かった、ただそれだけだ」| eye-factory</title>
-    <meta name="description" content="短編小説シリーズ「復讐の館」第五章。憎しみに溺れた者が辿り着く、夢と現実の狭間の館。">
+    <meta name="description" content="短編小説シリーズ「復讐の館」第六章。憎しみに溺れた者が辿り着く、夢と現実の狭間の館。">
     <link rel="icon" type="image/png" href="../../favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -438,6 +438,66 @@
             font-weight: 600;
         }
 
+        /* Glitched/Corrupted text effect */
+        .novel-content .glitch-text {
+            color: var(--blood-bright);
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            position: relative;
+            display: inline-block;
+            animation: glitchFlicker 3s infinite;
+            text-shadow:
+                0 0 5px rgba(139, 26, 26, 0.8),
+                0 0 10px rgba(139, 26, 26, 0.5),
+                2px 0 0 rgba(107, 15, 15, 0.3),
+                -2px 0 0 rgba(61, 8, 8, 0.3);
+        }
+
+        .novel-content .glitch-text::before {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            top: 0;
+            color: var(--blood-dark);
+            opacity: 0.5;
+            clip-path: inset(0 0 50% 0);
+            animation: glitchTop 2s infinite linear alternate-reverse;
+        }
+
+        .novel-content .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            left: -2px;
+            top: 0;
+            color: var(--blood-vivid);
+            opacity: 0.3;
+            clip-path: inset(50% 0 0 0);
+            animation: glitchBottom 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitchFlicker {
+            0%, 90%, 100% { opacity: 1; }
+            91% { opacity: 0.8; }
+            92% { opacity: 1; }
+            93% { opacity: 0.6; }
+            94% { opacity: 1; }
+        }
+
+        @keyframes glitchTop {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-1px); }
+            40% { transform: translateX(1px); }
+            60% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+        }
+
+        @keyframes glitchBottom {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(1px); }
+            50% { transform: translateX(-1px); }
+            75% { transform: translateX(1px); }
+        }
+
         .section-divider {
             text-align: center;
             margin: 4rem 0;
@@ -731,222 +791,346 @@
             <div class="title-splatter"></div>
             <h1 class="series-title">復讐の館</h1>
             <p class="episode-title">1人目「運が悪かった、ただそれだけだ」</p>
-            <span class="chapter-indicator">第五章：憎しみの継承</span>
+            <span class="chapter-indicator">第六章：<ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>と時計</span>
         </section>
 
         <!-- Novel Content -->
         <article class="novel-content">
             <p>
-                <span class="line">部屋に帰り着いた時、時計は深夜を回っていた。</span>
+                <span class="line">気づくと、館の外、門の前に立っていた。</span>
             </p>
 
             <p>
-                <span class="line">靴を脱ぐ気力もない。玄関に座り込んで、しばらく動けなかった。</span>
+                <span class="line">門に手をかけ、館へ向かう。石畳を踏んで歩く。足音が館に吸い込まれていく。</span>
             </p>
 
             <p>
-                <span class="line">頭の中で剛山の声が繰り返される。</span>
+                <span class="line">扉を開いた瞬間、聞き覚えのある、この世で一番不快な声が聞こえた。</span>
             </p>
 
-            <p class="letter-p">
-                <span class="line emphasis">運が悪かった。ただ、それだけだ。</span>
-            </p>
-
-            <p>
-                <span class="line">何度も、何度も。</span>
+            <p class="dialogue-p">
+                <span class="line dialogue">「な、なんだここは。おい、誰かいるか。頼む、ここから出してくれ」</span>
             </p>
 
             <p>
-                <span class="line">笑っていた。あの顔で。俺の人生をめちゃくちゃにしておいて、奢ってやると言って。</span>
+                <span class="line emphasis">開かれた<ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>の中に、剛山がいた。</span>
             </p>
 
             <p>
-                <span class="line">怒りなのか、悲しみなのか……今までに感じたことのない感情が、胸の奥で煮えたぎっている。</span>
+                <span class="line">両腕と足を固定されたまま扉が半開きの状態で、顔は青ざめ、額に汗が滲んでいる。</span>
+            </p>
+
+            <p>
+                <span class="line">俺を見た瞬間、剛山の目が変わった。縋るような目だった。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「杉本——お前か。助けてくれ。頼む、助けてくれ」</span>
+            </p>
+
+            <p>
+                <span class="line">返事をしなかった。</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「チッ」</span>
+            </p>
+
+            <p>
+                <span class="line">舌打ちをする剛山。</span>
+            </p>
+
+            <p>
+                <span class="line">振り返ると、館の主がいた。</span>
+            </p>
+
+            <p>
+                <span class="line">深くフードを被り、顔が見えない。その腕の中に、黒猫が収まっていた。金色の目がこちらを見ている。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「久しいな」</span>
+            </p>
+
+            <p>
+                <span class="line">子供とも大人ともつかない、性別すら判断のつかない、不思議なあの時と同じ声。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「お前に伝えることがある」</span>
+            </p>
+
+            <p>
+                <span class="line">黒猫を抱いたまま、ゆっくりと近づいてくる。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「復讐を果たした者の魂は、人形の中に幽閉される。永遠に。二度と外には出られない。苦しみの中で、ただ存在し続けることになる」</span>
+            </p>
+
+            <p>
+                <span class="line">静かな声で、脅しでも警告でもなく、ただ事実を告げるような口調で。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「それでも、望むか」</span>
+            </p>
+
+            <p>
+                <span class="line">沈黙が館を満たした。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">俺は、コクリと頷いた。</span>
+            </p>
+
+            <p>
+                <span class="line">黒猫が、小さく鳴いた。</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「おい、杉本。何の話をしてるんだ。俺を出してくれ。頼む」</span>
+            </p>
+
+            <p>
+                <span class="line">剛山の声が響く。</span>
+            </p>
+
+            <p>
+                <span class="line">俺は<ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>の前に立った。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「なぜですか」</span>
+            </p>
+
+            <p>
+                <span class="line">自分の声が、妙に落ち着いて聞こえた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「なぜ、俺だったんですか」</span>
+            </p>
+
+            <p>
+                <span class="line">剛山の目が泳ぐ。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「な、何の話だ。俺は何も——」</span>
+            </p>
+
+            <p>
+                <span class="line">低い音を鳴らし、<ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>の扉が、わずかに動く。</span>
+            </p>
+
+            <p>
+                <span class="line">剛山の顔が強張る。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「な、なんだ。おい、なんだこれは」</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「なぜ、俺だったんですか」</span>
+            </p>
+
+            <p>
+                <span class="line">もう一度、同じ言葉を繰り返した。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「し、知らん。お前が勝手にやったことだろ。俺は関係——」</span>
+            </p>
+
+            <p>
+                <span class="line">また扉が動く。剛山の肩に、棘の先端が触れる。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「いっ——」</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「わ、わかった。わかった。話す。全部話す」</span>
+            </p>
+
+            <p>
+                <span class="line">剛山の声が裏返った。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「俺が書類を書き換えた。根回しもした。俺の地位のためにお前には犠牲になってもらった」</span>
+            </p>
+
+            <p>
+                <span class="line">言葉が溢れ出す。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">ギイ。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「な——なんで閉まるんだ。話してるだろ。話してるのになんで——」</span>
+            </p>
+
+            <p>
+                <span class="line">扉はゆっくりと、ゆっくりと閉まっていく。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「やめてくれ。頼む。家族がいるんだ。子供がいるんだ。頼む、杉本——」</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「それが何だ。俺にもいる。生活を切り詰めて、俺のために全てを注ぎ込んでくれた親父とお袋が。……大切な家族が俺にもいる」</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「杉本。お前とは長い付き合いだろ。飯も食った。キャバクラにも連れていってやった。頼む、助けてくれ——」</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「全てを押し付けたお前を助ける？　俺が？　お前を？」</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「す、すまない。本当にすまない……。全て俺がやったことだと認める。だから、ここから出して——」</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">ギイ。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「いやだ。いやだ、いやだ——」</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">ギイ。</span>
+            </p>
+
+            <p>
+                <span class="line">扉が閉まっていく。棘が、少しずつ体に食い込んでいく。</span>
+            </p>
+
+            <p>
+                <span class="line">剛山の声が、叫びに変わった。</span>
+            </p>
+
+            <p>
+                <span class="line">それでも、扉は閉まり続けた。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">やがて、<ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>が完全に閉じた。</span>
+            </p>
+
+            <p>
+                <span class="line">一瞬の静寂。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis"><ruby>鉄の処女<rt>アイアンメイデン</rt></ruby>の扉から、ゆっくりと血が溢れ始める。扉の隙間から、床へ、静かに広がっていく。</span>
             </p>
 
             <div class="section-divider"><span class="divider-symbol">†</span></div>
 
             <p>
-                <span class="line">翌朝、携帯が鳴る。</span>
+                <span class="line">館の主がゆっくりと近づいてきた。</span>
             </p>
 
             <p>
-                <span class="line">——東和証券。</span>
+                <span class="line">黒猫を抱いたまま、口を開く。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「あの者の魂は無へ。永遠に苦しみの中を彷徨うことになる」</span>
             </p>
 
             <p>
-                <span class="line">画面を見た瞬間、電源を切った。</span>
+                <span class="line">視線が、俺に向いた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「そしてお前の魂は——」</span>
             </p>
 
             <p>
-                <span class="line">飯を食う気にもなれない。水だけ飲んで布団に潜り込む。でも眠れなかった。天井を見つめたまま、時間だけが過ぎていく。</span>
+                <span class="line">俺はそれを遮るように、左手首を見た。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">親父が送ってくれた時計。</span>
+            </p>
+
+            <p>
+                <span class="line">あの封筒を渡してくれた時のお袋の顔が浮かんだ。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「ありがとう」</span>
+            </p>
+
+            <p>
+                <span class="line">声が震えた。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「ごめん」</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">涙が、床に落ちた。</span>
+            </p>
+
+            <p>
+                <span class="line">その瞬間、体がふっと軽くなる。</span>
             </p>
 
             <span class="scene-break"></span>
 
             <p>
-                <span class="line">2日目。</span>
-            </p>
-
-            <p>
-                <span class="line">カーテンを閉めると、部屋が暗くなる。暗くていい。暗い方がよかった。</span>
-            </p>
-
-            <p>
-                <span class="line">棚の上の人形がこちらを向いている。片目の空洞が、暗闇の中でも存在を主張していた。何かを訴えているような、その視線から目が離せなかった。</span>
+                <span class="line emphasis">全身を棘に貫かれた馬の人形が、かすかに揺れた。</span>
             </p>
 
             <span class="scene-break"></span>
 
             <p>
-                <span class="line">3日目。</span>
-            </p>
-
-            <p>
-                <span class="line">怒りが消えなかった。眠れなかった。飯も食えなかった。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">剛山を、絶対に許さない。その言葉が頭の中で弾けた瞬間、視界が暗くなった。</span>
-            </p>
-
-            <div class="section-divider"><span class="divider-symbol">†</span></div>
-
-            <p>
-                <span class="line">見覚えのある拷問器具。見覚えのある人形の棚。</span>
-            </p>
-
-            <p>
-                <span class="line">床に、両手足を鎖でがんじがらめにされた女。夢の中で見た、あの悪女だ。</span>
-            </p>
-
-            <p>
-                <span class="line">その前に立つ着物姿の女。片目から血を滲ませ、この世のものとは思えない憎悪をその顔に宿している。</span>
-            </p>
-
-            <p>
-                <span class="line">夢の続きなのか、それとも別の何かなのか。考える余裕もなく、俺はただそこに立っていた。</span>
-            </p>
-
-            <p>
-                <span class="line">鋭い怒りの眼差しと、右手に握られた鋭い千枚通し。女がゆっくりと悪女へ歩み寄る。</span>
+                <span class="line">館の主が口を開く。</span>
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「な、なぜそなたが……」</span>
+                <span class="line dialogue">「<span class="glitch-text" data-text="ᛞ͈̊ᚫ̶͂ᛗ̷̀ᚾ̴̎ᚪ̶̆ᛏ̵̊ᛁ̴̿ᛟ̷͝ᚾ̶̀ᛊ̸̈">ᛞ͈̊ᚫ̶͂ᛗ̷̀ᚾ̴̎ᚪ̶̆ᛏ̵̊ᛁ̴̿ᛟ̷͝ᚾ̶̀ᛊ̸̈</span>」</span>
             </p>
 
             <p>
-                <span class="line">悪女の顔が歪む。震える声だった。</span>
+                <span class="line">しばらくの沈黙。</span>
+            </p>
+
+            <p>
+                <span class="line">悲しみをたたえた表情で、館の主はつぶやいた。</span>
             </p>
 
             <p class="dialogue-p">
-                <span class="line dialogue">「ここは……ここはどこだ。なぜわらわが鎖で——」</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「お前だけは、許さない」</span>
-            </p>
-
-            <p>
-                <span class="line">静かな声。でもその言葉の奥に、全てが詰まっている。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">"グサッ"</span>
-            </p>
-
-            <p>
-                <span class="line">一瞬——迷いなく悪女の目に千枚通しが刺さる。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「ひっ——」</span>
-            </p>
-
-            <p>
-                <span class="line">悲鳴が館に響く。悪女が鎖を引きちぎろうともがく。でも動けない。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「ち、違うのです。わらわは、ただ——」</span>
-            </p>
-
-            <p>
-                <span class="line">女は聞いていなかった。</span>
-            </p>
-
-            <p>
-                <span class="line">棚から湯呑を取り、<ruby>附子<rt>ぶし</rt></ruby>を取り出す。静かに、丁寧に、粉を溶かしていく。その手は一切震えていない。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「お待ちを。お待ちくださいまし。わらわが悪うございました。何でもいたします。命だけは——」</span>
-            </p>
-
-            <p>
-                <span class="line">目が、一瞬悪女に向く。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">感情のない、怒りでも憎しみでもなく、ただ虚ろな目。それがかえって恐ろしかった。</span>
-            </p>
-
-            <p>
-                <span class="line">開口器具が悪女の口に差し込まれる。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「んっ——んんっ——」</span>
-            </p>
-
-            <p>
-                <span class="line">声にならない悲鳴。湯呑が傾けられ、<ruby>附子<rt>ぶし</rt></ruby>が喉の奥へ流し込まれる。</span>
-            </p>
-
-            <p>
-                <span class="line">しばらくして、悪女の体が震え始め、じわじわと毒が回っていく。</span>
-            </p>
-
-            <p>
-                <span class="line">体が弓なりに反り返り、泡を吹きながら床に崩れ落ち、鎖が、ゆっくりと弛んでいく。</span>
-            </p>
-
-            <span class="scene-break"></span>
-
-            <p>
-                <span class="line">女がゆっくりと振り返る。</span>
-            </p>
-
-            <p>
-                <span class="line">片目から血を滲ませたまま、こちらを見ていた。怒りの残り火が、その目の奥で燃えている。</span>
-            </p>
-
-            <p class="dialogue-p">
-                <span class="line dialogue">「そなたも……復讐を、望むか？」</span>
-            </p>
-
-            <p>
-                <span class="line">声は静かだった。でもその言葉の重さが、全身に染み込んでくる。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">俺は、女の目をじっと見て、静かに頷いた。</span>
-            </p>
-
-            <p>
-                <span class="line emphasis">黒猫が、闇の中で目を光らせていた。</span>
+                <span class="line dialogue">「……今回も同じ結果だったか」</span>
             </p>
         </article>
 
         <!-- Chapter Navigation -->
         <nav class="chapter-nav">
-            <a href="chapter4.html" class="nav-button">
+            <a href="chapter5.html" class="nav-button">
                 <span class="nav-arrow">&larr;</span>
                 <span>前の章へ</span>
             </a>
-            <a href="chapter6.html" class="nav-button primary">
-                <span>次の章へ</span>
+            <a href="index.html" class="nav-button primary">
+                <span>目次へ</span>
                 <span class="nav-arrow">&rarr;</span>
             </a>
         </nav>
