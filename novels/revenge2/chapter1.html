@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>復讐の館 - 2人目 | eye-factory</title>
+    <meta name="description" content="短編小説シリーズ「復讐の館」第二話。憎しみに溺れた者が辿り着く、夢と現実の狭間の館。">
+    <link rel="icon" type="image/png" href="../../favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700&family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0908;
+            --bg-surface: #0d0b0a;
+            --bg-card: rgba(15, 12, 10, 0.95);
+            --text: #c9c4bc;
+            --text-bright: #e8e4dc;
+            --text-dim: #8a847a;
+            --text-muted: #5a564e;
+            --dialogue: #d4cfc5;
+            --blood: #6b0f0f;
+            --blood-bright: #8b1a1a;
+            --blood-vivid: #a01515;
+            --blood-dark: #3d0808;
+            --blood-dried: #4a1a1a;
+            --rust: #3d2a1f;
+            --border: rgba(60, 20, 15, 0.5);
+            --font-body: 'Noto Serif JP', 'Yu Mincho', serif;
+            --transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 2.2;
+            min-height: 100vh;
+            font-weight: 400;
+        }
+
+        .bg-texture {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            background: var(--bg);
+        }
+
+        .bg-texture::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                repeating-radial-gradient(circle at 17% 32%, rgba(40, 30, 20, 0.03) 0px, transparent 1px),
+                repeating-radial-gradient(circle at 73% 68%, rgba(30, 20, 15, 0.04) 0px, transparent 1px),
+                repeating-radial-gradient(circle at 41% 89%, rgba(50, 35, 25, 0.03) 0px, transparent 1px),
+                radial-gradient(ellipse 300px 200px at 15% 25%, rgba(60, 30, 20, 0.08) 0%, transparent 70%),
+                radial-gradient(ellipse 250px 350px at 85% 60%, rgba(50, 25, 15, 0.06) 0%, transparent 70%),
+                radial-gradient(ellipse 400px 250px at 50% 85%, rgba(40, 20, 10, 0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 150px 400px at 5% 50%, rgba(35, 25, 20, 0.1) 0%, transparent 60%),
+                radial-gradient(ellipse 180px 300px at 95% 30%, rgba(30, 20, 15, 0.08) 0%, transparent 60%);
+        }
+
+        .bg-texture::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.7) 100%),
+                linear-gradient(180deg, rgba(20, 15, 10, 0.3) 0%, transparent 15%, transparent 85%, rgba(10, 5, 0, 0.4) 100%);
+        }
+
+        .blood-drip {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(180deg, var(--blood-dark) 0%, transparent 100%);
+            z-index: 99;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 2rem;
+            background: linear-gradient(180deg, rgba(10, 9, 8, 0.98) 0%, rgba(10, 9, 8, 0.95) 100%);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            transition: var(--transition);
+        }
+
+        .header-logo:hover {
+            opacity: 0.8;
+        }
+
+        .header-logo .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #00d4ff, #8b5cf6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 12px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        }
+
+        .header-logo .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--text-bright);
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-toc-btn {
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            background: linear-gradient(135deg, rgba(61, 8, 8, 0.4) 0%, rgba(107, 15, 15, 0.25) 100%);
+            border: 1px solid var(--blood-dark);
+            border-radius: 4px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            transition: var(--transition);
+        }
+
+        .nav-toc-btn:hover {
+            background: linear-gradient(135deg, rgba(107, 15, 15, 0.35) 0%, rgba(139, 26, 26, 0.25) 100%);
+            box-shadow: 0 0 15px rgba(107, 15, 15, 0.3);
+        }
+
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 7rem 2rem 5rem;
+        }
+
+        .cover-wrapper {
+            width: 100%;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .cover-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(135deg, var(--blood-dark) 0%, transparent 30%, transparent 70%, var(--blood-dark) 100%);
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .cover-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            filter: brightness(0.85) contrast(1.05) saturate(0.9);
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.7),
+                0 0 1px rgba(107, 15, 15, 0.5),
+                inset 0 0 100px rgba(0, 0, 0, 0.3);
+        }
+
+        .cover-placeholder {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            border: 1px solid var(--border);
+        }
+
+        .title-section {
+            text-align: center;
+            margin-bottom: 5rem;
+            padding-bottom: 4rem;
+            position: relative;
+        }
+
+        .series-title {
+            font-family: var(--font-body);
+            font-size: clamp(2.8rem, 10vw, 4.5rem);
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            margin-bottom: 2rem;
+            color: var(--text-bright);
+            position: relative;
+            display: inline-block;
+            text-shadow:
+                0 0 40px rgba(107, 15, 15, 0.4),
+                0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .series-title::before {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 20%;
+            width: 4px;
+            height: 25px;
+            background: linear-gradient(180deg, var(--blood-bright) 0%, var(--blood) 40%, transparent 100%);
+            border-radius: 0 0 50% 50%;
+            animation: titleDrip 4s ease-in-out infinite;
+        }
+
+        .series-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            right: 25%;
+            width: 3px;
+            height: 18px;
+            background: linear-gradient(180deg, var(--blood) 0%, var(--blood-dark) 50%, transparent 100%);
+            border-radius: 0 0 50% 50%;
+            animation: titleDrip 5s ease-in-out infinite 1.5s;
+        }
+
+        @keyframes titleDrip {
+            0%, 100% {
+                height: 15px;
+                opacity: 0.6;
+            }
+            50% {
+                height: 30px;
+                opacity: 1;
+            }
+        }
+
+        .title-splatter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 130%;
+            height: 200%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .title-splatter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse 12px 18px at 8% 35%, var(--blood) 0%, transparent 70%),
+                radial-gradient(ellipse 8px 12px at 92% 30%, var(--blood-dark) 0%, transparent 70%),
+                radial-gradient(ellipse 15px 10px at 88% 65%, var(--blood) 0%, transparent 70%),
+                radial-gradient(ellipse 6px 14px at 5% 70%, var(--blood-dark) 0%, transparent 70%),
+                radial-gradient(ellipse 5px 5px at 25% 15%, var(--blood-bright) 0%, transparent 70%),
+                radial-gradient(ellipse 4px 8px at 75% 80%, var(--blood) 0%, transparent 70%),
+                radial-gradient(ellipse 10px 6px at 15% 85%, var(--blood-dark) 0%, transparent 70%);
+            opacity: 0.5;
+            filter: blur(1px);
+        }
+
+        .episode-title {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: var(--text-dim);
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .chapter-indicator {
+            display: inline-block;
+            margin-top: 2.5rem;
+            padding: 0.8rem 2.5rem;
+            background: linear-gradient(135deg, rgba(61, 8, 8, 0.3) 0%, rgba(107, 15, 15, 0.15) 100%);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            letter-spacing: 0.15em;
+            font-size: 0.85rem;
+            position: relative;
+        }
+
+        .chapter-indicator::before {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 30%;
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(180deg, var(--blood-dark) 0%, transparent 100%);
+            border-radius: 0 0 50% 50%;
+        }
+
+        .chapter-indicator::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 35%;
+            width: 1px;
+            height: 12px;
+            background: linear-gradient(180deg, var(--blood-dark) 0%, transparent 100%);
+            border-radius: 0 0 50% 50%;
+        }
+
+        .title-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--rust) 20%,
+                var(--blood-dark) 50%,
+                var(--rust) 80%,
+                transparent 100%);
+        }
+
+        .novel-content {
+            font-family: var(--font-body);
+            font-size: clamp(1rem, 2.5vw, 1.05rem);
+            font-weight: 400;
+            color: var(--text);
+            line-height: 2.5;
+        }
+
+        .novel-content p {
+            margin-bottom: 2.5em;
+            text-indent: 0;
+        }
+
+        .novel-content .line {
+            display: block;
+            margin-bottom: 0.8em;
+        }
+
+        .novel-content .scene-break {
+            display: block;
+            height: 4em;
+        }
+
+        .novel-content .dialogue {
+            color: var(--dialogue);
+            font-weight: 500;
+            position: relative;
+            padding-left: 0.3em;
+        }
+
+        .novel-content .dialogue::before {
+            content: '';
+            position: absolute;
+            left: -0.5em;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 70%;
+            background: linear-gradient(180deg, transparent, var(--blood-dried), transparent);
+            opacity: 0.4;
+        }
+
+        .novel-content .dialogue-p {
+            margin-top: 2.5em;
+            margin-bottom: 2.5em;
+        }
+
+        .novel-content .dialogue-p + .dialogue-p {
+            margin-top: 0.8em;
+        }
+
+        .novel-content .letter-p {
+            margin-top: 2.5em;
+            margin-bottom: 2.5em;
+            font-weight: 600;
+            color: var(--text-bright);
+        }
+
+        .novel-content .emphasis {
+            color: var(--text-bright);
+            font-weight: 600;
+        }
+
+        .novel-content .sound-effect {
+            text-align: center;
+            color: var(--text-dim);
+            letter-spacing: 0.2em;
+        }
+
+        .section-divider {
+            text-align: center;
+            margin: 4rem 0;
+            position: relative;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--blood-dark) 30%,
+                var(--blood) 50%,
+                var(--blood-dark) 70%,
+                transparent 100%);
+        }
+
+        .section-divider::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 30px;
+            background:
+                radial-gradient(ellipse 20px 10px at 30% 60%, var(--blood-dark) 0%, transparent 70%),
+                radial-gradient(ellipse 15px 8px at 70% 40%, var(--blood) 0%, transparent 70%),
+                radial-gradient(ellipse 10px 12px at 50% 70%, var(--blood-dark) 0%, transparent 70%);
+            opacity: 0.3;
+            filter: blur(2px);
+        }
+
+        .section-divider .divider-symbol {
+            color: var(--blood-dried);
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 0 20px rgba(107, 15, 15, 0.5);
+            background: var(--bg);
+            padding: 0 1rem;
+        }
+
+        .chapter-nav {
+            margin-top: 6rem;
+            padding-top: 4rem;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .chapter-nav::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+                transparent 0%,
+                var(--rust) 20%,
+                var(--blood-dark) 50%,
+                var(--rust) 80%,
+                transparent 100%);
+        }
+
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 2.5rem;
+            background: linear-gradient(135deg, rgba(15, 12, 10, 0.9) 0%, rgba(25, 18, 15, 0.8) 100%);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, transparent 0%, rgba(107, 15, 15, 0.1) 50%, transparent 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .nav-button:hover::before {
+            opacity: 1;
+        }
+
+        .nav-button:hover {
+            border-color: var(--blood-dark);
+            color: var(--text);
+            box-shadow:
+                0 5px 30px rgba(107, 15, 15, 0.2),
+                inset 0 1px 0 rgba(107, 15, 15, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-button.primary {
+            background: linear-gradient(135deg, rgba(61, 8, 8, 0.4) 0%, rgba(107, 15, 15, 0.25) 100%);
+            border-color: var(--blood-dark);
+            color: var(--text);
+        }
+
+        .nav-button.primary::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 20%;
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--blood), transparent);
+            opacity: 0.5;
+        }
+
+        .nav-button.primary:hover {
+            background: linear-gradient(135deg, rgba(107, 15, 15, 0.35) 0%, rgba(139, 26, 26, 0.25) 100%);
+            box-shadow:
+                0 8px 40px rgba(107, 15, 15, 0.3),
+                inset 0 1px 0 rgba(139, 26, 26, 0.2);
+        }
+
+        .nav-button.disabled {
+            opacity: 0.25;
+            pointer-events: none;
+        }
+
+        .nav-arrow {
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        .footer {
+            margin-top: 5rem;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--rust), transparent);
+        }
+
+        .footer a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer a:hover {
+            color: var(--text);
+        }
+
+        .footer p {
+            margin-bottom: 0.8rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                max-width: 100%;
+                width: 100%;
+                padding: 6rem 1rem 4rem;
+                overflow-x: hidden;
+            }
+
+            .header {
+                padding: 0.8rem 1rem;
+            }
+
+            .header-nav {
+                gap: 1.2rem;
+            }
+
+            .chapter-nav {
+                flex-direction: column;
+            }
+
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .novel-content {
+                font-size: 20px;
+                line-height: 2.3;
+                word-wrap: break-word;
+                overflow-wrap: break-word;
+                max-width: 100%;
+            }
+
+            .novel-content p {
+                max-width: 100%;
+            }
+
+            .title-splatter::before {
+                opacity: 0.3;
+            }
+
+            .series-title::before,
+            .series-title::after {
+                display: none;
+            }
+
+            .cover-wrapper {
+                max-width: 100%;
+            }
+
+            .title-section {
+                max-width: 100%;
+                overflow: hidden;
+            }
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--blood-dark), var(--blood), var(--blood-bright));
+            z-index: 101;
+            transition: width 0.1s;
+            box-shadow: 0 0 15px rgba(107, 15, 15, 0.6);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scroll-top:hover {
+            background: rgba(107, 15, 15, 0.2);
+            border-color: var(--blood-dark);
+            color: var(--text);
+            box-shadow: 0 0 20px rgba(107, 15, 15, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-texture"></div>
+    <div class="blood-drip"></div>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <header class="header">
+        <a href="../../index.html" class="header-logo">
+            <span class="logo-icon">ef</span>
+            <span class="logo-text">eye-factory</span>
+        </a>
+        <nav class="header-nav">
+            <a href="index.html" class="nav-toc-btn">目次</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        <!-- Cover Image -->
+        <div class="cover-wrapper">
+            <img src="revenge2_cover.png" alt="復讐の館 表紙" class="cover-image"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="cover-placeholder" style="display:none;">表紙画像 (revenge2_cover.png)</div>
+        </div>
+
+        <!-- Title -->
+        <section class="title-section">
+            <div class="title-splatter"></div>
+            <h1 class="series-title">復讐の館</h1>
+            <p class="episode-title">2人目</p>
+            <span class="chapter-indicator">第一章　夜の底</span>
+        </section>
+
+        <!-- Novel Content -->
+        <article class="novel-content">
+            <p class="sound-effect">
+                <span class="line">―― バシャッ ――</span>
+            </p>
+
+            <p>
+                <span class="line">ドレス<ruby>姿<rt>すがた</rt></ruby>の<ruby>金髪女<rt>きんぱつおんな</rt></ruby>が、<ruby>若<rt>わか</rt></ruby>い<ruby>黒髪<rt>くろかみ</rt></ruby>の<ruby>女<rt>おんな</rt></ruby>の顔を便器に押さえつけている。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「ちゃんと舐めて掃除しなさい。汚いとこ全部」</span>
+            </p>
+
+            <p>
+                <span class="line">冷たい<ruby>陶器<rt>とうき</rt></ruby>、鼻を突く匂い、舌に広がる<ruby>淀<rt>よど</rt></ruby>んだ水の味。</span>
+            </p>
+
+            <p>
+                <span class="line">喚くことも、逆らうこともせず、舐め続ける。</span>
+            </p>
+
+            <p>
+                <span class="line">金髪女がレバーに手をかける。</span>
+            </p>
+
+            <p>
+                <span class="line">カラン。</span>
+            </p>
+
+            <p class="sound-effect">
+                <span class="line">―― ジャアアァァァッ ――</span>
+            </p>
+
+            <p>
+                <span class="line">顔を便器に着けさせたまま、トイレを流す金髪女。</span>
+            </p>
+
+            <p>
+                <span class="line">水が顔を叩く。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「はーい、よくできました」</span>
+            </p>
+
+            <p>
+                <span class="line">女は笑いながら<ruby>待機室<rt>たいきしつ</rt></ruby>へ向かう。</span>
+            </p>
+
+            <p>
+                <span class="line"><ruby>銀座<rt>ぎんざ</rt></ruby>の<ruby>高級<rt>こうきゅう</rt></ruby>クラブの日常。</span>
+            </p>
+
+            <p>
+                <span class="line">いつもの光景。</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「ちょっと<ruby>優希<rt>ゆうき</rt></ruby>、体操服忘れてるよ！」</span>
+            </p>
+
+            <p>
+                <span class="line">玄関先で声を上げると、ドタドタと足音が戻ってくる。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「あ、やば」</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「やばじゃないでしょ。ほら」</span>
+            </p>
+
+            <p>
+                <span class="line">体操服を押しつけると、優希は「サンキュ」と言いながらランドセルに突っ込んだ。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「サンキュじゃなくてありがとうでしょ」</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「ありがとー姉ちゃん」</span>
+            </p>
+
+            <p>
+                <span class="line">雑なお礼を残して、駆け出していく優希。</span>
+            </p>
+
+            <p>
+                <span class="line">扉を閉めると、静かになった。</span>
+            </p>
+
+            <p>
+                <span class="line">テーブルの上の洗い物を片付けながら、窓の外を見る。</span>
+            </p>
+
+            <p>
+                <span class="line">眩しい朝の光。</span>
+            </p>
+
+            <div class="section-divider"><span class="divider-symbol">†</span></div>
+
+            <p>
+                <span class="line">私の名前は<ruby>里中詩織<rt>さとなかしおり</rt></ruby>、21歳。</span>
+            </p>
+
+            <p>
+                <span class="line">銀座のクラブ「<ruby>Lunar<rt>ルナー</rt></ruby>」での源氏名はイオリ。</span>
+            </p>
+
+            <p>
+                <span class="line">私のお父さんは、もうこの世にいない。</span>
+            </p>
+
+            <p>
+                <span class="line">母のお腹が大きくなり始めた頃、父は優希の顔を一度も見ることなく亡くなった。</span>
+            </p>
+
+            <p>
+                <span class="line">働いていた工場での、落下事故だった。</span>
+            </p>
+
+            <p>
+                <span class="line"><ruby>葬式<rt>そうしき</rt></ruby>の日、泣き止まない私をずっと抱きしめてくれていた母。</span>
+            </p>
+
+            <p>
+                <span class="line">一番辛いのは、お母さんだったのに……。</span>
+            </p>
+
+            <p>
+                <span class="line">もう、その時には強く生きると決めたのだろう。</span>
+            </p>
+
+            <p>
+                <span class="line">母は、優希が<ruby>幼稚園<rt>ようちえん</rt></ruby>に通い始めた頃から、昼はスーパーのレジ、夜はスナックの掛け持ちで仕事をこなした。</span>
+            </p>
+
+            <p>
+                <span class="line">疲れているはずなのに、いつも笑顔で食卓に温かいご飯を必ず用意してくれていた。</span>
+            </p>
+
+            <p>
+                <span class="line">私が高校3年生になった春。</span>
+            </p>
+
+            <p>
+                <span class="line">テーブルの上に残されていたのは、一枚の<ruby>置<rt>お</rt></ruby>き<ruby>手紙<rt>てがみ</rt></ruby>。</span>
+            </p>
+
+            <p class="letter-p">
+                <span class="line">『ごめんね、お母さん疲れちゃったの』</span>
+            </p>
+
+            <p>
+                <span class="line">……ごめんって、何？</span>
+            </p>
+
+            <p>
+                <span class="line">……疲れたって、何？</span>
+            </p>
+
+            <p>
+                <span class="line">この時の私は、まだ手紙の意味を理解していなかった。</span>
+            </p>
+
+            <p>
+                <span class="line">その日から母は、1日経っても、1週間経っても帰ってこない。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「お母さんは？」</span>
+            </p>
+
+            <p>
+                <span class="line">毎晩のように私に聞く優希。</span>
+            </p>
+
+            <p class="dialogue-p">
+                <span class="line dialogue">「お仕事で遠くに行ってるんだよ」</span>
+            </p>
+
+            <p>
+                <span class="line">そう答えるたびに、胸の奥が痛む。</span>
+            </p>
+
+            <p>
+                <span class="line">母はもうこの場所へは帰って来ない。</span>
+            </p>
+
+            <p>
+                <span class="line">たった一人の家族。</span>
+            </p>
+
+            <p>
+                <span class="line emphasis">この子だけは、守らないといけない。</span>
+            </p>
+
+            <p>
+                <span class="line">そう決意した次の日の朝、私は学校に退学届を出した。</span>
+            </p>
+        </article>
+
+        <!-- Chapter Navigation -->
+        <nav class="chapter-nav">
+            <a href="#" class="nav-button disabled">
+                <span class="nav-arrow">&larr;</span>
+                <span>前の章へ</span>
+            </a>
+            <a href="chapter2.html" class="nav-button primary">
+                <span>次の章へ</span>
+                <span class="nav-arrow">&rarr;</span>
+            </a>
+        </nav>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; eye-factory. All rights reserved.</p>
+    </footer>
+
+    <button class="scroll-top" id="scrollTop" aria-label="トップへ戻る">↑</button>
+
+    <script>
+        // Reading Progress Bar
+        window.addEventListener('scroll', () => {
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = (window.scrollY / docHeight) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+
+            // Scroll to top button visibility
+            const scrollTop = document.getElementById('scrollTop');
+            if (window.scrollY > 500) {
+                scrollTop.classList.add('visible');
+            } else {
+                scrollTop.classList.remove('visible');
+            }
+        });
+
+        // Scroll to top
+        document.getElementById('scrollTop').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
