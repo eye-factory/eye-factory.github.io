@@ -585,44 +585,32 @@ body {
   margin-top: 6px;
 }
 /* NEW song badge */
-@keyframes rainbowBorder {
-  0%   { border-color: #ff0000; box-shadow: 0 0 12px #ff0000; }
-  17%  { border-color: #ff8800; box-shadow: 0 0 12px #ff8800; }
-  33%  { border-color: #ffff00; box-shadow: 0 0 12px #ffff00; }
-  50%  { border-color: #00ff00; box-shadow: 0 0 12px #00ff00; }
-  67%  { border-color: #0088ff; box-shadow: 0 0 12px #0088ff; }
-  83%  { border-color: #8800ff; box-shadow: 0 0 12px #8800ff; }
-  100% { border-color: #ff0000; box-shadow: 0 0 12px #ff0000; }
+@keyframes pinkBgPulse {
+  0%   { background: linear-gradient(135deg, rgba(255,105,180,0.08), rgba(255,20,147,0.05)); }
+  50%  { background: linear-gradient(135deg, rgba(255,105,180,0.18), rgba(255,20,147,0.12)); }
+  100% { background: linear-gradient(135deg, rgba(255,105,180,0.08), rgba(255,20,147,0.05)); }
 }
-@keyframes newPulse {
-  0%, 100% { transform: scale(1.00); }
-  50%      { transform: scale(1.03); }
-}
-@keyframes rainbowText {
-  0%   { color: #ff0000; }
-  17%  { color: #ff8800; }
-  33%  { color: #ffff00; }
-  50%  { color: #00ff00; }
-  67%  { color: #0088ff; }
-  83%  { color: #8800ff; }
-  100% { color: #ff0000; }
+@keyframes badgePulse {
+  0%, 100% { transform: scale(1.0); }
+  50%      { transform: scale(1.15); }
 }
 .song-item.new-song {
   position: relative;
-  border-width: 2px;
-  animation: rainbowBorder 2s linear infinite, newPulse 2s ease-in-out infinite;
+  border: 1.5px solid #ff69b4;
+  animation: pinkBgPulse 2.5s ease-in-out infinite;
 }
 .new-badge {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: rgba(0, 0, 0, 0.8);
+  background: #ff69b4;
+  color: #fff;
   font-family: var(--font-en);
   font-size: 10px;
   font-weight: 900;
   padding: 3px 8px;
   border-radius: 4px;
-  animation: rainbowText 2s linear infinite;
+  animation: badgePulse 1.5s ease-in-out infinite;
 }
 /* Best score display on song/difficulty */
 .best-score-display {
@@ -3731,7 +3719,7 @@ function renderSongList() {
     const bestScore = getBestScore(song.id);
     const bestRank = getBestRank(song.id);
     item.innerHTML = `
-      ${isNew ? '<span class="new-badge">✨NEW!✨</span>' : ''}
+      ${isNew ? '<span class="new-badge">NEW!</span>' : ''}
       <div class="song-title">${song.title}</div>
       <div class="song-artist">${song.artist}</div>
       <div class="song-bpm">${formatDuration(song.duration)}</div>
