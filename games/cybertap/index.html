@@ -585,31 +585,44 @@ body {
   margin-top: 6px;
 }
 /* NEW song badge */
-.song-item.new-song {
-  border-color: var(--neon-yellow);
-  box-shadow: 0 0 15px rgba(255, 221, 0, 0.3);
-  position: relative;
+@keyframes rainbowBorder {
+  0%   { border-color: #ff0000; box-shadow: 0 0 12px #ff0000; }
+  17%  { border-color: #ff8800; box-shadow: 0 0 12px #ff8800; }
+  33%  { border-color: #ffff00; box-shadow: 0 0 12px #ffff00; }
+  50%  { border-color: #00ff00; box-shadow: 0 0 12px #00ff00; }
+  67%  { border-color: #0088ff; box-shadow: 0 0 12px #0088ff; }
+  83%  { border-color: #8800ff; box-shadow: 0 0 12px #8800ff; }
+  100% { border-color: #ff0000; box-shadow: 0 0 12px #ff0000; }
 }
-.song-item.new-song:hover {
-  box-shadow: 0 0 25px rgba(255, 221, 0, 0.5);
+@keyframes newPulse {
+  0%, 100% { transform: scale(1.00); }
+  50%      { transform: scale(1.03); }
+}
+@keyframes rainbowText {
+  0%   { color: #ff0000; }
+  17%  { color: #ff8800; }
+  33%  { color: #ffff00; }
+  50%  { color: #00ff00; }
+  67%  { color: #0088ff; }
+  83%  { color: #8800ff; }
+  100% { color: #ff0000; }
+}
+.song-item.new-song {
+  position: relative;
+  border-width: 2px;
+  animation: rainbowBorder 2s linear infinite, newPulse 2s ease-in-out infinite;
 }
 .new-badge {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: linear-gradient(135deg, var(--neon-yellow), var(--neon-orange));
-  color: #000;
+  background: rgba(0, 0, 0, 0.8);
   font-family: var(--font-en);
   font-size: 10px;
   font-weight: 900;
   padding: 3px 8px;
   border-radius: 4px;
-  animation: newBadgePulse 1.5s ease-in-out infinite;
-  box-shadow: 0 0 10px rgba(255, 221, 0, 0.6);
-}
-@keyframes newBadgePulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.1); opacity: 0.9; }
+  animation: rainbowText 2s linear infinite;
 }
 /* Best score display on song/difficulty */
 .best-score-display {
@@ -2941,7 +2954,7 @@ const SONGS = [
   {
     id: 'asta_vesta',
     title: 'Asta Vesta',
-    artist: 'ai_house',
+    artist: 'eye-factory',
     bpm: 135,
     audioFile: 'Asta Vesta.mp3',
     duration: 61,  // 61.20 seconds
@@ -2951,7 +2964,7 @@ const SONGS = [
   {
     id: 'staccato_ritual',
     title: 'Staccato Ritual',
-    artist: 'ai_house',
+    artist: 'eye-factory',
     bpm: 95,
     audioFile: 'Staccato Ritual.mp3',
     duration: 54,  // 53.88 seconds
@@ -2961,7 +2974,7 @@ const SONGS = [
   {
     id: 'gata_ze',
     title: 'GATA-ZE',
-    artist: 'ai_house',
+    artist: 'eye-factory',
     bpm: 165,
     audioFile: 'GATA-ZE.mp3',
     duration: 107,  // 106.80 seconds
@@ -2971,7 +2984,7 @@ const SONGS = [
   {
     id: 'tikka_takka_ticks',
     title: 'Tikka-Takka Ticks',
-    artist: 'ai_house',
+    artist: 'eye-factory',
     bpm: 175,
     audioFile: 'Tikka-Takka Ticks.mp3',
     duration: 64,  // 64.36 seconds
@@ -2981,7 +2994,7 @@ const SONGS = [
   {
     id: 'ban_za_ra',
     title: 'BAN-ZA-RA',
-    artist: 'ai_house',
+    artist: 'eye-factory',
     bpm: 155,
     audioFile: 'BAN-ZA-RA.mp3',
     duration: 125,  // 124.76 seconds
@@ -3688,13 +3701,13 @@ function formatDuration(seconds) {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
-// Check if song is NEW (added within 30 days)
+// Check if song is NEW (added within 10 days)
 function isNewSong(song) {
   if (!song.addedDate) return false;
   const addedTime = new Date(song.addedDate).getTime();
   const now = Date.now();
-  const thirtyDays = 30 * 24 * 60 * 60 * 1000;
-  return (now - addedTime) < thirtyDays;
+  const tenDays = 10 * 24 * 60 * 60 * 1000;
+  return (now - addedTime) < tenDays;
 }
 
 function renderSongList() {
@@ -3718,7 +3731,7 @@ function renderSongList() {
     const bestScore = getBestScore(song.id);
     const bestRank = getBestRank(song.id);
     item.innerHTML = `
-      ${isNew ? '<span class="new-badge">NEW</span>' : ''}
+      ${isNew ? '<span class="new-badge">✨NEW!✨</span>' : ''}
       <div class="song-title">${song.title}</div>
       <div class="song-artist">${song.artist}</div>
       <div class="song-bpm">${formatDuration(song.duration)}</div>
