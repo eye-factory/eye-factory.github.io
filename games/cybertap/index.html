@@ -1095,6 +1095,17 @@ body {
 .music-item.playing {
   background: rgba(0, 212, 255, 0.1);
 }
+.music-item.new-song {
+  animation: cyberPulse 8s ease-in-out infinite;
+}
+.music-item.new-song:hover {
+  border-color: rgba(200, 160, 255, 1.0);
+  box-shadow: 0 0 20px rgba(200, 160, 255, 0.6);
+}
+.music-item .new-badge {
+  top: 4px;
+  right: 4px;
+}
 
 /* Audio waveform animation */
 .audio-wave {
@@ -3481,11 +3492,25 @@ function renderMusicList() {
   const originalContainer = document.getElementById('music-list-original');
   originalContainer.innerHTML = '';
 
-  SONGS.forEach((song, index) => {
+  // Sort songs: NEW songs first, then by addedDate ascending
+  const songsWithIndex = SONGS.map((song, index) => ({ song, originalIndex: index }));
+  songsWithIndex.sort((a, b) => {
+    const aNew = isNewSong(a.song);
+    const bNew = isNewSong(b.song);
+    if (aNew && !bNew) return -1;
+    if (!aNew && bNew) return 1;
+    const aDate = a.song.addedDate ? new Date(a.song.addedDate).getTime() : 0;
+    const bDate = b.song.addedDate ? new Date(b.song.addedDate).getTime() : 0;
+    return aDate - bDate;
+  });
+
+  songsWithIndex.forEach(({ song, originalIndex }) => {
     const item = document.createElement('div');
-    item.className = 'music-item';
-    item.id = `music-item-${index}`;
+    const isNew = isNewSong(song);
+    item.className = isNew ? 'music-item new-song' : 'music-item';
+    item.id = `music-item-${originalIndex}`;
     item.innerHTML = `
+      ${isNew ? '<span class="new-badge">NEW!</span>' : ''}
       <div class="audio-wave">
         <div class="audio-wave-bar"></div>
         <div class="audio-wave-bar"></div>
@@ -3498,13 +3523,13 @@ function renderMusicList() {
         <div class="music-item-title">${song.title}</div>
         <div class="music-item-artist">${song.artist}</div>
         <div class="music-item-time">
-          <span class="music-current-time" id="music-time-${index}"></span>
+          <span class="music-current-time" id="music-time-${originalIndex}"></span>
           <span class="music-duration">${formatDuration(song.duration)}</span>
         </div>
       </div>
       <button class="music-download-btn" onclick="event.stopPropagation(); downloadMusic('${song.audioFile}')">Download</button>
     `;
-    item.onclick = () => playMusicTrack(index);
+    item.onclick = () => playMusicTrack(originalIndex);
     originalContainer.appendChild(item);
   });
 
@@ -3723,13 +3748,15 @@ function renderSongList() {
   const originalContainer = document.getElementById('song-list-original');
   originalContainer.innerHTML = '';
 
-  // Sort songs: NEW songs first, then by original order
+  // Sort songs: NEW songs first, then by addedDate ascending
   const sortedSongs = [...SONGS].sort((a, b) => {
     const aNew = isNewSong(a);
     const bNew = isNewSong(b);
     if (aNew && !bNew) return -1;
     if (!aNew && bNew) return 1;
-    return 0;
+    const aDate = a.addedDate ? new Date(a.addedDate).getTime() : 0;
+    const bDate = b.addedDate ? new Date(b.addedDate).getTime() : 0;
+    return aDate - bDate;
   });
 
   sortedSongs.forEach(song => {
