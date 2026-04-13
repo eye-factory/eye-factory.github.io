@@ -617,8 +617,8 @@ body {
   animation: cyberPulse 8s ease-in-out infinite;
 }
 .song-item.new-song:hover, .song-item.new-song.selected {
-  border-color: rgba(160, 120, 255, 0.9);
-  box-shadow: 0 0 20px rgba(160, 120, 255, 0.5);
+  border-color: rgba(200, 160, 255, 1.0);
+  box-shadow: 0 0 20px rgba(200, 160, 255, 0.6);
 }
 .new-badge {
   position: absolute;
@@ -3449,6 +3449,7 @@ function doScreenSwitch(screenId) {
 
   if (screenId === 'song-select') {
     renderSongList();
+    playTitleBGM();
   } else if (screenId === 'title-screen') {
     playTitleBGM();
     // Re-trigger animations when returning to title screen
