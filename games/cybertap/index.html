@@ -1076,7 +1076,7 @@ body {
 }
 .music-item {
   background: var(--bg-card);
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  border: 1px solid rgba(100, 80, 180, 0.5);
   border-radius: 12px;
   padding: 16px;
   cursor: pointer;
@@ -1086,6 +1086,7 @@ body {
   flex-direction: column;
   gap: 8px;
   position: relative;
+  overflow: visible;
 }
 .music-item:hover, .music-item.playing {
   border-color: var(--neon-primary);
@@ -1098,12 +1099,12 @@ body {
 .music-item.new-song {
   animation: cyberPulse 8s ease-in-out infinite;
 }
-.music-item.new-song:hover {
+.music-item.new-song:hover, .music-item.new-song.playing {
   border-color: rgba(200, 160, 255, 1.0);
   box-shadow: 0 0 20px rgba(200, 160, 255, 0.6);
 }
 .music-item .new-badge {
-  top: 4px;
+  top: -8px;
   right: 4px;
 }
 
