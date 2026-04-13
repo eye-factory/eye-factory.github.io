@@ -585,32 +585,45 @@ body {
   margin-top: 6px;
 }
 /* NEW song badge */
-@keyframes pinkBgPulse {
-  0%   { background: linear-gradient(135deg, rgba(255,105,180,0.08), rgba(255,20,147,0.05)); }
-  50%  { background: linear-gradient(135deg, rgba(255,105,180,0.18), rgba(255,20,147,0.12)); }
-  100% { background: linear-gradient(135deg, rgba(255,105,180,0.08), rgba(255,20,147,0.05)); }
+@keyframes cyberScan {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 0% 100%; }
 }
 @keyframes badgePulse {
   0%, 100% { transform: scale(1.0); }
   50%      { transform: scale(1.15); }
 }
+@keyframes rainbowText {
+  0%   { color: #ff0000; }
+  17%  { color: #ff8800; }
+  33%  { color: #ffff00; }
+  50%  { color: #00ff00; }
+  67%  { color: #0088ff; }
+  83%  { color: #cc00ff; }
+  100% { color: #ff0000; }
+}
 .song-item.new-song {
   position: relative;
-  border: 1.5px solid #ff69b4;
-  animation: pinkBgPulse 2.5s ease-in-out infinite;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 98%,
+    rgba(0, 255, 255, 0.03) 99%,
+    rgba(0, 255, 255, 0.03) 100%
+  );
+  background-size: 100% 8px;
+  animation: cyberScan 3s linear infinite;
 }
 .new-badge {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: #ff69b4;
-  color: #fff;
+  background: transparent;
   font-family: var(--font-en);
   font-size: 10px;
   font-weight: 900;
   padding: 3px 8px;
-  border-radius: 4px;
-  animation: badgePulse 1.5s ease-in-out infinite;
+  animation: rainbowText 2s linear infinite, badgePulse 1.5s ease-in-out infinite;
 }
 /* Best score display on song/difficulty */
 .best-score-display {
