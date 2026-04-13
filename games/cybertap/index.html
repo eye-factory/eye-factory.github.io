@@ -584,6 +584,33 @@ body {
   color: var(--neon-pink);
   margin-top: 6px;
 }
+/* NEW song badge */
+.song-item.new-song {
+  border-color: var(--neon-yellow);
+  box-shadow: 0 0 15px rgba(255, 221, 0, 0.3);
+  position: relative;
+}
+.song-item.new-song:hover {
+  box-shadow: 0 0 25px rgba(255, 221, 0, 0.5);
+}
+.new-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: linear-gradient(135deg, var(--neon-yellow), var(--neon-orange));
+  color: #000;
+  font-family: var(--font-en);
+  font-size: 10px;
+  font-weight: 900;
+  padding: 3px 8px;
+  border-radius: 4px;
+  animation: newBadgePulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(255, 221, 0, 0.6);
+}
+@keyframes newBadgePulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.9; }
+}
 /* Best score display on song/difficulty */
 .best-score-display {
   font-family: var(--font-en);
@@ -2712,6 +2739,7 @@ body {
       <div class="result-buttons">
         <button class="btn" onclick="retryGame()">Retry</button>
         <button class="btn shot-btn" onclick="takeScreenshot()">Shot</button>
+        <button class="btn secondary" onclick="playSE(SE.kati); stopResultBGM(); showScreen('song-select')">Songs</button>
         <button class="btn secondary" onclick="playSE(SE.kati); stopResultBGM(); showScreen('title-screen')">Title</button>
       </div>
     </div>
@@ -2765,6 +2793,7 @@ const SONGS = [
     bpm: 117,
     audioFile: 'lumi_zero.mp3',
     duration: 57,  // 56.52 seconds
+    addedDate: '2026-02-17',
     // Bright cyber - balanced distribution
     noteDistribution: { medium: 0.65, large: 0.30, xlarge: 0.05 },
   },
@@ -2775,6 +2804,7 @@ const SONGS = [
     bpm: 65,
     audioFile: 'hexaclub.mp3',
     duration: 57,  // 56.92 seconds
+    addedDate: '2026-02-17',
     // Balanced distribution
     noteDistribution: { medium: 0.60, large: 0.30, xlarge: 0.10 },
   },
@@ -2785,6 +2815,7 @@ const SONGS = [
     bpm: 172,
     audioFile: 'vexdrive.mp3',
     duration: 49,  // 49.08 seconds
+    addedDate: '2026-02-17',
     // Intense distribution
     noteDistribution: { medium: 0.40, large: 0.45, xlarge: 0.15 },
   },
@@ -2795,6 +2826,7 @@ const SONGS = [
     bpm: 96,
     audioFile: 'dark_crysta.mp3',
     duration: 95,  // 94.84 seconds
+    addedDate: '2026-02-17',
     // Dark song - heavy on large notes
     noteDistribution: { medium: 0.50, large: 0.40, xlarge: 0.10 },
   },
@@ -2805,6 +2837,7 @@ const SONGS = [
     bpm: 96,
     audioFile: 'fading_neon.mp3',
     duration: 64,  // 63.99 seconds
+    addedDate: '2026-02-17',
     // Sad song - mostly medium notes, calm feel
     noteDistribution: { medium: 0.80, large: 0.18, xlarge: 0.02 },
   },
@@ -2815,6 +2848,7 @@ const SONGS = [
     bpm: 92,
     audioFile: 'astraveil.mp3',
     duration: 79,  // 79.40 seconds
+    addedDate: '2026-02-17',
     // Balanced distribution
     noteDistribution: { medium: 0.60, large: 0.30, xlarge: 0.10 },
   },
@@ -2825,6 +2859,7 @@ const SONGS = [
     bpm: 81,
     audioFile: 'pixel_giggle.mp3',
     duration: 99,  // 99.24 seconds
+    addedDate: '2026-02-17',
     // Bright song - balanced distribution
     noteDistribution: { medium: 0.60, large: 0.30, xlarge: 0.10 },
   },
@@ -2835,6 +2870,7 @@ const SONGS = [
     bpm: 96,
     audioFile: 'kagurex.mp3',
     duration: 55,  // 54.68 seconds
+    addedDate: '2026-02-17',
     // Intense distribution
     noteDistribution: { medium: 0.40, large: 0.45, xlarge: 0.15 },
   },
@@ -2845,6 +2881,7 @@ const SONGS = [
     bpm: 136,
     audioFile: 'rivalink.mp3',
     duration: 143,  // 142.52 seconds
+    addedDate: '2026-02-17',
     // Balanced distribution
     noteDistribution: { medium: 0.60, large: 0.30, xlarge: 0.10 },
   },
@@ -2855,6 +2892,7 @@ const SONGS = [
     bpm: 129,
     audioFile: 'binary_fight.mp3',
     duration: 155,  // 154.92 seconds
+    addedDate: '2026-02-17',
     // Intense song - heavy on large/xlarge notes
     noteDistribution: { medium: 0.40, large: 0.45, xlarge: 0.15 },
   },
@@ -2865,6 +2903,7 @@ const SONGS = [
     bpm: 103,
     audioFile: 'celestia.mp3',
     duration: 186,  // 185.92 seconds
+    addedDate: '2026-02-17',
     // Heavenly song - mostly medium notes
     noteDistribution: { medium: 0.75, large: 0.20, xlarge: 0.05 },
   },
@@ -2875,6 +2914,7 @@ const SONGS = [
     bpm: 130,
     audioFile: 'Neonknight.mp3',
     duration: 93,  // 92.96 seconds
+    addedDate: '2026-02-17',
     // Intense cyberpunk - heavy on large/xlarge notes
     noteDistribution: { medium: 0.35, large: 0.40, xlarge: 0.25 },
   },
@@ -2885,6 +2925,7 @@ const SONGS = [
     bpm: 140,
     audioFile: 'Babyvolt.mp3',
     duration: 60,  // 59.76 seconds
+    addedDate: '2026-02-17',
     noteDistribution: { medium: 0.20, large: 0.65, xlarge: 0.15 },
   },
   {
@@ -2894,6 +2935,7 @@ const SONGS = [
     bpm: 140,
     audioFile: 'Idolvex.mp3',
     duration: 165,  // 165.28 seconds
+    addedDate: '2026-02-17',
     noteDistribution: { medium: 0.15, large: 0.35, xlarge: 0.50 },
   },
 ];
@@ -3596,17 +3638,37 @@ function formatDuration(seconds) {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 
+// Check if song is NEW (added within 30 days)
+function isNewSong(song) {
+  if (!song.addedDate) return false;
+  const addedTime = new Date(song.addedDate).getTime();
+  const now = Date.now();
+  const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+  return (now - addedTime) < thirtyDays;
+}
+
 function renderSongList() {
   // Render original songs
   const originalContainer = document.getElementById('song-list-original');
   originalContainer.innerHTML = '';
 
-  SONGS.forEach(song => {
+  // Sort songs: NEW songs first, then by original order
+  const sortedSongs = [...SONGS].sort((a, b) => {
+    const aNew = isNewSong(a);
+    const bNew = isNewSong(b);
+    if (aNew && !bNew) return -1;
+    if (!aNew && bNew) return 1;
+    return 0;
+  });
+
+  sortedSongs.forEach(song => {
     const item = document.createElement('div');
-    item.className = 'song-item';
+    const isNew = isNewSong(song);
+    item.className = isNew ? 'song-item new-song' : 'song-item';
     const bestScore = getBestScore(song.id);
     const bestRank = getBestRank(song.id);
     item.innerHTML = `
+      ${isNew ? '<span class="new-badge">NEW</span>' : ''}
       <div class="song-title">${song.title}</div>
       <div class="song-artist">${song.artist}</div>
       <div class="song-bpm">${formatDuration(song.duration)}</div>
