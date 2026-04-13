@@ -510,6 +510,15 @@ body {
   color: #000;
   box-shadow: 0 0 20px var(--neon-pink);
 }
+.btn.songs-btn {
+  border-color: #ffdd00;
+  color: #ffdd00;
+}
+.btn.songs-btn:hover, .btn.songs-btn:active {
+  background: #ffdd00;
+  color: #000;
+  box-shadow: 0 0 20px #ffdd00;
+}
 .btn.tertiary {
   border-color: #7fff00;
   color: #7fff00;
@@ -2750,7 +2759,7 @@ body {
       <div class="result-buttons">
         <button class="btn" onclick="retryGame()">Retry</button>
         <button class="btn shot-btn" onclick="takeScreenshot()">Shot</button>
-        <button class="btn secondary" onclick="playSE(SE.kati); stopResultBGM(); showScreen('song-select')">Songs</button>
+        <button class="btn songs-btn" onclick="playSE(SE.kati); stopResultBGM(); showScreen('song-select')">Songs</button>
         <button class="btn secondary" onclick="playSE(SE.kati); stopResultBGM(); showScreen('title-screen')">Title</button>
       </div>
     </div>
