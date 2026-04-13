@@ -585,9 +585,9 @@ body {
   margin-top: 6px;
 }
 /* NEW song badge */
-@keyframes cyberScan {
-  0%   { background-position: 0% 0%; }
-  100% { background-position: 0% 100%; }
+@keyframes cyberPulse {
+  0%, 100% { background-color: rgba(0, 255, 255, 0.04); }
+  50%      { background-color: rgba(180, 0, 255, 0.07); }
 }
 @keyframes badgePulse {
   0%, 100% { transform: scale(1.0); }
@@ -604,20 +604,12 @@ body {
 }
 .song-item.new-song {
   position: relative;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 98%,
-    rgba(0, 255, 255, 0.03) 99%,
-    rgba(0, 255, 255, 0.03) 100%
-  );
-  background-size: 100% 8px;
-  animation: cyberScan 3s linear infinite;
+  animation: cyberPulse 3s ease-in-out infinite;
 }
 .new-badge {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -10px;
+  right: 12px;
   background: transparent;
   font-family: var(--font-en);
   font-size: 10px;
