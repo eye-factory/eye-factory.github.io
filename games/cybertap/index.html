@@ -3490,8 +3490,18 @@ let musicTimeInterval = null;
 function showMusicScreen() {
   showScreen('music-screen');
   renderMusicList();
-  // Auto-play first song (Lumi Zero)
-  playMusicTrack(0);
+  // Auto-play first song from sorted list (NEW songs first)
+  const songsWithIndex = SONGS.map((song, index) => ({ song, originalIndex: index }));
+  songsWithIndex.sort((a, b) => {
+    const aNew = isNewSong(a.song);
+    const bNew = isNewSong(b.song);
+    if (aNew && !bNew) return -1;
+    if (!aNew && bNew) return 1;
+    const aDate = a.song.addedDate ? new Date(a.song.addedDate).getTime() : 0;
+    const bDate = b.song.addedDate ? new Date(b.song.addedDate).getTime() : 0;
+    return aDate - bDate;
+  });
+  playMusicTrack(songsWithIndex[0].originalIndex);
 }
 
 function renderMusicList() {
