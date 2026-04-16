@@ -939,20 +939,22 @@ body {
 }
 .music-youtube-btn {
   font-family: var(--font-en);
-  font-size: 11px;
+  font-size: 10px;
   padding: 6px 12px;
-  background: #ff0000;
-  border: none;
-  color: #fff;
-  border-radius: 4px;
+  border: 1px solid #ff3333;
+  background: transparent;
+  color: #ff3333;
+  border-radius: 15px;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-left: 8px;
+  transition: all 0.3s ease;
   text-transform: uppercase;
+  align-self: flex-start;
+  text-decoration: none;
 }
 .music-youtube-btn:hover {
-  background: #cc0000;
-  box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+  background: #ff3333;
+  color: #000;
+  box-shadow: 0 0 10px #ff3333;
 }
 
 /* Custom confirm modal */
@@ -2697,14 +2699,9 @@ body {
     <h2 class="section-title">Create Custom Song</h2>
     <div class="create-form">
       <div class="create-row">
-        <label>MP3 File</label>
-        <input type="file" id="create-file" accept="audio/*" onchange="handleCreateFileSelect(this)">
+        <label>MP3 or MP4 File</label>
+        <input type="file" id="create-file" accept="audio/*,video/*" onchange="handleCreateFileSelect(this)">
         <div class="create-file-info" id="create-file-info"></div>
-      </div>
-      <div class="create-row">
-        <label>MP4 Video (Optional)</label>
-        <input type="file" id="create-video" accept="video/*" onchange="handleCreateVideoSelect(this)">
-        <div class="create-file-info" id="create-video-info"></div>
       </div>
       <div class="create-row">
         <label>Title</label>
@@ -3573,8 +3570,9 @@ function renderMusicList() {
           <span class="music-duration">${formatDuration(song.duration)}</span>
         </div>
       </div>
-      <button class="music-download-btn" onclick="event.stopPropagation(); downloadMusic('${song.audioFile}')">Download</button>
-      ${song.youtubeUrl ? `<button class="music-youtube-btn" onclick="event.stopPropagation(); window.open('${song.youtubeUrl}', '_blank')">YouTube</button>` : ''}
+      ${song.youtubeUrl
+        ? `<button class="music-youtube-btn" onclick="event.stopPropagation(); window.open('${song.youtubeUrl}', '_blank')">YouTube</button>`
+        : `<button class="music-download-btn" onclick="event.stopPropagation(); downloadMusic('${song.audioFile}')">Download</button>`}
     `;
     item.onclick = () => playMusicTrack(originalIndex);
     originalContainer.appendChild(item);
@@ -3872,7 +3870,9 @@ function switchSongTab(tab) {
 function selectCustomSong(song) {
   playSE(SE.kati);
   // Create audio URL from stored data
-  const audioBlob = new Blob([song.audioData], { type: 'audio/mpeg' });
+  // If audioData is from MP4, use video/mp4 MIME type (browser can play audio from MP4)
+  const mimeType = song.isVideoSource ? 'video/mp4' : 'audio/mpeg';
+  const audioBlob = new Blob([song.audioData], { type: mimeType });
   const audioUrl = URL.createObjectURL(audioBlob);
   gameState.selectedSong = {
     ...song,
@@ -4004,12 +4004,13 @@ function startGifBackground() {
     backgroundVideoElement.muted = true;
     backgroundVideoElement.loop = true;
     backgroundVideoElement.playsInline = true;
+    backgroundVideoElement.preload = 'auto';
     backgroundVideoElement.dataset.isObjectUrl = isObjectUrl;
     backgroundVideoElement.style.cssText = `
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      object-fit: contain;
+      object-fit: cover;
       opacity: 0.18;
       z-index: 0;
       pointer-events: none;
@@ -4019,7 +4020,9 @@ function startGifBackground() {
     playBg.style.backgroundImage = 'none';
     playBg.parentElement.insertBefore(backgroundVideoElement, playBg);
 
-    // Video will be played in sync with music in countdown function
+    // Pause at first frame during countdown (will be played in sync with music)
+    backgroundVideoElement.currentTime = 0;
+    backgroundVideoElement.pause();
     return;
   }
 
@@ -5665,11 +5668,9 @@ let createSelectedPreset = 'calm';
 function showCreateScreen() {
   // Reset form
   document.getElementById('create-file').value = '';
-  document.getElementById('create-video').value = '';
   document.getElementById('create-title').value = '';
   document.getElementById('create-artist').value = '';
   document.getElementById('create-file-info').textContent = '';
-  document.getElementById('create-video-info').textContent = '';
   createFileData = null;
   createFileDuration = 0;
   createVideoData = null;
@@ -5689,61 +5690,71 @@ function handleCreateFileSelect(input) {
 
   if (!file) {
     createFileData = null;
+    createVideoData = null;
     createFileDuration = 0;
     fileInfo.textContent = '';
     updateCreateSaveButton();
     return;
   }
 
-  // Read file as ArrayBuffer
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    createFileData = e.target.result;
-
-    // Get duration using Audio element
-    const audioBlob = new Blob([createFileData], { type: 'audio/mpeg' });
-    const audioUrl = URL.createObjectURL(audioBlob);
-    const audio = new Audio(audioUrl);
-
-    audio.onloadedmetadata = () => {
-      createFileDuration = Math.floor(audio.duration);
-      fileInfo.textContent = `${file.name} (${formatDuration(createFileDuration)})`;
-      URL.revokeObjectURL(audioUrl);
-      updateCreateSaveButton();
-    };
-
-    audio.onerror = () => {
-      fileInfo.textContent = 'Error: Invalid audio file';
-      createFileData = null;
-      createFileDuration = 0;
-      URL.revokeObjectURL(audioUrl);
-      updateCreateSaveButton();
-    };
-  };
-
-  reader.readAsArrayBuffer(file);
-}
-
-function handleCreateVideoSelect(input) {
-  const file = input.files[0];
-  const fileInfo = document.getElementById('create-video-info');
-
-  if (!file) {
-    createVideoData = null;
-    fileInfo.textContent = '';
-    return;
-  }
+  const isVideo = file.type.startsWith('video/');
 
   // Read file as ArrayBuffer
   const reader = new FileReader();
   reader.onload = (e) => {
-    createVideoData = e.target.result;
-    fileInfo.textContent = `${file.name}`;
-  };
+    const fileData = e.target.result;
 
-  reader.onerror = () => {
-    fileInfo.textContent = 'Error: Invalid video file';
-    createVideoData = null;
+    if (isVideo) {
+      // MP4 file: use as both audio and video source
+      createVideoData = fileData;
+      createFileData = fileData; // Store video data as audio source too
+
+      // Get duration using video element
+      const videoBlob = new Blob([fileData], { type: file.type });
+      const videoUrl = URL.createObjectURL(videoBlob);
+      const video = document.createElement('video');
+      video.src = videoUrl;
+
+      video.onloadedmetadata = () => {
+        createFileDuration = Math.floor(video.duration);
+        fileInfo.textContent = `${file.name} (${formatDuration(createFileDuration)}) [Video]`;
+        URL.revokeObjectURL(videoUrl);
+        updateCreateSaveButton();
+      };
+
+      video.onerror = () => {
+        fileInfo.textContent = 'Error: Invalid video file';
+        createFileData = null;
+        createVideoData = null;
+        createFileDuration = 0;
+        URL.revokeObjectURL(videoUrl);
+        updateCreateSaveButton();
+      };
+    } else {
+      // Audio file (MP3)
+      createFileData = fileData;
+      createVideoData = null;
+
+      // Get duration using Audio element
+      const audioBlob = new Blob([fileData], { type: 'audio/mpeg' });
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+
+      audio.onloadedmetadata = () => {
+        createFileDuration = Math.floor(audio.duration);
+        fileInfo.textContent = `${file.name} (${formatDuration(createFileDuration)})`;
+        URL.revokeObjectURL(audioUrl);
+        updateCreateSaveButton();
+      };
+
+      audio.onerror = () => {
+        fileInfo.textContent = 'Error: Invalid audio file';
+        createFileData = null;
+        createFileDuration = 0;
+        URL.revokeObjectURL(audioUrl);
+        updateCreateSaveButton();
+      };
+    }
   };
 
   reader.readAsArrayBuffer(file);
@@ -5775,6 +5786,7 @@ function saveCustomSongAndReturn() {
   const id = 'custom_' + Date.now();
 
   // Create song object
+  // isVideoSource: true if audio is from MP4 (need video/mp4 MIME type for playback)
   const song = {
     id: id,
     title: title,
@@ -5784,6 +5796,7 @@ function saveCustomSongAndReturn() {
     preset: createSelectedPreset,
     audioData: createFileData,
     videoData: createVideoData,
+    isVideoSource: createVideoData !== null,
     isCustom: true,
     createdAt: Date.now()
   };
@@ -5832,7 +5845,9 @@ function playCustomMusicTrack(customIndex) {
   }
 
   // Create audio from stored data
-  const audioBlob = new Blob([song.audioData], { type: 'audio/mpeg' });
+  // If audioData is from MP4, use video/mp4 MIME type
+  const mimeType = song.isVideoSource ? 'video/mp4' : 'audio/mpeg';
+  const audioBlob = new Blob([song.audioData], { type: mimeType });
   const audioUrl = URL.createObjectURL(audioBlob);
 
   musicAudio = new Audio(audioUrl);
