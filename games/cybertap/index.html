@@ -843,28 +843,30 @@ body {
   border: 1px solid rgba(0, 212, 255, 0.2);
   border-radius: 8px;
 }
+.notes-custom-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
 .notes-custom-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-.notes-custom-row:last-of-type {
-  margin-bottom: 0;
+  gap: 4px;
 }
 .notes-custom-row label {
-  width: 60px;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text);
+  text-transform: uppercase;
 }
 .notes-custom-row input[type="number"] {
-  width: 60px;
-  padding: 6px 8px;
+  width: 50px;
+  padding: 6px 4px;
   background: var(--bg);
   border: 1px solid var(--neon-primary);
   border-radius: 4px;
   color: var(--text);
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
 }
 .notes-custom-row input[type="number"]:focus {
@@ -872,7 +874,7 @@ body {
   box-shadow: 0 0 8px var(--neon-primary);
 }
 .notes-custom-row span {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--text-sub);
 }
 .notes-total {
@@ -2789,20 +2791,22 @@ body {
           </label>
         </div>
         <div class="notes-custom">
-          <div class="notes-custom-row">
-            <label>Medium</label>
-            <input type="number" id="notes-medium" min="0" max="100" value="80" oninput="updateNotesTotal()">
-            <span>%</span>
-          </div>
-          <div class="notes-custom-row">
-            <label>Large</label>
-            <input type="number" id="notes-large" min="0" max="100" value="18" oninput="updateNotesTotal()">
-            <span>%</span>
-          </div>
-          <div class="notes-custom-row">
-            <label>XL</label>
-            <input type="number" id="notes-xlarge" min="0" max="100" value="2" oninput="updateNotesTotal()">
-            <span>%</span>
+          <div class="notes-custom-inputs">
+            <div class="notes-custom-row">
+              <label>MEDIUM</label>
+              <input type="number" id="notes-medium" min="0" max="100" value="80" oninput="updateNotesTotal()">
+              <span>%</span>
+            </div>
+            <div class="notes-custom-row">
+              <label>LARGE</label>
+              <input type="number" id="notes-large" min="0" max="100" value="18" oninput="updateNotesTotal()">
+              <span>%</span>
+            </div>
+            <div class="notes-custom-row">
+              <label>XL</label>
+              <input type="number" id="notes-xlarge" min="0" max="100" value="2" oninput="updateNotesTotal()">
+              <span>%</span>
+            </div>
           </div>
           <div class="notes-total" id="notes-total">Total: 100/100</div>
         </div>
@@ -4079,9 +4083,12 @@ function startGifBackground() {
     backgroundVideoElement.dataset.isObjectUrl = isObjectUrl;
     backgroundVideoElement.style.cssText = `
       position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 50%; left: 0;
+      transform: translateY(-50%);
+      width: 100%; height: auto;
+      min-height: 100%;
       object-fit: cover;
+      object-position: center center;
       opacity: 0.18;
       z-index: 0;
       pointer-events: none;
