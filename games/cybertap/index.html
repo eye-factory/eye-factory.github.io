@@ -1561,15 +1561,10 @@ body {
   transform: translate(-50%, -50%);
 }
 .tap-ripple.excellent {
-  border: 5px solid transparent;
-  background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0088ff, #ff00ff, #ff0000) border-box;
-  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  background-size: 400% 100%;
-  animation: rippleExpand 0.5s ease-out forwards, rippleRainbow 0.3s linear infinite;
-  box-shadow: 0 0 30px rgba(255, 0, 255, 0.8), 0 0 60px rgba(0, 255, 255, 0.6), 0 0 90px rgba(255, 255, 0, 0.4);
+  border: 5px solid;
+  border-image: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0088ff, #ff00ff, #ff0000) 1;
+  animation: rippleExpand 0.5s ease-out forwards;
+  box-shadow: 0 0 40px rgba(255, 0, 255, 0.7);
 }
 .tap-ripple.perfect {
   border-color: var(--neon-secondary);
@@ -1696,7 +1691,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 20px #ff00ff) drop-shadow(0 0 40px #00ffff) drop-shadow(0 0 60px #ffff00);
+  filter: drop-shadow(0 0 25px #ff00ff);
   animation: feedbackExcellent 0.8s ease-out forwards, rainbowShift 0.3s linear infinite;
 }
 .hit-feedback.perfect {
@@ -4634,7 +4629,7 @@ function spawnTapEffects(result, x, y, circleType) {
     setTimeout(() => flash.remove(), 300);
 
     // Spawn particles
-    spawnParticles(x, y, isExcellent ? 24 : (isPerfect ? 16 : 10), area);
+    spawnParticles(x, y, isExcellent ? 12 : (isPerfect ? 16 : 10), area);
 
     // Extra ripple wave for xlarge
     const wave = document.createElement('div');
@@ -4648,26 +4643,15 @@ function spawnTapEffects(result, x, y, circleType) {
     setTimeout(() => wave.remove(), 1000);
   }
 
-  // Excellent bonus: extra large ripples
-  if (isExcellent) {
-    for (let i = 0; i < 3; i++) {
-      const bonusRipple = document.createElement('div');
-      bonusRipple.className = 'tap-ripple excellent';
-      bonusRipple.style.left = x + 'px';
-      bonusRipple.style.top = y + 'px';
-      bonusRipple.style.animationDelay = (0.05 + i * 0.1) + 's';
-      area.appendChild(bonusRipple);
-      setTimeout(() => bonusRipple.remove(), 800);
-    }
-    // Screen flash for excellent even on non-xlarge
-    if (circleType !== 'xlarge') {
-      const flash = document.createElement('div');
-      flash.className = 'screen-flash';
-      flash.style.background = 'radial-gradient(circle, rgba(255, 0, 255, 0.4) 0%, rgba(0, 255, 255, 0.2) 50%, transparent 70%)';
-      document.body.appendChild(flash);
-      setTimeout(() => flash.remove(), 200);
-      spawnParticles(x, y, 12, area);
-    }
+  // Excellent bonus: extra ripple (lightweight version)
+  if (isExcellent && circleType !== 'xlarge') {
+    const bonusRipple = document.createElement('div');
+    bonusRipple.className = 'tap-ripple excellent';
+    bonusRipple.style.left = x + 'px';
+    bonusRipple.style.top = y + 'px';
+    bonusRipple.style.animationDelay = '0.05s';
+    area.appendChild(bonusRipple);
+    setTimeout(() => bonusRipple.remove(), 800);
   }
   // Perfect bonus: extra mini ripple
   else if (isPerfect && circleType !== 'xlarge') {
