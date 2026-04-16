@@ -836,6 +836,59 @@ body {
   font-size: 11px;
   color: var(--text-sub);
 }
+.notes-custom {
+  margin-top: 12px;
+  padding: 12px;
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 8px;
+}
+.notes-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.notes-custom-row:last-of-type {
+  margin-bottom: 0;
+}
+.notes-custom-row label {
+  width: 60px;
+  font-size: 12px;
+  color: var(--text);
+}
+.notes-custom-row input[type="number"] {
+  width: 60px;
+  padding: 6px 8px;
+  background: var(--bg);
+  border: 1px solid var(--neon-primary);
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 14px;
+  text-align: center;
+}
+.notes-custom-row input[type="number"]:focus {
+  outline: none;
+  box-shadow: 0 0 8px var(--neon-primary);
+}
+.notes-custom-row span {
+  font-size: 12px;
+  color: var(--text-sub);
+}
+.notes-total {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0, 212, 255, 0.2);
+  font-size: 13px;
+  font-weight: bold;
+  text-align: center;
+}
+.notes-total.valid {
+  color: #00ff88;
+}
+.notes-total.invalid {
+  color: #ff3333;
+}
 .create-file-info {
   font-size: 12px;
   color: var(--neon-primary);
@@ -2734,6 +2787,24 @@ body {
             <span class="preset-name">Chaos</span>
             <span class="preset-desc">Medium 30% / Large 40% / XL 30%</span>
           </label>
+        </div>
+        <div class="notes-custom">
+          <div class="notes-custom-row">
+            <label>Medium</label>
+            <input type="number" id="notes-medium" min="0" max="100" value="80" oninput="updateNotesTotal()">
+            <span>%</span>
+          </div>
+          <div class="notes-custom-row">
+            <label>Large</label>
+            <input type="number" id="notes-large" min="0" max="100" value="18" oninput="updateNotesTotal()">
+            <span>%</span>
+          </div>
+          <div class="notes-custom-row">
+            <label>XL</label>
+            <input type="number" id="notes-xlarge" min="0" max="100" value="2" oninput="updateNotesTotal()">
+            <span>%</span>
+          </div>
+          <div class="notes-total" id="notes-total">Total: 100/100</div>
         </div>
       </div>
       <div class="create-buttons">
@@ -5680,6 +5751,12 @@ function showCreateScreen() {
   document.querySelectorAll('.preset-option').forEach(opt => opt.classList.remove('selected'));
   document.querySelector('.preset-option').classList.add('selected');
 
+  // Reset custom notes inputs to Calm preset values
+  document.getElementById('notes-medium').value = 80;
+  document.getElementById('notes-large').value = 18;
+  document.getElementById('notes-xlarge').value = 2;
+  updateNotesTotal();
+
   updateCreateSaveButton();
   showScreen('create-screen');
 }
@@ -5764,6 +5841,51 @@ function selectPreset(element, preset) {
   document.querySelectorAll('.preset-option').forEach(opt => opt.classList.remove('selected'));
   element.classList.add('selected');
   createSelectedPreset = preset;
+
+  // Set custom input values from preset
+  const presetValues = NOTE_PRESETS[preset];
+  if (presetValues) {
+    document.getElementById('notes-medium').value = Math.round(presetValues.medium * 100);
+    document.getElementById('notes-large').value = Math.round(presetValues.large * 100);
+    document.getElementById('notes-xlarge').value = Math.round(presetValues.xlarge * 100);
+    updateNotesTotal();
+  }
+}
+
+function updateNotesTotal() {
+  const medium = parseInt(document.getElementById('notes-medium').value) || 0;
+  const large = parseInt(document.getElementById('notes-large').value) || 0;
+  const xlarge = parseInt(document.getElementById('notes-xlarge').value) || 0;
+  const total = medium + large + xlarge;
+
+  const totalEl = document.getElementById('notes-total');
+  totalEl.textContent = `Total: ${total}/100`;
+
+  if (total === 100) {
+    totalEl.className = 'notes-total valid';
+  } else {
+    totalEl.className = 'notes-total invalid';
+  }
+
+  updateCreateSaveButton();
+}
+
+function getCustomNoteDistribution() {
+  const medium = parseInt(document.getElementById('notes-medium').value) || 0;
+  const large = parseInt(document.getElementById('notes-large').value) || 0;
+  const xlarge = parseInt(document.getElementById('notes-xlarge').value) || 0;
+  return {
+    medium: medium / 100,
+    large: large / 100,
+    xlarge: xlarge / 100
+  };
+}
+
+function isNotesTotalValid() {
+  const medium = parseInt(document.getElementById('notes-medium').value) || 0;
+  const large = parseInt(document.getElementById('notes-large').value) || 0;
+  const xlarge = parseInt(document.getElementById('notes-xlarge').value) || 0;
+  return (medium + large + xlarge) === 100;
 }
 
 function updateCreateSaveButton() {
@@ -5771,19 +5893,22 @@ function updateCreateSaveButton() {
   const artist = document.getElementById('create-artist').value.trim();
   const saveBtn = document.getElementById('create-save-btn');
 
-  saveBtn.disabled = !(createFileData && title && artist && createFileDuration > 0);
+  saveBtn.disabled = !(createFileData && title && artist && createFileDuration > 0 && isNotesTotalValid());
 }
 
 function saveCustomSongAndReturn() {
   const title = document.getElementById('create-title').value.trim();
   const artist = document.getElementById('create-artist').value.trim();
 
-  if (!createFileData || !title || !artist) return;
+  if (!createFileData || !title || !artist || !isNotesTotalValid()) return;
 
   playSE(SE.dj);
 
   // Generate unique ID
   const id = 'custom_' + Date.now();
+
+  // Get note distribution from custom inputs
+  const noteDistribution = getCustomNoteDistribution();
 
   // Create song object
   // isVideoSource: true if audio is from MP4 (need video/mp4 MIME type for playback)
@@ -5792,8 +5917,8 @@ function saveCustomSongAndReturn() {
     title: title,
     artist: artist,
     duration: createFileDuration,
-    noteDistribution: NOTE_PRESETS[createSelectedPreset],
-    preset: createSelectedPreset,
+    noteDistribution: noteDistribution,
+    preset: 'custom',
     audioData: createFileData,
     videoData: createVideoData,
     isVideoSource: createVideoData !== null,
