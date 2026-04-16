@@ -3043,6 +3043,18 @@ const SONGS = [
     addedDate: '2026-04-13',
     noteDistribution: { medium: 0.10, large: 0.40, xlarge: 0.50 },
   },
+  {
+    id: 'galaxy_train',
+    title: 'GALAXY TRAiN',
+    artist: 'Aiu Eo',
+    bpm: 128,
+    audioFile: 'GALAXY TRAiN.mp3',
+    videoFile: 'GALAXY TRAiN.mp4',
+    duration: 108,  // 108.33 seconds
+    addedDate: '2026-04-13',
+    youtubeUrl: 'https://youtu.be/iyG_LXt1wG4?si=poeOh2yFt-oS5t4Z',
+    noteDistribution: { medium: 0.70, large: 0.10, xlarge: 0.20 },
+  },
 ];
 
 // ============================================================
@@ -3968,19 +3980,31 @@ let backgroundVideoElement = null;
 
 function startGifBackground() {
   const playBg = document.getElementById('play-bg');
-
-  // Check if selected song has video data
   const song = gameState.selectedSong;
-  if (song && song.videoData) {
-    // Create video element for background
-    const videoBlob = new Blob([song.videoData], { type: 'video/mp4' });
-    const videoUrl = URL.createObjectURL(videoBlob);
 
+  // Check if selected song has video (videoData for custom songs, videoFile for original songs)
+  let videoUrl = null;
+  let isObjectUrl = false;
+
+  if (song && song.videoData) {
+    // Custom song with embedded video data
+    const videoBlob = new Blob([song.videoData], { type: 'video/mp4' });
+    videoUrl = URL.createObjectURL(videoBlob);
+    isObjectUrl = true;
+  } else if (song && song.videoFile) {
+    // Original song with video file
+    videoUrl = song.videoFile;
+    isObjectUrl = false;
+  }
+
+  if (videoUrl) {
+    // Create video element for background
     backgroundVideoElement = document.createElement('video');
     backgroundVideoElement.src = videoUrl;
     backgroundVideoElement.muted = true;
     backgroundVideoElement.loop = true;
     backgroundVideoElement.playsInline = true;
+    backgroundVideoElement.dataset.isObjectUrl = isObjectUrl;
     backgroundVideoElement.style.cssText = `
       position: absolute;
       top: 0; left: 0;
@@ -4019,7 +4043,8 @@ function stopGifBackground() {
   // Stop and remove video element if exists
   if (backgroundVideoElement) {
     backgroundVideoElement.pause();
-    if (backgroundVideoElement.src) {
+    // Only revoke if it's an object URL (custom song video data)
+    if (backgroundVideoElement.dataset.isObjectUrl === 'true' && backgroundVideoElement.src) {
       URL.revokeObjectURL(backgroundVideoElement.src);
     }
     backgroundVideoElement.remove();
