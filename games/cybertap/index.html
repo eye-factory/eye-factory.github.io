@@ -728,6 +728,11 @@ body {
   padding-top: 60px;
   gap: 20px;
   justify-content: flex-start;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+}
+#create-screen * {
+  touch-action: pan-y;
 }
 .create-form {
   display: flex;
@@ -5479,6 +5484,20 @@ function takeScreenshot() {
           el.style.opacity = '1';
           el.style.animation = 'none';
         });
+
+        // Fix excellent value (rainbow gradient doesn't render in html2canvas)
+        const excellentValue = clonedDoc.getElementById('result-excellent');
+        if (excellentValue) {
+          excellentValue.style.cssText = `
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+            -webkit-text-fill-color: #ff00ff !important;
+            color: #ff00ff !important;
+            animation: none !important;
+            opacity: 1 !important;
+          `;
+        }
       }
     }).then(canvas => {
       downloadScreenshot(canvas);
