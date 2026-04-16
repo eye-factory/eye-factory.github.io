@@ -19,7 +19,6 @@
   --neon-pink: #ff00aa;
   --neon-purple: #8b5cf6;
   --neon-yellow: #ffdd00;
-  --neon-orange: #ff8800;
   --font-en: 'Orbitron', sans-serif;
   --font-ja: 'Noto Sans JP', sans-serif;
 }
@@ -113,14 +112,6 @@ body {
   opacity: 0.5;
 }
 
-@keyframes scanFlicker {
-  0%, 89%, 91%, 93%, 95%, 97%, 100% { opacity: 0.3; }
-  90% { opacity: 0.5; }
-  92% { opacity: 0.2; }
-  94% { opacity: 0.6; }
-  96% { opacity: 0.4; }
-}
-
 /* Background grid */
 .bg-grid {
   position: absolute;
@@ -164,19 +155,6 @@ body {
 #game-container.playing::before {
   opacity: 0;
 }
-
-/* Cyber border animation - DISABLED for testing
-@keyframes cyberBorderAnimation {
-  0%, 100% {
-    border-image: linear-gradient(90deg, var(--neon-primary), var(--neon-pink), var(--neon-primary)) 1;
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4), 0 0 30px rgba(255, 0, 170, 0.2);
-  }
-  50% {
-    border-image: linear-gradient(90deg, var(--neon-pink), var(--neon-primary), var(--neon-pink)) 1;
-    box-shadow: 0 0 25px rgba(0, 212, 255, 0.6), 0 0 50px rgba(255, 0, 170, 0.4);
-  }
-}
-*/
 
 /* Screens */
 .screen {
@@ -937,27 +915,6 @@ body {
 #selected-song-name.custom {
   color: #7fff00 !important;
   text-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
-}
-.custom-badge {
-  font-size: 10px;
-  color: #7fff00;
-  background: rgba(127, 255, 0, 0.2);
-  padding: 2px 6px;
-  border-radius: 4px;
-  margin-left: 8px;
-}
-
-/* Music list custom songs section */
-.music-section-title {
-  grid-column: 1 / -1;
-  font-family: var(--font-en);
-  font-size: 16px;
-  font-weight: 700;
-  color: #7fff00;
-  text-shadow: 0 0 10px rgba(127, 255, 0, 0.5);
-  padding: 10px 0;
-  border-top: 1px solid rgba(127, 255, 0, 0.3);
-  margin-top: 10px;
 }
 .music-item.custom {
   border-color: rgba(127, 255, 0, 0.3);
@@ -3512,24 +3469,6 @@ function fadeOutAudio(audio, duration) {
       audio.pause();
       audio.currentTime = 0;
       audio.volume = startVolume;
-    }
-  }, stepTime);
-}
-
-function fadeInAudio(audio, duration, targetVolume) {
-  audio.volume = 0;
-  audio.play().catch(() => {});
-
-  const steps = 20;
-  const stepTime = duration / steps;
-  const volumeStep = targetVolume / steps;
-
-  let currentStep = 0;
-  const fadeInterval = setInterval(() => {
-    currentStep++;
-    audio.volume = Math.min(targetVolume, volumeStep * currentStep);
-    if (currentStep >= steps) {
-      clearInterval(fadeInterval);
     }
   }, stepTime);
 }
