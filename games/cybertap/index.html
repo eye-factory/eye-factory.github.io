@@ -2675,8 +2675,8 @@ body {
     <div class="volume-settings">
       <div class="volume-row">
         <span class="volume-label">Volume</span>
-        <input type="range" class="volume-slider" id="master-volume" min="0" max="100" value="80" oninput="updateVolume(this.value)">
-        <span class="volume-value" id="volume-value">80%</span>
+        <input type="range" class="volume-slider" id="master-volume" min="0" max="100" value="50" oninput="updateVolume(this.value)">
+        <span class="volume-value" id="volume-value">50%</span>
       </div>
     </div>
   </div>
@@ -3264,12 +3264,12 @@ PLAY_GIFS.forEach(src => {
 });
 
 // Volume settings (unified master volume)
-let masterVolume = 80;
+let masterVolume = 50;
 
 function loadVolumeSettings() {
   const saved = localStorage.getItem('cybertap_volume_v2');
   if (saved) {
-    masterVolume = parseInt(saved) || 80;
+    masterVolume = parseInt(saved) || 50;
   }
   // Update UI
   document.getElementById('master-volume').value = masterVolume;
