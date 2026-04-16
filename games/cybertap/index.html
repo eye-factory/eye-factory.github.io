@@ -937,6 +937,23 @@ body {
   background: #ff3333;
   color: #000;
 }
+.music-youtube-btn {
+  font-family: var(--font-en);
+  font-size: 11px;
+  padding: 6px 12px;
+  background: #ff0000;
+  border: none;
+  color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-left: 8px;
+  text-transform: uppercase;
+}
+.music-youtube-btn:hover {
+  background: #cc0000;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+}
 
 /* Custom confirm modal */
 .confirm-modal-overlay {
@@ -2685,6 +2702,11 @@ body {
         <div class="create-file-info" id="create-file-info"></div>
       </div>
       <div class="create-row">
+        <label>MP4 Video (Optional)</label>
+        <input type="file" id="create-video" accept="video/*" onchange="handleCreateVideoSelect(this)">
+        <div class="create-file-info" id="create-video-info"></div>
+      </div>
+      <div class="create-row">
         <label>Title</label>
         <input type="text" id="create-title" placeholder="Song title" maxlength="50" oninput="updateCreateSaveButton()">
       </div>
@@ -3540,6 +3562,7 @@ function renderMusicList() {
         </div>
       </div>
       <button class="music-download-btn" onclick="event.stopPropagation(); downloadMusic('${song.audioFile}')">Download</button>
+      ${song.youtubeUrl ? `<button class="music-youtube-btn" onclick="event.stopPropagation(); window.open('${song.youtubeUrl}', '_blank')">YouTube</button>` : ''}
     `;
     item.onclick = () => playMusicTrack(originalIndex);
     originalContainer.appendChild(item);
@@ -3940,9 +3963,43 @@ function startGame(difficulty) {
   }, 600);
 }
 
-// GIF background rotation
+// GIF/Video background rotation
+let backgroundVideoElement = null;
+
 function startGifBackground() {
   const playBg = document.getElementById('play-bg');
+
+  // Check if selected song has video data
+  const song = gameState.selectedSong;
+  if (song && song.videoData) {
+    // Create video element for background
+    const videoBlob = new Blob([song.videoData], { type: 'video/mp4' });
+    const videoUrl = URL.createObjectURL(videoBlob);
+
+    backgroundVideoElement = document.createElement('video');
+    backgroundVideoElement.src = videoUrl;
+    backgroundVideoElement.muted = true;
+    backgroundVideoElement.loop = true;
+    backgroundVideoElement.playsInline = true;
+    backgroundVideoElement.style.cssText = `
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      opacity: 0.18;
+      z-index: 0;
+      pointer-events: none;
+    `;
+
+    // Hide GIF background and add video
+    playBg.style.backgroundImage = 'none';
+    playBg.parentElement.insertBefore(backgroundVideoElement, playBg);
+
+    // Video will be played in sync with music in countdown function
+    return;
+  }
+
+  // Fallback: use GIF rotation
   gameState.currentGifIndex = 0;
   playBg.style.backgroundImage = `url('${PLAY_GIFS[0]}')`;
 
@@ -3959,6 +4016,17 @@ function startGifBackground() {
 }
 
 function stopGifBackground() {
+  // Stop and remove video element if exists
+  if (backgroundVideoElement) {
+    backgroundVideoElement.pause();
+    if (backgroundVideoElement.src) {
+      URL.revokeObjectURL(backgroundVideoElement.src);
+    }
+    backgroundVideoElement.remove();
+    backgroundVideoElement = null;
+  }
+
+  // Clear GIF interval
   if (gameState.gifInterval) {
     clearInterval(gameState.gifInterval);
     gameState.gifInterval = null;
@@ -3982,6 +4050,12 @@ function countdown(count, callback) {
     // Start game BGM immediately
     if (gameState.selectedSong.audioFile) {
       playGameBGM(gameState.selectedSong.audioFile);
+    }
+
+    // Start background video in sync with music
+    if (backgroundVideoElement) {
+      backgroundVideoElement.currentTime = 0;
+      backgroundVideoElement.play().catch(() => {});
     }
 
     // Start game logic immediately (notes sync with music)
@@ -5560,16 +5634,20 @@ document.addEventListener('DOMContentLoaded', () => {
 // ============================================================
 let createFileData = null;
 let createFileDuration = 0;
+let createVideoData = null;
 let createSelectedPreset = 'calm';
 
 function showCreateScreen() {
   // Reset form
   document.getElementById('create-file').value = '';
+  document.getElementById('create-video').value = '';
   document.getElementById('create-title').value = '';
   document.getElementById('create-artist').value = '';
   document.getElementById('create-file-info').textContent = '';
+  document.getElementById('create-video-info').textContent = '';
   createFileData = null;
   createFileDuration = 0;
+  createVideoData = null;
   createSelectedPreset = 'calm';
 
   // Reset preset selection
@@ -5621,6 +5699,31 @@ function handleCreateFileSelect(input) {
   reader.readAsArrayBuffer(file);
 }
 
+function handleCreateVideoSelect(input) {
+  const file = input.files[0];
+  const fileInfo = document.getElementById('create-video-info');
+
+  if (!file) {
+    createVideoData = null;
+    fileInfo.textContent = '';
+    return;
+  }
+
+  // Read file as ArrayBuffer
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    createVideoData = e.target.result;
+    fileInfo.textContent = `${file.name}`;
+  };
+
+  reader.onerror = () => {
+    fileInfo.textContent = 'Error: Invalid video file';
+    createVideoData = null;
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
 function selectPreset(element, preset) {
   document.querySelectorAll('.preset-option').forEach(opt => opt.classList.remove('selected'));
   element.classList.add('selected');
@@ -5655,6 +5758,7 @@ function saveCustomSongAndReturn() {
     noteDistribution: NOTE_PRESETS[createSelectedPreset],
     preset: createSelectedPreset,
     audioData: createFileData,
+    videoData: createVideoData,
     isCustom: true,
     createdAt: Date.now()
   };
