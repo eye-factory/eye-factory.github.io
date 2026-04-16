@@ -728,11 +728,12 @@ body {
   padding-top: 60px;
   gap: 20px;
   justify-content: flex-start;
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
 }
-#create-screen * {
-  touch-action: pan-y;
+#create-screen input,
+#create-screen select,
+#create-screen button,
+#create-screen input[type="range"] {
+  touch-action: manipulation;
 }
 .create-form {
   display: flex;
