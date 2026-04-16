@@ -1555,14 +1555,28 @@ body {
 .tap-ripple {
   position: absolute;
   border-radius: 50%;
-  border: 3px solid var(--neon-primary);
+  border: 3px solid transparent;
+  background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0088ff, #ff00ff, #ff0000) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  background-size: 400% 100%;
   pointer-events: none;
-  animation: rippleExpand 0.5s ease-out forwards;
+  animation: rippleExpand 0.5s ease-out forwards, rippleRainbow 0.3s linear infinite;
   transform: translate(-50%, -50%);
+  box-shadow: 0 0 15px rgba(255, 0, 255, 0.5), 0 0 30px rgba(0, 255, 255, 0.3);
+}
+.tap-ripple.excellent {
+  border-width: 5px;
+  box-shadow: 0 0 30px rgba(255, 0, 255, 0.8), 0 0 60px rgba(0, 255, 255, 0.6), 0 0 90px rgba(255, 255, 0, 0.4);
 }
 .tap-ripple.perfect {
-  border-color: var(--neon-secondary);
-  box-shadow: 0 0 20px var(--neon-secondary);
+  box-shadow: 0 0 25px rgba(0, 255, 136, 0.7), 0 0 50px rgba(0, 255, 255, 0.5);
+}
+@keyframes rippleRainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
 }
 
 @keyframes rippleExpand {
@@ -1662,7 +1676,7 @@ body {
   animation: approachXLargeFast 1s linear forwards;
 }
 
-/* Hit feedback - Enhanced */
+/* Hit feedback - Enhanced with Rainbow */
 .hit-feedback {
   position: absolute;
   font-family: var(--font-en);
@@ -1674,32 +1688,42 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
-.hit-feedback.perfect {
-  background: linear-gradient(90deg, #00ff88, #00ffcc, #00ff88);
-  background-size: 200% 100%;
+.hit-feedback.excellent {
+  font-size: 28px;
+  background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0088ff, #ff00ff, #ff0000);
+  background-size: 400% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 15px #00ff88) drop-shadow(0 0 30px #00ff88);
-  animation: feedbackPerfect 0.6s ease-out forwards;
+  filter: drop-shadow(0 0 20px #ff00ff) drop-shadow(0 0 40px #00ffff) drop-shadow(0 0 60px #ffff00);
+  animation: feedbackExcellent 0.8s ease-out forwards, rainbowShift 0.3s linear infinite;
+}
+.hit-feedback.perfect {
+  background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0088ff, #ff00ff, #ff0000);
+  background-size: 400% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: drop-shadow(0 0 15px #00ff88) drop-shadow(0 0 30px #00ffff);
+  animation: feedbackPerfect 0.6s ease-out forwards, rainbowShift 0.4s linear infinite;
 }
 .hit-feedback.great {
-  background: linear-gradient(90deg, var(--neon-primary), #00ffff, var(--neon-primary));
-  background-size: 200% 100%;
+  background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0088ff, #ff00ff, #ff0000);
+  background-size: 400% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter: drop-shadow(0 0 12px var(--neon-primary)) drop-shadow(0 0 25px var(--neon-primary));
-  animation: feedbackGreat 0.6s ease-out forwards;
+  filter: drop-shadow(0 0 12px var(--neon-primary)) drop-shadow(0 0 25px #00ffff);
+  animation: feedbackGreat 0.6s ease-out forwards, rainbowShift 0.5s linear infinite;
 }
 .hit-feedback.good {
-  background: linear-gradient(90deg, var(--neon-yellow), #ffff00, var(--neon-yellow));
-  background-size: 200% 100%;
+  background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0088ff, #ff00ff, #ff0000);
+  background-size: 400% 100%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   filter: drop-shadow(0 0 10px var(--neon-yellow));
-  animation: feedbackGood 0.5s ease-out forwards;
+  animation: feedbackGood 0.5s ease-out forwards, rainbowShift 0.6s linear infinite;
 }
 .hit-feedback.miss {
   background: linear-gradient(90deg, var(--neon-pink), #ff4488, var(--neon-pink));
@@ -1711,6 +1735,17 @@ body {
   animation: feedbackMiss 0.5s ease-out forwards;
 }
 
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+@keyframes feedbackExcellent {
+  0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+  15% { transform: translate(-50%, -50%) scale(1.8); opacity: 1; }
+  30% { transform: translate(-50%, -50%) scale(1.4); }
+  50% { transform: translate(-50%, -50%) scale(1.6); }
+  100% { transform: translate(-50%, calc(-50% - 50px)) scale(1.5); opacity: 0; }
+}
 @keyframes feedbackPerfect {
   0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
   20% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
@@ -2016,6 +2051,18 @@ body {
 .result-row .value.score {
   font-size: clamp(20px, 4vw, 36px);
   color: var(--neon-primary);
+}
+.result-row .value.excellent {
+  background: linear-gradient(90deg, #ff0000, #ff8800, #ffff00, #00ff00, #00ffff, #0088ff, #ff00ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: resultRainbow 2s linear infinite;
+  background-size: 400% 100%;
+}
+@keyframes resultRainbow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 400% 50%; }
 }
 .result-row .value.perfect { color: var(--neon-secondary); }
 .result-row .value.great { color: var(--neon-primary); }
@@ -2844,6 +2891,10 @@ body {
         <span class="value" id="result-combo">0</span>
       </div>
       <div class="result-row">
+        <span class="label">Excellent</span>
+        <span class="value excellent" id="result-excellent">0</span>
+      </div>
+      <div class="result-row">
         <span class="label">Perfect</span>
         <span class="value perfect" id="result-perfect">0</span>
       </div>
@@ -3162,8 +3213,8 @@ function deleteCustomSong(id) {
 }
 
 // Circle sizes configuration (medium, large, xlarge)
-// Unified timing windows: Perfect ±100ms, Great ±200ms, Good ±300ms
-const TIMING_WINDOWS = { perfect: 100, great: 200, good: 300 };
+// Unified timing windows: Excellent ±16ms, Perfect ±100ms, Great ±200ms, Good ±300ms
+const TIMING_WINDOWS = { excellent: 16, perfect: 100, great: 200, good: 300 };
 const CIRCLE_TYPES = {
   medium: {
     size: 80,
@@ -3192,7 +3243,7 @@ const CIRCLE_TYPES = {
 };
 
 // Base scores
-const BASE_SCORES = { perfect: 300, great: 200, good: 100 };
+const BASE_SCORES = { excellent: 600, perfect: 300, great: 200, good: 100 };
 
 // GOD rank bonus (only awarded when achieving GOD rank)
 const DIFFICULTY_BONUS = {
@@ -3241,7 +3292,7 @@ let gameState = {
   score: 0,
   combo: 0,
   maxCombo: 0,
-  hits: { perfect: 0, great: 0, good: 0, miss: 0 },
+  hits: { excellent: 0, perfect: 0, great: 0, good: 0, miss: 0 },
   isPlaying: false,
   startTime: 0,
   circles: [],
@@ -4449,14 +4500,18 @@ function hitCircle(circle) {
   let result;
   let scoreGained = 0;
 
-  // Timing windows: Perfect ±100ms, Great ±200ms, Good ±300ms
+  // Timing windows: Excellent ±16ms, Perfect ±100ms, Great ±200ms, Good ±300ms
   // For Very Hard, timing windows are also 1.5x tighter
   const speedMult = gameState.speedMultiplier || 1;
+  const adjustedExcellent = TIMING_WINDOWS.excellent / speedMult;
   const adjustedPerfect = TIMING_WINDOWS.perfect / speedMult;
   const adjustedGreat = TIMING_WINDOWS.great / speedMult;
   const adjustedGood = TIMING_WINDOWS.good / speedMult;
 
-  if (timing <= adjustedPerfect) {
+  if (timing <= adjustedExcellent) {
+    result = 'excellent';
+    scoreGained = Math.floor(BASE_SCORES.excellent * typeConfig.scoreMultiplier);
+  } else if (timing <= adjustedPerfect) {
     result = 'perfect';
     scoreGained = Math.floor(BASE_SCORES.perfect * typeConfig.scoreMultiplier);
   } else if (timing <= adjustedGreat) {
@@ -4526,13 +4581,18 @@ function spawnTapEffects(result, x, y, circleType) {
   if (result === 'miss') return;
 
   const area = document.getElementById('play-area');
-  const isPerfect = result === 'perfect';
+  const isExcellent = result === 'excellent';
+  const isPerfect = result === 'perfect' || isExcellent;
   const typeConfig = CIRCLE_TYPES[circleType];
 
   // Create ripple effect
   const ripple = document.createElement('div');
   ripple.className = 'tap-ripple';
-  if (isPerfect) ripple.classList.add('perfect');
+  if (isExcellent) {
+    ripple.classList.add('excellent');
+  } else if (isPerfect) {
+    ripple.classList.add('perfect');
+  }
 
   // Size-based effects
   if (circleType === 'large') {
@@ -4550,7 +4610,8 @@ function spawnTapEffects(result, x, y, circleType) {
   if (circleType === 'large') {
     const glow = document.createElement('div');
     glow.className = 'tap-ripple';
-    if (isPerfect) glow.classList.add('perfect');
+    if (isExcellent) glow.classList.add('excellent');
+    else if (isPerfect) glow.classList.add('perfect');
     glow.style.left = x + 'px';
     glow.style.top = y + 'px';
     glow.style.animationDelay = '0.1s';
@@ -4563,19 +4624,22 @@ function spawnTapEffects(result, x, y, circleType) {
     // Screen flash
     const flash = document.createElement('div');
     flash.className = 'screen-flash';
-    if (isPerfect) {
+    if (isExcellent) {
+      flash.style.background = 'radial-gradient(circle, rgba(255, 0, 255, 0.6) 0%, rgba(0, 255, 255, 0.4) 30%, rgba(255, 255, 0, 0.3) 50%, transparent 70%)';
+    } else if (isPerfect) {
       flash.style.background = 'radial-gradient(circle, rgba(0, 255, 136, 0.5) 0%, rgba(0, 212, 255, 0.3) 50%, transparent 70%)';
     }
     document.body.appendChild(flash);
     setTimeout(() => flash.remove(), 300);
 
     // Spawn particles
-    spawnParticles(x, y, isPerfect ? 16 : 10, area);
+    spawnParticles(x, y, isExcellent ? 24 : (isPerfect ? 16 : 10), area);
 
     // Extra ripple wave for xlarge
     const wave = document.createElement('div');
     wave.className = 'tap-ripple xlarge-effect';
-    if (isPerfect) wave.classList.add('perfect');
+    if (isExcellent) wave.classList.add('excellent');
+    else if (isPerfect) wave.classList.add('perfect');
     wave.style.left = x + 'px';
     wave.style.top = y + 'px';
     wave.style.animationDelay = '0.15s';
@@ -4583,8 +4647,29 @@ function spawnTapEffects(result, x, y, circleType) {
     setTimeout(() => wave.remove(), 1000);
   }
 
+  // Excellent bonus: extra large ripples
+  if (isExcellent) {
+    for (let i = 0; i < 3; i++) {
+      const bonusRipple = document.createElement('div');
+      bonusRipple.className = 'tap-ripple excellent';
+      bonusRipple.style.left = x + 'px';
+      bonusRipple.style.top = y + 'px';
+      bonusRipple.style.animationDelay = (0.05 + i * 0.1) + 's';
+      area.appendChild(bonusRipple);
+      setTimeout(() => bonusRipple.remove(), 800);
+    }
+    // Screen flash for excellent even on non-xlarge
+    if (circleType !== 'xlarge') {
+      const flash = document.createElement('div');
+      flash.className = 'screen-flash';
+      flash.style.background = 'radial-gradient(circle, rgba(255, 0, 255, 0.4) 0%, rgba(0, 255, 255, 0.2) 50%, transparent 70%)';
+      document.body.appendChild(flash);
+      setTimeout(() => flash.remove(), 200);
+      spawnParticles(x, y, 12, area);
+    }
+  }
   // Perfect bonus: extra mini ripple
-  if (isPerfect && circleType !== 'xlarge') {
+  else if (isPerfect && circleType !== 'xlarge') {
     const bonusRipple = document.createElement('div');
     bonusRipple.className = 'tap-ripple perfect';
     bonusRipple.style.left = x + 'px';
@@ -4632,9 +4717,10 @@ function endGame() {
   // Show static background again on result screen
   document.getElementById('game-container').classList.remove('playing');
 
-  // Grade calculation based on Perfect rate and hit counts
-  const totalNotes = gameState.hits.perfect + gameState.hits.great + gameState.hits.good + gameState.hits.miss;
-  const perfectRate = totalNotes > 0 ? (gameState.hits.perfect / totalNotes) * 100 : 0;
+  // Grade calculation based on Perfect rate and hit counts (Excellent counts as Perfect)
+  const totalNotes = gameState.hits.excellent + gameState.hits.perfect + gameState.hits.great + gameState.hits.good + gameState.hits.miss;
+  const perfectPlusExcellent = gameState.hits.excellent + gameState.hits.perfect;
+  const perfectRate = totalNotes > 0 ? (perfectPlusExcellent / totalNotes) * 100 : 0;
   const hasGreat = gameState.hits.great > 0;
   const hasGood = gameState.hits.good > 0;
   const hasMiss = gameState.hits.miss > 0;
@@ -4643,7 +4729,7 @@ function endGame() {
 
   // Grade priority: GOD → SS → S → A → B → C → D
   if (!hasGreat && !hasGood && !hasMiss && totalNotes > 0) {
-    // GOD: All Perfect (Great/Good/Miss all 0)
+    // GOD: All Excellent/Perfect (Great/Good/Miss all 0)
     grade = 'GOD';
     gradeClass = 'grade-god';
     isGod = true;
@@ -4685,6 +4771,7 @@ function endGame() {
     score: totalScore.toLocaleString(),
     bonus: isGod ? ('+' + godBonus.toLocaleString()) : '',
     combo: gameState.maxCombo,
+    excellent: gameState.hits.excellent,
     perfect: gameState.hits.perfect,
     great: gameState.hits.great,
     good: gameState.hits.good,
@@ -4718,6 +4805,7 @@ function endGame() {
     document.getElementById('result-score').textContent = resultData.score;
     document.getElementById('result-bonus').textContent = resultData.bonus;
     document.getElementById('result-combo').textContent = resultData.combo;
+    document.getElementById('result-excellent').textContent = resultData.excellent;
     document.getElementById('result-perfect').textContent = resultData.perfect;
     document.getElementById('result-great').textContent = resultData.great;
     document.getElementById('result-good').textContent = resultData.good;
@@ -4780,6 +4868,7 @@ function generateMobileResultImage() {
   const score = document.getElementById('result-score').textContent;
   const bonus = document.getElementById('result-bonus').textContent;
   const combo = document.getElementById('result-combo').textContent;
+  const excellent = document.getElementById('result-excellent').textContent;
   const perfect = document.getElementById('result-perfect').textContent;
   const great = document.getElementById('result-great').textContent;
   const good = document.getElementById('result-good').textContent;
@@ -4931,6 +5020,16 @@ function generateMobileResultImage() {
   ctx.textAlign = 'left';
   ctx.font = 'bold 22px sans-serif';
   ctx.fillStyle = '#888888';
+  ctx.fillText('Excellent', labelX, y);
+  ctx.textAlign = 'right';
+  ctx.fillStyle = '#ff00ff';
+  ctx.font = 'bold 26px "Orbitron", sans-serif';
+  ctx.fillText(excellent, valueX, y);
+
+  y += lineHeight;
+  ctx.textAlign = 'left';
+  ctx.font = 'bold 22px sans-serif';
+  ctx.fillStyle = '#888888';
   ctx.fillText('Perfect', labelX, y);
   ctx.textAlign = 'right';
   ctx.fillStyle = '#00ff88';
@@ -4998,6 +5097,7 @@ function takeScreenshot() {
     const score = document.getElementById('result-score').textContent;
     const bonus = document.getElementById('result-bonus').textContent;
     const combo = document.getElementById('result-combo').textContent;
+    const excellent = document.getElementById('result-excellent').textContent;
     const perfect = document.getElementById('result-perfect').textContent;
     const great = document.getElementById('result-great').textContent;
     const good = document.getElementById('result-good').textContent;
@@ -5144,6 +5244,16 @@ function takeScreenshot() {
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 26px "Orbitron", sans-serif';
     ctx.fillText(combo, valueX, y);
+
+    y += lineHeight;
+    ctx.textAlign = 'left';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillStyle = '#888888';
+    ctx.fillText('Excellent', labelX, y);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#ff00ff';
+    ctx.font = 'bold 26px "Orbitron", sans-serif';
+    ctx.fillText(excellent, valueX, y);
 
     y += lineHeight;
     ctx.textAlign = 'left';
