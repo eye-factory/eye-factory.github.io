@@ -1496,7 +1496,7 @@ body {
   width: 80px;
   height: 80px;
   font-size: 20px;
-  box-shadow: 0 0 25px rgba(0, 212, 255, 0.5), 0 0 50px rgba(255, 0, 170, 0.3);
+  box-shadow: 0 0 25px rgba(0, 212, 255, 0.5);
 }
 
 /* Large circle - Strong beats */
@@ -1504,7 +1504,7 @@ body {
   width: 110px;
   height: 110px;
   font-size: 26px;
-  box-shadow: 0 0 35px rgba(0, 212, 255, 0.6), 0 0 70px rgba(255, 0, 170, 0.4);
+  box-shadow: 0 0 35px rgba(0, 212, 255, 0.6);
 }
 
 /* XLarge circle - Accent notes (rare) */
@@ -3310,6 +3310,14 @@ let gameState = {
   gifInterval: null,
 };
 
+// DOM element cache for game loop performance
+let domCache = {
+  progressFill: null,
+  currentScore: null,
+  currentCombo: null,
+  playArea: null,
+};
+
 // GIF backgrounds for play screen
 const PLAY_GIFS = ['ctap2.gif', 'ctap3.gif', 'ctap4.gif', 'ctap5.gif'];
 
@@ -4017,16 +4025,22 @@ function startGame(difficulty) {
   gameState.circleId = 0;
   gameState.currentTargetNumber = 1;
 
+  // Cache DOM elements for game loop performance
+  domCache.progressFill = document.getElementById('progress-fill');
+  domCache.currentScore = document.getElementById('current-score');
+  domCache.currentCombo = document.getElementById('current-combo');
+  domCache.playArea = document.getElementById('play-area');
+
   document.getElementById('play-song-name').textContent = gameState.selectedSong.title;
   const displayDifficulty = difficulty === 'veryhard' ? 'VERY HARD' : difficulty.toUpperCase();
   document.getElementById('play-difficulty').textContent = displayDifficulty;
-  document.getElementById('current-score').textContent = '0';
-  document.getElementById('current-combo').textContent = '';
-  document.getElementById('progress-fill').style.width = '0%';
-  document.getElementById('play-area').innerHTML = '';
+  domCache.currentScore.textContent = '0';
+  domCache.currentCombo.textContent = '';
+  domCache.progressFill.style.width = '0%';
+  domCache.playArea.innerHTML = '';
 
   // Add veryhard-mode class for faster animations
-  const playArea = document.getElementById('play-area');
+  const playArea = domCache.playArea;
   if (difficulty === 'veryhard') {
     playArea.classList.add('veryhard-mode');
   } else {
@@ -4364,9 +4378,9 @@ function gameLoop() {
   const song = gameState.selectedSong;
   const duration = song.duration * 1000;
 
-  // Update progress bar
+  // Update progress bar (using cached DOM reference)
   const progress = Math.min(100, (elapsed / duration) * 100);
-  document.getElementById('progress-fill').style.width = progress + '%';
+  domCache.progressFill.style.width = progress + '%';
 
   // Check for circles to appear
   gameState.circles.forEach(circle => {
@@ -4403,7 +4417,7 @@ function gameLoop() {
 }
 
 function spawnCircle(circle) {
-  const area = document.getElementById('play-area');
+  const area = domCache.playArea;
   const typeConfig = CIRCLE_TYPES[circle.type];
 
   // Record ACTUAL spawn time - this is when animation starts
@@ -4561,8 +4575,8 @@ function registerHit(result, x, y, circleType, scoreGained = 0) {
     }
   }
 
-  document.getElementById('current-score').textContent = gameState.score.toLocaleString();
-  document.getElementById('current-combo').textContent =
+  domCache.currentScore.textContent = gameState.score.toLocaleString();
+  domCache.currentCombo.textContent =
     gameState.combo > 1 ? `${gameState.combo} COMBO` : '';
 
   showFeedback(result, x, y, scoreGained);
@@ -4570,7 +4584,7 @@ function registerHit(result, x, y, circleType, scoreGained = 0) {
 }
 
 function showFeedback(result, x, y, score = 0) {
-  const area = document.getElementById('play-area');
+  const area = domCache.playArea;
   const feedback = document.createElement('div');
   feedback.className = 'hit-feedback ' + result;
   feedback.textContent = result === 'miss' ? 'MISS' : `${result.toUpperCase()} +${score}`;
@@ -4587,7 +4601,7 @@ function showFeedback(result, x, y, score = 0) {
 function spawnTapEffects(result, x, y, circleType) {
   if (result === 'miss') return;
 
-  const area = document.getElementById('play-area');
+  const area = domCache.playArea;
   const isExcellent = result === 'excellent';
   const isPerfect = result === 'perfect' || isExcellent;
   const typeConfig = CIRCLE_TYPES[circleType];
@@ -4639,8 +4653,8 @@ function spawnTapEffects(result, x, y, circleType) {
     document.body.appendChild(flash);
     setTimeout(() => flash.remove(), 300);
 
-    // Spawn particles
-    spawnParticles(x, y, isExcellent ? 12 : (isPerfect ? 16 : 10), area);
+    // Spawn particles (reduced count for performance)
+    spawnParticles(x, y, isExcellent ? 6 : (isPerfect ? 8 : 5), area);
 
     // Extra ripple wave for xlarge
     const wave = document.createElement('div');
