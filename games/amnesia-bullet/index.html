@@ -15,6 +15,9 @@
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after {
   box-sizing: border-box;
@@ -35,6 +38,10 @@
   --red: #d03950;
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.44);
   --radius: 8px;
+  --font-en: 'Orbitron', sans-serif;
+  --font-display: 'Rajdhani', sans-serif;
+  --font-ja: 'Noto Sans JP', 'Yu Gothic', 'Yu Gothic UI', Meiryo, system-ui, sans-serif;
+  --container: min(1180px, calc(100% - 48px));
 }
 
 html {
@@ -47,9 +54,10 @@ body {
   background:
     linear-gradient(180deg, #05080d 0%, #07141c 48%, #030507 100%);
   color: var(--ink);
-  font-family: "Noto Sans JP", "Yu Gothic", "Yu Gothic UI", Meiryo, system-ui, sans-serif;
+  font-family: var(--font-ja);
   line-height: 1.72;
   letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
 }
 
 img,
@@ -67,14 +75,15 @@ a {
   left: 0;
   right: 0;
   z-index: 20;
-  border-bottom: 1px solid rgba(117, 221, 255, 0.18);
-  background: rgba(2, 7, 11, 0.72);
-  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(117, 221, 255, 0.2);
+  background: rgba(5, 9, 14, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 .nav {
-  width: min(1180px, calc(100% - 32px));
-  height: 64px;
+  width: min(1180px, calc(100% - 48px));
+  height: 70px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -82,42 +91,62 @@ a {
   gap: 18px;
 }
 
-.nav-brand {
+.logo {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   text-decoration: none;
-  font-weight: 800;
-  color: #e9fbff;
+  color: var(--ink);
   white-space: nowrap;
 }
 
-.brand-mark {
-  width: 28px;
-  height: 28px;
-  border: 1px solid rgba(89, 232, 255, 0.72);
-  background:
-    linear-gradient(135deg, rgba(85, 232, 255, 0.18), rgba(255, 123, 217, 0.18)),
-    #061118;
-  box-shadow: 0 0 18px rgba(85, 232, 255, 0.28);
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-en);
+  font-weight: 800;
+  font-size: 15px;
+  color: #02121a;
+  background: linear-gradient(135deg, var(--cyan), var(--pink));
+  box-shadow: 0 0 20px rgba(85, 232, 255, 0.45);
+}
+
+.logo-text {
+  font-family: var(--font-en);
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, var(--cyan), #aef7ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 26px;
   color: var(--muted);
-  font-size: 14px;
-  font-weight: 700;
+  font-family: var(--font-en);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .nav-links a {
   text-decoration: none;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .nav-links a:hover,
 .nav-links a:focus-visible {
   color: var(--cyan);
+  text-shadow: 0 0 10px rgba(85, 232, 255, 0.6);
 }
 
 .hero {
@@ -145,9 +174,9 @@ a {
 .hero-inner {
   position: relative;
   z-index: 1;
-  width: min(1180px, calc(100% - 32px));
+  width: min(1180px, calc(100% - 48px));
   margin: 0 auto;
-  padding: 104px 0 88px;
+  padding: 130px 0 96px;
 }
 
 .hero-logo {
@@ -160,31 +189,47 @@ a {
 }
 
 .eyebrow {
-  margin: 0 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 16px;
   color: var(--cyan);
-  font-size: 14px;
-  font-weight: 900;
+  font-family: var(--font-en);
+  font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0;
+  letter-spacing: 0.18em;
+  text-shadow: 0 0 12px rgba(85, 232, 255, 0.45);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 26px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
 }
 
 .hero h1 {
   margin: 0;
-  max-width: 780px;
-  font-size: clamp(32px, 5vw, 72px);
-  line-height: 1.05;
+  max-width: 820px;
+  font-size: clamp(30px, 5vw, 68px);
+  line-height: 1.1;
+  font-weight: 900;
   text-wrap: balance;
+  text-shadow: 0 6px 30px rgba(0, 0, 0, 0.55), 0 0 40px rgba(85, 232, 255, 0.18);
 }
 
 .hero-lead {
-  max-width: 650px;
+  max-width: 620px;
   margin: 22px 0 0;
   color: var(--soft);
-  font-size: clamp(16px, 2vw, 21px);
+  font-size: clamp(15px, 1.6vw, 19px);
   font-weight: 700;
+  line-height: 1.85;
   overflow-wrap: anywhere;
-  word-break: break-word;
+  word-break: normal;
   line-break: strict;
+  text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
 }
 
 .mobile-copy {
@@ -200,30 +245,40 @@ a {
 }
 
 .button {
-  min-height: 48px;
+  min-height: 50px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 12px 18px;
+  padding: 13px 26px;
   border: 1px solid rgba(103, 235, 255, 0.64);
   background: rgba(6, 38, 52, 0.76);
   color: #f7fdff;
   text-decoration: none;
-  font-weight: 900;
+  font-weight: 800;
+  letter-spacing: 0.02em;
   box-shadow: 0 8px 28px rgba(0, 0, 0, 0.30);
   border-radius: var(--radius);
+  cursor: pointer;
+  transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
 }
 
 .button:hover,
 .button:focus-visible {
   border-color: rgba(255, 255, 255, 0.9);
   background: rgba(15, 77, 98, 0.86);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 22px rgba(85, 232, 255, 0.28);
 }
 
 .button.primary {
   border-color: rgba(255, 216, 107, 0.88);
   background: linear-gradient(180deg, rgba(255, 216, 107, 0.22), rgba(175, 96, 11, 0.58));
+}
+
+.button.primary:hover,
+.button.primary:focus-visible {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4), 0 0 24px rgba(255, 216, 107, 0.35);
 }
 
 .button.ghost {
@@ -299,7 +354,7 @@ a {
 }
 
 .wrap {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1180px, calc(100% - 48px));
   margin: 0 auto;
 }
 
@@ -310,15 +365,18 @@ a {
 
 .section-title h2 {
   margin: 0;
-  font-size: clamp(26px, 3.4vw, 44px);
-  line-height: 1.18;
+  font-size: clamp(25px, 3.2vw, 42px);
+  line-height: 1.22;
+  font-weight: 900;
+  letter-spacing: 0.01em;
 }
 
 .section-title p {
   margin: 16px 0 0;
   color: var(--muted);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
+  line-height: 1.8;
 }
 
 .media-grid {
@@ -342,6 +400,12 @@ a {
 .video-frame {
   aspect-ratio: 16 / 9;
   overflow: hidden;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.video-frame:hover {
+  border-color: rgba(123, 229, 255, 0.7);
+  box-shadow: var(--shadow), 0 0 30px rgba(85, 232, 255, 0.22);
 }
 
 .video-frame iframe {
@@ -380,20 +444,40 @@ a {
 }
 
 .feature-card {
-  padding: 22px;
-  min-height: 190px;
+  padding: 24px 22px;
+  min-height: 196px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--pink));
+  opacity: 0.55;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(123, 229, 255, 0.7);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 26px rgba(85, 232, 255, 0.18);
 }
 
 .feature-card h3 {
   margin: 0 0 12px;
   color: #eaffff;
-  font-size: 20px;
+  font-size: 19px;
+  font-weight: 800;
 }
 
 .feature-card p {
   margin: 0;
   color: var(--muted);
   font-weight: 700;
+  font-size: 14.5px;
 }
 
 .poster-band {
@@ -407,13 +491,33 @@ a {
 .poster-layout {
   display: grid;
   grid-template-columns: minmax(260px, 390px) minmax(0, 1fr);
-  gap: 36px;
+  gap: 44px;
   align-items: center;
+}
+
+.poster-layout h2 {
+  margin: 0 0 14px;
+  font-size: clamp(24px, 3vw, 38px);
+  line-height: 1.22;
+  font-weight: 900;
+}
+
+.poster-layout > div > p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+  line-height: 1.85;
 }
 
 .poster-panel {
   overflow: hidden;
   background: #03070a;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.poster-panel:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow), 0 0 34px rgba(85, 232, 255, 0.2);
 }
 
 .poster-panel img {
@@ -430,11 +534,18 @@ a {
 }
 
 .demo-list li {
-  padding: 14px 16px;
+  padding: 14px 18px;
   border-left: 3px solid var(--cyan);
+  border-radius: 0 6px 6px 0;
   background: rgba(255, 255, 255, 0.045);
   color: var(--soft);
   font-weight: 800;
+  transition: background 0.25s ease, transform 0.25s ease;
+}
+
+.demo-list li:hover {
+  background: rgba(85, 232, 255, 0.1);
+  transform: translateX(4px);
 }
 
 .highlight {
@@ -534,7 +645,7 @@ textarea:focus {
 }
 
 .footer-inner {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1180px, calc(100% - 48px));
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
@@ -550,14 +661,17 @@ textarea:focus {
 
 @media (max-width: 920px) {
   .nav {
-    height: auto;
-    min-height: 58px;
-    padding: 10px 0;
+    height: 62px;
   }
 
   .nav-links {
-    gap: 12px;
-    font-size: 13px;
+    gap: 18px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+  }
+
+  .hero-inner {
+    padding-top: 110px;
   }
 
   .media-grid,
@@ -566,12 +680,36 @@ textarea:focus {
     grid-template-columns: 1fr;
   }
 
+  .poster-panel {
+    max-width: 460px;
+  }
+
   .feature-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 640px) {
+  .nav {
+    width: min(1180px, calc(100% - 32px));
+    height: 56px;
+  }
+
+  .logo-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
+
+  .logo-text {
+    font-size: 17px;
+  }
+
+  .nav-links {
+    gap: 16px;
+  }
+
   .nav-links a:nth-child(2),
   .nav-links a:nth-child(3) {
     display: none;
@@ -582,12 +720,18 @@ textarea:focus {
   }
 
   .hero-inner {
+    width: min(1180px, calc(100% - 32px));
     padding-top: 92px;
+  }
+
+  .wrap,
+  .footer-inner {
+    width: min(1180px, calc(100% - 32px));
   }
 
   .hero-logo {
     width: 100%;
-    max-width: 360px;
+    max-width: 340px;
   }
 
   .hero-lead {
@@ -627,9 +771,9 @@ textarea:focus {
 <body>
 <header class="site-header">
   <nav class="nav" aria-label="Primary navigation">
-    <a class="nav-brand" href="https://eye-factory.net/">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span>eye-factory</span>
+    <a class="logo" href="https://eye-factory.net/">
+      <span class="logo-icon" aria-hidden="true">ef</span>
+      <span class="logo-text">eye-factory</span>
     </a>
     <div class="nav-links">
       <a href="#trailer">Trailer</a>
