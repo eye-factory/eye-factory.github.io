@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amnesia Bullet | eye-factory</title>
+<meta name="description" content="Amnesia Bulletは、記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲームです。ジャイロ操作対応の体験版をSteamで配信予定。">
+<link rel="canonical" href="https://eye-factory.net/games/amnesia-bullet/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Amnesia Bullet | eye-factory">
+<meta property="og:description" content="記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲーム。Steamで体験版配信予定。">
+<meta property="og:image" content="https://eye-factory.net/games/amnesia-bullet/amnesia-bullet-social.jpg">
+<meta property="og:url" content="https://eye-factory.net/games/amnesia-bullet/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg: #05080d;
+  --ink: #f5fbff;
+  --muted: #b8cddd;
+  --soft: rgba(216, 246, 255, 0.78);
+  --panel: rgba(4, 12, 18, 0.82);
+  --panel-light: rgba(10, 32, 42, 0.74);
+  --line: rgba(123, 229, 255, 0.42);
+  --cyan: #55e8ff;
+  --cyan-deep: #0498c5;
+  --pink: #ff7bd9;
+  --gold: #ffd86b;
+  --red: #d03950;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.44);
+  --radius: 8px;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background:
+    linear-gradient(180deg, #05080d 0%, #07141c 48%, #030507 100%);
+  color: var(--ink);
+  font-family: "Noto Sans JP", "Yu Gothic", "Yu Gothic UI", Meiryo, system-ui, sans-serif;
+  line-height: 1.72;
+  letter-spacing: 0;
+}
+
+img,
+iframe {
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  border-bottom: 1px solid rgba(117, 221, 255, 0.18);
+  background: rgba(2, 7, 11, 0.72);
+  backdrop-filter: blur(12px);
+}
+
+.nav {
+  width: min(1180px, calc(100% - 32px));
+  height: 64px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.nav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-weight: 800;
+  color: #e9fbff;
+  white-space: nowrap;
+}
+
+.brand-mark {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(89, 232, 255, 0.72);
+  background:
+    linear-gradient(135deg, rgba(85, 232, 255, 0.18), rgba(255, 123, 217, 0.18)),
+    #061118;
+  box-shadow: 0 0 18px rgba(85, 232, 255, 0.28);
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.nav-links a {
+  text-decoration: none;
+}
+
+.nav-links a:hover,
+.nav-links a:focus-visible {
+  color: var(--cyan);
+}
+
+.hero {
+  min-height: 100svh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, rgba(1, 5, 9, 0.78) 0%, rgba(4, 13, 20, 0.40) 48%, rgba(3, 6, 10, 0.48) 100%),
+    linear-gradient(180deg, rgba(3, 7, 12, 0.30) 0%, rgba(3, 7, 12, 0.12) 56%, #05080d 100%),
+    url("amnesia-bullet-hero.jpg") center / cover no-repeat;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.035) 0 1px, transparent 1px 6px);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 104px 0 88px;
+}
+
+.hero-logo {
+  width: min(720px, 92vw);
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 0 22px;
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.46));
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: var(--cyan);
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.hero h1 {
+  margin: 0;
+  max-width: 780px;
+  font-size: clamp(32px, 5vw, 72px);
+  line-height: 1.05;
+  text-wrap: balance;
+}
+
+.hero-lead {
+  max-width: 650px;
+  margin: 22px 0 0;
+  color: var(--soft);
+  font-size: clamp(16px, 2vw, 21px);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-break: strict;
+}
+
+.mobile-copy {
+  display: none;
+}
+
+.hero-actions,
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.button {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border: 1px solid rgba(103, 235, 255, 0.64);
+  background: rgba(6, 38, 52, 0.76);
+  color: #f7fdff;
+  text-decoration: none;
+  font-weight: 900;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.30);
+  border-radius: var(--radius);
+}
+
+.button:hover,
+.button:focus-visible {
+  border-color: rgba(255, 255, 255, 0.9);
+  background: rgba(15, 77, 98, 0.86);
+}
+
+.button.primary {
+  border-color: rgba(255, 216, 107, 0.88);
+  background: linear-gradient(180deg, rgba(255, 216, 107, 0.22), rgba(175, 96, 11, 0.58));
+}
+
+.button.ghost {
+  background: rgba(4, 13, 20, 0.62);
+}
+
+.trailer-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(10px);
+}
+
+.trailer-modal.is-open {
+  display: flex;
+}
+
+.trailer-modal-inner {
+  width: min(1120px, 100%);
+}
+
+.trailer-modal-head {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.trailer-close {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid rgba(123, 229, 255, 0.62);
+  background: rgba(2, 13, 19, 0.92);
+  color: #f7fdff;
+  font: inherit;
+  font-weight: 900;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.trailer-close:hover,
+.trailer-close:focus-visible {
+  border-color: #fff;
+  color: var(--cyan);
+}
+
+.trailer-modal-frame {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid rgba(123, 229, 255, 0.64);
+  background: #000;
+  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.72);
+  border-radius: var(--radius);
+}
+
+.trailer-modal-frame iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+.section {
+  padding: 84px 0;
+}
+
+.section.tight {
+  padding-top: 48px;
+}
+
+.wrap {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.section-title {
+  max-width: 860px;
+  margin: 0 0 30px;
+}
+
+.section-title h2 {
+  margin: 0;
+  font-size: clamp(26px, 3.4vw, 44px);
+  line-height: 1.18;
+}
+
+.section-title p {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.media-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  gap: 22px;
+  align-items: stretch;
+}
+
+.video-frame,
+.steam-panel,
+.feature-card,
+.contact-panel,
+.poster-panel {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+}
+
+.video-frame {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+
+.video-frame iframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+.steam-panel {
+  min-height: 100%;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.steam-panel iframe {
+  width: 100%;
+  height: 190px;
+  border: 0;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.steam-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.feature-card {
+  padding: 22px;
+  min-height: 190px;
+}
+
+.feature-card h3 {
+  margin: 0 0 12px;
+  color: #eaffff;
+  font-size: 20px;
+}
+
+.feature-card p {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.poster-band {
+  background:
+    linear-gradient(90deg, rgba(3, 9, 14, 0.98), rgba(4, 22, 28, 0.78)),
+    #061016;
+  border-top: 1px solid rgba(85, 232, 255, 0.16);
+  border-bottom: 1px solid rgba(85, 232, 255, 0.16);
+}
+
+.poster-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 390px) minmax(0, 1fr);
+  gap: 36px;
+  align-items: center;
+}
+
+.poster-panel {
+  overflow: hidden;
+  background: #03070a;
+}
+
+.poster-panel img {
+  width: 100%;
+  display: block;
+}
+
+.demo-list {
+  display: grid;
+  gap: 14px;
+  margin: 28px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-list li {
+  padding: 14px 16px;
+  border-left: 3px solid var(--cyan);
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--soft);
+  font-weight: 800;
+}
+
+.highlight {
+  color: var(--gold);
+}
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.contact-panel {
+  padding: 24px;
+}
+
+.contact-panel h3 {
+  margin: 0 0 12px;
+  font-size: 24px;
+}
+
+.contact-panel p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.mail-link {
+  color: var(--cyan);
+  font-weight: 900;
+}
+
+.contact-form {
+  display: grid;
+  gap: 14px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+label {
+  display: grid;
+  gap: 7px;
+  color: #dffaff;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid rgba(123, 229, 255, 0.34);
+  background: rgba(1, 8, 12, 0.82);
+  color: #f7fdff;
+  font: inherit;
+  font-weight: 700;
+  padding: 12px 13px;
+  outline: none;
+  border-radius: 6px;
+}
+
+textarea {
+  min-height: 178px;
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(85, 232, 255, 0.13);
+}
+
+.form-note {
+  margin: 0;
+  color: rgba(217, 240, 248, 0.72);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.status-text {
+  min-height: 24px;
+  color: var(--gold);
+  font-weight: 900;
+}
+
+.footer {
+  padding: 36px 0 46px;
+  border-top: 1px solid rgba(123, 229, 255, 0.16);
+  color: rgba(216, 235, 245, 0.68);
+  background: #030507;
+}
+
+.footer-inner {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-weight: 700;
+}
+
+.footer a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+@media (max-width: 920px) {
+  .nav {
+    height: auto;
+    min-height: 58px;
+    padding: 10px 0;
+  }
+
+  .nav-links {
+    gap: 12px;
+    font-size: 13px;
+  }
+
+  .media-grid,
+  .poster-layout,
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .nav-links a:nth-child(2),
+  .nav-links a:nth-child(3) {
+    display: none;
+  }
+
+  .hero {
+    background-position: 62% center;
+  }
+
+  .hero-inner {
+    padding-top: 92px;
+  }
+
+  .hero-logo {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .hero-lead {
+    font-size: 15px;
+    line-height: 1.65;
+    word-break: break-all;
+  }
+
+  .desktop-copy {
+    display: none;
+  }
+
+  .mobile-copy {
+    display: block;
+  }
+
+  .hero-actions,
+  .button-row {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+  }
+
+  .feature-grid,
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section {
+    padding: 62px 0;
+  }
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="nav" aria-label="Primary navigation">
+    <a class="nav-brand" href="https://eye-factory.net/">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>eye-factory</span>
+    </a>
+    <div class="nav-links">
+      <a href="#trailer">Trailer</a>
+      <a href="#features">Features</a>
+      <a href="#demo">Demo</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<main>
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <img class="hero-logo" src="amnesia-bullet-logo.png" alt="Amnesia Bullet">
+      <p class="eyebrow">TPS Shooting Game / Gyro Controller Support</p>
+      <h1>記憶を取り戻すために、弾丸で道を切り開く。</h1>
+      <p class="hero-lead desktop-copy">
+        記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲーム。
+        体験版では1stメモリー（青）を中心に、クリアごとに高難易度へ挑戦できます。
+      </p>
+      <p class="hero-lead mobile-copy">
+        記憶を取り戻すため、“わるいもの”と戦うTPS。<br>
+        体験版では1stメモリー（青）と高難易度を遊べます。
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">Steamで見る</a>
+        <button class="button" type="button" id="openTrailer">トレーラーを見る</button>
+        <a class="button ghost" href="#contact">問い合わせ</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="trailer">
+    <div class="wrap">
+      <div class="section-title">
+        <p class="eyebrow">Trailer</p>
+        <h2>記憶を取り戻すため、“わるいもの”へ立ち向かう。</h2>
+        <p>Steamページではウィッシュリスト登録と体験版の確認ができます。</p>
+      </div>
+      <div class="media-grid">
+        <div class="video-frame">
+          <iframe src="https://www.youtube.com/embed/HGKBW4ErAxM" title="Amnesia Bullet Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+        <aside class="steam-panel" aria-label="Steam information">
+          <iframe src="https://store.steampowered.com/widget/4747710/" title="Amnesia Bullet on Steam" loading="lazy"></iframe>
+          <p>
+            気に入ってくれたら、Steamのウィッシュリスト登録をお願いします。
+            体験版の公開情報もSteamページから確認できます。
+          </p>
+          <a class="button primary" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">Steamページへ</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight" id="features">
+    <div class="wrap">
+      <div class="section-title">
+        <p class="eyebrow">Features</p>
+        <h2>物語、射撃、育成をひとつのテンポで。</h2>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <h3>TPSシューティング</h3>
+          <p>ライフルを構え、移動しながら敵を狙う三人称視点のバトル。マウス、キーボード、コントローラーでプレイできます。</p>
+        </article>
+        <article class="feature-card">
+          <h3>ジャイロ操作対応</h3>
+          <p>対応コントローラーではジャイロエイムに対応。細かな照準操作で、より直感的な射撃を狙えます。</p>
+        </article>
+        <article class="feature-card">
+          <h3>メモリー攻略</h3>
+          <p>記憶の入口からステージへ入り、クリアすることで物語と難易度が進行。記憶を取り戻す道が少しずつ開いていきます。</p>
+        </article>
+        <article class="feature-card">
+          <h3>ステータスアップ</h3>
+          <p>戦闘で得たクラウンコインを使い、HPや攻撃力を強化。高難易度の攻略へ向けて育成できます。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section poster-band" id="demo">
+    <div class="wrap poster-layout">
+      <figure class="poster-panel">
+        <img src="amnesia-bullet-poster.jpg" alt="Amnesia Bullet key visual" loading="lazy">
+      </figure>
+      <div>
+        <p class="eyebrow">Demo</p>
+        <h2>体験版で遊べる範囲</h2>
+        <p>
+          Amnesia Bulletの体験版では、序盤の物語と1stメモリー（青）の攻略をプレイできます。
+          通常難易度クリア後も、高難易度を解放しながらステータスを伸ばして遊べます。
+        </p>
+        <ul class="demo-list">
+          <li>1stメモリー（青）の通常Lv.1をプレイ可能</li>
+          <li>クリアごとに高難易度を解放</li>
+          <li>クラウンコインでステータスアップ</li>
+          <li>この先のストーリーは製品版でプレイ可能</li>
+        </ul>
+        <div class="button-row">
+          <a class="button primary" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">体験版を確認</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <div class="wrap">
+      <div class="section-title">
+        <p class="eyebrow">Contact</p>
+        <h2>感想、不具合報告、問い合わせはこちら。</h2>
+        <p>フォームに入力するとメール作成画面が開きます。スクリーンショットなどの添付は、開いたメール画面で追加してください。</p>
+      </div>
+      <div class="contact-layout">
+        <aside class="contact-panel">
+          <h3>送信先</h3>
+          <p>返信が必要な場合は、連絡可能なメールアドレスを本文に含めてください。</p>
+          <p><a class="mail-link" href="mailto:eye.factory.info@gmail.com">eye.factory.info@gmail.com</a></p>
+          <p class="highlight">Steamのレビューやウィッシュリスト登録も、とても励みになります。</p>
+        </aside>
+
+        <section class="contact-panel">
+          <form class="contact-form" id="contactForm">
+            <div class="form-grid">
+              <label>
+                名前
+                <input type="text" name="name" autocomplete="name" placeholder="任意">
+              </label>
+              <label>
+                返信用メール
+                <input type="email" name="email" autocomplete="email" placeholder="任意">
+              </label>
+            </div>
+            <label>
+              種類
+              <select name="category">
+                <option value="感想">感想</option>
+                <option value="不具合報告">不具合報告</option>
+                <option value="問い合わせ">問い合わせ</option>
+                <option value="その他">その他</option>
+              </select>
+            </label>
+            <label>
+              メッセージ
+              <textarea name="message" required placeholder="ここにメッセージを貼り付け、または入力してください。"></textarea>
+            </label>
+            <p class="form-note">送信ボタンを押すとメールソフトが開きます。開かない場合に備えて、内容はクリップボードにもコピーします。</p>
+            <button class="button primary" type="submit">メールを作成</button>
+            <div class="status-text" id="formStatus" role="status" aria-live="polite"></div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="trailer-modal" id="trailerModal" aria-hidden="true">
+  <div class="trailer-modal-inner" role="dialog" aria-modal="true" aria-label="Amnesia Bullet Trailer">
+    <div class="trailer-modal-head">
+      <button class="trailer-close" type="button" id="closeTrailer" aria-label="閉じる">×</button>
+    </div>
+    <div class="trailer-modal-frame">
+      <iframe id="trailerModalFrame" title="Amnesia Bullet Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <span>&copy; eye-factory. All rights reserved.</span>
+    <span><a href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">Steam</a> / <a href="https://youtu.be/HGKBW4ErAxM" target="_blank" rel="noopener">YouTube</a></span>
+  </div>
+</footer>
+
+<script>
+const form = document.getElementById("contactForm");
+const statusText = document.getElementById("formStatus");
+const trailerButton = document.getElementById("openTrailer");
+const trailerModal = document.getElementById("trailerModal");
+const trailerClose = document.getElementById("closeTrailer");
+const trailerFrame = document.getElementById("trailerModalFrame");
+const trailerSrc = "https://www.youtube.com/embed/HGKBW4ErAxM?autoplay=1&rel=0";
+
+function openTrailerModal() {
+  trailerModal.classList.add("is-open");
+  trailerModal.setAttribute("aria-hidden", "false");
+  trailerFrame.src = trailerSrc;
+  trailerClose.focus();
+}
+
+function closeTrailerModal() {
+  trailerModal.classList.remove("is-open");
+  trailerModal.setAttribute("aria-hidden", "true");
+  trailerFrame.src = "";
+  trailerButton.focus();
+}
+
+trailerButton.addEventListener("click", openTrailerModal);
+trailerClose.addEventListener("click", closeTrailerModal);
+trailerModal.addEventListener("click", (event) => {
+  if (event.target === trailerModal) {
+    closeTrailerModal();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && trailerModal.classList.contains("is-open")) {
+    closeTrailerModal();
+  }
+});
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const data = new FormData(form);
+  const name = String(data.get("name") || "").trim() || "未入力";
+  const email = String(data.get("email") || "").trim() || "未入力";
+  const category = String(data.get("category") || "問い合わせ").trim();
+  const message = String(data.get("message") || "").trim();
+
+  if (!message) {
+    statusText.textContent = "メッセージを入力してください。";
+    return;
+  }
+
+  const body = [
+    "Amnesia Bullet 公式サイトからのメッセージ",
+    "",
+    `種類: ${category}`,
+    `名前: ${name}`,
+    `返信用メール: ${email}`,
+    "",
+    "本文:",
+    message,
+    "",
+    "添付がある場合は、このメールに追加してください。"
+  ].join("\n");
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(body);
+      statusText.textContent = "入力内容をコピーしました。メール作成画面を開きます。";
+    } else {
+      statusText.textContent = "メール作成画面を開きます。";
+    }
+  } catch (error) {
+    statusText.textContent = "メール作成画面を開きます。";
+  }
+
+  const subject = `[Amnesia Bullet] ${category}`;
+  window.location.href = `mailto:eye.factory.info@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+});
+</script>
+</body>
+</html>
