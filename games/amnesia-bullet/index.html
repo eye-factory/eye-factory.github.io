@@ -990,13 +990,13 @@ textarea:focus {
       <div class="section-title">
         <p class="eyebrow">Contact</p>
         <h2>感想、不具合報告、問い合わせはこちら。</h2>
-        <p>種類を選ぶと、件名入りのメール作成画面が開きます。本文、返信先、スクリーンショットなどの添付はメール画面で追加してください。</p>
+        <p>種類を選ぶと、件名入りのGmail作成画面が開きます。本文、返信先、スクリーンショットなどの添付はGmail側で追加してください。</p>
       </div>
       <div class="contact-layout">
         <aside class="contact-panel">
           <h3>送信先</h3>
           <p>返信が必要な場合は、メール本文に連絡可能なアドレスを含めてください。</p>
-          <p><a class="mail-link" href="mailto:info@eye-factory.net">info@eye-factory.net</a></p>
+          <p><a class="mail-link" href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=info@eye-factory.net" target="_blank" rel="noopener">info@eye-factory.net</a></p>
           <p class="highlight">Steamのレビューやウィッシュリスト登録も、とても励みになります。</p>
         </aside>
 
@@ -1011,8 +1011,8 @@ textarea:focus {
                 <option value="その他">その他</option>
               </select>
             </label>
-            <p class="form-note">メール作成画面が開いたら、本文や添付ファイルを追加して送信してください。</p>
-            <button class="button primary" type="submit">メールを作成</button>
+            <p class="form-note">Gmail作成画面が開いたら、本文や添付ファイルを追加して送信してください。</p>
+            <button class="button primary" type="submit">Gmailで作成</button>
             <div class="status-text" id="formStatus" role="status" aria-live="polite"></div>
           </form>
         </section>
@@ -1104,16 +1104,15 @@ form.addEventListener("submit", (event) => {
 
   const data = new FormData(form);
   const category = String(data.get("category") || "問い合わせ").trim();
-  const body = [
-    "Amnesia Bullet 公式サイトからのメールです。",
-    "",
-    "本文をここに入力してください。",
-    "スクリーンショットなどの添付がある場合は、このメールに追加してください。"
-  ].join("\n");
-
   const subject = `[Amnesia Bullet] ${category}`;
-  statusText.textContent = `${category} の件名でメール作成画面を開きます。`;
-  window.location.href = `mailto:info@eye-factory.net?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  statusText.textContent = `${category} の件名でGmail作成画面を開きます。`;
+  const params = new URLSearchParams({
+    view: "cm",
+    fs: "1",
+    to: "info@eye-factory.net",
+    su: subject
+  });
+  window.open(`https://mail.google.com/mail/?${params.toString()}`, "_blank", "noopener");
 });
 </script>
 </body>
