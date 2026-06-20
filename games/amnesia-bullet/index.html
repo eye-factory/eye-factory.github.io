@@ -153,7 +153,7 @@ a {
   min-height: 100svh;
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   overflow: hidden;
   background:
     linear-gradient(90deg, rgba(1, 5, 9, 0.78) 0%, rgba(4, 13, 20, 0.40) 48%, rgba(3, 6, 10, 0.48) 100%),
@@ -174,18 +174,29 @@ a {
 .hero-inner {
   position: relative;
   z-index: 1;
-  width: min(1180px, calc(100% - 48px));
+  width: min(1000px, calc(100% - 48px));
   margin: 0 auto;
-  padding: 130px 0 96px;
+  padding: 112px 0 78px;
+  text-align: center;
 }
 
-.hero-logo {
-  width: min(720px, 92vw);
-  max-width: 100%;
-  height: auto;
-  display: block;
-  margin: 0 0 22px;
-  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.46));
+.hero-title-mark {
+  justify-content: center;
+  margin-bottom: 14px;
+  font-size: clamp(15px, 2vw, 23px);
+  letter-spacing: 0.28em;
+  color: #ecfdff;
+  text-shadow:
+    0 0 18px rgba(85, 232, 255, 0.58),
+    0 0 34px rgba(255, 123, 217, 0.18);
+}
+
+.hero-title-mark::before,
+.hero-title-mark::after {
+  content: "";
+  width: clamp(30px, 8vw, 86px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
 }
 
 .eyebrow {
@@ -210,8 +221,8 @@ a {
 }
 
 .hero h1 {
-  margin: 0;
-  max-width: 820px;
+  margin: 0 auto;
+  max-width: 840px;
   font-size: clamp(30px, 5vw, 68px);
   line-height: 1.1;
   font-weight: 900;
@@ -221,7 +232,7 @@ a {
 
 .hero-lead {
   max-width: 620px;
-  margin: 22px 0 0;
+  margin: 18px auto 0;
   color: var(--soft);
   font-size: clamp(15px, 1.6vw, 19px);
   font-weight: 700;
@@ -236,12 +247,44 @@ a {
   display: none;
 }
 
+.hero-support-line {
+  margin: 18px auto 0;
+  color: var(--cyan);
+  font-family: var(--font-en);
+  font-size: clamp(12px, 1.5vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-shadow: 0 0 12px rgba(85, 232, 255, 0.48);
+}
+
+.hero-video {
+  width: min(820px, 100%);
+  aspect-ratio: 16 / 9;
+  margin: 28px auto 0;
+  overflow: hidden;
+  border: 1px solid rgba(123, 229, 255, 0.58);
+  background: #000;
+  border-radius: var(--radius);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.54),
+    0 0 34px rgba(85, 232, 255, 0.18);
+}
+
+.hero-video iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
 .hero-actions,
 .button-row {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 30px;
+  justify-content: center;
 }
 
 .button {
@@ -379,14 +422,15 @@ a {
   line-height: 1.8;
 }
 
-.media-grid {
+.steam-showcase {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
-  gap: 22px;
+  grid-template-columns: minmax(0, 1fr) minmax(290px, 0.34fr);
+  gap: 18px;
   align-items: stretch;
+  padding: 18px;
 }
 
-.video-frame,
+.steam-showcase,
 .steam-panel,
 .feature-card,
 .contact-panel,
@@ -397,38 +441,34 @@ a {
   border-radius: var(--radius);
 }
 
-.video-frame {
-  aspect-ratio: 16 / 9;
+.steam-widget-frame {
+  min-height: 315px;
   overflow: hidden;
+  border: 1px solid rgba(123, 229, 255, 0.28);
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 6px;
   transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.video-frame:hover {
+.steam-widget-frame:hover {
   border-color: rgba(123, 229, 255, 0.7);
   box-shadow: var(--shadow), 0 0 30px rgba(85, 232, 255, 0.22);
 }
 
-.video-frame iframe {
+.steam-widget-frame iframe {
   width: 100%;
-  height: 100%;
+  height: 315px;
   display: block;
   border: 0;
 }
 
 .steam-panel {
   min-height: 100%;
-  padding: 18px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   gap: 16px;
-}
-
-.steam-panel iframe {
-  width: 100%;
-  height: 190px;
-  border: 0;
-  background: rgba(0, 0, 0, 0.2);
 }
 
 .steam-panel p {
@@ -444,11 +484,12 @@ a {
 }
 
 .feature-card {
-  padding: 24px 22px;
-  min-height: 196px;
+  padding: 14px 14px 20px;
+  min-height: 300px;
   position: relative;
   overflow: hidden;
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
 }
 
 .feature-card::before {
@@ -460,10 +501,54 @@ a {
   opacity: 0.55;
 }
 
-.feature-card:hover {
+.feature-card:hover,
+.feature-card.is-active {
   transform: translateY(-4px);
   border-color: rgba(123, 229, 255, 0.7);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 26px rgba(85, 232, 255, 0.18);
+}
+
+.feature-shot {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(123, 229, 255, 0.34);
+  background: #02080d;
+  border-radius: 6px;
+}
+
+.feature-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.72;
+  filter: saturate(0.88) contrast(1.04);
+  transform: scale(1);
+  transition: opacity 0.28s ease, filter 0.28s ease, transform 0.28s ease;
+}
+
+.feature-card:hover .feature-shot img,
+.feature-card.is-active .feature-shot img {
+  opacity: 1;
+  filter: saturate(1.08) contrast(1.08);
+  transform: scale(1.045);
+}
+
+.feature-shot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(255, 216, 107, 0);
+  transition: border-color 0.28s ease, box-shadow 0.28s ease;
+  pointer-events: none;
+}
+
+.feature-card:hover .feature-shot::after,
+.feature-card.is-active .feature-shot::after {
+  border-color: rgba(255, 216, 107, 0.48);
+  box-shadow: inset 0 0 28px rgba(85, 232, 255, 0.14);
 }
 
 .feature-card h3 {
@@ -674,10 +759,16 @@ textarea:focus {
     padding-top: 110px;
   }
 
-  .media-grid,
+  .steam-showcase,
   .poster-layout,
   .contact-layout {
     grid-template-columns: 1fr;
+  }
+
+  .steam-widget-frame,
+  .steam-widget-frame iframe {
+    min-height: 360px;
+    height: 360px;
   }
 
   .poster-panel {
@@ -707,11 +798,6 @@ textarea:focus {
   }
 
   .nav-links {
-    gap: 16px;
-  }
-
-  .nav-links a:nth-child(2),
-  .nav-links a:nth-child(3) {
     display: none;
   }
 
@@ -729,15 +815,17 @@ textarea:focus {
     width: min(1180px, calc(100% - 32px));
   }
 
-  .hero-logo {
-    width: 100%;
-    max-width: 340px;
-  }
-
   .hero-lead {
     font-size: 15px;
     line-height: 1.65;
     word-break: break-all;
+  }
+
+  .hero-support-line {
+    max-width: 320px;
+    font-size: 12px;
+    line-height: 1.55;
+    letter-spacing: 0.08em;
   }
 
   .desktop-copy {
@@ -765,6 +853,16 @@ textarea:focus {
   .section {
     padding: 62px 0;
   }
+
+  .steam-showcase {
+    padding: 12px;
+  }
+
+  .steam-widget-frame,
+  .steam-widget-frame iframe {
+    min-height: 390px;
+    height: 390px;
+  }
 }
 </style>
 </head>
@@ -776,7 +874,7 @@ textarea:focus {
       <span class="logo-text">eye-factory</span>
     </a>
     <div class="nav-links">
-      <a href="#trailer">Trailer</a>
+      <a href="#top">Trailer</a>
       <a href="#features">Features</a>
       <a href="#demo">Demo</a>
       <a href="#contact">Contact</a>
@@ -787,9 +885,9 @@ textarea:focus {
 <main>
   <section class="hero" id="top">
     <div class="hero-inner">
-      <img class="hero-logo" src="amnesia-bullet-logo.png" alt="Amnesia Bullet">
-      <p class="eyebrow">TPS Shooting Game / Gyro Controller Support</p>
+      <p class="eyebrow hero-title-mark">AMNESIA BULLET</p>
       <h1>記憶を取り戻すために、弾丸で道を切り開く。</h1>
+      <p class="hero-support-line">TPS Shooting Game / Gyro Controller Support</p>
       <p class="hero-lead desktop-copy">
         記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲーム。
         体験版では1stメモリー（青）を中心に、クリアごとに高難易度へ挑戦できます。
@@ -798,6 +896,9 @@ textarea:focus {
         記憶を取り戻すため、“わるいもの”と戦うTPS。<br>
         体験版では1stメモリー（青）と高難易度を遊べます。
       </p>
+      <div class="hero-video">
+        <iframe src="https://www.youtube-nocookie.com/embed/HGKBW4ErAxM?rel=0&playsinline=1" title="Amnesia Bullet Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
       <div class="hero-actions">
         <a class="button primary" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">Steamで見る</a>
         <button class="button" type="button" id="openTrailer">トレーラーを見る</button>
@@ -809,16 +910,15 @@ textarea:focus {
   <section class="section" id="trailer">
     <div class="wrap">
       <div class="section-title">
-        <p class="eyebrow">Trailer</p>
-        <h2>記憶を取り戻すため、“わるいもの”へ立ち向かう。</h2>
-        <p>Steamページではウィッシュリスト登録と体験版の確認ができます。</p>
+        <p class="eyebrow">Steam</p>
+        <h2>Steamにて体験版配信予定。</h2>
+        <p>ウィッシュリスト登録と体験版の確認はこちらからできます。</p>
       </div>
-      <div class="media-grid">
-        <div class="video-frame">
-          <iframe src="https://www.youtube.com/embed/HGKBW4ErAxM" title="Amnesia Bullet Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      <div class="steam-showcase">
+        <div class="steam-widget-frame">
+          <iframe src="https://store.steampowered.com/widget/4747710/" title="Amnesia Bullet on Steam" loading="lazy"></iframe>
         </div>
         <aside class="steam-panel" aria-label="Steam information">
-          <iframe src="https://store.steampowered.com/widget/4747710/" title="Amnesia Bullet on Steam" loading="lazy"></iframe>
           <p>
             気に入ってくれたら、Steamのウィッシュリスト登録をお願いします。
             体験版の公開情報もSteamページから確認できます。
@@ -836,19 +936,23 @@ textarea:focus {
         <h2>物語、射撃、育成をひとつのテンポで。</h2>
       </div>
       <div class="feature-grid">
-        <article class="feature-card">
+        <article class="feature-card" tabindex="0">
+          <div class="feature-shot"><img src="feature-tps.jpg" alt="TPSシューティングのゲーム画面" loading="lazy"></div>
           <h3>TPSシューティング</h3>
           <p>ライフルを構え、移動しながら敵を狙う三人称視点のバトル。マウス、キーボード、コントローラーでプレイできます。</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" tabindex="0">
+          <div class="feature-shot"><img src="feature-gyro.jpg" alt="ジャイロ操作対応コントローラー" loading="lazy"></div>
           <h3>ジャイロ操作対応</h3>
           <p>対応コントローラーではジャイロエイムに対応。細かな照準操作で、より直感的な射撃を狙えます。</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" tabindex="0">
+          <div class="feature-shot"><img src="feature-memory.jpg" alt="メモリー攻略の会話画面" loading="lazy"></div>
           <h3>メモリー攻略</h3>
           <p>記憶の入口からステージへ入り、クリアすることで物語と難易度が進行。記憶を取り戻す道が少しずつ開いていきます。</p>
         </article>
-        <article class="feature-card">
+        <article class="feature-card" tabindex="0">
+          <div class="feature-shot"><img src="feature-growth.jpg" alt="ステータスアップ画面" loading="lazy"></div>
           <h3>ステータスアップ</h3>
           <p>戦闘で得たクラウンコインを使い、HPや攻撃力を強化。高難易度の攻略へ向けて育成できます。</p>
         </article>
@@ -886,28 +990,18 @@ textarea:focus {
       <div class="section-title">
         <p class="eyebrow">Contact</p>
         <h2>感想、不具合報告、問い合わせはこちら。</h2>
-        <p>フォームに入力するとメール作成画面が開きます。スクリーンショットなどの添付は、開いたメール画面で追加してください。</p>
+        <p>種類を選ぶと、件名入りのメール作成画面が開きます。本文、返信先、スクリーンショットなどの添付はメール画面で追加してください。</p>
       </div>
       <div class="contact-layout">
         <aside class="contact-panel">
           <h3>送信先</h3>
-          <p>返信が必要な場合は、連絡可能なメールアドレスを本文に含めてください。</p>
-          <p><a class="mail-link" href="mailto:eye.factory.info@gmail.com">eye.factory.info@gmail.com</a></p>
+          <p>返信が必要な場合は、メール本文に連絡可能なアドレスを含めてください。</p>
+          <p><a class="mail-link" href="mailto:info@eye-factory.net">info@eye-factory.net</a></p>
           <p class="highlight">Steamのレビューやウィッシュリスト登録も、とても励みになります。</p>
         </aside>
 
         <section class="contact-panel">
           <form class="contact-form" id="contactForm">
-            <div class="form-grid">
-              <label>
-                名前
-                <input type="text" name="name" autocomplete="name" placeholder="任意">
-              </label>
-              <label>
-                返信用メール
-                <input type="email" name="email" autocomplete="email" placeholder="任意">
-              </label>
-            </div>
             <label>
               種類
               <select name="category">
@@ -917,11 +1011,7 @@ textarea:focus {
                 <option value="その他">その他</option>
               </select>
             </label>
-            <label>
-              メッセージ
-              <textarea name="message" required placeholder="ここにメッセージを貼り付け、または入力してください。"></textarea>
-            </label>
-            <p class="form-note">送信ボタンを押すとメールソフトが開きます。開かない場合に備えて、内容はクリップボードにもコピーします。</p>
+            <p class="form-note">メール作成画面が開いたら、本文や添付ファイルを追加して送信してください。</p>
             <button class="button primary" type="submit">メールを作成</button>
             <div class="status-text" id="formStatus" role="status" aria-live="polite"></div>
           </form>
@@ -956,7 +1046,8 @@ const trailerButton = document.getElementById("openTrailer");
 const trailerModal = document.getElementById("trailerModal");
 const trailerClose = document.getElementById("closeTrailer");
 const trailerFrame = document.getElementById("trailerModalFrame");
-const trailerSrc = "https://www.youtube.com/embed/HGKBW4ErAxM?autoplay=1&rel=0";
+const trailerSrc = "https://www.youtube-nocookie.com/embed/HGKBW4ErAxM?autoplay=1&rel=0&playsinline=1";
+const featureCards = Array.from(document.querySelectorAll(".feature-card"));
 
 function openTrailerModal() {
   trailerModal.classList.add("is-open");
@@ -986,46 +1077,43 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-form.addEventListener("submit", async (event) => {
+function activateFeature(card) {
+  featureCards.forEach((item) => {
+    item.classList.toggle("is-active", item === card);
+  });
+}
+
+featureCards.forEach((card) => {
+  card.addEventListener("click", () => activateFeature(card));
+  card.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      activateFeature(card);
+    }
+  });
+});
+
+document.addEventListener("click", (event) => {
+  if (!event.target.closest(".feature-card")) {
+    featureCards.forEach((item) => item.classList.remove("is-active"));
+  }
+});
+
+form.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const data = new FormData(form);
-  const name = String(data.get("name") || "").trim() || "未入力";
-  const email = String(data.get("email") || "").trim() || "未入力";
   const category = String(data.get("category") || "問い合わせ").trim();
-  const message = String(data.get("message") || "").trim();
-
-  if (!message) {
-    statusText.textContent = "メッセージを入力してください。";
-    return;
-  }
-
   const body = [
-    "Amnesia Bullet 公式サイトからのメッセージ",
+    "Amnesia Bullet 公式サイトからのメールです。",
     "",
-    `種類: ${category}`,
-    `名前: ${name}`,
-    `返信用メール: ${email}`,
-    "",
-    "本文:",
-    message,
-    "",
-    "添付がある場合は、このメールに追加してください。"
+    "本文をここに入力してください。",
+    "スクリーンショットなどの添付がある場合は、このメールに追加してください。"
   ].join("\n");
 
-  try {
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(body);
-      statusText.textContent = "入力内容をコピーしました。メール作成画面を開きます。";
-    } else {
-      statusText.textContent = "メール作成画面を開きます。";
-    }
-  } catch (error) {
-    statusText.textContent = "メール作成画面を開きます。";
-  }
-
   const subject = `[Amnesia Bullet] ${category}`;
-  window.location.href = `mailto:eye.factory.info@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  statusText.textContent = `${category} の件名でメール作成画面を開きます。`;
+  window.location.href = `mailto:info@eye-factory.net?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 });
 </script>
 </body>
