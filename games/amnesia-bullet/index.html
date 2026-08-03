@@ -176,7 +176,7 @@ a {
   z-index: 1;
   width: min(1000px, calc(100% - 48px));
   margin: 0 auto;
-  padding: 112px 0 78px;
+  padding: 112px 0 44px;
   text-align: center;
 }
 
@@ -258,14 +258,24 @@ a {
   text-shadow: 0 0 12px rgba(85, 232, 255, 0.48);
 }
 
-.trailer-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+.trailer-carousel {
+  position: relative;
   margin: 30px auto 0;
 }
 
+.trailer-viewport {
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.trailer-track {
+  display: flex;
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
 .trailer-card {
+  flex: 0 0 100%;
   min-width: 0;
 }
 
@@ -309,6 +319,64 @@ a {
   width: 100%;
   height: 100%;
   border: 0;
+}
+
+.trailer-arrow {
+  position: absolute;
+  z-index: 3;
+  top: calc(50% + 14px);
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateY(-50%);
+  border: 1px solid rgba(123, 229, 255, 0.65);
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(3, 9, 14, 0.82);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 20px rgba(85, 232, 255, 0.2);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.trailer-arrow:hover,
+.trailer-arrow:focus-visible {
+  transform: translateY(-50%) scale(1.08);
+  border-color: var(--cyan);
+  background: rgba(8, 29, 38, 0.96);
+}
+
+.trailer-arrow.prev {
+  left: 14px;
+}
+
+.trailer-arrow.next {
+  right: 14px;
+}
+
+.trailer-dots {
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+.trailer-dot {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 1px solid rgba(123, 229, 255, 0.72);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.trailer-dot.is-active {
+  background: var(--cyan);
+  box-shadow: 0 0 14px rgba(85, 232, 255, 0.75);
 }
 
 .button-row {
@@ -361,11 +429,11 @@ a {
 }
 
 .section {
-  padding: 84px 0;
+  padding: 60px 0;
 }
 
 .section.tight {
-  padding-top: 48px;
+  padding-top: 36px;
 }
 
 .wrap {
@@ -704,19 +772,18 @@ textarea:focus {
 .footer-inner {
   width: min(1180px, calc(100% - 48px));
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: center;
-  gap: 18px;
-  text-align: center;
+  gap: 24px;
+  text-align: left;
   font-weight: 700;
 }
 
 .footer-socials {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 14px;
 }
 
@@ -808,12 +875,13 @@ textarea:focus {
   }
 
   .hero {
+    min-height: auto;
     background-position: 62% center;
   }
 
   .hero-inner {
     width: min(1180px, calc(100% - 32px));
-    padding-top: 92px;
+    padding: 92px 0 36px;
   }
 
   .wrap,
@@ -842,8 +910,18 @@ textarea:focus {
     display: block;
   }
 
-  .trailer-grid {
-    grid-template-columns: 1fr;
+  .trailer-arrow {
+    width: 38px;
+    height: 38px;
+    font-size: 20px;
+  }
+
+  .trailer-arrow.prev {
+    left: 8px;
+  }
+
+  .trailer-arrow.next {
+    right: 8px;
   }
 
   .button-row {
@@ -860,7 +938,7 @@ textarea:focus {
   }
 
   .section {
-    padding: 62px 0;
+    padding: 52px 0;
   }
 
   .steam-showcase {
@@ -871,6 +949,35 @@ textarea:focus {
   .steam-widget-frame iframe {
     min-height: 390px;
     height: 390px;
+  }
+
+  .footer {
+    padding: 24px 0 28px;
+  }
+
+  .footer-inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+  }
+
+  .footer-copy {
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  .footer-socials {
+    gap: 8px;
+  }
+
+  .footer-social-link {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+
+  .footer-social-link img {
+    width: 26px;
+    height: 26px;
   }
 }
 </style>
@@ -905,19 +1012,29 @@ textarea:focus {
         記憶を取り戻すため、“わるいもの”と戦うTPS。<br>
         体験版では1stメモリー（青）を最後まで遊べます。
       </p>
-      <div class="trailer-grid" aria-label="Official trailers">
-        <article class="trailer-card">
-          <div class="trailer-card-label">2nd Trailer <span class="trailer-badge">NEW</span></div>
-          <div class="hero-video">
-            <iframe src="https://www.youtube-nocookie.com/embed/w5sGHUClRSM?rel=0&playsinline=1" title="Amnesia Bullet 2nd Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      <div class="trailer-carousel" data-trailer-carousel aria-label="Official trailers">
+        <div class="trailer-viewport" tabindex="0" aria-label="トレーラー。左右ボタンまたはスワイプで切り替え">
+          <div class="trailer-track" id="trailerTrack">
+            <article class="trailer-card" aria-hidden="false">
+              <div class="trailer-card-label">1st Trailer</div>
+              <div class="hero-video">
+                <iframe src="https://www.youtube-nocookie.com/embed/HGKBW4ErAxM?rel=0&amp;playsinline=1" title="Amnesia Bullet 1st Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              </div>
+            </article>
+            <article class="trailer-card" aria-hidden="true" inert>
+              <div class="trailer-card-label">2nd Trailer <span class="trailer-badge">NEW</span></div>
+              <div class="hero-video">
+                <iframe src="https://www.youtube-nocookie.com/embed/w5sGHUClRSM?rel=0&amp;playsinline=1" title="Amnesia Bullet 2nd Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              </div>
+            </article>
           </div>
-        </article>
-        <article class="trailer-card">
-          <div class="trailer-card-label">1st Trailer</div>
-          <div class="hero-video">
-            <iframe src="https://www.youtube-nocookie.com/embed/HGKBW4ErAxM?rel=0&playsinline=1" title="Amnesia Bullet 1st Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-          </div>
-        </article>
+        </div>
+        <button class="trailer-arrow prev" type="button" aria-label="前のトレーラー" aria-controls="trailerTrack">&#10094;</button>
+        <button class="trailer-arrow next" type="button" aria-label="次のトレーラー" aria-controls="trailerTrack">&#10095;</button>
+        <div class="trailer-dots" aria-label="トレーラー選択">
+          <button class="trailer-dot is-active" type="button" aria-label="1stトレーラーを表示" aria-current="true"></button>
+          <button class="trailer-dot" type="button" aria-label="2ndトレーラーを表示"></button>
+        </div>
       </div>
     </div>
   </section>
@@ -926,7 +1043,7 @@ textarea:focus {
     <div class="wrap">
       <div class="section-title">
         <p class="eyebrow">Steam</p>
-        <h2>Steamにて体験版配信中。</h2>
+        <h2>8月上旬よりアーリーアクセス開始予定。</h2>
         <p>ウィッシュリスト登録と体験版のダウンロードはSteamから。</p>
       </div>
       <div class="steam-showcase">
@@ -935,7 +1052,7 @@ textarea:focus {
         </div>
         <aside class="steam-panel" aria-label="Steam information">
           <p>
-            気に入ってくれたら、Steamのウィッシュリスト登録をお願いします。
+            ウィッシュリスト登録・ご購入をお待ちしています。
           </p>
           <a class="button primary" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">Steamページへ</a>
         </aside>
@@ -1037,6 +1154,7 @@ textarea:focus {
 
 <footer class="footer">
   <div class="footer-inner">
+    <p class="footer-copy">&copy; 2026 eye-factory. All rights reserved.</p>
     <div class="footer-socials" aria-label="Official links">
       <a class="footer-social-link" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener" aria-label="Steam" title="Steam">
         <img src="steam-icon.svg" alt="" width="34" height="34">
@@ -1048,7 +1166,6 @@ textarea:focus {
         <img src="x-icon.svg" alt="" width="34" height="34">
       </a>
     </div>
-    <p class="footer-copy">&copy; 2026 eye-factory. All rights reserved.</p>
   </div>
 </footer>
 
@@ -1056,6 +1173,48 @@ textarea:focus {
 const form = document.getElementById("contactForm");
 const statusText = document.getElementById("formStatus");
 const featureCards = Array.from(document.querySelectorAll(".feature-card"));
+const trailerViewport = document.querySelector(".trailer-viewport");
+const trailerTrack = document.querySelector(".trailer-track");
+const trailerSlides = Array.from(document.querySelectorAll(".trailer-card"));
+const trailerDots = Array.from(document.querySelectorAll(".trailer-dot"));
+const trailerPrev = document.querySelector(".trailer-arrow.prev");
+const trailerNext = document.querySelector(".trailer-arrow.next");
+let trailerIndex = 0;
+
+function updateTrailerUi(index) {
+  trailerIndex = index;
+  trailerSlides.forEach((slide, slideIndex) => {
+    const isActive = slideIndex === trailerIndex;
+    slide.setAttribute("aria-hidden", String(!isActive));
+    slide.toggleAttribute("inert", !isActive);
+  });
+  trailerDots.forEach((dot, dotIndex) => {
+    const isActive = dotIndex === trailerIndex;
+    dot.classList.toggle("is-active", isActive);
+    if (isActive) {
+      dot.setAttribute("aria-current", "true");
+    } else {
+      dot.removeAttribute("aria-current");
+    }
+  });
+}
+
+function showTrailer(index) {
+  const nextIndex = (index + trailerSlides.length) % trailerSlides.length;
+  trailerTrack.style.transform = `translateX(-${nextIndex * 100}%)`;
+  updateTrailerUi(nextIndex);
+}
+
+trailerPrev.addEventListener("click", () => showTrailer(trailerIndex - 1));
+trailerNext.addEventListener("click", () => showTrailer(trailerIndex + 1));
+trailerDots.forEach((dot, index) => dot.addEventListener("click", () => showTrailer(index)));
+
+trailerViewport.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+    event.preventDefault();
+    showTrailer(trailerIndex + (event.key === "ArrowRight" ? 1 : -1));
+  }
+});
 
 function activateFeature(card) {
   featureCards.forEach((item) => {
