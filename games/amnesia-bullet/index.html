@@ -258,10 +258,43 @@ a {
   text-shadow: 0 0 12px rgba(85, 232, 255, 0.48);
 }
 
+.trailer-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 30px auto 0;
+}
+
+.trailer-card {
+  min-width: 0;
+}
+
+.trailer-card-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-bottom: 10px;
+  color: #ecfdff;
+  font-family: var(--font-en);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.trailer-badge {
+  padding: 3px 7px;
+  border: 1px solid rgba(255, 216, 107, 0.72);
+  border-radius: 999px;
+  color: var(--gold);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
 .hero-video {
-  width: min(820px, 100%);
+  width: 100%;
   aspect-ratio: 16 / 9;
-  margin: 28px auto 0;
   overflow: hidden;
   border: 1px solid rgba(123, 229, 255, 0.58);
   background: #000;
@@ -278,7 +311,6 @@ a {
   border: 0;
 }
 
-.hero-actions,
 .button-row {
   display: flex;
   flex-wrap: wrap;
@@ -326,66 +358,6 @@ a {
 
 .button.ghost {
   background: rgba(4, 13, 20, 0.62);
-}
-
-.trailer-modal {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 28px;
-  background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(10px);
-}
-
-.trailer-modal.is-open {
-  display: flex;
-}
-
-.trailer-modal-inner {
-  width: min(1120px, 100%);
-}
-
-.trailer-modal-head {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
-}
-
-.trailer-close {
-  min-width: 44px;
-  min-height: 44px;
-  border: 1px solid rgba(123, 229, 255, 0.62);
-  background: rgba(2, 13, 19, 0.92);
-  color: #f7fdff;
-  font: inherit;
-  font-weight: 900;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.trailer-close:hover,
-.trailer-close:focus-visible {
-  border-color: #fff;
-  color: var(--cyan);
-}
-
-.trailer-modal-frame {
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border: 1px solid rgba(123, 229, 255, 0.64);
-  background: #000;
-  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.72);
-  border-radius: var(--radius);
-}
-
-.trailer-modal-frame iframe {
-  width: 100%;
-  height: 100%;
-  display: block;
-  border: 0;
 }
 
 .section {
@@ -733,15 +705,49 @@ textarea:focus {
   width: min(1180px, calc(100% - 48px));
   margin: 0 auto;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 18px;
-  flex-wrap: wrap;
+  text-align: center;
   font-weight: 700;
 }
 
-.footer a {
-  color: var(--cyan);
-  text-decoration: none;
+.footer-socials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.footer-social-link {
+  width: 48px;
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(123, 229, 255, 0.28);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.26);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.footer-social-link:hover,
+.footer-social-link:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(123, 229, 255, 0.82);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.36), 0 0 22px rgba(85, 232, 255, 0.22);
+}
+
+.footer-social-link img {
+  width: 34px;
+  height: 34px;
+  display: block;
+}
+
+.footer-copy {
+  margin: 0;
 }
 
 @media (max-width: 920px) {
@@ -836,7 +842,10 @@ textarea:focus {
     display: block;
   }
 
-  .hero-actions,
+  .trailer-grid {
+    grid-template-columns: 1fr;
+  }
+
   .button-row {
     flex-direction: column;
   }
@@ -890,19 +899,25 @@ textarea:focus {
       <p class="hero-support-line">TPS Shooting Game / Gyro Controller Support</p>
       <p class="hero-lead desktop-copy">
         記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲーム。
-        体験版では1stメモリー（青）を中心に、クリアごとに高難易度へ挑戦できます。
+        体験版では1stメモリー（青）の全ステージを遊べ、クリアごとに高難易度へ挑戦できます。
       </p>
       <p class="hero-lead mobile-copy">
         記憶を取り戻すため、“わるいもの”と戦うTPS。<br>
-        体験版では1stメモリー（青）と高難易度を遊べます。
+        体験版では1stメモリー（青）を最後まで遊べます。
       </p>
-      <div class="hero-video">
-        <iframe src="https://www.youtube-nocookie.com/embed/HGKBW4ErAxM?rel=0&playsinline=1" title="Amnesia Bullet Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-      </div>
-      <div class="hero-actions">
-        <a class="button primary" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">Steamで見る</a>
-        <button class="button" type="button" id="openTrailer">トレーラーを見る</button>
-        <a class="button ghost" href="#contact">問い合わせ</a>
+      <div class="trailer-grid" aria-label="Official trailers">
+        <article class="trailer-card">
+          <div class="trailer-card-label">2nd Trailer <span class="trailer-badge">NEW</span></div>
+          <div class="hero-video">
+            <iframe src="https://www.youtube-nocookie.com/embed/w5sGHUClRSM?rel=0&playsinline=1" title="Amnesia Bullet 2nd Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+        </article>
+        <article class="trailer-card">
+          <div class="trailer-card-label">1st Trailer</div>
+          <div class="hero-video">
+            <iframe src="https://www.youtube-nocookie.com/embed/HGKBW4ErAxM?rel=0&playsinline=1" title="Amnesia Bullet 1st Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -911,8 +926,8 @@ textarea:focus {
     <div class="wrap">
       <div class="section-title">
         <p class="eyebrow">Steam</p>
-        <h2>Steamにて体験版配信予定。</h2>
-        <p>ウィッシュリスト登録と体験版の確認はこちらからできます。</p>
+        <h2>Steamにて体験版配信中。</h2>
+        <p>ウィッシュリスト登録と体験版のダウンロードはSteamから。</p>
       </div>
       <div class="steam-showcase">
         <div class="steam-widget-frame">
@@ -921,7 +936,6 @@ textarea:focus {
         <aside class="steam-panel" aria-label="Steam information">
           <p>
             気に入ってくれたら、Steamのウィッシュリスト登録をお願いします。
-            体験版の公開情報もSteamページから確認できます。
           </p>
           <a class="button primary" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">Steamページへ</a>
         </aside>
@@ -969,14 +983,14 @@ textarea:focus {
         <p class="eyebrow">Demo</p>
         <h2>体験版で遊べる範囲</h2>
         <p>
-          Amnesia Bulletの体験版では、序盤の物語と1stメモリー（青）の攻略をプレイできます。
-          通常難易度クリア後も、高難易度を解放しながらステータスを伸ばして遊べます。
+          Amnesia Bulletの体験版では、序盤の物語と1stメモリー（青）を最初から最後までプレイできます。
+          通常難易度の全ステージをクリア後も、高難易度を解放しながらステータスを伸ばして遊べます。
         </p>
         <ul class="demo-list">
-          <li>1stメモリー（青）の通常Lv.1をプレイ可能</li>
+          <li>1stメモリー（青）の全ステージをプレイ可能</li>
           <li>クリアごとに高難易度を解放</li>
           <li>クラウンコインでステータスアップ</li>
-          <li>この先のストーリーは製品版でプレイ可能</li>
+          <li>2ndメモリー以降の物語は製品版でプレイ可能</li>
         </ul>
         <div class="button-row">
           <a class="button primary" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">体験版を確認</a>
@@ -1021,61 +1035,27 @@ textarea:focus {
   </section>
 </main>
 
-<div class="trailer-modal" id="trailerModal" aria-hidden="true">
-  <div class="trailer-modal-inner" role="dialog" aria-modal="true" aria-label="Amnesia Bullet Trailer">
-    <div class="trailer-modal-head">
-      <button class="trailer-close" type="button" id="closeTrailer" aria-label="閉じる">×</button>
-    </div>
-    <div class="trailer-modal-frame">
-      <iframe id="trailerModalFrame" title="Amnesia Bullet Trailer" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
-    </div>
-  </div>
-</div>
-
 <footer class="footer">
   <div class="footer-inner">
-    <span>&copy; eye-factory. All rights reserved.</span>
-    <span><a href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">Steam</a> / <a href="https://youtu.be/HGKBW4ErAxM" target="_blank" rel="noopener">YouTube</a></span>
+    <div class="footer-socials" aria-label="Official links">
+      <a class="footer-social-link" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener" aria-label="Steam" title="Steam">
+        <img src="steam-icon.svg" alt="" width="34" height="34">
+      </a>
+      <a class="footer-social-link" href="https://youtu.be/w5sGHUClRSM" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube">
+        <img src="youtube-icon.svg" alt="" width="34" height="34">
+      </a>
+      <a class="footer-social-link" href="https://x.com/SINNYA_HAIKAI" target="_blank" rel="noopener" aria-label="X" title="X">
+        <img src="x-icon.svg" alt="" width="34" height="34">
+      </a>
+    </div>
+    <p class="footer-copy">&copy; 2026 eye-factory. All rights reserved.</p>
   </div>
 </footer>
 
 <script>
 const form = document.getElementById("contactForm");
 const statusText = document.getElementById("formStatus");
-const trailerButton = document.getElementById("openTrailer");
-const trailerModal = document.getElementById("trailerModal");
-const trailerClose = document.getElementById("closeTrailer");
-const trailerFrame = document.getElementById("trailerModalFrame");
-const trailerSrc = "https://www.youtube-nocookie.com/embed/HGKBW4ErAxM?autoplay=1&rel=0&playsinline=1";
 const featureCards = Array.from(document.querySelectorAll(".feature-card"));
-
-function openTrailerModal() {
-  trailerModal.classList.add("is-open");
-  trailerModal.setAttribute("aria-hidden", "false");
-  trailerFrame.src = trailerSrc;
-  trailerClose.focus();
-}
-
-function closeTrailerModal() {
-  trailerModal.classList.remove("is-open");
-  trailerModal.setAttribute("aria-hidden", "true");
-  trailerFrame.src = "";
-  trailerButton.focus();
-}
-
-trailerButton.addEventListener("click", openTrailerModal);
-trailerClose.addEventListener("click", closeTrailerModal);
-trailerModal.addEventListener("click", (event) => {
-  if (event.target === trailerModal) {
-    closeTrailerModal();
-  }
-});
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && trailerModal.classList.contains("is-open")) {
-    closeTrailerModal();
-  }
-});
 
 function activateFeature(card) {
   featureCards.forEach((item) => {
