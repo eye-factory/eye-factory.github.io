@@ -168,26 +168,28 @@ a {
 }
 
 .language-toggle {
-  min-width: 86px;
-  height: 36px;
-  padding: 0 9px;
-  display: inline-flex;
+  min-width: 0;
+  height: auto;
+  padding: 6px 12px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  border: 1px solid rgba(123, 229, 255, 0.5);
-  border-radius: 6px;
-  color: var(--ink);
-  background: rgba(6, 22, 30, 0.92);
-  font: 700 12px/1 var(--font-ja);
+  gap: 6px;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--muted);
+  font: 600 12px/1 var(--font-en);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   cursor: pointer;
   transition: border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
 }
 
-.language-toggle::after {
-  content: "▾";
-  color: var(--cyan);
-  font-size: 10px;
+.language-toggle svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
 }
 
 .language-toggle:hover,
@@ -200,40 +202,53 @@ a {
 
 .language-menu {
   position: absolute;
-  top: calc(100% + 9px);
+  top: calc(100% + 6px);
   right: 0;
   z-index: 30;
-  width: 152px;
+  min-width: 180px;
   padding: 6px;
   display: none;
-  border: 1px solid rgba(123, 229, 255, 0.45);
-  border-radius: 7px;
-  background: rgba(3, 12, 18, 0.98);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: rgba(10, 10, 20, 0.95);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
+  backdrop-filter: blur(20px);
+  animation: languageMenuFade 0.2s ease;
 }
 
 .language-switch.is-open .language-menu {
-  display: grid;
-  gap: 3px;
+  display: block;
 }
 
 .language-option {
+  display: block;
   width: 100%;
-  padding: 9px 11px;
+  padding: 10px 14px;
   border: 0;
-  border-radius: 4px;
-  color: var(--muted);
+  border-radius: 8px;
+  color: var(--ink);
   background: transparent;
-  font: 700 12px/1.3 var(--font-ja);
+  font: 500 14px/1.3 var(--font-ja);
   text-align: left;
   cursor: pointer;
+  transition: color 0.25s ease, background 0.25s ease, text-shadow 0.25s ease;
 }
 
 .language-option:hover,
-.language-option:focus-visible,
+.language-option:focus-visible {
+  color: var(--cyan);
+  background: rgba(85, 232, 255, 0.1);
+  text-shadow: 0 0 10px rgba(85, 232, 255, 0.9);
+}
+
 .language-option.is-active {
-  color: #031117;
-  background: var(--cyan);
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+@keyframes languageMenuFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .hero {
@@ -629,11 +644,15 @@ a {
   opacity: 0.55;
 }
 
-.feature-card:hover,
-.feature-card.is-active {
+.feature-card:hover {
   transform: translateY(-4px);
   border-color: rgba(123, 229, 255, 0.7);
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 26px rgba(85, 232, 255, 0.18);
+}
+
+.feature-card:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
 }
 
 .feature-shot {
@@ -657,8 +676,7 @@ a {
   transition: opacity 0.28s ease, filter 0.28s ease, transform 0.28s ease;
 }
 
-.feature-card:hover .feature-shot img,
-.feature-card.is-active .feature-shot img {
+.feature-card:hover .feature-shot img {
   opacity: 1;
   filter: saturate(1.08) contrast(1.08);
   transform: scale(1.045);
@@ -673,8 +691,7 @@ a {
   pointer-events: none;
 }
 
-.feature-card:hover .feature-shot::after,
-.feature-card.is-active .feature-shot::after {
+.feature-card:hover .feature-shot::after {
   border-color: rgba(255, 216, 107, 0.48);
   box-shadow: inset 0 0 28px rgba(85, 232, 255, 0.14);
 }
@@ -691,6 +708,113 @@ a {
   color: var(--muted);
   font-weight: 700;
   font-size: 14.5px;
+}
+
+body.feature-dialog-open {
+  overflow: hidden;
+}
+
+.feature-dialog {
+  width: min(920px, calc(100% - 32px));
+  max-height: calc(100svh - 32px);
+  margin: auto;
+  padding: 0;
+  overflow: auto;
+  border: 1px solid rgba(123, 229, 255, 0.72);
+  border-radius: 16px;
+  color: var(--ink);
+  background: rgba(4, 12, 18, 0.98);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.72), 0 0 42px rgba(85, 232, 255, 0.2);
+  cursor: pointer;
+}
+
+.feature-dialog[open] {
+  animation: featureDialogIn 0.24s ease both;
+}
+
+.feature-dialog::backdrop {
+  background: rgba(1, 4, 7, 0.86);
+  backdrop-filter: blur(5px);
+  animation: featureBackdropIn 0.2s ease both;
+}
+
+.feature-dialog-content {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  align-items: center;
+  gap: 26px;
+  padding: 28px;
+}
+
+.feature-dialog-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(123, 229, 255, 0.55);
+  border-radius: 50%;
+  color: var(--ink);
+  background: rgba(2, 12, 18, 0.9);
+  font: 700 22px/1 var(--font-en);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-dialog-close:hover,
+.feature-dialog-close:focus-visible {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 18px rgba(85, 232, 255, 0.28);
+}
+
+.feature-dialog-shot {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(123, 229, 255, 0.34);
+  border-radius: 12px;
+  background: #020609;
+}
+
+.feature-dialog-shot img {
+  width: 100%;
+  max-height: 62svh;
+  display: block;
+  object-fit: contain;
+}
+
+.feature-dialog-copy {
+  min-width: 0;
+  padding: 12px 8px 12px 0;
+}
+
+.feature-dialog-copy h3 {
+  margin: 0 0 16px;
+  color: #eaffff;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.25;
+}
+
+.feature-dialog-copy p {
+  margin: 0;
+  color: var(--soft);
+  font-size: clamp(15px, 1.6vw, 18px);
+  font-weight: 700;
+  line-height: 1.8;
+}
+
+@keyframes featureDialogIn {
+  from { opacity: 0; transform: translateY(10px) scale(0.985); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes featureBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .dlc-grid {
@@ -948,9 +1072,14 @@ textarea:focus {
   }
 
   .language-toggle {
-    min-width: 82px;
-    padding: 0 7px;
+    min-width: 0;
+    padding: 5px 10px;
     font-size: 11px;
+  }
+
+  .language-toggle svg {
+    width: 14px;
+    height: 14px;
   }
 
   .hero-inner {
@@ -1025,16 +1154,40 @@ textarea:focus {
   }
 
   .language-toggle {
-    min-width: 76px;
-    height: 34px;
-    padding: 0 6px;
-    font-size: 10px;
+    min-width: 0;
+    height: auto;
+    padding: 5px 10px;
+    font-size: 11px;
   }
 
   .language-menu {
     position: fixed;
     top: 62px;
     right: 16px;
+  }
+
+  .feature-dialog {
+    width: min(920px, calc(100% - 20px));
+    max-height: calc(100svh - 20px);
+    border-radius: 12px;
+  }
+
+  .feature-dialog-content {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .feature-dialog-shot img {
+    max-height: 42svh;
+  }
+
+  .feature-dialog-copy {
+    padding: 0 4px 4px;
+  }
+
+  .feature-dialog-copy h3 {
+    margin-bottom: 10px;
   }
 
   section[id],
@@ -1176,6 +1329,7 @@ textarea:focus {
       </div>
       <div class="language-switch" id="languageSwitch">
         <button class="language-toggle" id="languageToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="languageMenu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
           <span id="currentLangLabel">日本語</span>
         </button>
         <div class="language-menu" id="languageMenu" role="menu">
@@ -1421,6 +1575,19 @@ textarea:focus {
   </div>
 </footer>
 
+<dialog class="feature-dialog" id="featureDialog" aria-labelledby="featureDialogTitle" aria-describedby="featureDialogDescription">
+  <div class="feature-dialog-content">
+    <button class="feature-dialog-close" id="featureDialogClose" type="button">&times;</button>
+    <div class="feature-dialog-shot">
+      <img id="featureDialogImage" src="" alt="">
+    </div>
+    <div class="feature-dialog-copy">
+      <h3 id="featureDialogTitle"></h3>
+      <p id="featureDialogDescription"></p>
+    </div>
+  </div>
+</dialog>
+
 <script>
 const siteTranslations = {
   ja: {
@@ -1429,6 +1596,7 @@ const siteTranslations = {
     description: "Amnesia Bulletは、記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲームです。ジャイロ操作対応。2026年8月7日よりSteam早期アクセス開始。",
     navAria: "メインナビゲーション",
     languageAria: "表示言語を選択",
+    modalClose: "\u9589\u3058\u308b",
     nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "記憶を取り戻すために、弾丸で道を切り開く。",
@@ -1505,6 +1673,7 @@ const siteTranslations = {
     description: "Amnesia Bullet is a third-person shooter about a girl fighting the “bad things” to recover her lost memories. Gyro aiming supported. Steam Early Access begins August 7, 2026.",
     navAria: "Primary navigation",
     languageAria: "Select display language",
+    modalClose: "Close",
     nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "Fight your way forward with bullets to reclaim your memories.",
@@ -1581,6 +1750,7 @@ const siteTranslations = {
     description: "Amnesia Bullet은 기억을 되찾기 위해 ‘나쁜 것’과 싸우는 TPS 슈팅 게임입니다. 자이로 조작 지원. 2026년 8월 7일 Steam 앞서 해보기 시작.",
     navAria: "주요 내비게이션",
     languageAria: "표시 언어 선택",
+    modalClose: "\ub2eb\uae30",
     nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "기억을 되찾기 위해 총탄으로 길을 연다.",
@@ -1657,6 +1827,7 @@ const siteTranslations = {
     description: "Amnesia Bullet是一款失忆少女为找回记忆、与“坏东西”战斗的第三人称射击游戏。支持陀螺仪操作。2026年8月7日开启Steam抢先体验。",
     navAria: "主导航",
     languageAria: "选择显示语言",
+    modalClose: "\u5173\u95ed",
     nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "为了找回记忆，用子弹开辟前路。",
@@ -1733,6 +1904,7 @@ const siteTranslations = {
     description: "Amnesia Bullet是一款失憶少女為找回記憶、與「壞東西」戰鬥的第三人稱射擊遊戲。支援陀螺儀操作。2026年8月7日展開Steam搶先體驗。",
     navAria: "主要導覽",
     languageAria: "選擇顯示語言",
+    modalClose: "\u95dc\u9589",
     nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "為了找回記憶，以子彈開闢前路。",
@@ -1818,6 +1990,13 @@ const languageSwitch = document.getElementById("languageSwitch");
 const languageToggle = document.getElementById("languageToggle");
 const languageOptions = Array.from(document.querySelectorAll("[data-lang-option]"));
 const currentLangLabel = document.getElementById("currentLangLabel");
+const featureDialog = document.getElementById("featureDialog");
+const featureDialogImage = document.getElementById("featureDialogImage");
+const featureDialogTitle = document.getElementById("featureDialogTitle");
+const featureDialogDescription = document.getElementById("featureDialogDescription");
+const featureDialogClose = document.getElementById("featureDialogClose");
+let featureDialogTrigger = null;
+
 let trailerIndex = 0;
 let currentLanguage = "ja";
 
@@ -1896,6 +2075,8 @@ function applyLanguage(code, saveSelection) {
   if (description) description.setAttribute("content", text.description);
   document.querySelector(".nav").setAttribute("aria-label", text.navAria);
   languageToggle.setAttribute("aria-label", text.languageAria);
+  featureDialogClose.setAttribute("aria-label", text.modalClose);
+  featureDialogClose.title = text.modalClose;
   currentLangLabel.textContent = text.label;
   languageOptions.forEach(function (option) {
     const active = option.dataset.langOption === language;
@@ -2014,30 +2195,75 @@ trailerViewport.addEventListener("keydown", function (event) {
   }
 });
 
-function activateFeature(card) {
-  featureCards.forEach(function (item) {
-    item.classList.toggle("is-active", item === card);
+function openFeatureDialog(card) {
+  const image = card.querySelector(".feature-shot img");
+  const title = card.querySelector("h3");
+  const description = card.querySelector("p");
+  if (!image || !title || !description) {
+    return;
+  }
+
+  featureDialogTrigger = card;
+  featureDialogImage.src = image.currentSrc || image.src;
+  featureDialogImage.alt = image.alt || "";
+  featureDialogTitle.textContent = title.textContent;
+  featureDialogDescription.textContent = description.textContent;
+  featureDialog.showModal();
+  document.body.classList.add("feature-dialog-open");
+  requestAnimationFrame(function () {
+    featureDialogClose.focus({ preventScroll: true });
   });
 }
 
+function closeFeatureDialog() {
+  if (!featureDialog.open) {
+    return;
+  }
+  featureDialog.close();
+}
+
 featureCards.forEach(function (card) {
-  card.addEventListener("click", function () {
-    activateFeature(card);
+  if (!card.hasAttribute("tabindex")) {
+    card.tabIndex = 0;
+  }
+  card.setAttribute("aria-haspopup", "dialog");
+  card.setAttribute("aria-controls", "featureDialog");
+  card.addEventListener("click", function (event) {
+    if (event.target.closest("a, button")) {
+      return;
+    }
+    openFeatureDialog(card);
   });
   card.addEventListener("keydown", function (event) {
-    if (event.key === "Enter" || event.key === " ") {
+    if ((event.key === "Enter" || event.key === " ") && !event.target.closest("a, button")) {
       event.preventDefault();
-      activateFeature(card);
+      openFeatureDialog(card);
     }
   });
 });
 
-document.addEventListener("click", function (event) {
-  if (!event.target.closest(".feature-card")) {
-    featureCards.forEach(function (item) {
-      item.classList.remove("is-active");
-    });
+featureDialog.addEventListener("click", function () {
+  closeFeatureDialog();
+});
+
+featureDialog.addEventListener("cancel", function (event) {
+  event.preventDefault();
+  closeFeatureDialog();
+});
+
+featureDialog.addEventListener("close", function () {
+  document.body.classList.remove("feature-dialog-open");
+  featureDialogImage.removeAttribute("src");
+  featureDialogTitle.textContent = "";
+  featureDialogDescription.textContent = "";
+  const trigger = featureDialogTrigger;
+  featureDialogTrigger = null;
+  if (trigger && trigger.isConnected) {
+    trigger.focus({ preventScroll: true });
   }
+});
+
+document.addEventListener("click", function (event) {
   if (!event.target.closest(".language-switch")) {
     closeLanguageMenu();
   }
