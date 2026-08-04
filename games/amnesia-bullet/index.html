@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" data-lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,6 +46,10 @@
 
 html {
   scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: 84px;
 }
 
 body {
@@ -147,6 +151,88 @@ a {
 .nav-links a:focus-visible {
   color: var(--cyan);
   text-shadow: 0 0 10px rgba(85, 232, 255, 0.6);
+}
+
+.nav-actions {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+}
+
+.language-switch {
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.language-toggle {
+  min-width: 110px;
+  height: 38px;
+  padding: 0 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(123, 229, 255, 0.5);
+  border-radius: 6px;
+  color: var(--ink);
+  background: rgba(6, 22, 30, 0.92);
+  font: 700 12px/1 var(--font-ja);
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.language-toggle::after {
+  content: "▾";
+  color: var(--cyan);
+  font-size: 10px;
+}
+
+.language-toggle:hover,
+.language-toggle:focus-visible,
+.language-switch.is-open .language-toggle {
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 16px rgba(85, 232, 255, 0.2);
+}
+
+.language-menu {
+  position: absolute;
+  top: calc(100% + 9px);
+  right: 0;
+  z-index: 30;
+  width: 152px;
+  padding: 6px;
+  display: none;
+  border: 1px solid rgba(123, 229, 255, 0.45);
+  border-radius: 7px;
+  background: rgba(3, 12, 18, 0.98);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5);
+}
+
+.language-switch.is-open .language-menu {
+  display: grid;
+  gap: 3px;
+}
+
+.language-option {
+  width: 100%;
+  padding: 9px 11px;
+  border: 0;
+  border-radius: 4px;
+  color: var(--muted);
+  background: transparent;
+  font: 700 12px/1.3 var(--font-ja);
+  text-align: left;
+  cursor: pointer;
+}
+
+.language-option:hover,
+.language-option:focus-visible,
+.language-option.is-active {
+  color: #031117;
+  background: var(--cyan);
 }
 
 .hero {
@@ -850,10 +936,19 @@ textarea:focus {
     height: 62px;
   }
 
+  .nav-actions {
+    gap: 12px;
+  }
+
   .nav-links {
-    gap: 18px;
-    font-size: 12px;
-    letter-spacing: 0.08em;
+    gap: 14px;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  .language-toggle {
+    min-width: 96px;
+    padding: 0 10px;
   }
 
   .hero-inner {
@@ -895,11 +990,53 @@ textarea:focus {
   }
 
   .logo-text {
-    font-size: 17px;
+    display: none;
+  }
+
+  .nav {
+    gap: 10px;
+  }
+
+  .nav-actions {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 8px;
   }
 
   .nav-links {
+    min-width: 0;
+    flex: 1 1 auto;
+    gap: 15px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-links::-webkit-scrollbar {
     display: none;
+  }
+
+  .nav-links a {
+    flex: 0 0 auto;
+  }
+
+  .language-toggle {
+    min-width: 83px;
+    height: 34px;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+
+  .language-menu {
+    position: fixed;
+    top: 62px;
+    right: 16px;
+  }
+
+  section[id] {
+    scroll-margin-top: 68px;
   }
 
   .hero {
@@ -920,7 +1057,8 @@ textarea:focus {
   .hero-lead {
     font-size: 15px;
     line-height: 1.65;
-    word-break: break-all;
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
 
   .hero-support-line {
@@ -1022,11 +1160,27 @@ textarea:focus {
       <span class="logo-icon" aria-hidden="true">ef</span>
       <span class="logo-text">eye-factory</span>
     </a>
-    <div class="nav-links">
-      <a href="#top">Trailer</a>
-      <a href="#features">Features</a>
-      <a href="#demo">Demo</a>
-      <a href="#contact">Contact</a>
+    <div class="nav-actions">
+      <div class="nav-links">
+        <a href="#top">予告</a>
+        <a href="#features">特徴</a>
+        <a href="#post-story">クリア後</a>
+        <a href="#dlc">DLC</a>
+        <a href="#demo">体験版</a>
+        <a href="#contact">連絡</a>
+      </div>
+      <div class="language-switch" id="languageSwitch">
+        <button class="language-toggle" id="languageToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="languageMenu">
+          <span id="currentLangLabel">日本語</span>
+        </button>
+        <div class="language-menu" id="languageMenu" role="menu">
+          <button class="language-option" type="button" role="menuitemradio" data-lang-option="ja">日本語</button>
+          <button class="language-option" type="button" role="menuitemradio" data-lang-option="en">English</button>
+          <button class="language-option" type="button" role="menuitemradio" data-lang-option="ko">한국어</button>
+          <button class="language-option" type="button" role="menuitemradio" data-lang-option="zh-CN">简体中文</button>
+          <button class="language-option" type="button" role="menuitemradio" data-lang-option="zh-TW">繁體中文</button>
+        </div>
+      </div>
     </div>
   </nav>
 </header>
@@ -1227,12 +1381,12 @@ textarea:focus {
         <section class="contact-panel">
           <form class="contact-form" id="contactForm">
             <label>
-              種類
+              <span data-contact-label>種類</span>
               <select name="category">
-                <option value="感想">感想</option>
-                <option value="不具合報告">不具合報告</option>
-                <option value="問い合わせ">問い合わせ</option>
-                <option value="その他">その他</option>
+                <option value="feedback">感想</option>
+                <option value="bug">不具合報告</option>
+                <option value="inquiry">問い合わせ</option>
+                <option value="other">その他</option>
               </select>
             </label>
             <p class="form-note">Gmail作成画面が開いたら、本文や添付ファイルを追加して送信してください。</p>
@@ -1263,6 +1417,389 @@ textarea:focus {
 </footer>
 
 <script>
+const siteTranslations = {
+  ja: {
+    label: "日本語",
+    title: "Amnesia Bullet | eye-factory",
+    description: "Amnesia Bulletは、記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲームです。ジャイロ操作対応。2026年8月7日よりSteam早期アクセス開始。",
+    navAria: "メインナビゲーション",
+    languageAria: "表示言語を選択",
+    nav: ["予告", "特徴", "クリア後", "DLC", "体験版", "連絡"],
+    hero: {
+      title: "記憶を取り戻すために、弾丸で道を切り開く。",
+      support: "TPSシューティング / ジャイロ操作対応",
+      lead: "記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲーム。DualSenseおよびNintendo Switch Proコントローラーのジャイロ操作に対応。",
+      leadMobile: "記憶を取り戻すため、“わるいもの”と戦うTPS。<br>DualSenseおよびNintendo Switch Proコントローラーのジャイロ操作に対応。",
+      carousel: "公式トレーラー",
+      viewport: "トレーラー。左右ボタンで切り替え",
+      prev: "前のトレーラー",
+      next: "次のトレーラー",
+      dots: "トレーラー選択",
+      dotLabels: ["1stトレーラーを表示", "2ndトレーラーを表示"]
+    },
+    steam: {
+      title: "8月7日よりアーリーアクセス開始！",
+      intro: "製品情報、無料体験版、最新のお知らせはSteam販売ページからご確認いただけます。",
+      body: "製品版の購入、ウィッシュリスト登録、無料体験版のダウンロードはSteamから。",
+      button: "Steam販売ページへ"
+    },
+    features: {
+      title: "物語、射撃、育成をひとつのテンポで。",
+      cards: [
+        ["TPSシューティング", "ライフルを構え、移動しながら敵を狙う三人称視点のバトル。マウス、キーボード、コントローラーでプレイできます。"],
+        ["ジャイロ操作対応", "対応コントローラーではジャイロエイムに対応。細かな照準操作で、より直感的な射撃を狙えます。"],
+        ["メモリー攻略", "記憶の入口からステージへ入り、クリアすることで物語と難易度が進行。記憶を取り戻す道が少しずつ開いていきます。"],
+        ["ステータスアップ", "戦闘で得たクラウンコインを使い、HPや攻撃力を強化。高難易度の攻略へ向けて育成できます。"]
+      ],
+      alts: ["TPSシューティングのゲーム画面", "ジャイロ操作対応コントローラー", "メモリー攻略の会話画面", "ステータスアップ画面"]
+    },
+    after: {
+      title: "ストーリークリア後も、記憶の世界は続く。",
+      intro: "真エンドへ続く戦闘や、クラウンコインを獲得できるミニゲーム、限界へ挑むエンドコンテンツが開放されます。",
+      cards: [
+        ["希望の扉", "メインストーリークリア後に開放される、真エンドへ続く特別な戦闘コンテンツです。"],
+        ["MEMORIA BEAT", "楽曲に合わせてノーツを入力する音楽ゲーム。プレイ結果に応じてクラウンコインを獲得できます。"],
+        ["TASK BULLET", "作業をしながら楽しめるタスクバー型の放置ゲーム。敵を倒してクラウンコインを持ち帰れます。"],
+        ["奈落の扉", "希望の扉クリア後に開放。HPが尽きるまで戦い、撃破数の限界へ挑むエンドコンテンツです。"]
+      ],
+      alts: ["希望の扉の戦闘画面", "音楽ゲーム MEMORIA BEAT のプレイ画面", "タスクバー型放置ゲーム TASK BULLET のプレイ画面", "奈落の扉の戦闘画面"]
+    },
+    dlc: {
+      title: "序盤と育成を支える追加コンテンツ。",
+      intro: "プレイスタイルに合わせて選べる、2種類のDLCを用意しています。",
+      cards: [
+        ["クラウンコイン×5,000", "クラウンコイン5,000枚を受け取れるDLC。ゲーム序盤からステータス育成を進めたい方におすすめです。"],
+        ["恩寵の指輪", "メモリークリアボーナスと「希望の扉」「奈落の扉」の撃破ボーナスを3倍、ミニゲーム報酬をさらに2倍にする永続アイテム。ストーリークリア後の育成や、やり込みを楽しみたい方におすすめです。"]
+      ],
+      buttons: ["Steamで見る", "Steamで見る"],
+      alts: ["Amnesia Bullet クラウンコイン5000枚DLC", "Amnesia Bullet 恩寵の指輪DLC"]
+    },
+    demo: {
+      title: "体験版で遊べる範囲",
+      body: "Amnesia Bulletの体験版では、序盤の物語と1stメモリー（青）を最初から最後までプレイできます。通常難易度の全ステージをクリア後も、高難易度を解放しながらステータスを伸ばして遊べます。",
+      list: ["1stメモリー（青）の全ステージをプレイ可能", "クリアごとに高難易度を解放", "クラウンコインでステータスアップ", "2ndメモリー以降の物語は製品版でプレイ可能"],
+      button: "Steamで体験版を確認",
+      posterAlt: "Amnesia Bullet キービジュアル"
+    },
+    contact: {
+      title: "感想、不具合報告、問い合わせはこちら。",
+      intro: "種類を選ぶと、件名入りのGmail作成画面が開きます。本文、返信先、スクリーンショットなどの添付はGmail側で追加してください。",
+      destination: "送信先",
+      reply: "返信が必要な場合は、メール本文に連絡可能なアドレスを含めてください。",
+      highlight: "Steamのレビューやウィッシュリスト登録も、とても励みになります。",
+      type: "種類",
+      categories: { feedback: "感想", bug: "不具合報告", inquiry: "問い合わせ", other: "その他" },
+      note: "Gmail作成画面が開いたら、本文や添付ファイルを追加して送信してください。",
+      button: "Gmailで作成",
+      status: "の件名でGmail作成画面を開きます。"
+    }
+  },
+  en: {
+    label: "English",
+    title: "Amnesia Bullet | eye-factory",
+    description: "Amnesia Bullet is a third-person shooter about a girl fighting the “bad things” to recover her lost memories. Gyro aiming supported. Steam Early Access begins August 7, 2026.",
+    navAria: "Primary navigation",
+    languageAria: "Select display language",
+    nav: ["Trailer", "Features", "After", "DLC", "Demo", "Contact"],
+    hero: {
+      title: "Fight your way forward with bullets to reclaim your memories.",
+      support: "TPS Shooting Game / Gyro Controller Support",
+      lead: "A third-person shooter about a girl fighting the “bad things” to recover her lost memories. Gyro aiming is supported on DualSense and Nintendo Switch Pro controllers.",
+      leadMobile: "Fight the “bad things” to recover your memories.<br>Gyro aiming is supported on DualSense and Nintendo Switch Pro controllers.",
+      carousel: "Official trailers",
+      viewport: "Trailer carousel. Use the left and right controls to switch trailers.",
+      prev: "Previous trailer",
+      next: "Next trailer",
+      dots: "Select trailer",
+      dotLabels: ["Show the first trailer", "Show the second trailer"]
+    },
+    steam: {
+      title: "Steam Early Access begins August 7!",
+      intro: "Visit the Steam store page for product details, the free demo, and the latest news.",
+      body: "Purchase the full game, add it to your wishlist, or download the free demo on Steam.",
+      button: "View Steam Store Page"
+    },
+    features: {
+      title: "Story, shooting, and progression in one steady rhythm.",
+      cards: [
+        ["TPS Combat", "Aim your rifle and engage enemies while moving through third-person battles. Play with mouse and keyboard or a controller."],
+        ["Gyro Aiming", "Supported controllers offer gyro aiming for fine, intuitive control over your shots."],
+        ["Memory Stages", "Enter stages through the gates of memory. Clearing them advances the story and unlocks higher difficulties as the path to the past opens."],
+        ["Status Growth", "Spend Crown Coins earned in battle to increase HP and attack power, preparing your character for tougher challenges."]
+      ],
+      alts: ["Third-person shooting gameplay", "Controller with gyro aiming support", "Dialogue scene from a memory stage", "Character status upgrade screen"]
+    },
+    after: {
+      title: "The world of memories continues after the story.",
+      intro: "Unlock battles leading to the true ending, mini-games that reward Crown Coins, and endgame challenges that test your limits.",
+      cards: [
+        ["Door of Hope", "A special battle unlocked after completing the main story, leading toward the true ending."],
+        ["MEMORIA BEAT", "A rhythm game where you hit notes to the music and earn Crown Coins based on your results."],
+        ["TASK BULLET", "An idle taskbar game designed to run alongside your work. Defeat enemies and bring Crown Coins back to the main game."],
+        ["Door of the Abyss", "Unlocked after clearing the Door of Hope. Fight until your HP reaches zero and push your defeat count as far as possible."]
+      ],
+      alts: ["Battle at the Door of Hope", "MEMORIA BEAT rhythm gameplay", "TASK BULLET taskbar idle gameplay", "Battle at the Door of the Abyss"]
+    },
+    dlc: {
+      title: "Additional content for a stronger start and deeper progression.",
+      intro: "Two optional DLC items are available to suit different play styles.",
+      cards: [
+        ["5,000 Crown Coins", "Receive 5,000 Crown Coins. Recommended for players who want to accelerate status growth from the beginning of the game."],
+        ["Ring of Grace", "A permanent item that triples Memory clear bonuses and defeat bonuses from the Door of Hope and Door of the Abyss, and doubles mini-game rewards again. Recommended for post-story growth and extended play."]
+      ],
+      buttons: ["View on Steam", "View on Steam"],
+      alts: ["Amnesia Bullet 5,000 Crown Coins DLC", "Amnesia Bullet Ring of Grace DLC"]
+    },
+    demo: {
+      title: "What You Can Play in the Demo",
+      body: "The Amnesia Bullet demo includes the opening story and every stage in the 1st Memory (Blue). After clearing every Normal stage, continue building your status while unlocking higher difficulties.",
+      list: ["Play every stage in the 1st Memory (Blue)", "Unlock higher difficulties as you clear stages", "Use Crown Coins to upgrade your status", "Continue the story from the 2nd Memory in the full game"],
+      button: "View the Demo on Steam",
+      posterAlt: "Amnesia Bullet key visual"
+    },
+    contact: {
+      title: "Send feedback, bug reports, or inquiries.",
+      intro: "Choose a category to open a Gmail draft with a prepared subject. Add your message, reply address, screenshots, or other attachments in Gmail.",
+      destination: "Recipient",
+      reply: "If you need a reply, include a reachable email address in the message body.",
+      highlight: "Steam reviews and wishlist additions are also greatly appreciated.",
+      type: "Category",
+      categories: { feedback: "Feedback", bug: "Bug Report", inquiry: "Inquiry", other: "Other" },
+      note: "When Gmail opens, add your message and any attachments before sending.",
+      button: "Compose in Gmail",
+      status: " will be used as the subject category in Gmail."
+    }
+  },
+  ko: {
+    label: "한국어",
+    title: "Amnesia Bullet | eye-factory",
+    description: "Amnesia Bullet은 기억을 되찾기 위해 ‘나쁜 것’과 싸우는 TPS 슈팅 게임입니다. 자이로 조작 지원. 2026년 8월 7일 Steam 앞서 해보기 시작.",
+    navAria: "주요 내비게이션",
+    languageAria: "표시 언어 선택",
+    nav: ["영상", "특징", "클리어 후", "DLC", "체험판", "문의"],
+    hero: {
+      title: "기억을 되찾기 위해 총탄으로 길을 연다.",
+      support: "TPS 슈팅 게임 / 자이로 조작 지원",
+      lead: "기억을 되찾기 위해 ‘나쁜 것’과 싸우는 TPS 슈팅 게임입니다. DualSense와 Nintendo Switch Pro 컨트롤러의 자이로 조작을 지원합니다.",
+      leadMobile: "기억을 되찾기 위해 ‘나쁜 것’과 싸우는 TPS.<br>DualSense와 Nintendo Switch Pro 컨트롤러의 자이로 조작을 지원합니다.",
+      carousel: "공식 트레일러",
+      viewport: "트레일러. 좌우 버튼으로 전환",
+      prev: "이전 트레일러",
+      next: "다음 트레일러",
+      dots: "트레일러 선택",
+      dotLabels: ["첫 번째 트레일러 보기", "두 번째 트레일러 보기"]
+    },
+    steam: {
+      title: "8월 7일 Steam 앞서 해보기 시작!",
+      intro: "제품 정보, 무료 체험판, 최신 소식은 Steam 상점 페이지에서 확인할 수 있습니다.",
+      body: "정식 버전 구매, 찜하기, 무료 체험판 다운로드는 Steam에서 이용할 수 있습니다.",
+      button: "Steam 상점 페이지"
+    },
+    features: {
+      title: "스토리, 사격, 성장을 하나의 흐름으로.",
+      cards: [
+        ["TPS 슈팅", "소총을 들고 이동하며 적을 조준하는 3인칭 전투입니다. 마우스와 키보드 또는 컨트롤러로 플레이할 수 있습니다."],
+        ["자이로 조작 지원", "지원 컨트롤러에서는 자이로 에임을 사용할 수 있습니다. 섬세한 조준으로 더욱 직관적인 사격이 가능합니다."],
+        ["메모리 공략", "기억의 입구에서 스테이지로 들어가 클리어하면 스토리와 난이도가 진행됩니다. 잃어버린 기억으로 향하는 길이 조금씩 열립니다."],
+        ["스테이터스 강화", "전투에서 얻은 크라운 코인으로 HP와 공격력을 강화하고 더 높은 난이도에 도전할 수 있습니다."]
+      ],
+      alts: ["TPS 슈팅 게임 화면", "자이로 조작 지원 컨트롤러", "메모리 공략 대화 화면", "스테이터스 강화 화면"]
+    },
+    after: {
+      title: "스토리를 클리어한 뒤에도 기억의 세계는 계속됩니다.",
+      intro: "진 엔딩으로 이어지는 전투, 크라운 코인을 얻는 미니게임, 한계에 도전하는 엔드 콘텐츠가 해방됩니다.",
+      cards: [
+        ["희망의 문", "메인 스토리 클리어 후 해방되는 진 엔딩으로 이어지는 특별 전투 콘텐츠입니다."],
+        ["MEMORIA BEAT", "음악에 맞춰 노트를 입력하는 리듬 게임입니다. 플레이 결과에 따라 크라운 코인을 획득할 수 있습니다."],
+        ["TASK BULLET", "작업하면서 즐길 수 있는 작업 표시줄형 방치 게임입니다. 적을 쓰러뜨리고 크라운 코인을 본편으로 가져올 수 있습니다."],
+        ["나락의 문", "희망의 문 클리어 후 해방됩니다. HP가 다할 때까지 싸우며 격파 수의 한계에 도전하는 엔드 콘텐츠입니다."]
+      ],
+      alts: ["희망의 문 전투 화면", "MEMORIA BEAT 리듬 게임 화면", "TASK BULLET 작업 표시줄 방치 게임 화면", "나락의 문 전투 화면"]
+    },
+    dlc: {
+      title: "초반과 성장을 돕는 추가 콘텐츠.",
+      intro: "플레이 스타일에 맞춰 선택할 수 있는 2종의 DLC가 준비되어 있습니다.",
+      cards: [
+        ["크라운 코인×5,000", "크라운 코인 5,000개를 받을 수 있는 DLC입니다. 게임 초반부터 스테이터스 성장을 빠르게 진행하고 싶은 분께 추천합니다."],
+        ["은총의 반지", "메모리 클리어 보너스와 ‘희망의 문’, ‘나락의 문’ 격파 보너스를 3배로, 미니게임 보상을 추가로 2배로 만드는 영구 아이템입니다. 스토리 클리어 후 성장과 파고들기를 즐기는 분께 추천합니다."]
+      ],
+      buttons: ["Steam에서 보기", "Steam에서 보기"],
+      alts: ["Amnesia Bullet 크라운 코인 5000개 DLC", "Amnesia Bullet 은총의 반지 DLC"]
+    },
+    demo: {
+      title: "체험판에서 플레이할 수 있는 범위",
+      body: "Amnesia Bullet 체험판에서는 초반 스토리와 1st 메모리(파랑)의 모든 스테이지를 처음부터 끝까지 플레이할 수 있습니다. 일반 난이도를 모두 클리어한 뒤에도 높은 난이도를 해방하며 스테이터스를 성장시킬 수 있습니다.",
+      list: ["1st 메모리(파랑)의 모든 스테이지 플레이 가능", "클리어할 때마다 높은 난이도 해방", "크라운 코인으로 스테이터스 강화", "2nd 메모리 이후의 스토리는 정식 버전에서 플레이 가능"],
+      button: "Steam에서 체험판 확인",
+      posterAlt: "Amnesia Bullet 키 비주얼"
+    },
+    contact: {
+      title: "감상, 버그 제보, 문의는 이곳으로 보내 주세요.",
+      intro: "종류를 선택하면 제목이 입력된 Gmail 작성 화면이 열립니다. 본문, 회신 주소, 스크린샷 등은 Gmail에서 추가해 주세요.",
+      destination: "수신처",
+      reply: "회신이 필요한 경우 본문에 연락 가능한 이메일 주소를 적어 주세요.",
+      highlight: "Steam 리뷰와 찜하기도 큰 힘이 됩니다.",
+      type: "종류",
+      categories: { feedback: "감상", bug: "버그 제보", inquiry: "문의", other: "기타" },
+      note: "Gmail 작성 화면이 열리면 본문과 첨부 파일을 추가한 뒤 보내 주세요.",
+      button: "Gmail에서 작성",
+      status: " 제목으로 Gmail 작성 화면을 엽니다."
+    }
+  },
+  "zh-CN": {
+    label: "简体中文",
+    title: "Amnesia Bullet | eye-factory",
+    description: "Amnesia Bullet是一款失忆少女为找回记忆、与“坏东西”战斗的第三人称射击游戏。支持陀螺仪操作。2026年8月7日开启Steam抢先体验。",
+    navAria: "主导航",
+    languageAria: "选择显示语言",
+    nav: ["预告", "特色", "通关后", "DLC", "试玩版", "联系"],
+    hero: {
+      title: "为了找回记忆，用子弹开辟前路。",
+      support: "第三人称射击 / 支持陀螺仪操作",
+      lead: "一款为了找回记忆、与“坏东西”战斗的第三人称射击游戏。支持DualSense及Nintendo Switch Pro控制器的陀螺仪操作。",
+      leadMobile: "为了找回记忆，与“坏东西”战斗的第三人称射击游戏。<br>支持DualSense及Nintendo Switch Pro控制器的陀螺仪操作。",
+      carousel: "官方预告片",
+      viewport: "预告片轮播。使用左右按钮切换",
+      prev: "上一部预告片",
+      next: "下一部预告片",
+      dots: "选择预告片",
+      dotLabels: ["显示第一部预告片", "显示第二部预告片"]
+    },
+    steam: {
+      title: "8月7日开启Steam抢先体验！",
+      intro: "产品信息、免费试玩版和最新消息请前往Steam商店页面查看。",
+      body: "购买正式版、加入愿望单或下载免费试玩版，请前往Steam。",
+      button: "前往Steam商店页面"
+    },
+    features: {
+      title: "让剧情、射击与成长融为一体。",
+      cards: [
+        ["第三人称射击", "举起步枪，在移动中瞄准敌人展开第三人称战斗。支持键鼠和控制器操作。"],
+        ["支持陀螺仪操作", "支持的控制器可使用陀螺仪瞄准，以细腻操作获得更直观的射击体验。"],
+        ["记忆关卡攻略", "从记忆入口进入关卡。通关后剧情与难度会继续推进，找回记忆的道路也将逐步开启。"],
+        ["状态强化", "使用战斗中获得的皇冠硬币强化HP和攻击力，为挑战更高难度做好准备。"]
+      ],
+      alts: ["第三人称射击游戏画面", "支持陀螺仪操作的控制器", "记忆关卡中的对话画面", "角色状态强化画面"]
+    },
+    after: {
+      title: "主线通关后，记忆世界仍将继续。",
+      intro: "解锁通往真结局的战斗、可获得皇冠硬币的小游戏，以及挑战极限的终局内容。",
+      cards: [
+        ["希望之门", "完成主线故事后解锁，通往真结局的特殊战斗内容。"],
+        ["MEMORIA BEAT", "配合音乐输入音符的节奏游戏。可根据游玩结果获得皇冠硬币。"],
+        ["TASK BULLET", "可在工作时游玩的任务栏放置游戏。击败敌人，将皇冠硬币带回本篇。"],
+        ["奈落之门", "通关希望之门后解锁。战斗至HP耗尽，挑战击破数量极限的终局内容。"]
+      ],
+      alts: ["希望之门战斗画面", "MEMORIA BEAT节奏游戏画面", "TASK BULLET任务栏放置游戏画面", "奈落之门战斗画面"]
+    },
+    dlc: {
+      title: "帮助前期与养成的追加内容。",
+      intro: "提供两种可依照游玩风格选择的DLC。",
+      cards: [
+        ["皇冠硬币×5,000", "可领取5,000枚皇冠硬币的DLC。推荐给希望从游戏前期就加快状态养成的玩家。"],
+        ["恩宠之戒", "永久道具：记忆通关奖励及“希望之门”“奈落之门”的击破奖励变为3倍，小游戏奖励再变为2倍。推荐给想在通关后继续养成和深入游玩的玩家。"]
+      ],
+      buttons: ["在Steam查看", "在Steam查看"],
+      alts: ["Amnesia Bullet皇冠硬币5000枚DLC", "Amnesia Bullet恩宠之戒DLC"]
+    },
+    demo: {
+      title: "试玩版可游玩内容",
+      body: "Amnesia Bullet试玩版包含序章故事以及1st记忆（蓝）的全部关卡。通关普通难度的所有关卡后，仍可继续解锁更高难度并强化状态。",
+      list: ["可游玩1st记忆（蓝）的全部关卡", "每次通关可解锁更高难度", "使用皇冠硬币强化状态", "2nd记忆之后的故事可在正式版中游玩"],
+      button: "在Steam查看试玩版",
+      posterAlt: "Amnesia Bullet主视觉图"
+    },
+    contact: {
+      title: "欢迎提交感想、问题报告或咨询。",
+      intro: "选择类别后，将打开已填写主题的Gmail撰写页面。正文、回复地址、截图等附件请在Gmail中添加。",
+      destination: "收件地址",
+      reply: "如需回复，请在邮件正文中填写可联系的邮箱地址。",
+      highlight: "Steam评价和加入愿望单也会给我们很大支持。",
+      type: "类别",
+      categories: { feedback: "感想", bug: "问题报告", inquiry: "咨询", other: "其他" },
+      note: "Gmail撰写页面打开后，请添加正文和附件再发送。",
+      button: "使用Gmail撰写",
+      status: "类别将用于Gmail邮件主题。"
+    }
+  },
+  "zh-TW": {
+    label: "繁體中文",
+    title: "Amnesia Bullet | eye-factory",
+    description: "Amnesia Bullet是一款失憶少女為找回記憶、與「壞東西」戰鬥的第三人稱射擊遊戲。支援陀螺儀操作。2026年8月7日展開Steam搶先體驗。",
+    navAria: "主要導覽",
+    languageAria: "選擇顯示語言",
+    nav: ["預告", "特色", "通關後", "DLC", "體驗版", "聯絡"],
+    hero: {
+      title: "為了找回記憶，以子彈開闢前路。",
+      support: "第三人稱射擊 / 支援陀螺儀操作",
+      lead: "一款為了找回記憶、與「壞東西」戰鬥的第三人稱射擊遊戲。支援DualSense及Nintendo Switch Pro控制器的陀螺儀操作。",
+      leadMobile: "為了找回記憶，與「壞東西」戰鬥的第三人稱射擊遊戲。<br>支援DualSense及Nintendo Switch Pro控制器的陀螺儀操作。",
+      carousel: "官方預告片",
+      viewport: "預告片輪播。使用左右按鈕切換",
+      prev: "上一部預告片",
+      next: "下一部預告片",
+      dots: "選擇預告片",
+      dotLabels: ["顯示第一部預告片", "顯示第二部預告片"]
+    },
+    steam: {
+      title: "8月7日展開Steam搶先體驗！",
+      intro: "產品資訊、免費體驗版及最新消息請至Steam商店頁面查看。",
+      body: "購買正式版、加入願望清單或下載免費體驗版，請前往Steam。",
+      button: "前往Steam商店頁面"
+    },
+    features: {
+      title: "讓故事、射擊與成長融為一體。",
+      cards: [
+        ["第三人稱射擊", "舉起步槍，在移動中瞄準敵人展開第三人稱戰鬥。支援鍵盤滑鼠與控制器操作。"],
+        ["支援陀螺儀操作", "支援的控制器可使用陀螺儀瞄準，以細膩操作獲得更直覺的射擊體驗。"],
+        ["記憶關卡攻略", "從記憶入口進入關卡。通關後故事與難度會繼續推進，找回記憶的道路也將逐步開啟。"],
+        ["能力值強化", "使用戰鬥中獲得的皇冠硬幣強化HP與攻擊力，為挑戰更高難度做好準備。"]
+      ],
+      alts: ["第三人稱射擊遊戲畫面", "支援陀螺儀操作的控制器", "記憶關卡中的對話畫面", "角色能力值強化畫面"]
+    },
+    after: {
+      title: "主線通關後，記憶世界仍將延續。",
+      intro: "解鎖通往真結局的戰鬥、可獲得皇冠硬幣的小遊戲，以及挑戰極限的終局內容。",
+      cards: [
+        ["希望之門", "完成主線故事後解鎖，通往真結局的特殊戰鬥內容。"],
+        ["MEMORIA BEAT", "配合音樂輸入音符的節奏遊戲。可依據遊玩結果獲得皇冠硬幣。"],
+        ["TASK BULLET", "可在工作時遊玩的工作列放置遊戲。擊敗敵人，將皇冠硬幣帶回本篇。"],
+        ["奈落之門", "通關希望之門後解鎖。戰鬥至HP耗盡，挑戰擊破數量極限的終局內容。"]
+      ],
+      alts: ["希望之門戰鬥畫面", "MEMORIA BEAT節奏遊戲畫面", "TASK BULLET工作列放置遊戲畫面", "奈落之門戰鬥畫面"]
+    },
+    dlc: {
+      title: "協助前期與養成的追加內容。",
+      intro: "提供兩種可依照遊玩風格選擇的DLC。",
+      cards: [
+        ["皇冠硬幣×5,000", "可領取5,000枚皇冠硬幣的DLC。推薦給希望從遊戲前期就加快能力值養成的玩家。"],
+        ["恩寵之戒", "永久道具：記憶通關獎勵及「希望之門」「奈落之門」的擊破獎勵變為3倍，小遊戲獎勵再變為2倍。推薦給想在通關後繼續養成與深入遊玩的玩家。"]
+      ],
+      buttons: ["在Steam查看", "在Steam查看"],
+      alts: ["Amnesia Bullet皇冠硬幣5000枚DLC", "Amnesia Bullet恩寵之戒DLC"]
+    },
+    demo: {
+      title: "體驗版可遊玩內容",
+      body: "Amnesia Bullet體驗版包含序章故事以及1st記憶（藍）的全部關卡。通關普通難度的所有關卡後，仍可繼續解鎖更高難度並強化能力值。",
+      list: ["可遊玩1st記憶（藍）的全部關卡", "每次通關可解鎖更高難度", "使用皇冠硬幣強化能力值", "2nd記憶之後的故事可在正式版中遊玩"],
+      button: "在Steam查看體驗版",
+      posterAlt: "Amnesia Bullet主視覺圖"
+    },
+    contact: {
+      title: "歡迎提交感想、問題回報或諮詢。",
+      intro: "選擇類別後，將開啟已填寫主旨的Gmail撰寫頁面。正文、回覆地址、截圖等附件請在Gmail中新增。",
+      destination: "收件地址",
+      reply: "如需回覆，請在郵件正文中填寫可聯絡的電子郵件地址。",
+      highlight: "Steam評論與加入願望清單也會給我們很大支持。",
+      type: "類別",
+      categories: { feedback: "感想", bug: "問題回報", inquiry: "諮詢", other: "其他" },
+      note: "Gmail撰寫頁面開啟後，請新增正文與附件再送出。",
+      button: "使用Gmail撰寫",
+      status: "類別將用於Gmail郵件主旨。"
+    }
+  }
+};
+
 const form = document.getElementById("contactForm");
 const statusText = document.getElementById("formStatus");
 const featureCards = Array.from(document.querySelectorAll(".feature-card"));
@@ -1272,16 +1809,171 @@ const trailerSlides = Array.from(document.querySelectorAll(".trailer-card"));
 const trailerDots = Array.from(document.querySelectorAll(".trailer-dot"));
 const trailerPrev = document.querySelector(".trailer-arrow.prev");
 const trailerNext = document.querySelector(".trailer-arrow.next");
+const languageSwitch = document.getElementById("languageSwitch");
+const languageToggle = document.getElementById("languageToggle");
+const languageOptions = Array.from(document.querySelectorAll("[data-lang-option]"));
+const currentLangLabel = document.getElementById("currentLangLabel");
 let trailerIndex = 0;
+let currentLanguage = "ja";
+
+function setText(selector, value) {
+  const element = document.querySelector(selector);
+  if (element && value !== undefined) {
+    element.textContent = value;
+  }
+}
+
+function setHtml(selector, value) {
+  const element = document.querySelector(selector);
+  if (element && value !== undefined) {
+    element.innerHTML = value;
+  }
+}
+
+function setTexts(selector, values) {
+  const elements = Array.from(document.querySelectorAll(selector));
+  values.forEach(function (value, index) {
+    if (elements[index]) {
+      elements[index].textContent = value;
+    }
+  });
+}
+
+function setAlts(selector, values) {
+  const elements = Array.from(document.querySelectorAll(selector));
+  values.forEach(function (value, index) {
+    if (elements[index]) {
+      elements[index].alt = value;
+    }
+  });
+}
+
+function normalizeLanguage(value) {
+  const raw = String(value || "").toLowerCase();
+  if (raw === "ja" || raw.indexOf("ja-") === 0) return "ja";
+  if (raw === "ko" || raw.indexOf("ko-") === 0) return "ko";
+  if (raw === "zh-tw" || raw === "zh-hk" || raw === "zh-mo" || raw.indexOf("zh-hant") === 0) return "zh-TW";
+  if (raw === "zh" || raw === "zh-cn" || raw === "zh-sg" || raw.indexOf("zh-hans") === 0) return "zh-CN";
+  if (raw === "en" || raw.indexOf("en-") === 0) return "en";
+  return "";
+}
+
+function detectLanguage() {
+  let saved = "";
+  try {
+    saved = localStorage.getItem("ef-lang") || "";
+  } catch (error) {
+    saved = "";
+  }
+  const normalizedSaved = normalizeLanguage(saved);
+  if (normalizedSaved) return normalizedSaved;
+  const candidates = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language];
+  for (let index = 0; index < candidates.length; index += 1) {
+    const normalized = normalizeLanguage(candidates[index]);
+    if (normalized) return normalized;
+  }
+  return "en";
+}
+
+function closeLanguageMenu() {
+  languageSwitch.classList.remove("is-open");
+  languageToggle.setAttribute("aria-expanded", "false");
+}
+
+function applyLanguage(code, saveSelection) {
+  const language = siteTranslations[code] ? code : "en";
+  const text = siteTranslations[language];
+  currentLanguage = language;
+  document.documentElement.lang = language;
+  document.documentElement.dataset.lang = language;
+  document.title = text.title;
+  const description = document.querySelector('meta[name="description"]');
+  if (description) description.setAttribute("content", text.description);
+  document.querySelector(".nav").setAttribute("aria-label", text.navAria);
+  languageToggle.setAttribute("aria-label", text.languageAria);
+  currentLangLabel.textContent = text.label;
+  languageOptions.forEach(function (option) {
+    const active = option.dataset.langOption === language;
+    option.classList.toggle("is-active", active);
+    option.setAttribute("aria-checked", String(active));
+  });
+
+  setTexts(".nav-links a", text.nav);
+  setText(".hero h1", text.hero.title);
+  setText(".hero-support-line", text.hero.support);
+  setText(".hero-lead.desktop-copy", text.hero.lead);
+  setHtml(".hero-lead.mobile-copy", text.hero.leadMobile);
+  document.querySelector("[data-trailer-carousel]").setAttribute("aria-label", text.hero.carousel);
+  trailerViewport.setAttribute("aria-label", text.hero.viewport);
+  trailerPrev.setAttribute("aria-label", text.hero.prev);
+  trailerNext.setAttribute("aria-label", text.hero.next);
+  document.querySelector(".trailer-dots").setAttribute("aria-label", text.hero.dots);
+  trailerDots.forEach(function (dot, index) {
+    dot.setAttribute("aria-label", text.hero.dotLabels[index]);
+  });
+
+  setText("#trailer .section-title h2", text.steam.title);
+  setText("#trailer .section-title p:last-child", text.steam.intro);
+  setText("#trailer .steam-panel p", text.steam.body);
+  setText("#trailer .steam-panel .button", text.steam.button);
+
+  setText("#features .section-title h2", text.features.title);
+  setTexts("#features .feature-card h3", text.features.cards.map(function (card) { return card[0]; }));
+  setTexts("#features .feature-card p", text.features.cards.map(function (card) { return card[1]; }));
+  setAlts("#features .feature-shot img", text.features.alts);
+
+  setText("#post-story .section-title h2", text.after.title);
+  setText("#post-story .section-title p:last-child", text.after.intro);
+  setTexts("#post-story .feature-card h3", text.after.cards.map(function (card) { return card[0]; }));
+  setTexts("#post-story .feature-card p", text.after.cards.map(function (card) { return card[1]; }));
+  setAlts("#post-story .feature-shot img", text.after.alts);
+
+  setText("#dlc .section-title h2", text.dlc.title);
+  setText("#dlc .section-title p:last-child", text.dlc.intro);
+  setTexts("#dlc .feature-card h3", text.dlc.cards.map(function (card) { return card[0]; }));
+  setTexts("#dlc .feature-card > p", text.dlc.cards.map(function (card) { return card[1]; }));
+  setTexts("#dlc .feature-card .button", text.dlc.buttons);
+  setAlts("#dlc .feature-shot img", text.dlc.alts);
+
+  setText("#demo h2", text.demo.title);
+  setText("#demo .poster-layout > div > p:not(.eyebrow)", text.demo.body);
+  setTexts("#demo .demo-list li", text.demo.list);
+  setText("#demo .button", text.demo.button);
+  const poster = document.querySelector("#demo .poster-panel img");
+  if (poster) poster.alt = text.demo.posterAlt;
+
+  setText("#contact .section-title h2", text.contact.title);
+  setText("#contact .section-title p:last-child", text.contact.intro);
+  setText("#contact .contact-panel:first-child h3", text.contact.destination);
+  setText("#contact .contact-panel:first-child > p:first-of-type", text.contact.reply);
+  setText("#contact .contact-panel:first-child .highlight", text.contact.highlight);
+  setText("[data-contact-label]", text.contact.type);
+  const categoryOptions = Array.from(form.querySelectorAll('select[name="category"] option'));
+  categoryOptions.forEach(function (option) {
+    option.textContent = text.contact.categories[option.value];
+  });
+  setText("#contact .form-note", text.contact.note);
+  setText("#contact form .button", text.contact.button);
+  if (statusText) statusText.textContent = "";
+
+  if (saveSelection) {
+    try {
+      localStorage.setItem("ef-lang", language);
+    } catch (error) {
+      /* The page still works when storage is unavailable. */
+    }
+  }
+  closeLanguageMenu();
+}
 
 function updateTrailerUi(index) {
   trailerIndex = index;
-  trailerSlides.forEach((slide, slideIndex) => {
+  trailerSlides.forEach(function (slide, slideIndex) {
     const isActive = slideIndex === trailerIndex;
     slide.setAttribute("aria-hidden", String(!isActive));
     slide.toggleAttribute("inert", !isActive);
   });
-  trailerDots.forEach((dot, dotIndex) => {
+  trailerDots.forEach(function (dot, dotIndex) {
     const isActive = dotIndex === trailerIndex;
     dot.classList.toggle("is-active", isActive);
     if (isActive) {
@@ -1294,15 +1986,23 @@ function updateTrailerUi(index) {
 
 function showTrailer(index) {
   const nextIndex = (index + trailerSlides.length) % trailerSlides.length;
-  trailerTrack.style.transform = `translateX(-${nextIndex * 100}%)`;
+  trailerTrack.style.transform = "translateX(-" + (nextIndex * 100) + "%)";
   updateTrailerUi(nextIndex);
 }
 
-trailerPrev.addEventListener("click", () => showTrailer(trailerIndex - 1));
-trailerNext.addEventListener("click", () => showTrailer(trailerIndex + 1));
-trailerDots.forEach((dot, index) => dot.addEventListener("click", () => showTrailer(index)));
+trailerPrev.addEventListener("click", function () {
+  showTrailer(trailerIndex - 1);
+});
+trailerNext.addEventListener("click", function () {
+  showTrailer(trailerIndex + 1);
+});
+trailerDots.forEach(function (dot, index) {
+  dot.addEventListener("click", function () {
+    showTrailer(index);
+  });
+});
 
-trailerViewport.addEventListener("keydown", (event) => {
+trailerViewport.addEventListener("keydown", function (event) {
   if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
     event.preventDefault();
     showTrailer(trailerIndex + (event.key === "ArrowRight" ? 1 : -1));
@@ -1310,14 +2010,16 @@ trailerViewport.addEventListener("keydown", (event) => {
 });
 
 function activateFeature(card) {
-  featureCards.forEach((item) => {
+  featureCards.forEach(function (item) {
     item.classList.toggle("is-active", item === card);
   });
 }
 
-featureCards.forEach((card) => {
-  card.addEventListener("click", () => activateFeature(card));
-  card.addEventListener("keydown", (event) => {
+featureCards.forEach(function (card) {
+  card.addEventListener("click", function () {
+    activateFeature(card);
+  });
+  card.addEventListener("keydown", function (event) {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       activateFeature(card);
@@ -1325,27 +2027,55 @@ featureCards.forEach((card) => {
   });
 });
 
-document.addEventListener("click", (event) => {
+document.addEventListener("click", function (event) {
   if (!event.target.closest(".feature-card")) {
-    featureCards.forEach((item) => item.classList.remove("is-active"));
+    featureCards.forEach(function (item) {
+      item.classList.remove("is-active");
+    });
+  }
+  if (!event.target.closest(".language-switch")) {
+    closeLanguageMenu();
   }
 });
 
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
+languageToggle.addEventListener("click", function () {
+  const open = !languageSwitch.classList.contains("is-open");
+  languageSwitch.classList.toggle("is-open", open);
+  languageToggle.setAttribute("aria-expanded", String(open));
+});
 
+languageOptions.forEach(function (option) {
+  option.addEventListener("click", function () {
+    applyLanguage(option.dataset.langOption, true);
+  });
+});
+
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape" && languageSwitch.classList.contains("is-open")) {
+    closeLanguageMenu();
+    languageToggle.focus();
+  }
+});
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const text = siteTranslations[currentLanguage];
   const data = new FormData(form);
-  const category = String(data.get("category") || "問い合わせ").trim();
-  const subject = `[Amnesia Bullet] ${category}`;
-  statusText.textContent = `${category} の件名でGmail作成画面を開きます。`;
+  const categoryKey = String(data.get("category") || "inquiry");
+  const category = text.contact.categories[categoryKey] || text.contact.categories.inquiry;
+  const subject = "[Amnesia Bullet] " + category;
+  statusText.textContent = category + text.contact.status;
   const params = new URLSearchParams({
     view: "cm",
     fs: "1",
     to: "info@eye-factory.net",
     su: subject
   });
-  window.open(`https://mail.google.com/mail/?${params.toString()}`, "_blank", "noopener");
+  window.open("https://mail.google.com/mail/?" + params.toString(), "_blank", "noopener");
 });
+
+applyLanguage(detectLanguage(), false);
+updateTrailerUi(0);
 </script>
 </body>
 </html>
