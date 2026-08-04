@@ -4,11 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Amnesia Bullet | eye-factory</title>
-<meta name="description" content="Amnesia Bulletは、記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲームです。ジャイロ操作対応の体験版をSteamで配信予定。">
+<meta name="description" content="Amnesia Bulletは、記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲームです。ジャイロ操作対応。2026年8月7日よりSteam早期アクセス開始。">
 <link rel="canonical" href="https://eye-factory.net/games/amnesia-bullet/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Amnesia Bullet | eye-factory">
-<meta property="og:description" content="記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲーム。Steamで体験版配信予定。">
+<meta property="og:description" content="記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲーム。ジャイロ操作対応。2026年8月7日よりSteam早期アクセス開始。">
 <meta property="og:image" content="https://eye-factory.net/games/amnesia-bullet/amnesia-bullet-social.jpg">
 <meta property="og:url" content="https://eye-factory.net/games/amnesia-bullet/">
 <meta name="twitter:card" content="summary_large_image">
@@ -606,6 +606,25 @@ a {
   font-size: 14.5px;
 }
 
+.dlc-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.dlc-card {
+  min-height: 0;
+}
+
+.dlc-card .button-row {
+  justify-content: flex-start;
+  margin-top: 20px;
+}
+
+.dlc-card .button {
+  min-height: 44px;
+  padding: 10px 20px;
+}
+
 .poster-band {
   background:
     linear-gradient(90deg, rgba(3, 9, 14, 0.98), rgba(4, 22, 28, 0.78)),
@@ -939,6 +958,7 @@ textarea:focus {
   }
 
   .feature-grid,
+  .dlc-grid,
   .form-grid {
     grid-template-columns: 1fr;
   }
@@ -1016,11 +1036,11 @@ textarea:focus {
       <p class="hero-support-line">TPS Shooting Game / Gyro Controller Support</p>
       <p class="hero-lead desktop-copy">
         記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲーム。
-        体験版では1stメモリー（青）の全ステージを遊べ、クリアごとに高難易度へ挑戦できます。
+        体験版から、DualSenseおよびNintendo Switch Proコントローラーのジャイロ操作に対応しています。
       </p>
       <p class="hero-lead mobile-copy">
         記憶を取り戻すため、“わるいもの”と戦うTPS。<br>
-        体験版では1stメモリー（青）を最後まで遊べます。
+        体験版から対応コントローラーのジャイロ操作で遊べます。
       </p>
       <div class="trailer-carousel" data-trailer-carousel aria-label="Official trailers">
         <div class="trailer-viewport" tabindex="0" aria-label="トレーラー。左右ボタンで切り替え">
@@ -1053,8 +1073,8 @@ textarea:focus {
     <div class="wrap">
       <div class="section-title">
         <p class="eyebrow">Steam</p>
-        <h2>8月上旬よりアーリーアクセス開始予定。</h2>
-        <p>ウィッシュリスト登録と体験版のダウンロードはSteamから。</p>
+        <h2>8月7日よりアーリーアクセス開始！</h2>
+        <p>製品情報、無料体験版、最新のお知らせはSteam販売ページからご確認いただけます。</p>
       </div>
       <div class="steam-showcase">
         <div class="steam-widget-frame">
@@ -1062,9 +1082,9 @@ textarea:focus {
         </div>
         <aside class="steam-panel" aria-label="Steam information">
           <p>
-            ウィッシュリスト登録・ご購入をお待ちしています。
+            製品版のご購入、ウィッシュリスト登録、無料体験版のダウンロードはSteamから。
           </p>
-          <a class="button primary" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">Steamページへ</a>
+          <a class="button primary" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener">Steam販売ページを見る</a>
         </aside>
       </div>
     </div>
@@ -1096,6 +1116,66 @@ textarea:focus {
           <div class="feature-shot"><img src="feature-growth.jpg" alt="ステータスアップ画面" loading="lazy"></div>
           <h3>ステータスアップ</h3>
           <p>戦闘で得たクラウンコインを使い、HPや攻撃力を強化。高難易度の攻略へ向けて育成できます。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="post-story">
+    <div class="wrap">
+      <div class="section-title">
+        <p class="eyebrow">After Story</p>
+        <h2>ストーリークリア後も、記憶の世界は続く。</h2>
+        <p>真エンドへ続く戦闘や、クラウンコインを獲得できるミニゲーム、限界へ挑むエンドコンテンツが開放されます。</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card" tabindex="0">
+          <div class="feature-shot"><img src="poststory-hope.webp" alt="希望の扉の戦闘画面" loading="lazy"></div>
+          <h3>希望の扉</h3>
+          <p>メインストーリークリア後に開放される、真エンドへ続く特別な戦闘コンテンツです。</p>
+        </article>
+        <article class="feature-card" tabindex="0">
+          <div class="feature-shot"><img src="poststory-memoria-beat.webp" alt="音楽ゲーム MEMORIA BEAT のプレイ画面" loading="lazy"></div>
+          <h3>MEMORIA BEAT</h3>
+          <p>楽曲に合わせてノーツを入力する音楽ゲーム。プレイ結果に応じてクラウンコインを獲得できます。</p>
+        </article>
+        <article class="feature-card" tabindex="0">
+          <div class="feature-shot"><img src="poststory-task-bullet.webp" alt="タスクバー型放置ゲーム TASK BULLET のプレイ画面" loading="lazy"></div>
+          <h3>TASK BULLET</h3>
+          <p>作業をしながら楽しめるタスクバー型の放置ゲーム。敵を倒してクラウンコインを持ち帰れます。</p>
+        </article>
+        <article class="feature-card" tabindex="0">
+          <div class="feature-shot"><img src="poststory-abyss.webp" alt="奈落の扉の戦闘画面" loading="lazy"></div>
+          <h3>奈落の扉</h3>
+          <p>希望の扉クリア後に開放。HPが尽きるまで戦い、撃破数の限界へ挑むエンドコンテンツです。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight" id="dlc">
+    <div class="wrap">
+      <div class="section-title">
+        <p class="eyebrow">Downloadable Content</p>
+        <h2>冒険と育成を支える追加コンテンツ。</h2>
+        <p>プレイスタイルに合わせて選べる、2種類のDLCを用意しています。</p>
+      </div>
+      <div class="feature-grid dlc-grid">
+        <article class="feature-card dlc-card">
+          <div class="feature-shot"><img src="dlc-crown-coin-5000.webp" alt="Amnesia Bullet クラウンコイン5000枚 DLC" loading="lazy"></div>
+          <h3>クラウンコイン×5,000</h3>
+          <p>クラウンコイン5,000枚を受け取れるDLC。ゲーム序盤からステータス育成を進めたい方におすすめです。</p>
+          <div class="button-row">
+            <a class="button" href="https://store.steampowered.com/app/4994700/" target="_blank" rel="noopener">Steamで見る</a>
+          </div>
+        </article>
+        <article class="feature-card dlc-card">
+          <div class="feature-shot"><img src="dlc-ring-of-grace.webp" alt="Amnesia Bullet 恩寵の指輪 DLC" loading="lazy"></div>
+          <h3>恩寵の指輪</h3>
+          <p>メモリークリアボーナスと「希望の扉」「奈落の扉」の撃破ボーナスを3倍、ミニゲーム報酬をさらに2倍にする永続アイテム。ストーリークリア後の育成や、やり込みを楽しみたい方におすすめです。</p>
+          <div class="button-row">
+            <a class="button" href="https://store.steampowered.com/app/4996740/" target="_blank" rel="noopener">Steamで見る</a>
+          </div>
         </article>
       </div>
     </div>
