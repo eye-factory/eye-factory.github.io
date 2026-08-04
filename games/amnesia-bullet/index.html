@@ -48,7 +48,8 @@ html {
   scroll-behavior: smooth;
 }
 
-section[id] {
+section[id],
+#movie {
   scroll-margin-top: 84px;
 }
 
@@ -133,13 +134,13 @@ a {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 26px;
+  gap: 16px;
   color: var(--muted);
   font-family: var(--font-en);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
 }
 
 .nav-links a {
@@ -158,7 +159,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 18px;
+  gap: 12px;
 }
 
 .language-switch {
@@ -167,13 +168,13 @@ a {
 }
 
 .language-toggle {
-  min-width: 110px;
-  height: 38px;
-  padding: 0 13px;
+  min-width: 86px;
+  height: 36px;
+  padding: 0 9px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 5px;
   border: 1px solid rgba(123, 229, 255, 0.5);
   border-radius: 6px;
   color: var(--ink);
@@ -937,18 +938,19 @@ textarea:focus {
   }
 
   .nav-actions {
-    gap: 12px;
+    gap: 9px;
   }
 
   .nav-links {
-    gap: 14px;
-    font-size: 11px;
-    letter-spacing: 0.05em;
+    gap: 12px;
+    font-size: 10px;
+    letter-spacing: 0.04em;
   }
 
   .language-toggle {
-    min-width: 96px;
-    padding: 0 10px;
+    min-width: 82px;
+    padding: 0 7px;
+    font-size: 11px;
   }
 
   .hero-inner {
@@ -1006,7 +1008,7 @@ textarea:focus {
   .nav-links {
     min-width: 0;
     flex: 1 1 auto;
-    gap: 15px;
+    gap: 12px;
     overflow-x: auto;
     overscroll-behavior-inline: contain;
     scrollbar-width: none;
@@ -1023,10 +1025,10 @@ textarea:focus {
   }
 
   .language-toggle {
-    min-width: 83px;
+    min-width: 76px;
     height: 34px;
-    padding: 0 8px;
-    font-size: 11px;
+    padding: 0 6px;
+    font-size: 10px;
   }
 
   .language-menu {
@@ -1035,7 +1037,8 @@ textarea:focus {
     right: 16px;
   }
 
-  section[id] {
+  section[id],
+  #movie {
     scroll-margin-top: 68px;
   }
 
@@ -1162,12 +1165,14 @@ textarea:focus {
     </a>
     <div class="nav-actions">
       <div class="nav-links">
-        <a href="#top">予告</a>
-        <a href="#features">特徴</a>
-        <a href="#post-story">クリア後</a>
+        <a href="#top">TOP</a>
+        <a href="#movie">MOVIE</a>
+        <a href="#trailer">STEAM</a>
+        <a href="#features">FEATURES</a>
+        <a href="#post-story">AFTER</a>
         <a href="#dlc">DLC</a>
-        <a href="#demo">体験版</a>
-        <a href="#contact">メール</a>
+        <a href="#demo">DEMO</a>
+        <a href="#contact">MAIL</a>
       </div>
       <div class="language-switch" id="languageSwitch">
         <button class="language-toggle" id="languageToggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="languageMenu">
@@ -1199,7 +1204,7 @@ textarea:focus {
         記憶を取り戻すため、“わるいもの”と戦うTPS。<br>
         DualSenseおよびNintendo Switch Proコントローラーのジャイロ操作に対応。
       </p>
-      <div class="trailer-carousel" data-trailer-carousel aria-label="Official trailers">
+      <div class="trailer-carousel" id="movie" data-trailer-carousel aria-label="Official trailers">
         <div class="trailer-viewport" tabindex="0" aria-label="トレーラー。左右ボタンで切り替え">
           <div class="trailer-track" id="trailerTrack">
             <article class="trailer-card" aria-hidden="false">
@@ -1424,7 +1429,7 @@ const siteTranslations = {
     description: "Amnesia Bulletは、記憶を取り戻すため、“わるいもの”と戦うTPSシューティングゲームです。ジャイロ操作対応。2026年8月7日よりSteam早期アクセス開始。",
     navAria: "メインナビゲーション",
     languageAria: "表示言語を選択",
-    nav: ["予告", "特徴", "クリア後", "DLC", "体験版", "メール"],
+    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "記憶を取り戻すために、弾丸で道を切り開く。",
       support: "TPSシューティング / ジャイロ操作対応",
@@ -1500,7 +1505,7 @@ const siteTranslations = {
     description: "Amnesia Bullet is a third-person shooter about a girl fighting the “bad things” to recover her lost memories. Gyro aiming supported. Steam Early Access begins August 7, 2026.",
     navAria: "Primary navigation",
     languageAria: "Select display language",
-    nav: ["Trailer", "Features", "After", "DLC", "Demo", "Contact"],
+    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "Fight your way forward with bullets to reclaim your memories.",
       support: "TPS Shooting Game / Gyro Controller Support",
@@ -1576,7 +1581,7 @@ const siteTranslations = {
     description: "Amnesia Bullet은 기억을 되찾기 위해 ‘나쁜 것’과 싸우는 TPS 슈팅 게임입니다. 자이로 조작 지원. 2026년 8월 7일 Steam 앞서 해보기 시작.",
     navAria: "주요 내비게이션",
     languageAria: "표시 언어 선택",
-    nav: ["영상", "특징", "클리어 후", "DLC", "체험판", "문의"],
+    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "기억을 되찾기 위해 총탄으로 길을 연다.",
       support: "TPS 슈팅 게임 / 자이로 조작 지원",
@@ -1652,7 +1657,7 @@ const siteTranslations = {
     description: "Amnesia Bullet是一款失忆少女为找回记忆、与“坏东西”战斗的第三人称射击游戏。支持陀螺仪操作。2026年8月7日开启Steam抢先体验。",
     navAria: "主导航",
     languageAria: "选择显示语言",
-    nav: ["预告", "特色", "通关后", "DLC", "试玩版", "联系"],
+    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "为了找回记忆，用子弹开辟前路。",
       support: "第三人称射击 / 支持陀螺仪操作",
@@ -1728,7 +1733,7 @@ const siteTranslations = {
     description: "Amnesia Bullet是一款失憶少女為找回記憶、與「壞東西」戰鬥的第三人稱射擊遊戲。支援陀螺儀操作。2026年8月7日展開Steam搶先體驗。",
     navAria: "主要導覽",
     languageAria: "選擇顯示語言",
-    nav: ["預告", "特色", "通關後", "DLC", "體驗版", "聯絡"],
+    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "為了找回記憶，以子彈開闢前路。",
       support: "第三人稱射擊 / 支援陀螺儀操作",
