@@ -1368,9 +1368,15 @@ textarea:focus {
               </div>
             </article>
             <article class="trailer-card" aria-hidden="true" inert>
-              <div class="trailer-card-label">2nd Trailer <span class="trailer-badge">NEW</span></div>
+              <div class="trailer-card-label">2nd Trailer</div>
               <div class="hero-video">
                 <iframe src="https://www.youtube-nocookie.com/embed/w5sGHUClRSM?rel=0&amp;playsinline=1" title="Amnesia Bullet 2nd Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+              </div>
+            </article>
+            <article class="trailer-card" aria-hidden="true" inert>
+              <div class="trailer-card-label">3rd Trailer <span class="trailer-badge">JP ver.</span> <span class="trailer-badge">NEW</span></div>
+              <div class="hero-video">
+                <iframe src="https://www.youtube-nocookie.com/embed/enyU4g-OENs?rel=0&amp;playsinline=1" title="Amnesia Bullet 3rd Trailer - JP ver." loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
               </div>
             </article>
           </div>
@@ -1380,6 +1386,7 @@ textarea:focus {
         <div class="trailer-dots" aria-label="トレーラー選択">
           <button class="trailer-dot is-active" type="button" aria-label="1stトレーラーを表示" aria-current="true"></button>
           <button class="trailer-dot" type="button" aria-label="2ndトレーラーを表示"></button>
+          <button class="trailer-dot" type="button" aria-label="3rdトレーラー（JP ver.）を表示"></button>
         </div>
       </div>
     </div>
@@ -1565,7 +1572,7 @@ textarea:focus {
       <a class="footer-social-link" href="https://store.steampowered.com/app/4747710/Amnesia_Bullet/" target="_blank" rel="noopener" aria-label="Steam" title="Steam">
         <img src="steam-icon.svg" alt="" width="34" height="34">
       </a>
-      <a class="footer-social-link" href="https://youtu.be/w5sGHUClRSM" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube">
+      <a class="footer-social-link" href="https://youtu.be/enyU4g-OENs" target="_blank" rel="noopener" aria-label="YouTube" title="YouTube">
         <img src="youtube-icon.svg" alt="" width="34" height="34">
       </a>
       <a class="footer-social-link" href="https://x.com/SINNYA_HAIKAI" target="_blank" rel="noopener" aria-label="X" title="X">
@@ -1608,7 +1615,7 @@ const siteTranslations = {
       prev: "前のトレーラー",
       next: "次のトレーラー",
       dots: "トレーラー選択",
-      dotLabels: ["1stトレーラーを表示", "2ndトレーラーを表示"]
+      dotLabels: ["1stトレーラーを表示", "2ndトレーラーを表示", "3rdトレーラー（JP ver.）を表示"]
     },
     steam: {
       title: "8月7日よりアーリーアクセス開始！",
@@ -1685,7 +1692,7 @@ const siteTranslations = {
       prev: "Previous trailer",
       next: "Next trailer",
       dots: "Select trailer",
-      dotLabels: ["Show the first trailer", "Show the second trailer"]
+      dotLabels: ["Show the first trailer", "Show the second trailer", "Show the third trailer (JP ver.)"]
     },
     steam: {
       title: "Steam Early Access begins August 7!",
@@ -1762,7 +1769,7 @@ const siteTranslations = {
       prev: "이전 트레일러",
       next: "다음 트레일러",
       dots: "트레일러 선택",
-      dotLabels: ["첫 번째 트레일러 보기", "두 번째 트레일러 보기"]
+      dotLabels: ["첫 번째 트레일러 보기", "두 번째 트레일러 보기", "세 번째 트레일러(JP ver.) 보기"]
     },
     steam: {
       title: "8월 7일 Steam 앞서 해보기 시작!",
@@ -1839,7 +1846,7 @@ const siteTranslations = {
       prev: "上一部预告片",
       next: "下一部预告片",
       dots: "选择预告片",
-      dotLabels: ["显示第一部预告片", "显示第二部预告片"]
+      dotLabels: ["显示第一部预告片", "显示第二部预告片", "显示第三部预告片（JP ver.）"]
     },
     steam: {
       title: "8月7日开启Steam抢先体验！",
@@ -1916,7 +1923,7 @@ const siteTranslations = {
       prev: "上一部預告片",
       next: "下一部預告片",
       dots: "選擇預告片",
-      dotLabels: ["顯示第一部預告片", "顯示第二部預告片"]
+      dotLabels: ["顯示第一部預告片", "顯示第二部預告片", "顯示第三部預告片（JP ver.）"]
     },
     steam: {
       title: "8月7日展開Steam搶先體驗！",
