@@ -626,6 +626,16 @@ a {
   gap: 14px;
 }
 
+.feature-grid--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.feature-grid--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
 .feature-card {
   padding: 14px 14px 20px;
   min-height: 300px;
@@ -676,10 +686,17 @@ a {
   transition: opacity 0.28s ease, filter 0.28s ease, transform 0.28s ease;
 }
 
+.feature-shot--contain img {
+  object-fit: contain;
+}
 .feature-card:hover .feature-shot img {
   opacity: 1;
   filter: saturate(1.08) contrast(1.08);
   transform: scale(1.045);
+}
+
+.feature-card:hover .feature-shot--contain img {
+  transform: scale(1.015);
 }
 
 .feature-shot::after {
@@ -826,6 +843,34 @@ body.feature-dialog-open {
   min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+.dlc-card h3 {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  column-gap: 0.5em;
+}
+
+.dlc-title-bonus {
+  display: inline-block;
+  color: var(--gold);
+  font-size: 0.66em;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  transform: rotate(-3deg);
+  text-shadow: 0 0 12px rgba(255, 216, 107, 0.35);
+}
+
+.dlc-description-main,
+.dlc-surprise-copy {
+  display: block;
+}
+
+.dlc-surprise-copy {
+  margin-top: 0.65em;
+  color: #ffe29a;
+  font-weight: 800;
 }
 
 .dlc-card .button-row {
@@ -1322,6 +1367,7 @@ textarea:focus {
         <a href="#movie">MOVIE</a>
         <a href="#trailer">STEAM</a>
         <a href="#features">FEATURES</a>
+        <a href="#minigames">MINIGAME</a>
         <a href="#post-story">AFTER</a>
         <a href="#dlc">DLC</a>
         <a href="#demo">DEMO</a>
@@ -1444,19 +1490,14 @@ textarea:focus {
     </div>
   </section>
 
-  <section class="section" id="post-story">
+  <section class="section" id="minigames">
     <div class="wrap">
       <div class="section-title">
-        <p class="eyebrow">After Story</p>
-        <h2>ストーリークリア後も、記憶の世界は続く。</h2>
-        <p>真エンドへ続く戦闘や、クラウンコインを獲得できるミニゲーム、限界へ挑むエンドコンテンツが開放されます。</p>
+        <p class="eyebrow">Mini Games</p>
+        <h2>ミニゲームで、クラウンコインを集めよう。</h2>
+        <p>1stメモリー（最初のエリア）をクリアすると、拠点に遊戯人が登場。クラウンコインを獲得できるミニゲームが遊べるようになります。</p>
       </div>
-      <div class="feature-grid">
-        <article class="feature-card" tabindex="0">
-          <div class="feature-shot"><img src="poststory-hope.webp" alt="希望の扉の戦闘画面" loading="lazy"></div>
-          <h3>希望の扉</h3>
-          <p>メインストーリークリア後に開放される、真エンドへ続く特別な戦闘コンテンツです。</p>
-        </article>
+      <div class="feature-grid feature-grid--two">
         <article class="feature-card" tabindex="0">
           <div class="feature-shot"><img src="poststory-memoria-beat.webp" alt="音楽ゲーム MEMORIA BEAT のプレイ画面" loading="lazy"></div>
           <h3>MEMORIA BEAT</h3>
@@ -1467,10 +1508,32 @@ textarea:focus {
           <h3>TASK BULLET</h3>
           <p>作業をしながら楽しめるタスクバー型の放置ゲーム。敵を倒してクラウンコインを持ち帰れます。</p>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tight" id="post-story">
+    <div class="wrap">
+      <div class="section-title">
+        <p class="eyebrow">After Story</p>
+        <h2>ストーリークリア後も、記憶の世界は続く。</h2>
+        <p>メインストーリーの先には、真エンドへ続く戦闘と限界へ挑むエンドコンテンツ、オンライン世界ランキングが待っています。</p>
+      </div>
+      <div class="feature-grid feature-grid--three">
+        <article class="feature-card" tabindex="0">
+          <div class="feature-shot"><img src="poststory-hope.webp" alt="希望の扉の戦闘画面" loading="lazy"></div>
+          <h3>希望の扉</h3>
+          <p>メインストーリークリア後に開放される、真エンドへ続く特別な戦闘コンテンツです。</p>
+        </article>
         <article class="feature-card" tabindex="0">
           <div class="feature-shot"><img src="poststory-abyss.webp" alt="奈落の扉の戦闘画面" loading="lazy"></div>
           <h3>奈落の扉</h3>
           <p>希望の扉クリア後に開放。HPが尽きるまで戦い、撃破数の限界へ挑むエンドコンテンツです。</p>
+        </article>
+        <article class="feature-card" tabindex="0">
+          <div class="feature-shot feature-shot--contain"><img src="Rank_ally.kf.png" alt="奈落ランキングの世界TOP10画面" loading="lazy"></div>
+          <h3>奈落ランキング</h3>
+          <p>奈落の扉で記録した撃破数をオンライン世界ランキングへ送信。世界TOP10と自分の順位をゲーム内で確認できます。</p>
         </article>
       </div>
     </div>
@@ -1486,16 +1549,16 @@ textarea:focus {
       <div class="feature-grid dlc-grid">
         <article class="feature-card dlc-card">
           <div class="feature-shot"><img src="dlc-crown-coin-5000.webp" alt="Amnesia Bullet クラウンコイン5000枚 DLC" loading="lazy"></div>
-          <h3>クラウンコイン×5,000</h3>
-          <p>クラウンコイン5,000枚を受け取れるDLC。ゲーム序盤からステータス育成を進めたい方におすすめです。</p>
+          <h3><span class="dlc-title-main">クラウンコイン×5,000</span><small class="dlc-title-bonus">＋3,000</small></h3>
+          <p><span class="dlc-description-main">クラウンコイン5,000枚を受け取れるDLC。ゲーム序盤からステータス育成を進めたい方におすすめです。</span><span class="dlc-surprise-copy">サプライズ追加で3,000枚！ 合わせて8,000枚のクラウンコインを受け取れます。</span></p>
           <div class="button-row">
             <a class="button" href="https://store.steampowered.com/app/4994700/" target="_blank" rel="noopener">Steamで見る</a>
           </div>
         </article>
         <article class="feature-card dlc-card">
           <div class="feature-shot"><img src="dlc-ring-of-grace.webp" alt="Amnesia Bullet 恩寵の指輪 DLC" loading="lazy"></div>
-          <h3>恩寵の指輪</h3>
-          <p>メモリークリアボーナスと「希望の扉」「奈落の扉」の撃破ボーナスを3倍、ミニゲーム報酬をさらに2倍にする永続アイテム。ストーリークリア後の育成や、やり込みを楽しみたい方におすすめです。</p>
+          <h3><span class="dlc-title-main">恩寵の指輪</span></h3>
+          <p><span class="dlc-description-main">メモリークリアボーナスと「希望の扉」「奈落の扉」の撃破ボーナスを3倍、ミニゲーム報酬をさらに2倍にする永続アイテム。ストーリークリア後の育成や、やり込みを楽しみたい方におすすめです。</span></p>
           <div class="button-row">
             <a class="button" href="https://store.steampowered.com/app/4996740/" target="_blank" rel="noopener">Steamで見る</a>
           </div>
@@ -1604,7 +1667,7 @@ const siteTranslations = {
     navAria: "メインナビゲーション",
     languageAria: "表示言語を選択",
     modalClose: "\u9589\u3058\u308b",
-    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
+    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "MINIGAME", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "記憶を取り戻すために、弾丸で道を切り開く。",
       support: "TPSシューティング / ジャイロ操作対応",
@@ -1633,16 +1696,24 @@ const siteTranslations = {
       ],
       alts: ["TPSシューティングのゲーム画面", "ジャイロ操作対応コントローラー", "メモリー攻略の会話画面", "ステータスアップ画面"]
     },
+    minigames: {
+      title: "ミニゲームで、クラウンコインを集めよう。",
+      intro: "1stメモリー（最初のエリア）をクリアすると、拠点に遊戯人が登場。クラウンコインを獲得できるミニゲームが遊べるようになります。",
+      cards: [
+        ["MEMORIA BEAT", "楽曲に合わせてノーツを入力する音楽ゲーム。プレイ結果に応じてクラウンコインを獲得できます。"],
+        ["TASK BULLET", "作業をしながら楽しめるタスクバー型の放置ゲーム。敵を倒してクラウンコインを持ち帰れます。"]
+      ],
+      alts: ["音楽ゲーム MEMORIA BEAT のプレイ画面", "タスクバー型放置ゲーム TASK BULLET のプレイ画面"]
+    },
     after: {
       title: "ストーリークリア後も、記憶の世界は続く。",
-      intro: "真エンドへ続く戦闘や、クラウンコインを獲得できるミニゲーム、限界へ挑むエンドコンテンツが開放されます。",
+      intro: "メインストーリーの先には、真エンドへ続く戦闘と限界へ挑むエンドコンテンツ、オンライン世界ランキングが待っています。",
       cards: [
         ["希望の扉", "メインストーリークリア後に開放される、真エンドへ続く特別な戦闘コンテンツです。"],
-        ["MEMORIA BEAT", "楽曲に合わせてノーツを入力する音楽ゲーム。プレイ結果に応じてクラウンコインを獲得できます。"],
-        ["TASK BULLET", "作業をしながら楽しめるタスクバー型の放置ゲーム。敵を倒してクラウンコインを持ち帰れます。"],
-        ["奈落の扉", "希望の扉クリア後に開放。HPが尽きるまで戦い、撃破数の限界へ挑むエンドコンテンツです。"]
+        ["奈落の扉", "希望の扉クリア後に開放。HPが尽きるまで戦い、撃破数の限界へ挑むエンドコンテンツです。"],
+        ["奈落ランキング", "奈落の扉で記録した撃破数をオンライン世界ランキングへ送信。世界TOP10と自分の順位をゲーム内で確認できます。"]
       ],
-      alts: ["希望の扉の戦闘画面", "音楽ゲーム MEMORIA BEAT のプレイ画面", "タスクバー型放置ゲーム TASK BULLET のプレイ画面", "奈落の扉の戦闘画面"]
+      alts: ["希望の扉の戦闘画面", "奈落の扉の戦闘画面", "奈落ランキングの世界TOP10画面"]
     },
     dlc: {
       title: "序盤と育成を支える追加コンテンツ。",
@@ -1651,6 +1722,7 @@ const siteTranslations = {
         ["クラウンコイン×5,000", "クラウンコイン5,000枚を受け取れるDLC。ゲーム序盤からステータス育成を進めたい方におすすめです。"],
         ["恩寵の指輪", "メモリークリアボーナスと「希望の扉」「奈落の扉」の撃破ボーナスを3倍、ミニゲーム報酬をさらに2倍にする永続アイテム。ストーリークリア後の育成や、やり込みを楽しみたい方におすすめです。"]
       ],
+      coinBonus: "サプライズ追加で3,000枚！ 合わせて8,000枚のクラウンコインを受け取れます。",
       buttons: ["Steamで見る", "Steamで見る"],
       alts: ["Amnesia Bullet クラウンコイン5000枚DLC", "Amnesia Bullet 恩寵の指輪DLC"]
     },
@@ -1681,7 +1753,7 @@ const siteTranslations = {
     navAria: "Primary navigation",
     languageAria: "Select display language",
     modalClose: "Close",
-    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
+    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "MINIGAME", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "Fight your way forward with bullets to reclaim your memories.",
       support: "TPS Shooting Game / Gyro Controller Support",
@@ -1710,16 +1782,24 @@ const siteTranslations = {
       ],
       alts: ["Third-person shooting gameplay", "Controller with gyro aiming support", "Dialogue scene from a memory stage", "Character status upgrade screen"]
     },
+    minigames: {
+      title: "Play mini-games and collect Crown Coins.",
+      intro: "Clear the 1st Memory (the opening area) and the Game Master will appear at your base, unlocking mini-games where you can earn Crown Coins.",
+      cards: [
+        ["MEMORIA BEAT", "A rhythm game where you hit notes to the music and earn Crown Coins based on your results."],
+        ["TASK BULLET", "An idle taskbar game designed to run alongside your work. Defeat enemies and bring Crown Coins back to the main game."]
+      ],
+      alts: ["MEMORIA BEAT rhythm gameplay", "TASK BULLET taskbar idle gameplay"]
+    },
     after: {
       title: "The world of memories continues after the story.",
-      intro: "Unlock battles leading to the true ending, mini-games that reward Crown Coins, and endgame challenges that test your limits.",
+      intro: "Beyond the main story await battles leading to the true ending, endgame challenges that test your limits, and an online world leaderboard.",
       cards: [
         ["Door of Hope", "A special battle unlocked after completing the main story, leading toward the true ending."],
-        ["MEMORIA BEAT", "A rhythm game where you hit notes to the music and earn Crown Coins based on your results."],
-        ["TASK BULLET", "An idle taskbar game designed to run alongside your work. Defeat enemies and bring Crown Coins back to the main game."],
-        ["Door of the Abyss", "Unlocked after clearing the Door of Hope. Fight until your HP reaches zero and push your defeat count as far as possible."]
+        ["Door of the Abyss", "Unlocked after clearing the Door of Hope. Fight until your HP reaches zero and push your defeat count as far as possible."],
+        ["Abyss Ranking", "Submit your Door of the Abyss defeat count to the online world leaderboard, then check the global Top 10 and your own rank in-game."]
       ],
-      alts: ["Battle at the Door of Hope", "MEMORIA BEAT rhythm gameplay", "TASK BULLET taskbar idle gameplay", "Battle at the Door of the Abyss"]
+      alts: ["Battle at the Door of Hope", "Battle at the Door of the Abyss", "Door of the Abyss online world leaderboard"]
     },
     dlc: {
       title: "Additional content for a stronger start and deeper progression.",
@@ -1728,6 +1808,7 @@ const siteTranslations = {
         ["5,000 Crown Coins", "Receive 5,000 Crown Coins. Recommended for players who want to accelerate status growth from the beginning of the game."],
         ["Ring of Grace", "A permanent item that triples Memory clear bonuses and defeat bonuses from the Door of Hope and Door of the Abyss, and doubles mini-game rewards again. Recommended for post-story growth and extended play."]
       ],
+      coinBonus: "Surprise bonus: 3,000 extra coins—8,000 Crown Coins in total!",
       buttons: ["View on Steam", "View on Steam"],
       alts: ["Amnesia Bullet 5,000 Crown Coins DLC", "Amnesia Bullet Ring of Grace DLC"]
     },
@@ -1758,7 +1839,7 @@ const siteTranslations = {
     navAria: "주요 내비게이션",
     languageAria: "표시 언어 선택",
     modalClose: "\ub2eb\uae30",
-    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
+    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "MINIGAME", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "기억을 되찾기 위해 총탄으로 길을 연다.",
       support: "TPS 슈팅 게임 / 자이로 조작 지원",
@@ -1787,16 +1868,24 @@ const siteTranslations = {
       ],
       alts: ["TPS 슈팅 게임 화면", "자이로 조작 지원 컨트롤러", "메모리 공략 대화 화면", "스테이터스 강화 화면"]
     },
+    minigames: {
+      title: "미니게임으로 크라운 코인을 모아 보세요.",
+      intro: "1st 메모리(첫 번째 에리어)를 클리어하면 거점에 유희인이 등장하며, 크라운 코인을 획득할 수 있는 미니게임이 해방됩니다.",
+      cards: [
+        ["MEMORIA BEAT", "음악에 맞춰 노트를 입력하는 리듬 게임입니다. 플레이 결과에 따라 크라운 코인을 획득할 수 있습니다."],
+        ["TASK BULLET", "작업하면서 즐길 수 있는 작업 표시줄형 방치 게임입니다. 적을 쓰러뜨리고 크라운 코인을 본편으로 가져올 수 있습니다."]
+      ],
+      alts: ["MEMORIA BEAT 리듬 게임 화면", "TASK BULLET 작업 표시줄 방치 게임 화면"]
+    },
     after: {
       title: "스토리를 클리어한 뒤에도 기억의 세계는 계속됩니다.",
-      intro: "진 엔딩으로 이어지는 전투, 크라운 코인을 얻는 미니게임, 한계에 도전하는 엔드 콘텐츠가 해방됩니다.",
+      intro: "메인 스토리 너머에는 진 엔딩으로 이어지는 전투와 한계에 도전하는 엔드 콘텐츠, 온라인 세계 랭킹이 기다리고 있습니다.",
       cards: [
         ["희망의 문", "메인 스토리 클리어 후 해방되는 진 엔딩으로 이어지는 특별 전투 콘텐츠입니다."],
-        ["MEMORIA BEAT", "음악에 맞춰 노트를 입력하는 리듬 게임입니다. 플레이 결과에 따라 크라운 코인을 획득할 수 있습니다."],
-        ["TASK BULLET", "작업하면서 즐길 수 있는 작업 표시줄형 방치 게임입니다. 적을 쓰러뜨리고 크라운 코인을 본편으로 가져올 수 있습니다."],
-        ["나락의 문", "희망의 문 클리어 후 해방됩니다. HP가 다할 때까지 싸우며 격파 수의 한계에 도전하는 엔드 콘텐츠입니다."]
+        ["나락의 문", "희망의 문 클리어 후 해방됩니다. HP가 다할 때까지 싸우며 격파 수의 한계에 도전하는 엔드 콘텐츠입니다."],
+        ["나락 랭킹", "나락의 문에서 기록한 격파 수를 온라인 세계 랭킹에 전송하고, 세계 TOP10과 자신의 순위를 게임 안에서 확인할 수 있습니다."]
       ],
-      alts: ["희망의 문 전투 화면", "MEMORIA BEAT 리듬 게임 화면", "TASK BULLET 작업 표시줄 방치 게임 화면", "나락의 문 전투 화면"]
+      alts: ["희망의 문 전투 화면", "나락의 문 전투 화면", "나락 랭킹 세계 TOP10 화면"]
     },
     dlc: {
       title: "초반과 성장을 돕는 추가 콘텐츠.",
@@ -1805,6 +1894,7 @@ const siteTranslations = {
         ["크라운 코인×5,000", "크라운 코인 5,000개를 받을 수 있는 DLC입니다. 게임 초반부터 스테이터스 성장을 빠르게 진행하고 싶은 분께 추천합니다."],
         ["은총의 반지", "메모리 클리어 보너스와 ‘희망의 문’, ‘나락의 문’ 격파 보너스를 3배로, 미니게임 보상을 추가로 2배로 만드는 영구 아이템입니다. 스토리 클리어 후 성장과 파고들기를 즐기는 분께 추천합니다."]
       ],
+      coinBonus: "서프라이즈 보너스로 3,000개 추가! 합계 8,000개의 크라운 코인을 받을 수 있습니다.",
       buttons: ["Steam에서 보기", "Steam에서 보기"],
       alts: ["Amnesia Bullet 크라운 코인 5000개 DLC", "Amnesia Bullet 은총의 반지 DLC"]
     },
@@ -1835,7 +1925,7 @@ const siteTranslations = {
     navAria: "主导航",
     languageAria: "选择显示语言",
     modalClose: "\u5173\u95ed",
-    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
+    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "MINIGAME", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "为了找回记忆，用子弹开辟前路。",
       support: "第三人称射击 / 支持陀螺仪操作",
@@ -1864,16 +1954,24 @@ const siteTranslations = {
       ],
       alts: ["第三人称射击游戏画面", "支持陀螺仪操作的控制器", "记忆关卡中的对话画面", "角色状态强化画面"]
     },
+    minigames: {
+      title: "游玩小游戏，收集皇冠硬币。",
+      intro: "通关1st记忆（最初区域）后，游艺人会出现在据点，并解锁可获得皇冠硬币的小游戏。",
+      cards: [
+        ["MEMORIA BEAT", "配合音乐输入音符的节奏游戏。可根据游玩结果获得皇冠硬币。"],
+        ["TASK BULLET", "可在工作时游玩的任务栏放置游戏。击败敌人，将皇冠硬币带回本篇。"]
+      ],
+      alts: ["MEMORIA BEAT节奏游戏画面", "TASK BULLET任务栏放置游戏画面"]
+    },
     after: {
       title: "主线通关后，记忆世界仍将继续。",
-      intro: "解锁通往真结局的战斗、可获得皇冠硬币的小游戏，以及挑战极限的终局内容。",
+      intro: "主线故事之后，还有通往真结局的战斗、挑战极限的终局内容，以及在线世界排行榜等待着你。",
       cards: [
         ["希望之门", "完成主线故事后解锁，通往真结局的特殊战斗内容。"],
-        ["MEMORIA BEAT", "配合音乐输入音符的节奏游戏。可根据游玩结果获得皇冠硬币。"],
-        ["TASK BULLET", "可在工作时游玩的任务栏放置游戏。击败敌人，将皇冠硬币带回本篇。"],
-        ["奈落之门", "通关希望之门后解锁。战斗至HP耗尽，挑战击破数量极限的终局内容。"]
+        ["奈落之门", "通关希望之门后解锁。战斗至HP耗尽，挑战击破数量极限的终局内容。"],
+        ["奈落排行榜", "将奈落之门的击破数发送至在线世界排行榜，并可在游戏内查看世界TOP10和自己的排名。"]
       ],
-      alts: ["希望之门战斗画面", "MEMORIA BEAT节奏游戏画面", "TASK BULLET任务栏放置游戏画面", "奈落之门战斗画面"]
+      alts: ["希望之门战斗画面", "奈落之门战斗画面", "奈落排行榜世界TOP10画面"]
     },
     dlc: {
       title: "帮助前期与养成的追加内容。",
@@ -1882,6 +1980,7 @@ const siteTranslations = {
         ["皇冠硬币×5,000", "可领取5,000枚皇冠硬币的DLC。推荐给希望从游戏前期就加快状态养成的玩家。"],
         ["恩宠之戒", "永久道具：记忆通关奖励及“希望之门”“奈落之门”的击破奖励变为3倍，小游戏奖励再变为2倍。推荐给想在通关后继续养成和深入游玩的玩家。"]
       ],
+      coinBonus: "惊喜追加3,000枚！合计可领取8,000枚皇冠硬币。",
       buttons: ["在Steam查看", "在Steam查看"],
       alts: ["Amnesia Bullet皇冠硬币5000枚DLC", "Amnesia Bullet恩宠之戒DLC"]
     },
@@ -1912,7 +2011,7 @@ const siteTranslations = {
     navAria: "主要導覽",
     languageAria: "選擇顯示語言",
     modalClose: "\u95dc\u9589",
-    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "AFTER", "DLC", "DEMO", "MAIL"],
+    nav: ["TOP", "MOVIE", "STEAM", "FEATURES", "MINIGAME", "AFTER", "DLC", "DEMO", "MAIL"],
     hero: {
       title: "為了找回記憶，以子彈開闢前路。",
       support: "第三人稱射擊 / 支援陀螺儀操作",
@@ -1941,16 +2040,24 @@ const siteTranslations = {
       ],
       alts: ["第三人稱射擊遊戲畫面", "支援陀螺儀操作的控制器", "記憶關卡中的對話畫面", "角色能力值強化畫面"]
     },
+    minigames: {
+      title: "遊玩小遊戲，收集皇冠硬幣。",
+      intro: "通關1st記憶（最初區域）後，遊藝人會出現在據點，並解鎖可獲得皇冠硬幣的小遊戲。",
+      cards: [
+        ["MEMORIA BEAT", "配合音樂輸入音符的節奏遊戲。可依據遊玩結果獲得皇冠硬幣。"],
+        ["TASK BULLET", "可在工作時遊玩的工作列放置遊戲。擊敗敵人，將皇冠硬幣帶回本篇。"]
+      ],
+      alts: ["MEMORIA BEAT節奏遊戲畫面", "TASK BULLET工作列放置遊戲畫面"]
+    },
     after: {
       title: "主線通關後，記憶世界仍將延續。",
-      intro: "解鎖通往真結局的戰鬥、可獲得皇冠硬幣的小遊戲，以及挑戰極限的終局內容。",
+      intro: "主線故事之後，還有通往真結局的戰鬥、挑戰極限的終局內容，以及線上世界排行榜等著你。",
       cards: [
         ["希望之門", "完成主線故事後解鎖，通往真結局的特殊戰鬥內容。"],
-        ["MEMORIA BEAT", "配合音樂輸入音符的節奏遊戲。可依據遊玩結果獲得皇冠硬幣。"],
-        ["TASK BULLET", "可在工作時遊玩的工作列放置遊戲。擊敗敵人，將皇冠硬幣帶回本篇。"],
-        ["奈落之門", "通關希望之門後解鎖。戰鬥至HP耗盡，挑戰擊破數量極限的終局內容。"]
+        ["奈落之門", "通關希望之門後解鎖。戰鬥至HP耗盡，挑戰擊破數量極限的終局內容。"],
+        ["奈落排行榜", "將奈落之門的擊破數傳送至線上世界排行榜，並可在遊戲內查看世界TOP10與自己的排名。"]
       ],
-      alts: ["希望之門戰鬥畫面", "MEMORIA BEAT節奏遊戲畫面", "TASK BULLET工作列放置遊戲畫面", "奈落之門戰鬥畫面"]
+      alts: ["希望之門戰鬥畫面", "奈落之門戰鬥畫面", "奈落排行榜世界TOP10畫面"]
     },
     dlc: {
       title: "協助前期與養成的追加內容。",
@@ -1959,6 +2066,7 @@ const siteTranslations = {
         ["皇冠硬幣×5,000", "可領取5,000枚皇冠硬幣的DLC。推薦給希望從遊戲前期就加快能力值養成的玩家。"],
         ["恩寵之戒", "永久道具：記憶通關獎勵及「希望之門」「奈落之門」的擊破獎勵變為3倍，小遊戲獎勵再變為2倍。推薦給想在通關後繼續養成與深入遊玩的玩家。"]
       ],
+      coinBonus: "驚喜追加3,000枚！合計可領取8,000枚皇冠硬幣。",
       buttons: ["在Steam查看", "在Steam查看"],
       alts: ["Amnesia Bullet皇冠硬幣5000枚DLC", "Amnesia Bullet恩寵之戒DLC"]
     },
@@ -2115,6 +2223,12 @@ function applyLanguage(code, saveSelection) {
   setTexts("#features .feature-card p", text.features.cards.map(function (card) { return card[1]; }));
   setAlts("#features .feature-shot img", text.features.alts);
 
+  setText("#minigames .section-title h2", text.minigames.title);
+  setText("#minigames .section-title p:last-child", text.minigames.intro);
+  setTexts("#minigames .feature-card h3", text.minigames.cards.map(function (card) { return card[0]; }));
+  setTexts("#minigames .feature-card p", text.minigames.cards.map(function (card) { return card[1]; }));
+  setAlts("#minigames .feature-shot img", text.minigames.alts);
+
   setText("#post-story .section-title h2", text.after.title);
   setText("#post-story .section-title p:last-child", text.after.intro);
   setTexts("#post-story .feature-card h3", text.after.cards.map(function (card) { return card[0]; }));
@@ -2123,8 +2237,9 @@ function applyLanguage(code, saveSelection) {
 
   setText("#dlc .section-title h2", text.dlc.title);
   setText("#dlc .section-title p:last-child", text.dlc.intro);
-  setTexts("#dlc .feature-card h3", text.dlc.cards.map(function (card) { return card[0]; }));
-  setTexts("#dlc .feature-card > p", text.dlc.cards.map(function (card) { return card[1]; }));
+  setTexts("#dlc .dlc-title-main", text.dlc.cards.map(function (card) { return card[0]; }));
+  setTexts("#dlc .dlc-description-main", text.dlc.cards.map(function (card) { return card[1]; }));
+  setText("#dlc .dlc-surprise-copy", text.dlc.coinBonus);
   setTexts("#dlc .feature-card .button", text.dlc.buttons);
   setAlts("#dlc .feature-shot img", text.dlc.alts);
 
