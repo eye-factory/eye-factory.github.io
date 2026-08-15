@@ -34,6 +34,9 @@
   --cyan: #55e8ff;
   --cyan-deep: #0498c5;
   --pink: #ff7bd9;
+  --neon-primary: #00d4ff;
+  --neon-secondary: #00ff88;
+  --neon-purple: #8b5cf6;
   --gold: #ffd86b;
   --red: #d03950;
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.44);
@@ -63,6 +66,121 @@ body {
   line-height: 1.72;
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
+}
+
+body > main,
+body > .footer {
+  position: relative;
+  z-index: 1;
+}
+
+.site-bg-effects {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.site-grid-bg {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.035) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: siteGridMove 20s linear infinite;
+}
+
+.site-glow {
+  position: absolute;
+  width: clamp(280px, 38vw, 560px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.28) 0%, rgba(0, 120, 255, 0.12) 38%, transparent 72%);
+  filter: blur(54px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.site-glow--one {
+  top: 8%;
+  left: -14%;
+  animation: siteGlowDriftOne 18s ease-in-out infinite alternate;
+}
+
+.site-glow--two {
+  right: -16%;
+  bottom: 2%;
+  animation: siteGlowDriftTwo 22s ease-in-out infinite alternate;
+}
+
+.site-particle {
+  position: absolute;
+  bottom: -12px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--neon-primary);
+  box-shadow: 0 0 10px var(--neon-primary), 0 0 20px var(--neon-primary);
+  opacity: 0;
+  animation: siteParticleFloat 15s linear infinite;
+}
+
+.site-particles {
+  position: absolute;
+  inset: 0;
+}
+
+.site-particle:nth-child(1) { left: 5%; animation-delay: 0s; animation-duration: 12s; }
+.site-particle:nth-child(2) { left: 15%; animation-delay: 2s; animation-duration: 18s; }
+.site-particle:nth-child(3) { left: 25%; animation-delay: 4s; animation-duration: 14s; }
+.site-particle:nth-child(4) { left: 85%; animation-delay: 1s; animation-duration: 16s; }
+.site-particle:nth-child(5) { left: 90%; animation-delay: 3s; animation-duration: 20s; }
+.site-particle:nth-child(6) { left: 95%; animation-delay: 5s; animation-duration: 13s; }
+.site-particle:nth-child(7) { left: 8%; animation-delay: 6s; animation-duration: 17s; }
+.site-particle:nth-child(8) { left: 92%; animation-delay: 7s; animation-duration: 15s; }
+
+.site-neon-line {
+  position: absolute;
+  left: -320px;
+  width: 280px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--neon-primary), transparent);
+  box-shadow: 0 0 12px rgba(0, 212, 255, 0.55);
+  opacity: 0.42;
+  animation: siteLineMove 10s linear infinite;
+}
+
+.site-neon-line--one { top: 22%; animation-delay: 0s; }
+.site-neon-line--two { top: 48%; animation-delay: -4s; animation-duration: 13s; }
+.site-neon-line--three { top: 74%; animation-delay: -7s; animation-duration: 16s; }
+
+@keyframes siteGridMove {
+  0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+  100% { transform: perspective(500px) rotateX(60deg) translateY(50px); }
+}
+
+@keyframes siteGlowDriftOne {
+  from { transform: translate3d(0, 0, 0) scale(0.92); }
+  to { transform: translate3d(32vw, 18vh, 0) scale(1.08); }
+}
+
+@keyframes siteGlowDriftTwo {
+  from { transform: translate3d(0, 0, 0) scale(1.06); }
+  to { transform: translate3d(-30vw, -16vh, 0) scale(0.9); }
+}
+
+@keyframes siteParticleFloat {
+  0% { transform: translateY(0) scale(0); opacity: 0; }
+  12% { opacity: 0.72; transform: translateY(-12vh) scale(1); }
+  88% { opacity: 0.72; transform: translateY(-88vh) scale(1); }
+  100% { transform: translateY(-102vh) scale(0); opacity: 0; }
+}
+
+@keyframes siteLineMove {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(100vw + 640px)); }
 }
 
 img,
@@ -106,8 +224,8 @@ a {
 }
 
 .logo-icon {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -115,9 +233,15 @@ a {
   font-family: var(--font-en);
   font-weight: 800;
   font-size: 15px;
-  color: #02121a;
-  background: linear-gradient(135deg, var(--cyan), var(--pink));
-  box-shadow: 0 0 20px rgba(85, 232, 255, 0.45);
+  color: #000;
+  background: linear-gradient(135deg, var(--neon-primary), var(--neon-purple));
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+  animation: siteLogoPulse 3s ease-in-out infinite;
+}
+
+@keyframes siteLogoPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.5); }
+  50% { box-shadow: 0 0 30px rgba(0, 212, 255, 0.8), 0 0 60px rgba(0, 212, 255, 0.4); }
 }
 
 .logo-text {
@@ -125,7 +249,7 @@ a {
   font-weight: 700;
   font-size: 20px;
   letter-spacing: 0.05em;
-  background: linear-gradient(90deg, var(--cyan), #aef7ff);
+  background: linear-gradient(90deg, var(--neon-primary), var(--neon-secondary));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -641,7 +765,7 @@ a {
   min-height: 300px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
 }
 
@@ -656,8 +780,9 @@ a {
 
 .feature-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(123, 229, 255, 0.7);
-  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 26px rgba(85, 232, 255, 0.18);
+  border-color: rgba(123, 229, 255, 0.9);
+  background: rgba(12, 35, 48, 0.94);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 34px rgba(85, 232, 255, 0.34), inset 0 0 28px rgba(85, 232, 255, 0.07);
 }
 
 .feature-card:focus-visible {
@@ -680,8 +805,8 @@ a {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.72;
-  filter: saturate(0.88) contrast(1.04);
+  opacity: 1;
+  filter: none;
   transform: scale(1);
   transition: opacity 0.28s ease, filter 0.28s ease, transform 0.28s ease;
 }
@@ -691,7 +816,7 @@ a {
 }
 .feature-card:hover .feature-shot img {
   opacity: 1;
-  filter: saturate(1.08) contrast(1.08);
+  filter: brightness(1.08) saturate(1.06) contrast(1.02);
   transform: scale(1.045);
 }
 
@@ -709,8 +834,8 @@ a {
 }
 
 .feature-card:hover .feature-shot::after {
-  border-color: rgba(255, 216, 107, 0.48);
-  box-shadow: inset 0 0 28px rgba(85, 232, 255, 0.14);
+  border-color: rgba(123, 229, 255, 0.82);
+  box-shadow: inset 0 0 32px rgba(85, 232, 255, 0.2), 0 0 18px rgba(85, 232, 255, 0.18);
 }
 
 .feature-card h3 {
@@ -1101,6 +1226,21 @@ textarea:focus {
   text-align: center;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .site-grid-bg,
+  .site-glow,
+  .site-particle,
+  .site-neon-line,
+  .logo-icon {
+    animation: none;
+  }
+
+  .site-particle,
+  .site-neon-line {
+    display: none;
+  }
+}
+
 @media (max-width: 920px) {
   .nav {
     height: 62px;
@@ -1153,6 +1293,16 @@ textarea:focus {
 }
 
 @media (max-width: 640px) {
+  .site-particle:nth-child(n + 5),
+  .site-neon-line--three {
+    display: none;
+  }
+
+  .site-glow {
+    opacity: 0.42;
+    filter: blur(44px);
+  }
+
   .nav {
     width: min(1180px, calc(100% - 32px));
     height: 56px;
@@ -1389,6 +1539,25 @@ textarea:focus {
     </div>
   </nav>
 </header>
+
+<div class="site-bg-effects" aria-hidden="true">
+  <div class="site-grid-bg"></div>
+  <div class="site-glow site-glow--one"></div>
+  <div class="site-glow site-glow--two"></div>
+  <div class="site-particles">
+    <span class="site-particle"></span>
+    <span class="site-particle"></span>
+    <span class="site-particle"></span>
+    <span class="site-particle"></span>
+    <span class="site-particle"></span>
+    <span class="site-particle"></span>
+    <span class="site-particle"></span>
+    <span class="site-particle"></span>
+  </div>
+  <span class="site-neon-line site-neon-line--one"></span>
+  <span class="site-neon-line site-neon-line--two"></span>
+  <span class="site-neon-line site-neon-line--three"></span>
+</div>
 
 <main>
   <section class="hero" id="top">
