@@ -15,21 +15,17 @@
 <body>
   <a class="skip-link" href="#tool" data-i18n="skip">ツールへ移動</a>
   <header class="site-header">
-    <a class="brand" href="/" aria-label="eye-factory"><span class="brand-mark">ef</span><span class="brand-name">eye-factory</span></a>
-    <label class="language-picker">
-      <span class="sr-only" data-i18n="language">言語</span>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9S14.5 18.4 12 21c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3Z"/></svg>
-      <select id="languageSelect">
-        <option value="ja">日本語</option><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="ko">한국어</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option>
-      </select>
-    </label>
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="eye-factory"><span class="brand-mark">ef</span><span class="brand-name">eye-factory</span></a>
+      <label class="language-picker">
+        <span class="sr-only" data-i18n="language">言語</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9S14.5 18.4 12 21c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3Z"/></svg>
+        <select id="languageSelect">
+          <option value="ja">日本語</option><option value="en">English</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="ko">한국어</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option>
+        </select>
+      </label>
+    </div>
   </header>
-  <nav class="follow-nav" aria-label="Section navigation">
-    <a class="follow-link active" href="#top" data-target="top"><span>01</span><b data-i18n="navOverview">概要</b></a>
-    <a class="follow-link" href="#tool" data-target="tool"><span>02</span><b data-i18n="navTool">機能</b></a>
-    <a class="follow-link" href="#privacy" data-target="privacy"><span>03</span><b data-i18n="navSafety">安全性</b></a>
-    <a class="follow-link" href="#guide" data-target="guide"><span>04</span><b data-i18n="navGuide">仕様</b></a>
-  </nav>
   <div class="ambient" aria-hidden="true"><span></span><span></span><span></span></div>
 
   <main class="page-shell">
@@ -39,10 +35,20 @@
         <h1 id="pageTitle"><span>META</span> ZERO</h1>
         <p class="lead" data-i18n="lead">写真と動画はそのまま。残したくない情報だけをゼロへ。</p>
         <p class="intro-copy" data-i18n="intro">GPS、撮影日時、端末名などを外部へ送らず除去し、同じ形式の新しいファイルを作ります。</p>
-        <div class="hero-visual" aria-hidden="true">
-          <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div>
-          <div class="core"><img src="assets/meta-zero-icon.png" alt="" width="1256" height="1256"></div>
-          <span class="data-chip chip-a">GPS <b>×</b></span><span class="data-chip chip-b">EXIF <b>×</b></span><span class="data-chip chip-c">XMP <b>×</b></span><span class="data-chip chip-d">MP4 <b>✓</b></span>
+        <div class="hero-visual" aria-label="GPSや作成者情報を消去するイメージ">
+          <div class="privacy-globe" aria-hidden="true">
+            <div class="globe-grid"></div>
+            <div class="orbit-layer orbit-horizontal">
+              <span class="orbiter orbit-gps"><span class="data-chip">GPS <svg class="eraser" viewBox="0 0 24 24"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></span></span>
+              <span class="orbiter orbit-xmp"><span class="data-chip">XMP <svg class="eraser" viewBox="0 0 24 24"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></span></span>
+            </div>
+            <div class="orbit-layer orbit-tilted">
+              <span class="orbiter orbit-exif"><span class="data-chip">EXIF <svg class="eraser" viewBox="0 0 24 24"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></span></span>
+              <span class="orbiter orbit-author"><span class="data-chip">AUTHOR <svg class="eraser" viewBox="0 0 24 24"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></span></span>
+            </div>
+            <div class="core"><img src="assets/meta-zero-icon.png" alt="" width="1256" height="1256"></div>
+            <span class="format-badge">JPEG / PNG / WebP / MP4 <b>✓</b></span>
+          </div>
         </div>
         <ul class="trust-list">
           <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.2c0 4.8 3 8 7.5 9.8 4.5-1.8 7.5-5 7.5-9.8V6L12 3Z"/><path d="m8.7 12 2.1 2.1 4.6-4.7"/></svg><span data-i18n="trustLocal">アップロードなし</span></li>
@@ -75,17 +81,43 @@
           <button class="button button-primary" id="processFiles" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.2c0 4.8 3 8 7.5 9.8 4.5-1.8 7.5-5 7.5-9.8V6L12 3Z"/><path d="m8.7 12 2.1 2.1 4.6-4.7"/></svg><span data-i18n="processButton">情報を除去して保存</span></button>
           <button class="button button-cancel" id="cancelProcessing" type="button" hidden data-i18n="cancel">中止</button>
         </div>
-        <p class="output-note" data-i18n="outputNote">1クリックで既定のダウンロード先へ保存：meta_zero.ext / meta_zero_01.ext …</p>
+        <p class="output-note" data-i18n="outputNote">元の名前に .mz を付け、複数も1件ずつ既定のダウンロード先へ保存します。</p>
       </section>
     </section>
 
-    <section class="disclosures" aria-label="META ZERO details">
-      <details id="privacy" class="section-watch" open><summary><span data-i18n="removeHeading">除去する情報</span><b>＋</b></summary><p data-i18n="removeText">位置情報、撮影日時、端末・ソフト名、コメント、標準的な画像・MP4メタデータ。</p></details>
-      <details><summary><span data-i18n="keepHeading">変えないもの</span><b>＋</b></summary><p data-i18n="keepText">画像の画素、動画・音声データ、元ファイル。表示維持に必要な色・向き情報は残します。</p></details>
-      <details id="guide" class="section-watch"><summary><span data-i18n="noticeHeading">対応と注意</span><b>＋</b></summary><p data-i18n="noticeText">JPEG / PNG / WebP / MP4対応。写り込んだ顔や住所、通信時のIPアドレスは消せません。</p></details>
+    <section id="privacy" class="privacy-section" aria-labelledby="privacyTitle">
+      <div class="section-heading"><span>03 / PRIVACY</span><h2 id="privacyTitle" data-i18n="privacyTitle">消す情報と、変えない中身</h2></div>
+      <div class="privacy-grid">
+        <article class="privacy-card remove">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></div>
+          <span>REMOVE</span><h3 data-i18n="removeHeading">除去する情報</h3><p data-i18n="removeText">GPS、日時、作成者、著作権、端末・ソフト名、タイトル、コメント、サイトURL、元ファイル名などの標準メタデータ。</p>
+          <div class="metadata-tags"><b>GPS</b><b>EXIF</b><b>XMP</b><b>IPTC</b><b>AUTHOR</b><b>TITLE</b><b>URL</b><b>DEVICE</b></div>
+        </article>
+        <article class="privacy-card keep">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></div>
+          <span>KEEP</span><h3 data-i18n="keepHeading">変えないもの</h3><p data-i18n="keepText">画像の画素、動画・音声データ、元ファイル。正しい表示に必要な向きとカラープロファイルは残します。</p>
+          <ul><li data-i18n="keepFormat">JPEG / PNG / WebP / MP4の形式を維持</li><li data-i18n="keepMedia">再圧縮せず、画像・映像・音声本体を維持</li><li data-i18n="keepOriginal">元ファイルは変更せず新しいコピーを作成</li></ul>
+        </article>
+        <article class="privacy-card limit">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg></div>
+          <span>CHECK</span><h3 data-i18n="noticeHeading">対応と注意</h3><p data-i18n="noticeText">写り込んだ顔・住所・画面内文字、保存後のファイル名、通信時のIPアドレス、特殊な独自情報、圧縮データ内のエンコーダー識別子は自動では消せません。</p>
+          <p class="card-note" data-i18n="colorNote">色や向きを守るため、ICCカラープロファイルと必要最小限の向き情報は残します。</p>
+        </article>
+      </div>
+      <div id="guide" class="spec-line">
+        <div><b data-i18n="specInput">入力</b><span>JPEG / PNG / WebP / MP4</span></div>
+        <div><b data-i18n="specOutput">出力</b><span data-i18n="specOutputValue">元形式・元名.mz.ext</span></div>
+        <div><b data-i18n="specCount">件数</b><span data-i18n="specCountValue">画像10枚 / MP4 3本</span></div>
+        <div><b data-i18n="specSave">保存</b><span data-i18n="specSaveValue">複数も1件ずつ順番に保存</span></div>
+      </div>
     </section>
   </main>
-  <footer><span>© eye-factory</span><span data-i18n="footer">Files stay on your device.</span></footer>
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-links"><a href="https://x.com/SINNYA_HAIKAI" target="_blank" rel="noopener">X (Twitter)</a><a href="https://eye-factory.booth.pm/" target="_blank" rel="noopener">BOOTH</a><a href="/tokushoho.html" data-i18n="legal">特定商取引法に基づく表記</a></div>
+      <div class="footer-copy">© 2026 eye-factory. All rights reserved.</div>
+    </div>
+  </footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <script src="i18n.js"></script><script src="app.js"></script>
 </body>

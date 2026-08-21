@@ -12,11 +12,14 @@
     folderFallback: 'Your browser will use its normal save function after processing.',
     dropTitle: 'Drop images or videos here', dropSub: 'or click to select', limits: 'JPEG / PNG / WebP up to 10 · MP4 up to 3',
     selectedFiles: 'Selected files', clear: 'Clear all', processing: 'Processing', processButton: 'Remove data and save', cancel: 'Cancel',
-    outputNote: 'One click saves to your default downloads: meta_zero.ext / meta_zero_01.ext …',
-    removeHeading: 'Data removed', removeText: 'Location, capture time, device and software names, comments, and standard image/MP4 metadata.',
-    keepHeading: 'What stays unchanged', keepText: 'Image pixels, video/audio data and the original file. Color and orientation data needed for correct display are retained.',
-    noticeHeading: 'Support & limits', noticeText: 'JPEG / PNG / WebP / MP4. Visible faces or addresses and your network IP address cannot be removed.',
-    footer: 'Files stay on your device.',
+    outputNote: 'Adds .mz to the original name and saves multiple files one by one to your default downloads.',
+    privacyTitle: 'Data removed and content retained', removeHeading: 'Data removed', removeText: 'Standard metadata including GPS, dates, creator, copyright, device and software names, titles, comments, site URLs and original file names.',
+    keepHeading: 'What stays unchanged', keepText: 'Image pixels, video/audio data and the original file. Color profiles and orientation data needed for correct display are retained.',
+    noticeHeading: 'Support & limits', noticeText: 'Visible faces, addresses or text, the saved file name, network IP addresses, uncommon proprietary data and encoder IDs embedded in compressed media cannot be removed automatically.',
+    keepFormat: 'Keeps JPEG / PNG / WebP / MP4 format', keepMedia: 'Keeps image, video and audio media without recompression', keepOriginal: 'Creates a new copy without changing the original',
+    colorNote: 'ICC color profiles and the minimum orientation data are retained to preserve color and display direction.',
+    specInput: 'INPUT', specOutput: 'OUTPUT', specOutputValue: 'Original format · original-name.mz.ext', specCount: 'LIMIT', specCountValue: '10 images / 3 MP4 files', specSave: 'SAVE', specSaveValue: 'Multiple files download one by one', legal: 'Commercial Transactions Act',
+    footer: 'Files stay on your device.', multipleDownloadHint: 'Files will download one by one. If your browser asks, allow multiple downloads.',
     statusReady: 'Ready', statusScanning: 'Reading', statusProcessing: 'Removing data', statusDone: 'Saved', statusError: 'Failed',
     metadataFound: '{count} metadata type(s)', metadataNone: 'No removable metadata found', sizeLabel: '{size}', durationLabel: '{duration}',
     folderUnsupported: 'Folder writing is not supported in this browser.', folderSelected: 'Save to: {name}', folderDenied: 'Folder access was not granted.',
@@ -32,8 +35,10 @@
     intro: 'GPS、撮影日時、端末名などを外部へ送らず除去し、同じ形式の新しいファイルを作ります。',
     trustLocal: 'アップロードなし', trustFormat: '同じ形式のまま', trustOriginal: '元ファイルは変更しない', localBadge: 'この端末内だけで処理', toolTitle: '情報だけ除去して新規保存',
     saveDestination: '保存先', folderUnset: '未選択', chooseFolder: 'フォルダを選ぶ', folderNote: 'PCでは保存先を一度選ぶと、処理後に新しいコピーを直接作成します。', folderFallback: '処理後はブラウザの通常保存を使用します。',
-    dropTitle: '画像・動画をここへドロップ', dropSub: 'またはクリックして選択', limits: 'JPEG / PNG / WebP 最大10枚・MP4 最大3本', selectedFiles: '選択したファイル', clear: 'すべて解除', processing: '処理中', processButton: '情報を除去して保存', cancel: '中止', outputNote: '1クリックで既定のダウンロード先へ保存：meta_zero.ext / meta_zero_01.ext …',
-    removeHeading: '除去する情報', removeText: '位置情報、撮影日時、端末・ソフト名、コメント、標準的な画像・MP4メタデータ。', keepHeading: '変えないもの', keepText: '画像の画素、動画・音声データ、元ファイル。表示維持に必要な色・向き情報は残します。', noticeHeading: '対応と注意', noticeText: 'JPEG / PNG / WebP / MP4対応。写り込んだ顔や住所、通信時のIPアドレスは消せません。', footer: 'ファイルは端末の外へ送信されません。',
+    dropTitle: '画像・動画をここへドロップ', dropSub: 'またはクリックして選択', limits: 'JPEG / PNG / WebP 最大10枚・MP4 最大3本', selectedFiles: '選択したファイル', clear: 'すべて解除', processing: '処理中', processButton: '情報を除去して保存', cancel: '中止', outputNote: '元の名前に .mz を付け、複数も1件ずつ既定のダウンロード先へ保存します。',
+    privacyTitle: '消す情報と、変えない中身', removeHeading: '除去する情報', removeText: 'GPS、日時、作成者、著作権、端末・ソフト名、タイトル、コメント、サイトURL、元ファイル名などの標準メタデータ。', keepHeading: '変えないもの', keepText: '画像の画素、動画・音声データ、元ファイル。正しい表示に必要な向きとカラープロファイルは残します。', noticeHeading: '対応と注意', noticeText: '写り込んだ顔・住所・画面内文字、保存後のファイル名、通信時のIPアドレス、特殊な独自情報、圧縮データ内のエンコーダー識別子は自動では消せません。',
+    keepFormat: 'JPEG / PNG / WebP / MP4の形式を維持', keepMedia: '再圧縮せず、画像・映像・音声本体を維持', keepOriginal: '元ファイルは変更せず新しいコピーを作成', colorNote: '色や向きを守るため、ICCカラープロファイルと必要最小限の向き情報は残します。',
+    specInput: '入力', specOutput: '出力', specOutputValue: '元形式・元名.mz.ext', specCount: '件数', specCountValue: '画像10枚 / MP4 3本', specSave: '保存', specSaveValue: '複数も1件ずつ順番に保存', legal: '特定商取引法に基づく表記', footer: 'ファイルは端末の外へ送信されません。', multipleDownloadHint: '1件ずつ順番に保存します。ブラウザに確認された場合は複数ダウンロードを許可してください。',
     statusReady: '準備完了', statusScanning: '確認中', statusProcessing: '情報を除去中', statusDone: '保存済み', statusError: '失敗', metadataFound: '除去対象 {count} 種類', metadataNone: '除去対象の情報は未検出', sizeLabel: '{size}', durationLabel: '{duration}',
     folderUnsupported: 'このブラウザはフォルダへの直接保存に未対応です。', folderSelected: '保存先：{name}', folderDenied: 'フォルダへのアクセスが許可されませんでした。', invalidType: 'JPEG、PNG、WebP、MP4のみ対応しています。', imageLimit: '画像は最大10枚まで選択できます。', videoLimit: 'MP4は最大3本まで選択できます。', duplicateSkipped: '重複したファイルは追加しませんでした。', noFiles: 'ファイルを選択してください。', pickFolderFirst: '先に保存先フォルダを選んでください。', savedFiles: '新しいファイルを {count} 件保存しました。', someFailed: '{done}件保存、{failed}件失敗しました。', cancelled: '処理を中止しました。', saveFailed: 'このファイルを保存できませんでした。', processingItem: '{current}/{total} {name}', removeFileLabel: '{name}を解除', fallbackSave: 'ブラウザの通常保存を使用します。',
     metaExif: 'EXIF / GPS', metaXmp: 'XMP', metaComment: 'コメント', metaText: 'テキスト / 日時', metaMp4: 'MP4メタデータ', metaTime: '作成日時'
@@ -41,7 +46,7 @@
 
   const overrides = {
     'zh-CN': {
-      skip:'跳转到工具',language:'语言',navOverview:'概览',navTool:'功能',navSafety:'安全',navGuide:'规格',lead:'保留照片和视频，只清除不想留下的信息。',intro:'无需向外发送文件，即可删除 GPS、拍摄时间、设备名称等，并以相同格式创建新文件。',trustLocal:'无需上传',trustFormat:'保持原格式',trustOriginal:'不修改原文件',localBadge:'仅在本设备处理',toolTitle:'只删除信息并保存新副本',saveDestination:'保存位置',folderUnset:'未选择',chooseFolder:'选择文件夹',folderNote:'在电脑上选择一次保存位置，处理后会直接创建新副本。',folderFallback:'处理后使用浏览器的常规保存功能。',dropTitle:'将图片或视频拖到这里',dropSub:'或点击选择',limits:'JPEG / PNG / WebP 最多10张 · MP4 最多3个',selectedFiles:'已选文件',clear:'全部清除',processing:'处理中',processButton:'删除信息并保存',cancel:'取消',outputNote:'一键保存到浏览器默认下载位置：meta_zero.ext / meta_zero_01.ext …',removeHeading:'删除的信息',removeText:'位置、拍摄时间、设备和软件名称、备注及标准图片/MP4元数据。',keepHeading:'保持不变',keepText:'图像像素、视频/音频数据和原文件。保留正确显示所需的颜色与方向信息。',noticeHeading:'支持与限制',noticeText:'支持 JPEG / PNG / WebP / MP4。无法删除画面中的人脸、地址或网络 IP 地址。',footer:'文件不会离开您的设备。',statusReady:'就绪',statusScanning:'读取中',statusProcessing:'正在删除信息',statusDone:'已保存',statusError:'失败',metadataFound:'发现 {count} 类元数据',metadataNone:'未发现可删除的元数据',folderUnsupported:'此浏览器不支持直接写入文件夹。',folderSelected:'保存到：{name}',folderDenied:'未获得文件夹访问权限。',invalidType:'仅支持 JPEG、PNG、WebP 和 MP4。',imageLimit:'最多可选择10张图片。',videoLimit:'最多可选择3个 MP4。',duplicateSkipped:'已跳过重复文件。',noFiles:'请至少选择一个文件。',pickFolderFirst:'请先选择保存文件夹。',savedFiles:'已保存 {count} 个新文件。',someFailed:'已保存 {done} 个，失败 {failed} 个。',cancelled:'已取消处理。',saveFailed:'无法保存此文件。',processingItem:'{current}/{total} {name}',removeFileLabel:'移除 {name}',fallbackSave:'使用浏览器常规保存。',metaComment:'备注',metaText:'文本 / 时间',metaMp4:'MP4 元数据',metaTime:'创建时间'
+      skip:'跳转到工具',language:'语言',navOverview:'概览',navTool:'功能',navSafety:'安全',navGuide:'规格',lead:'保留照片和视频，只清除不想留下的信息。',intro:'无需向外发送文件，即可删除 GPS、拍摄时间、设备名称等，并以相同格式创建新文件。',trustLocal:'无需上传',trustFormat:'保持原格式',trustOriginal:'不修改原文件',localBadge:'仅在本设备处理',toolTitle:'只删除信息并保存新副本',saveDestination:'保存位置',folderUnset:'未选择',chooseFolder:'选择文件夹',folderNote:'在电脑上选择一次保存位置，处理后会直接创建新副本。',folderFallback:'处理后使用浏览器的常规保存功能。',dropTitle:'将图片或视频拖到这里',dropSub:'或点击选择',limits:'JPEG / PNG / WebP 最多10张 · MP4 最多3个',selectedFiles:'已选文件',clear:'全部清除',processing:'处理中',processButton:'删除信息并保存',cancel:'取消',outputNote:'在原文件名后添加 .mz，并逐个保存到默认下载位置。',removeHeading:'删除的信息',removeText:'位置、拍摄时间、设备和软件名称、备注及标准图片/MP4元数据。',keepHeading:'保持不变',keepText:'图像像素、视频/音频数据和原文件。保留正确显示所需的颜色与方向信息。',noticeHeading:'支持与限制',noticeText:'支持 JPEG / PNG / WebP / MP4。无法删除画面中的人脸、地址或网络 IP 地址。',footer:'文件不会离开您的设备。',statusReady:'就绪',statusScanning:'读取中',statusProcessing:'正在删除信息',statusDone:'已保存',statusError:'失败',metadataFound:'发现 {count} 类元数据',metadataNone:'未发现可删除的元数据',folderUnsupported:'此浏览器不支持直接写入文件夹。',folderSelected:'保存到：{name}',folderDenied:'未获得文件夹访问权限。',invalidType:'仅支持 JPEG、PNG、WebP 和 MP4。',imageLimit:'最多可选择10张图片。',videoLimit:'最多可选择3个 MP4。',duplicateSkipped:'已跳过重复文件。',noFiles:'请至少选择一个文件。',pickFolderFirst:'请先选择保存文件夹。',savedFiles:'已保存 {count} 个新文件。',someFailed:'已保存 {done} 个，失败 {failed} 个。',cancelled:'已取消处理。',saveFailed:'无法保存此文件。',processingItem:'{current}/{total} {name}',removeFileLabel:'移除 {name}',fallbackSave:'使用浏览器常规保存。',metaComment:'备注',metaText:'文本 / 时间',metaMp4:'MP4 元数据',metaTime:'创建时间'
     },
     'zh-TW': {
       skip:'跳至工具',language:'語言',navOverview:'概要',navTool:'功能',navSafety:'安全性',navGuide:'規格',lead:'保留照片與影片，只清除不想留下的資訊。',intro:'不將檔案傳到外部，即可移除 GPS、拍攝時間、裝置名稱等，並以相同格式建立新檔案。',trustLocal:'無需上傳',trustFormat:'維持原格式',trustOriginal:'不修改原檔',localBadge:'僅在此裝置處理',toolTitle:'只移除資訊並儲存新副本',saveDestination:'儲存位置',folderUnset:'未選擇',chooseFolder:'選擇資料夾',folderNote:'在電腦上選一次儲存位置，處理後會直接建立新副本。',folderFallback:'處理後使用瀏覽器的一般儲存功能。',dropTitle:'將圖片或影片拖到這裡',dropSub:'或點擊選擇',limits:'JPEG / PNG / WebP 最多10張 · MP4 最多3個',selectedFiles:'已選檔案',clear:'全部清除',processing:'處理中',processButton:'移除資訊並儲存',cancel:'取消',outputNote:'一鍵儲存至瀏覽器預設下載位置：meta_zero.ext / meta_zero_01.ext …',removeHeading:'移除的資訊',removeText:'位置、拍攝時間、裝置與軟體名稱、註解及標準圖片/MP4中繼資料。',keepHeading:'保持不變',keepText:'影像像素、影片/音訊資料與原檔。保留正確顯示所需的色彩與方向資訊。',noticeHeading:'支援與限制',noticeText:'支援 JPEG / PNG / WebP / MP4。無法移除畫面中的人臉、地址或網路 IP 位址。',footer:'檔案不會離開您的裝置。',statusReady:'就緒',statusScanning:'讀取中',statusProcessing:'正在移除資訊',statusDone:'已儲存',statusError:'失敗',metadataFound:'發現 {count} 類中繼資料',metadataNone:'未發現可移除的中繼資料',folderUnsupported:'此瀏覽器不支援直接寫入資料夾。',folderSelected:'儲存至：{name}',folderDenied:'未取得資料夾存取權。',invalidType:'僅支援 JPEG、PNG、WebP 與 MP4。',imageLimit:'最多可選擇10張圖片。',videoLimit:'最多可選擇3個 MP4。',duplicateSkipped:'已略過重複檔案。',noFiles:'請至少選擇一個檔案。',pickFolderFirst:'請先選擇儲存資料夾。',savedFiles:'已儲存 {count} 個新檔案。',someFailed:'已儲存 {done} 個，失敗 {failed} 個。',cancelled:'已取消處理。',saveFailed:'無法儲存此檔案。',processingItem:'{current}/{total} {name}',removeFileLabel:'移除 {name}',fallbackSave:'使用瀏覽器一般儲存。',metaComment:'註解',metaText:'文字 / 時間',metaMp4:'MP4 中繼資料',metaTime:'建立時間'
@@ -63,8 +68,17 @@
     }
   };
 
+  const outputNotes = {
+    'zh-CN': '在原文件名后添加 .mz，并逐个保存到默认下载位置。',
+    'zh-TW': '在原檔名後加上 .mz，並逐一儲存到預設下載位置。',
+    ko: '원래 이름에 .mz를 붙여 기본 다운로드 위치에 하나씩 저장합니다.',
+    es: 'Añade .mz al nombre original y guarda los archivos uno por uno en las descargas predeterminadas.',
+    fr: 'Ajoute .mz au nom d’origine et enregistre les fichiers un par un dans les téléchargements par défaut.',
+    de: 'Fügt .mz an den ursprünglichen Namen an und speichert mehrere Dateien nacheinander im Standard-Downloadordner.',
+    pt: 'Adiciona .mz ao nome original e salva os arquivos um por um nos downloads padrão.'
+  };
   const tables = { en, ja };
-  Object.entries(overrides).forEach(([language, values]) => { tables[language] = { ...en, ...values }; });
+  Object.entries(overrides).forEach(([language, values]) => { tables[language] = { ...en, ...values, outputNote: outputNotes[language] || en.outputNote }; });
   const supported = Object.keys(tables);
 
   function normalize(value) {

@@ -7,6 +7,11 @@
   const IMAGE_LIMIT = 10;
   const VIDEO_LIMIT = 3;
   const ZERO_CHUNK = new Uint8Array(64 * 1024);
+  const DOWNLOAD_GAP_MS = 900;
+  const MP4_METADATA_BOXES = new Set([
+    '\u00a9nam', '\u00a9ART', '\u00a9alb', '\u00a9day', '\u00a9cmt', '\u00a9too', '\u00a9wrt', '\u00a9cpy', '\u00a9xyz',
+    'loci', 'keys', 'ilst', 'ID32', 'Exif', 'xml ', 'bxml', 'auth', 'titl', 'dscp', 'cprt', 'perf', 'gnre', 'albm'
+  ]);
   const state = {
     items: [], busy: false, preparing: 0, token: null, downloadUrls: new Set(), prepareChain: Promise.resolve()
   };
@@ -23,30 +28,12 @@
   initialize();
 
   function initialize() {
-    setupNavigation();
     setupFileSelection();
     els.clearQueue.addEventListener('click', clearQueue);
     els.processFiles.addEventListener('click', processFiles);
     els.cancelProcessing.addEventListener('click', () => { if (state.token) state.token.cancelled = true; });
     window.addEventListener('metazero:languagechange', renderQueue);
     window.addEventListener('beforeunload', releaseAllResources);
-  }
-
-  function setupNavigation() {
-    const links = $$('.follow-link');
-    const sections = $$('.section-watch');
-    const observer = new IntersectionObserver(entries => {
-      if (window.scrollY < 20) {
-        const initialTarget = window.innerWidth <= 760 ? 'tool' : 'top';
-        links.forEach(link => link.classList.toggle('active', link.dataset.target === initialTarget));
-        return;
-      }
-      const visible = entries.filter(entry => entry.isIntersecting).sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
-      if (!visible) return;
-      links.forEach(link => link.classList.toggle('active', link.dataset.target === visible.target.id));
-    }, { rootMargin: '-18% 0px -62%', threshold: [0, .2, .5, .8] });
-    sections.forEach(section => observer.observe(section));
-    links.forEach(link => link.addEventListener('click', () => links.forEach(item => item.classList.toggle('active', item === link))));
   }
 
   function setupFileSelection() {
@@ -350,6 +337,8 @@
     updateControls();
     let done = 0;
     let failed = 0;
+    const usedNames = new Set();
+    if (items.length > 1) showToast(t('multipleDownloadHint'));
 
     for (let index = 0; index < items.length; index += 1) {
       const item = items[index];
@@ -358,21 +347,23 @@
       renderQueue();
       updateProgress(index, items.length, item.sourceName);
       try {
-        const desiredName = makeOutputName(item.extension, index, items.length);
+        const desiredName = makeOutputName(item.sourceName, item.extension, usedNames);
+        let cleanBlob;
         if (item.kind === 'image') {
-          const cleanBlob = await sanitizeImage(item.file, item.format);
-          await saveBlob(cleanBlob, desiredName, state.token);
+          cleanBlob = await sanitizeImage(item.file, item.format);
         } else {
           const analysis = item.analysis || await buildMp4Analysis(item.file);
-          await savePatchedMp4(item.file, analysis.patches, desiredName, state.token);
+          cleanBlob = createPatchedBlob(item.file, analysis.patches, 'video/mp4');
         }
         if (state.token.cancelled) throw new DOMException('Cancelled', 'AbortError');
+        triggerDownload(cleanBlob, desiredName);
         item.status = 'done';
         item.canProcess = false;
         item.file = null;
         item.analysis = null;
         item.metadataKeys = [];
         done += 1;
+        if (index < items.length - 1) await delay(DOWNLOAD_GAP_MS, state.token);
       } catch (error) {
         if (error?.name === 'AbortError') break;
         item.status = 'error';
@@ -404,19 +395,27 @@
     els.progressDetail.textContent = t('processingItem', { current: Math.min(current + 1, total), total, name });
   }
 
-  function makeOutputName(extension, index, total) {
-    const suffix = total === 1 ? '' : `_${String(index + 1).padStart(2, '0')}`;
-    return `meta_zero${suffix}.${extension}`;
+  function makeOutputName(sourceName, extension, usedNames) {
+    const dot = sourceName.lastIndexOf('.');
+    const sourceBase = dot > 0 ? sourceName.slice(0, dot) : sourceName;
+    const base = (sourceBase || 'file').replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_').replace(/[. ]+$/g, '') || 'file';
+    let name = `${base}.mz.${extension}`;
+    let copy = 2;
+    while (usedNames.has(name.toLocaleLowerCase())) {
+      name = `${base}_${String(copy).padStart(2, '0')}.mz.${extension}`;
+      copy += 1;
+    }
+    usedNames.add(name.toLocaleLowerCase());
+    return name;
   }
 
-  async function saveBlob(blob, desiredName, token) {
-    if (token.cancelled) throw new DOMException('Cancelled', 'AbortError');
-    triggerDownload(blob, desiredName);
-  }
-
-  async function savePatchedMp4(file, patches, desiredName, token) {
-    if (token.cancelled) throw new DOMException('Cancelled', 'AbortError');
-    triggerDownload(createPatchedBlob(file, patches, 'video/mp4'), desiredName);
+  function delay(milliseconds, token) {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(resolve, milliseconds);
+      if (!token.cancelled) return;
+      clearTimeout(timer);
+      reject(new DOMException('Cancelled', 'AbortError'));
+    });
   }
 
   function triggerDownload(blob, name) {
@@ -432,7 +431,7 @@
     setTimeout(() => {
       URL.revokeObjectURL(url);
       state.downloadUrls.delete(url);
-    }, 5000);
+    }, 60000);
   }
 
   function showToast(message, error = false) {
@@ -560,12 +559,8 @@
     return new Blob(parts, { type: 'image/jpeg' });
   }
 
-  function makeCleanJfif(prefix) {
-    if (prefix.length < 14) return null;
-    const payload = new Uint8Array(14);
-    payload.set(prefix.subarray(0, 12));
-    payload[12] = 0;
-    payload[13] = 0;
+  function makeCleanJfif() {
+    const payload = new Uint8Array([0x4a,0x46,0x49,0x46,0,1,1,0,0,1,0,1,0,0]);
     return makeJpegSegment(0xe0, payload);
   }
 
@@ -696,7 +691,12 @@
         labels.add('metaMp4');
         continue;
       }
-      if (box.type === 'uuid' && await isXmpUuid(file, box)) {
+      if (MP4_METADATA_BOXES.has(box.type)) {
+        replaceMp4Box(box, patches);
+        labels.add('metaMp4');
+        continue;
+      }
+      if (box.type === 'uuid' && await isMetadataUuid(file, box)) {
         replaceMp4Box(box, patches);
         labels.add('metaXmp');
         continue;
@@ -770,10 +770,15 @@
     return true;
   }
 
-  async function isXmpUuid(file, box) {
+  async function isMetadataUuid(file, box) {
     if (box.start + box.headerSize + 16 > box.end) return false;
     const bytes = await readBytes(file, box.start + box.headerSize, 16);
-    return [...bytes].map(value => value.toString(16).padStart(2, '0')).join('') === 'be7acfcb97a942e89c71999491e3afac';
+    const uuid = [...bytes].map(value => value.toString(16).padStart(2, '0')).join('');
+    if (uuid === 'be7acfcb97a942e89c71999491e3afac') return true;
+    const payloadStart = box.start + box.headerSize + 16;
+    const sample = await readBytes(file, payloadStart, Math.min(box.end - payloadStart, 1024 * 1024));
+    const text = new TextDecoder('latin1').decode(sample).toLowerCase();
+    return text.includes('<?xpacket') || text.includes('<x:xmpmeta') || text.includes('ns.adobe.com/xap/1.0');
   }
 
   function replaceMp4Box(box, patches) {
