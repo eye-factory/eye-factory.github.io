@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f5f9ff">
-  <meta name="description" content="画像・MP4のメタデータだけを端末内で除去し、元の形式のまま新規保存するプライバシーツール META ZERO。">
+  <meta name="description" content="画像・動画のメタデータだけを端末内で除去し、元の形式のまま新規保存するプライバシーツール META ZERO。">
   <title>META ZERO | eye-factory</title>
   <link rel="icon" type="image/png" href="assets/meta-zero-icon.png">
   <meta property="og:title" content="META ZERO | eye-factory">
-  <meta property="og:description" content="画像・MP4を再圧縮せず、メタデータだけを端末内で除去します。">
+  <meta property="og:description" content="画像・動画を再圧縮せず、メタデータだけを端末内で除去します。">
   <meta property="og:image" content="assets/meta-zero-icon.png">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -24,11 +24,17 @@
       </select>
     </label>
   </header>
+  <nav class="follow-nav" aria-label="Section navigation">
+    <a class="follow-link active" href="#top" data-target="top"><span>01</span><b data-i18n="navOverview">概要</b></a>
+    <a class="follow-link" href="#tool" data-target="tool"><span>02</span><b data-i18n="navTool">機能</b></a>
+    <a class="follow-link" href="#privacy" data-target="privacy"><span>03</span><b data-i18n="navSafety">安全性</b></a>
+    <a class="follow-link" href="#guide" data-target="guide"><span>04</span><b data-i18n="navGuide">仕様</b></a>
+  </nav>
   <div class="ambient" aria-hidden="true"><span></span><span></span><span></span></div>
 
   <main class="page-shell">
     <section class="workspace" aria-labelledby="pageTitle">
-      <div class="intro-pane">
+      <div id="top" class="intro-pane section-watch">
         <div class="eyebrow"><span></span><span data-i18n="eyebrow">LOCAL PRIVACY TOOL</span></div>
         <h1 id="pageTitle"><span>META</span> ZERO</h1>
         <p class="lead" data-i18n="lead">写真と動画はそのまま。残したくない情報だけをゼロへ。</p>
@@ -45,21 +51,15 @@
         </ul>
       </div>
 
-      <section id="tool" class="tool-card" aria-labelledby="toolTitle">
+      <section id="tool" class="tool-card section-watch" aria-labelledby="toolTitle">
         <div class="tool-heading">
           <div><span class="local-badge"><i></i><span data-i18n="localBadge">この端末内だけで処理</span></span><h2 id="toolTitle" data-i18n="toolTitle">情報だけ除去して新規保存</h2></div>
-          <span class="step-mark">01—03</span>
+          <span class="step-mark">01—02</span>
         </div>
-        <div class="folder-row" id="folderRow">
-          <div class="folder-status"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6.5h6l2 2h10v9.5H3z"/></svg><div><small data-i18n="saveDestination">保存先</small><strong id="folderName" data-i18n="folderUnset">未選択</strong></div></div>
-          <button class="button button-secondary" id="chooseFolder" type="button" data-i18n="chooseFolder">フォルダを選ぶ</button>
-        </div>
-        <p class="folder-note" id="folderNote">PCでは保存先を一度選ぶと、処理後に新しいコピーを直接作成します。</p>
-
         <input id="fileInput" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,.jpg,.jpeg,.png,.webp,.mp4" multiple>
         <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-controls="fileInput">
           <div class="drop-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v4h16v-4"/></svg></div>
-          <div><strong data-i18n="dropTitle">画像・MP4をここへドロップ</strong><span data-i18n="dropSub">またはクリックして選択</span></div>
+          <div><strong data-i18n="dropTitle">画像・動画をここへドロップ</strong><span data-i18n="dropSub">またはクリックして選択</span></div>
           <small data-i18n="limits">JPEG / PNG / WebP 最大10枚・MP4 最大3本</small>
         </div>
         <div class="queue-head" id="queueHead" hidden>
@@ -75,14 +75,14 @@
           <button class="button button-primary" id="processFiles" type="button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.2c0 4.8 3 8 7.5 9.8 4.5-1.8 7.5-5 7.5-9.8V6L12 3Z"/><path d="m8.7 12 2.1 2.1 4.6-4.7"/></svg><span data-i18n="processButton">情報を除去して保存</span></button>
           <button class="button button-cancel" id="cancelProcessing" type="button" hidden data-i18n="cancel">中止</button>
         </div>
-        <p class="output-note" data-i18n="outputNote">出力名：meta_zero.ext / meta_zero_01.ext …</p>
+        <p class="output-note" data-i18n="outputNote">1クリックで既定のダウンロード先へ保存：meta_zero.ext / meta_zero_01.ext …</p>
       </section>
     </section>
 
     <section class="disclosures" aria-label="META ZERO details">
-      <details open><summary><span data-i18n="removeHeading">除去する情報</span><b>＋</b></summary><p data-i18n="removeText">位置情報、撮影日時、端末・ソフト名、コメント、標準的な画像・MP4メタデータ。</p></details>
+      <details id="privacy" class="section-watch" open><summary><span data-i18n="removeHeading">除去する情報</span><b>＋</b></summary><p data-i18n="removeText">位置情報、撮影日時、端末・ソフト名、コメント、標準的な画像・MP4メタデータ。</p></details>
       <details><summary><span data-i18n="keepHeading">変えないもの</span><b>＋</b></summary><p data-i18n="keepText">画像の画素、動画・音声データ、元ファイル。表示維持に必要な色・向き情報は残します。</p></details>
-      <details><summary><span data-i18n="noticeHeading">対応と注意</span><b>＋</b></summary><p data-i18n="noticeText">JPEG / PNG / WebP / MP4対応。写り込んだ顔や住所、通信時のIPアドレスは消せません。</p></details>
+      <details id="guide" class="section-watch"><summary><span data-i18n="noticeHeading">対応と注意</span><b>＋</b></summary><p data-i18n="noticeText">JPEG / PNG / WebP / MP4対応。写り込んだ顔や住所、通信時のIPアドレスは消せません。</p></details>
     </section>
   </main>
   <footer><span>© eye-factory</span><span data-i18n="footer">Files stay on your device.</span></footer>

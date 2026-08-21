@@ -2,22 +2,20 @@
   'use strict';
 
   const $ = selector => document.querySelector(selector);
+  const $$ = selector => [...document.querySelectorAll(selector)];
   const t = (key, variables) => window.MetaZeroI18n?.t(key, variables) ?? key;
   const IMAGE_LIMIT = 10;
   const VIDEO_LIMIT = 3;
   const ZERO_CHUNK = new Uint8Array(64 * 1024);
   const state = {
-    items: [], busy: false, preparing: 0, token: null, outputDirectory: null,
-    folderSupported: typeof window.showDirectoryPicker === 'function' && window.isSecureContext,
-    downloadUrls: new Set(), prepareChain: Promise.resolve()
+    items: [], busy: false, preparing: 0, token: null, downloadUrls: new Set(), prepareChain: Promise.resolve()
   };
   let itemId = 0;
   let toastTimer = 0;
 
   const els = {
     fileInput: $('#fileInput'), dropZone: $('#dropZone'), fileQueue: $('#fileQueue'), queueHead: $('#queueHead'),
-    fileCount: $('#fileCount'), clearQueue: $('#clearQueue'), chooseFolder: $('#chooseFolder'), folderRow: $('#folderRow'),
-    folderName: $('#folderName'), folderNote: $('#folderNote'), processFiles: $('#processFiles'), cancelProcessing: $('#cancelProcessing'),
+    fileCount: $('#fileCount'), clearQueue: $('#clearQueue'), processFiles: $('#processFiles'), cancelProcessing: $('#cancelProcessing'),
     progressPanel: $('#progressPanel'), progressTitle: $('#progressTitle'), progressPercent: $('#progressPercent'),
     progressBar: $('#progressBar'), progressDetail: $('#progressDetail'), toast: $('#toast')
   };
@@ -25,15 +23,30 @@
   initialize();
 
   function initialize() {
-    if (!state.folderSupported) els.folderRow.hidden = true;
-    updateLocalizedUi();
+    setupNavigation();
     setupFileSelection();
-    els.chooseFolder.addEventListener('click', chooseOutputFolder);
     els.clearQueue.addEventListener('click', clearQueue);
     els.processFiles.addEventListener('click', processFiles);
     els.cancelProcessing.addEventListener('click', () => { if (state.token) state.token.cancelled = true; });
-    window.addEventListener('metazero:languagechange', () => { updateLocalizedUi(); renderQueue(); });
+    window.addEventListener('metazero:languagechange', renderQueue);
     window.addEventListener('beforeunload', releaseAllResources);
+  }
+
+  function setupNavigation() {
+    const links = $$('.follow-link');
+    const sections = $$('.section-watch');
+    const observer = new IntersectionObserver(entries => {
+      if (window.scrollY < 20) {
+        const initialTarget = window.innerWidth <= 760 ? 'tool' : 'top';
+        links.forEach(link => link.classList.toggle('active', link.dataset.target === initialTarget));
+        return;
+      }
+      const visible = entries.filter(entry => entry.isIntersecting).sort((left, right) => right.intersectionRatio - left.intersectionRatio)[0];
+      if (!visible) return;
+      links.forEach(link => link.classList.toggle('active', link.dataset.target === visible.target.id));
+    }, { rootMargin: '-18% 0px -62%', threshold: [0, .2, .5, .8] });
+    sections.forEach(section => observer.observe(section));
+    links.forEach(link => link.addEventListener('click', () => links.forEach(item => item.classList.toggle('active', item === link))));
   }
 
   function setupFileSelection() {
@@ -53,29 +66,6 @@
       setTimeout(() => { els.fileInput.value = ''; }, 100);
       addFiles(files);
     });
-  }
-
-  function updateLocalizedUi() {
-    if (state.folderSupported) {
-      els.folderName.textContent = state.outputDirectory?.name || t('folderUnset');
-      els.folderNote.textContent = t('folderNote');
-    } else {
-      els.folderNote.textContent = t('folderFallback');
-    }
-    updateControls();
-  }
-
-  async function chooseOutputFolder() {
-    if (!state.folderSupported || state.busy) return;
-    try {
-      const directory = await window.showDirectoryPicker({ mode: 'readwrite', id: 'meta-zero-output' });
-      state.outputDirectory = directory;
-      els.folderName.textContent = directory.name;
-      showToast(t('folderSelected', { name: directory.name }));
-      updateControls();
-    } catch (error) {
-      if (error?.name !== 'AbortError') showToast(t('folderDenied'), true);
-    }
   }
 
   function addFiles(files) {
@@ -311,7 +301,6 @@
   function updateControls() {
     const processable = state.items.some(item => item.file && item.canProcess && item.status !== 'done');
     els.processFiles.disabled = state.busy || state.preparing > 0 || !processable;
-    els.chooseFolder.disabled = state.busy;
     els.clearQueue.disabled = state.busy;
     els.dropZone.setAttribute('aria-disabled', String(state.busy));
   }
@@ -347,18 +336,12 @@
     state.items.forEach(disposeItem);
     for (const url of state.downloadUrls) URL.revokeObjectURL(url);
     state.downloadUrls.clear();
-    state.outputDirectory = null;
   }
 
   async function processFiles() {
     if (state.busy) return;
     const items = state.items.filter(item => item.file && item.canProcess && item.status !== 'done');
     if (!items.length) return showToast(t('noFiles'), true);
-    if (state.folderSupported && !state.outputDirectory) {
-      await chooseOutputFolder();
-      if (!state.outputDirectory) return;
-    }
-    if (state.folderSupported && !(await ensureDirectoryPermission())) return showToast(t('folderDenied'), true);
 
     state.busy = true;
     state.token = { cancelled: false };
@@ -413,13 +396,6 @@
     else showToast(t('savedFiles', { count: done }));
   }
 
-  async function ensureDirectoryPermission() {
-    if (!state.outputDirectory) return false;
-    const options = { mode: 'readwrite' };
-    if ((await state.outputDirectory.queryPermission?.(options)) === 'granted') return true;
-    return (await state.outputDirectory.requestPermission?.(options)) === 'granted';
-  }
-
   function updateProgress(current, total, name) {
     const percent = Math.round(current / total * 100);
     els.progressTitle.textContent = t('processing');
@@ -435,58 +411,12 @@
 
   async function saveBlob(blob, desiredName, token) {
     if (token.cancelled) throw new DOMException('Cancelled', 'AbortError');
-    if (!state.outputDirectory) return triggerDownload(blob, desiredName);
-    const name = await findAvailableName(desiredName);
-    const handle = await state.outputDirectory.getFileHandle(name, { create: true });
-    const writable = await handle.createWritable();
-    try {
-      if (token.cancelled) throw new DOMException('Cancelled', 'AbortError');
-      await writable.write(blob);
-      await writable.close();
-    } catch (error) {
-      await writable.abort?.().catch(() => {});
-      throw error;
-    }
+    triggerDownload(blob, desiredName);
   }
 
   async function savePatchedMp4(file, patches, desiredName, token) {
-    if (!state.outputDirectory) return triggerDownload(createPatchedBlob(file, patches, 'video/mp4'), desiredName);
-    const name = await findAvailableName(desiredName);
-    const handle = await state.outputDirectory.getFileHandle(name, { create: true });
-    const writable = await handle.createWritable();
-    const reader = file.stream().getReader();
-    let offset = 0;
-    try {
-      while (true) {
-        if (token.cancelled) throw new DOMException('Cancelled', 'AbortError');
-        const { value, done } = await reader.read();
-        if (done) break;
-        const output = applyPatchesToChunk(value, offset, patches);
-        await writable.write(output);
-        offset += value.byteLength;
-      }
-      await writable.close();
-    } catch (error) {
-      await reader.cancel().catch(() => {});
-      await writable.abort?.().catch(() => {});
-      throw error;
-    }
-  }
-
-  async function findAvailableName(desiredName) {
-    const dot = desiredName.lastIndexOf('.');
-    const stem = dot >= 0 ? desiredName.slice(0, dot) : desiredName;
-    const extension = dot >= 0 ? desiredName.slice(dot) : '';
-    for (let copy = 0; copy < 1000; copy += 1) {
-      const candidate = copy === 0 ? desiredName : `${stem}_${String(copy + 1).padStart(2, '0')}${extension}`;
-      try {
-        await state.outputDirectory.getFileHandle(candidate);
-      } catch (error) {
-        if (error?.name === 'NotFoundError') return candidate;
-        throw error;
-      }
-    }
-    throw new Error(t('saveFailed'));
+    if (token.cancelled) throw new DOMException('Cancelled', 'AbortError');
+    triggerDownload(createPatchedBlob(file, patches, 'video/mp4'), desiredName);
   }
 
   function triggerDownload(blob, name) {
@@ -859,28 +789,6 @@
       if (previous && patch.start < previous.end) throw new Error('Overlapping MP4 metadata ranges.');
       if (previous && previous.fill === 0 && patch.fill === 0 && patch.start === previous.end) previous.end = patch.end;
       else output.push(patch);
-    }
-    return output;
-  }
-
-  function applyPatchesToChunk(input, chunkStart, patches) {
-    const chunkEnd = chunkStart + input.byteLength;
-    let output = input;
-    let copied = false;
-    for (const patch of patches) {
-      if (patch.end <= chunkStart) continue;
-      if (patch.start >= chunkEnd) break;
-      if (!copied) { output = new Uint8Array(input); copied = true; }
-      const overlapStart = Math.max(chunkStart, patch.start);
-      const overlapEnd = Math.min(chunkEnd, patch.end);
-      const targetStart = overlapStart - chunkStart;
-      const targetEnd = overlapEnd - chunkStart;
-      if (patch.bytes) {
-        const sourceStart = overlapStart - patch.start;
-        output.set(patch.bytes.subarray(sourceStart, sourceStart + targetEnd - targetStart), targetStart);
-      } else {
-        output.fill(0, targetStart, targetEnd);
-      }
     }
     return output;
   }
