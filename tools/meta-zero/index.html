@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7fbff">
+  <meta name="description" content="画像・動画の位置情報や撮影情報を端末内で除去して保存できるプライバシーツール META ZERO。">
+  <title>META ZERO | eye-factory</title>
+  <link rel="icon" type="image/png" href="assets/meta-zero-icon.png">
+  <meta property="og:title" content="META ZERO | eye-factory">
+  <meta property="og:description" content="画像・動画のメタデータを端末内で除去するプライバシーツール。">
+  <meta property="og:image" content="assets/meta-zero-icon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#converter">変換画面へ移動</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="eye-factory トップへ戻る">
+        <span class="brand-mark">ef</span>
+        <span class="brand-name">eye-factory</span>
+      </a>
+      <nav class="header-nav" aria-label="ページ内メニュー">
+        <a href="#converter">変換</a>
+        <a href="#privacy">安全性</a>
+        <a href="#guide">使い方</a>
+        <label class="language-picker" aria-label="言語を選択">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.7 5.6 3.7 9S14.5 18.4 12 21c-2.5-2.6-3.7-5.6-3.7-9S9.5 5.6 12 3Z"/></svg>
+          <select id="languageSelect">
+            <option value="ja">日本語</option>
+            <option value="en">English</option>
+            <option value="zh-CN">简体中文</option>
+            <option value="zh-TW">繁體中文</option>
+            <option value="ko">한국어</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="de">Deutsch</option>
+            <option value="pt">Português</option>
+          </select>
+        </label>
+      </nav>
+    </div>
+  </header>
+
+  <div class="ambient" aria-hidden="true">
+    <span class="ambient-orb orb-a"></span>
+    <span class="ambient-orb orb-b"></span>
+    <span class="ambient-line line-a"></span>
+    <span class="ambient-line line-b"></span>
+  </div>
+
+  <nav class="follow-nav" aria-label="追尾メニュー">
+    <a class="follow-link active" href="#top" data-target="top"><span>01</span>概要</a>
+    <a class="follow-link" href="#converter" data-target="converter"><span>02</span>変換</a>
+    <a class="follow-link" href="#privacy" data-target="privacy"><span>03</span>安全性</a>
+    <a class="follow-link" href="#guide" data-target="guide"><span>04</span>使い方</a>
+  </nav>
+
+  <main>
+    <section id="top" class="hero section-watch">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span>LOCAL PRIVACY TOOL</div>
+        <h1><span>META</span> ZERO</h1>
+        <p class="hero-lead">写真と動画から、残したくないデジタル情報をゼロへ。</p>
+        <p class="hero-body">GPS、撮影日時、端末名、編集ソフト情報などを、ファイルを外へ送らず端末内で除去します。</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#converter">今すぐ変換する</a>
+          <a class="button button-ghost" href="#privacy">仕組みを見る</a>
+        </div>
+        <ul class="trust-list" aria-label="主な特徴">
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.2c0 4.8 3 8 7.5 9.8 4.5-1.8 7.5-5 7.5-9.8V6L12 3Z"/><path d="m8.7 12 2.1 2.1 4.6-4.7"/></svg>アップロードなし</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v11H4z"/><path d="M8 7V5h8v2M9 12h6"/></svg>1件ずつ省メモリ処理</li>
+          <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 18h4"/></svg>スマートフォン対応</li>
+        </ul>
+      </div>
+      <div class="hero-visual" aria-label="META ZERO プライバシー変換のイメージ">
+        <div class="privacy-core">
+          <div class="core-rings"><span></span><span></span><span></span></div>
+          <div class="core-shield"><img src="assets/meta-zero-icon.png" alt="盾とゼロを組み合わせたMETA ZEROのアイコン" width="1256" height="1256"></div>
+          <div class="data-chip chip-gps">GPS<span>0</span></div>
+          <div class="data-chip chip-exif">EXIF<span>0</span></div>
+          <div class="data-chip chip-device">DEVICE<span>0</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="converter" class="converter-section section-watch">
+      <div class="section-heading">
+        <span class="section-index">02 / CONVERTER</span>
+        <h2>端末の中だけで変換</h2>
+        <p>画像は最大10件、動画は最大3件。選択した順に1件ずつ処理します。</p>
+      </div>
+
+      <div class="local-banner" role="status">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.5 6v5.2c0 4.8 3 8 7.5 9.8 4.5-1.8 7.5-5 7.5-9.8V6L12 3Z"/><path d="M8 12h8M12 8v8"/></svg>
+        <div><strong>ファイルは送信されません</strong><span>選択・変換・保存のすべてが、この端末のブラウザ内で完結します。</span></div>
+        <span class="local-badge">LOCAL ONLY</span>
+      </div>
+
+      <div class="tool-switch" role="tablist" aria-label="変換する種類">
+        <button id="imageTab" class="tool-tab active" type="button" role="tab" aria-selected="true" aria-controls="imagePanel" data-panel="imagePanel">
+          <span class="tab-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><path d="m5 18 5-5 3 3 2-2 4 4"/></svg></span>
+          <span><b>画像</b><small>最大10件</small></span>
+        </button>
+        <button id="videoTab" class="tool-tab" type="button" role="tab" aria-selected="false" aria-controls="videoPanel" data-panel="videoPanel">
+          <span class="tab-icon video"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="14" height="14" rx="3"/><path d="m17 10 4-2v8l-4-2z"/></svg></span>
+          <span><b>動画</b><small>最大3件</small></span>
+        </button>
+      </div>
+
+      <div id="imagePanel" class="tool-panel active" role="tabpanel" aria-labelledby="imageTab">
+        <div class="drop-zone" data-kind="image" tabindex="0" role="button" aria-label="画像を選択">
+          <input id="imageInput" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+          <div class="drop-icon"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="8" width="36" height="31" rx="7"/><circle cx="18" cy="19" r="4"/><path d="m10 35 10-10 6 6 5-5 8 8M24 3v10m-5-5 5-5 5 5"/></svg></div>
+          <h3>画像をここにドロップ</h3>
+          <p>またはタップして選択</p>
+          <span>JPEG / PNG / WebP（静止画）・ 1枚あたり最大64MP</span>
+        </div>
+        <div class="panel-options">
+          <label class="check-option"><input id="imageHarden" type="checkbox" checked><span class="check-ui"></span><span><b>端末由来の特徴を弱める</b><small>見た目に影響しない微細な再生成処理を加えます</small></span></label>
+          <label class="select-option"><span>JPEG / WebP 品質</span><select id="imageQuality"><option value="0.96">最高</option><option value="0.93" selected>高品質</option><option value="0.88">標準</option></select></label>
+        </div>
+        <div id="imageQueue" class="file-queue" aria-live="polite"></div>
+        <div class="queue-actions">
+          <button id="clearImages" class="button button-ghost" type="button" disabled>すべて外す</button>
+          <button id="processImages" class="button button-primary" type="button" disabled>画像を変換</button>
+        </div>
+      </div>
+
+      <div id="videoPanel" class="tool-panel" role="tabpanel" aria-labelledby="videoTab" hidden>
+        <div class="drop-zone" data-kind="video" tabindex="0" role="button" aria-label="動画を選択">
+          <input id="videoInput" type="file" accept="video/*" multiple hidden>
+          <div class="drop-icon video"><svg viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="9" width="29" height="30" rx="7"/><path d="m34 19 9-5v20l-9-5zM20 3v12m-6-6 6-6 6 6"/></svg></div>
+          <h3>動画をここにドロップ</h3>
+          <p>またはタップして選択</p>
+          <span>最大3件 ・ 1件最大1GB ・ 4K相当まで</span>
+        </div>
+        <div class="video-notice">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg>
+          <p><strong>動画は再生時間とほぼ同じ処理時間がかかります。</strong> 300MBを超えるファイルは、対応PCブラウザで保存先へ直接書き込む「大容量モード」を利用します。</p>
+        </div>
+        <div id="videoCapability" class="capability-line">動画機能を確認しています…</div>
+        <div id="videoQueue" class="file-queue" aria-live="polite"></div>
+        <div class="queue-actions">
+          <button id="clearVideos" class="button button-ghost" type="button" disabled>すべて外す</button>
+          <button id="processVideos" class="button button-primary" type="button" disabled>動画を変換</button>
+        </div>
+      </div>
+
+      <div id="globalProgress" class="global-progress" hidden aria-live="assertive">
+        <div class="progress-head"><span id="progressTitle">処理しています</span><strong id="progressPercent">0%</strong></div>
+        <div class="progress-track"><span id="progressBar"></span></div>
+        <p id="progressDetail">準備中…</p>
+        <button id="cancelProcessing" class="text-button" type="button">処理を中止</button>
+      </div>
+    </section>
+
+    <section id="privacy" class="privacy-section section-watch">
+      <div class="section-heading compact">
+        <span class="section-index">03 / PRIVACY</span>
+        <h2>消す情報と、変えない中身</h2>
+      </div>
+      <div class="privacy-grid">
+        <article class="privacy-card remove">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v12H4zM8 7V5h8v2"/><path d="M9 11h6m-6 4h4"/></svg></div>
+          <span>REMOVE</span><h3>埋め込み情報を除去</h3>
+          <ul>
+            <li>GPS座標・高度・方向・速度・場所名・住所</li>
+            <li>撮影・作成・更新日時、タイムゾーン</li>
+            <li>メーカー・端末・カメラ・レンズ・シリアル識別子</li>
+            <li>作者・所有者・著作権・連絡先・タイトル・コメント</li>
+            <li>編集ソフト・エンコーダー・編集履歴・文書ID</li>
+            <li>ユーザー名・端末名・ホスト名・IP・プロバイダ名・URL・メール・ネットワークパス</li>
+            <li>EXIF・XMP・IPTC・ICC・テキストチャンク</li>
+            <li>埋め込みサムネイル・プレビュー・動画のチャプター／時限メタデータ</li>
+          </ul>
+        </article>
+        <article class="privacy-card reduce">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h3l2-5 4 10 3-7 2 2h4"/></svg></div>
+          <span>REDUCE</span><h3>端末由来の特徴を弱める</h3>
+          <p>画像は微細な再生成、動画は映像と音声の再エンコードを行い、元ファイル固有の圧縮・記録パターンを引き継ぎにくくします。</p>
+        </article>
+        <article class="privacy-card keep">
+          <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></div>
+          <span>KEEP</span><h3>見た目の内容はそのまま</h3>
+          <p>写っている人物、住所、車のナンバー、画面内の文字などは自動で消しません。公開前に目視でも確認してください。</p>
+        </article>
+      </div>
+      <div class="honesty-note"><strong>大切なお知らせ</strong><p>デジタル匿名化に絶対の保証はありません。画面内に写る顔・住所・ナンバー・反射・音声は消さず、投稿先に伝わる通信元IPやプロバイダ情報も変更できません。META ZEROはファイル内部の情報を減らす補助ツールです。</p></div>
+      <div class="detail-notes">
+        <article><h3>元ファイルは変更しません</h3><p>変換結果を新しいファイルとして保存します。元ファイル名も引き継がず、<code>meta_zero</code> へ置き換えます。</p></article>
+        <article><h3>完全ローカル処理</h3><p>変換時にファイルや解析結果をサーバーへ送りません。外部フォントや解析ツールも読み込みません。</p></article>
+        <article><h3>色と形式について</h3><p>ICCカラープロファイルも除去するため、環境によって色がわずかに変わる場合があります。アニメーションWebP／APNGとHEICは現在未対応です。</p></article>
+      </div>
+    </section>
+
+    <section id="guide" class="guide-section section-watch">
+      <div class="section-heading compact">
+        <span class="section-index">04 / GUIDE</span>
+        <h2>3ステップで完了</h2>
+      </div>
+      <ol class="steps">
+        <li><span>1</span><div><h3>ファイルを選ぶ</h3><p>画像は10件、動画は3件までまとめて選択できます。</p></div></li>
+        <li><span>2</span><div><h3>端末内で変換</h3><p>複数ある場合も1件ずつ処理し、完了した一時データから順に解放します。</p></div></li>
+        <li><span>3</span><div><h3>新しいファイルを保存</h3><p><code>meta_zero</code> の名前で保存します。同名がある場合は端末側が重複名を付けます。</p></div></li>
+      </ol>
+      <div class="format-table" role="table" aria-label="対応形式">
+        <div role="row" class="format-head"><span role="columnheader">種類</span><span role="columnheader">入力</span><span role="columnheader">出力</span><span role="columnheader">件数</span></div>
+        <div role="row"><b role="cell">画像</b><span role="cell">JPEG / PNG / 静止WebP</span><span role="cell">元形式を維持</span><span role="cell">最大10件・64MP</span></div>
+        <div role="row"><b role="cell">動画</b><span role="cell">ブラウザ再生対応形式</span><span role="cell">WebM または MP4</span><span role="cell">最大3件・各1GB・4K相当</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a class="brand footer-brand" href="/"><span class="brand-mark">ef</span><span class="brand-name">eye-factory</span></a>
+    <p>META ZERO — local privacy utility</p>
+    <small>© 2026 eye-factory</small>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="i18n.js" defer></script>
+  <script src="app.js" defer></script>
+</body>
+</html>
