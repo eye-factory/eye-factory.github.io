@@ -10,6 +10,9 @@
   <meta property="og:title" content="META ZERO | eye-factory">
   <meta property="og:description" content="画像・動画を再圧縮せず、メタデータだけを端末内で除去します。">
   <meta property="og:image" content="assets/meta-zero-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -63,11 +66,11 @@
           <span class="step-mark">01—02</span>
         </div>
         <input id="fileInput" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,.jpg,.jpeg,.png,.webp,.mp4" multiple>
-        <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-controls="fileInput">
+        <label class="drop-zone" id="dropZone" for="fileInput" role="button" tabindex="0" aria-controls="fileInput">
           <div class="drop-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v4h16v-4"/></svg></div>
           <div><strong data-i18n="dropTitle">画像・動画をここへドロップ</strong><span data-i18n="dropSub">またはクリックして選択</span></div>
           <small data-i18n="limits">JPEG / PNG / WebP 最大10枚・MP4 最大3本</small>
-        </div>
+        </label>
         <div class="queue-head" id="queueHead" hidden>
           <strong><span data-i18n="selectedFiles">選択したファイル</span> <b id="fileCount">0</b></strong>
           <button class="text-button" id="clearQueue" type="button" data-i18n="clear">すべて解除</button>

@@ -21,7 +21,7 @@
     specInput: 'INPUT', specOutput: 'OUTPUT', specOutputValue: 'Original format · original-name.mz.ext', specCount: 'LIMIT', specCountValue: '10 images / 3 MP4 files', specSave: 'SAVE', specSaveValue: 'Multiple files download one by one', legal: 'Commercial Transactions Act',
     footer: 'Files stay on your device.', multipleDownloadHint: 'Files will download one by one. If your browser asks, allow multiple downloads.',
     statusReady: 'Ready', statusScanning: 'Reading', statusProcessing: 'Removing data', statusDone: 'Saved', statusError: 'Failed',
-    metadataFound: '{count} metadata type(s)', metadataNone: 'No removable metadata found', sizeLabel: '{size}', durationLabel: '{duration}',
+    metadataFound: '{count} metadata type(s) ({targets})', metadataNone: 'No removable metadata found', sizeLabel: '{size}', durationLabel: '{duration}',
     folderUnsupported: 'Folder writing is not supported in this browser.', folderSelected: 'Save to: {name}', folderDenied: 'Folder access was not granted.',
     invalidType: 'Only JPEG, PNG, WebP and MP4 are supported.', imageLimit: 'You can select up to 10 images.', videoLimit: 'You can select up to 3 MP4 files.',
     duplicateSkipped: 'Duplicate files were skipped.', noFiles: 'Select at least one file.', pickFolderFirst: 'Choose a save folder first.',
@@ -39,9 +39,9 @@
     privacyTitle: '消す情報と、変えない中身', removeHeading: '除去する情報', removeText: 'GPS、日時、作成者、著作権、端末・ソフト名、タイトル、コメント、サイトURL、元ファイル名などの標準メタデータ。', keepHeading: '変えないもの', keepText: '画像の画素、動画・音声データ、元ファイル。正しい表示に必要な向きとカラープロファイルは残します。', noticeHeading: '対応と注意', noticeText: '写り込んだ顔・住所・画面内文字、保存後のファイル名、通信時のIPアドレス、特殊な独自情報、圧縮データ内のエンコーダー識別子は自動では消せません。',
     keepFormat: 'JPEG / PNG / WebP / MP4の形式を維持', keepMedia: '再圧縮せず、画像・映像・音声本体を維持', keepOriginal: '元ファイルは変更せず新しいコピーを作成', colorNote: '色や向きを守るため、ICCカラープロファイルと必要最小限の向き情報は残します。',
     specInput: '入力', specOutput: '出力', specOutputValue: '元形式・元名.mz.ext', specCount: '件数', specCountValue: '画像10枚 / MP4 3本', specSave: '保存', specSaveValue: '複数も1件ずつ順番に保存', legal: '特定商取引法に基づく表記', footer: 'ファイルは端末の外へ送信されません。', multipleDownloadHint: '1件ずつ順番に保存します。ブラウザに確認された場合は複数ダウンロードを許可してください。',
-    statusReady: '準備完了', statusScanning: '確認中', statusProcessing: '情報を除去中', statusDone: '保存済み', statusError: '失敗', metadataFound: '除去対象 {count} 種類', metadataNone: '除去対象の情報は未検出', sizeLabel: '{size}', durationLabel: '{duration}',
+    statusReady: '準備完了', statusScanning: '確認中', statusProcessing: '情報を除去中', statusDone: '保存済み', statusError: '失敗', metadataFound: '除去対象 {count}種類（{targets}）', metadataNone: '除去対象の情報は未検出', sizeLabel: '{size}', durationLabel: '{duration}',
     folderUnsupported: 'このブラウザはフォルダへの直接保存に未対応です。', folderSelected: '保存先：{name}', folderDenied: 'フォルダへのアクセスが許可されませんでした。', invalidType: 'JPEG、PNG、WebP、MP4のみ対応しています。', imageLimit: '画像は最大10枚まで選択できます。', videoLimit: 'MP4は最大3本まで選択できます。', duplicateSkipped: '重複したファイルは追加しませんでした。', noFiles: 'ファイルを選択してください。', pickFolderFirst: '先に保存先フォルダを選んでください。', savedFiles: '新しいファイルを {count} 件保存しました。', someFailed: '{done}件保存、{failed}件失敗しました。', cancelled: '処理を中止しました。', saveFailed: 'このファイルを保存できませんでした。', processingItem: '{current}/{total} {name}', removeFileLabel: '{name}を解除', fallbackSave: 'ブラウザの通常保存を使用します。',
-    metaExif: 'EXIF / GPS', metaXmp: 'XMP', metaComment: 'コメント', metaText: 'テキスト / 日時', metaMp4: 'MP4メタデータ', metaTime: '作成日時'
+    metaExif: 'GPS・撮影情報', metaXmp: 'サイトデータ・作成者情報', metaComment: 'コメント', metaText: '文字情報・日時', metaMp4: '動画情報', metaTime: '作成日時'
   };
 
   const overrides = {
@@ -77,8 +77,19 @@
     de: 'Fügt .mz an den ursprünglichen Namen an und speichert mehrere Dateien nacheinander im Standard-Downloadordner.',
     pt: 'Adiciona .mz ao nome original e salva os arquivos um por um nos downloads padrão.'
   };
+  const metadataFoundDetails = {
+    'zh-CN': '发现 {count} 类元数据（{targets}）',
+    'zh-TW': '發現 {count} 類中繼資料（{targets}）',
+    ko: '제거 대상 {count}종 ({targets})',
+    es: '{count} tipo(s) de metadatos ({targets})',
+    fr: '{count} type(s) de métadonnées ({targets})',
+    de: '{count} Metadatentyp(en) ({targets})',
+    pt: '{count} tipo(s) de metadados ({targets})'
+  };
   const tables = { en, ja };
-  Object.entries(overrides).forEach(([language, values]) => { tables[language] = { ...en, ...values, outputNote: outputNotes[language] || en.outputNote }; });
+  Object.entries(overrides).forEach(([language, values]) => {
+    tables[language] = { ...en, ...values, outputNote: outputNotes[language] || en.outputNote, metadataFound: metadataFoundDetails[language] || en.metadataFound };
+  });
   const supported = Object.keys(tables);
 
   function normalize(value) {

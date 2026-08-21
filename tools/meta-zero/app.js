@@ -37,7 +37,7 @@
   }
 
   function setupFileSelection() {
-    els.dropZone.addEventListener('click', () => { if (!state.busy) els.fileInput.click(); });
+    els.dropZone.addEventListener('click', event => { if (state.busy) event.preventDefault(); });
     els.dropZone.addEventListener('keydown', event => {
       if (!state.busy && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); els.fileInput.click(); }
     });
@@ -264,7 +264,10 @@
       const detail = document.createElement('small');
       const details = [formatBytes(item.size)];
       if (item.duration) details.push(formatDuration(item.duration));
-      if (item.status === 'ready') details.push(item.metadataKeys.length ? t('metadataFound', { count: item.metadataKeys.length }) : t('metadataNone'));
+      if (item.status === 'ready') {
+        const targets = item.metadataKeys.map(key => t(key)).join('/');
+        details.push(item.metadataKeys.length ? t('metadataFound', { count: item.metadataKeys.length, targets }) : t('metadataNone'));
+      }
       detail.textContent = details.join(' · ');
       info.append(name, detail);
       const status = document.createElement('span');
