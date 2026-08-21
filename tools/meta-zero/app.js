@@ -6,6 +6,7 @@
   const t = (key, variables) => window.MetaZeroI18n?.t(key, variables) ?? key;
   const IMAGE_LIMIT = 10;
   const VIDEO_LIMIT = 3;
+  const AUDIO_LIMIT = 10;
   const ZERO_CHUNK = new Uint8Array(64 * 1024);
   const DOWNLOAD_GAP_MS = 900;
   const MP4_METADATA_BOXES = new Set([
@@ -61,10 +62,12 @@
     const existing = new Set(state.items.map(item => item.fingerprint));
     let imageCount = state.items.filter(item => item.kind === 'image').length;
     let videoCount = state.items.filter(item => item.kind === 'video').length;
+    let audioCount = state.items.filter(item => item.kind === 'audio').length;
     let duplicate = false;
     let invalid = false;
     let imageOverflow = false;
     let videoOverflow = false;
+    let audioOverflow = false;
 
     for (const file of files) {
       const info = identifyFile(file);
@@ -73,7 +76,10 @@
       if (existing.has(fingerprint)) { duplicate = true; continue; }
       if (info.kind === 'image' && imageCount >= IMAGE_LIMIT) { imageOverflow = true; continue; }
       if (info.kind === 'video' && videoCount >= VIDEO_LIMIT) { videoOverflow = true; continue; }
-      if (info.kind === 'image') imageCount += 1; else videoCount += 1;
+      if (info.kind === 'audio' && audioCount >= AUDIO_LIMIT) { audioOverflow = true; continue; }
+      if (info.kind === 'image') imageCount += 1;
+      else if (info.kind === 'video') videoCount += 1;
+      else audioCount += 1;
       existing.add(fingerprint);
       const item = {
         id: ++itemId, file, sourceName: file.name, size: file.size, fingerprint, kind: info.kind,
@@ -91,6 +97,7 @@
     if (invalid) showToast(t('invalidType'), true);
     else if (imageOverflow) showToast(t('imageLimit'), true);
     else if (videoOverflow) showToast(t('videoLimit'), true);
+    else if (audioOverflow) showToast(t('audioLimit'), true);
     else if (duplicate) showToast(t('duplicateSkipped'));
   }
 
@@ -100,19 +107,27 @@
     if (file.type === 'image/png' || extension === 'png') return { kind: 'image', format: 'png', extension: 'png', mime: 'image/png' };
     if (file.type === 'image/webp' || extension === 'webp') return { kind: 'image', format: 'webp', extension: 'webp', mime: 'image/webp' };
     if (file.type === 'video/mp4' || extension === 'mp4') return { kind: 'video', format: 'mp4', extension: 'mp4', mime: 'video/mp4' };
+    if (file.type === 'audio/mpeg' || extension === 'mp3') return { kind: 'audio', format: 'mp3', extension: 'mp3', mime: 'audio/mpeg' };
     return null;
   }
 
   async function prepareItem(item) {
     try {
-      const thumbnail = item.kind === 'image' ? await createImageThumbnail(item.file) : await createVideoThumbnail(item.file);
+      const thumbnail = item.kind === 'image'
+        ? await createImageThumbnail(item.file)
+        : item.kind === 'video'
+          ? await createVideoThumbnail(item.file)
+          : await createAudioThumbnail(item.file);
       if (item.disposed) { if (thumbnail.url) URL.revokeObjectURL(thumbnail.url); return; }
       item.thumbnailUrl = thumbnail.url;
       item.duration = thumbnail.duration || 0;
       if (item.kind === 'image') {
         item.metadataKeys = await scanImageMetadata(item.file, item.format);
-      } else {
+      } else if (item.kind === 'video') {
         item.analysis = await buildMp4Analysis(item.file);
+        item.metadataKeys = [...item.analysis.labels];
+      } else {
+        item.analysis = await buildMp3Analysis(item.file);
         item.metadataKeys = [...item.analysis.labels];
       }
       if (item.disposed) return;
@@ -187,6 +202,28 @@
     }
   }
 
+  async function createAudioThumbnail(file) {
+    const audio = document.createElement('audio');
+    const sourceUrl = URL.createObjectURL(file);
+    audio.preload = 'metadata';
+    audio.src = sourceUrl;
+    try {
+      await waitForEvent(audio, 'loadedmetadata', 'error', 20000);
+      return {
+        url: await createPlaceholderThumbnail('audio'),
+        duration: Number.isFinite(audio.duration) ? audio.duration : 0
+      };
+    } catch {
+      return { url: await createPlaceholderThumbnail('audio'), duration: 0 };
+    } finally {
+      audio.pause();
+      audio.removeAttribute('src');
+      audio.load();
+      URL.revokeObjectURL(sourceUrl);
+      audio.remove();
+    }
+  }
+
   function waitForEvent(target, success, failure, timeout) {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => finish(new Error('Timed out while reading the file.')), timeout);
@@ -233,7 +270,8 @@
     context.fillStyle = '#3279c8';
     context.font = '700 17px system-ui';
     context.textAlign = 'center';
-    context.fillText(kind === 'video' ? 'MP4' : 'IMAGE', 70, 51);
+    const label = kind === 'video' ? 'MP4' : kind === 'audio' ? 'MP3' : 'IMAGE';
+    context.fillText(label, 70, 51);
     const blob = await canvasToBlob(canvas, 'image/jpeg', .75);
     canvas.width = 1;
     canvas.height = 1;
@@ -354,9 +392,12 @@
         let cleanBlob;
         if (item.kind === 'image') {
           cleanBlob = await sanitizeImage(item.file, item.format);
-        } else {
+        } else if (item.kind === 'video') {
           const analysis = item.analysis || await buildMp4Analysis(item.file);
           cleanBlob = createPatchedBlob(item.file, analysis.patches, 'video/mp4');
+        } else {
+          const analysis = item.analysis || await buildMp3Analysis(item.file);
+          cleanBlob = new Blob([item.file.slice(analysis.start, analysis.end)], { type: 'audio/mpeg' });
         }
         if (state.token.cancelled) throw new DOMException('Cancelled', 'AbortError');
         triggerDownload(cleanBlob, desiredName);
@@ -684,6 +725,74 @@
     const labels = new Set();
     await inspectMp4Boxes(file, top, patches, labels, 0);
     return { patches: normalizePatches(patches), labels };
+  }
+
+  async function buildMp3Analysis(file) {
+    const labels = new Set();
+    let start = 0;
+    let end = file.size;
+
+    while (start + 10 <= end) {
+      const header = await readBytes(file, start, 10);
+      if (!startsWithAscii(header, 'ID3')) break;
+      const version = header[3];
+      if (version < 2 || version > 4 || [header[6], header[7], header[8], header[9]].some(value => value > 0x7f)) {
+        throw new Error('Invalid ID3 tag.');
+      }
+      const payloadSize = (header[6] << 21) | (header[7] << 14) | (header[8] << 7) | header[9];
+      const footerSize = version === 4 && (header[5] & 0x10) ? 10 : 0;
+      const tagEnd = start + 10 + payloadSize + footerSize;
+      if (tagEnd > end) throw new Error('ID3 tag exceeds file size.');
+      start = tagEnd;
+      labels.add('metaId3');
+    }
+
+    let removed = true;
+    while (removed) {
+      removed = false;
+      if (end - start >= 128) {
+        const id3v1 = await readBytes(file, end - 128, 4);
+        if (startsWithAscii(id3v1, 'TAG')) {
+          end -= 128;
+          if (end - start >= 227) {
+            const extended = await readBytes(file, end - 227, 4);
+            if (startsWithAscii(extended, 'TAG+')) end -= 227;
+          }
+          labels.add('metaId3');
+          removed = true;
+          continue;
+        }
+      }
+      if (end - start >= 32) {
+        const footer = await readBytes(file, end - 32, 32);
+        if (startsWithAscii(footer, 'APETAGEX')) {
+          const tagSize = readU32LE(footer, 12);
+          if (tagSize < 32 || tagSize > end - start) throw new Error('Invalid APE tag.');
+          let tagStart = end - tagSize;
+          if (tagStart - start >= 32) {
+            const header = await readBytes(file, tagStart - 32, 8);
+            if (startsWithAscii(header, 'APETAGEX')) tagStart -= 32;
+          }
+          end = tagStart;
+          labels.add('metaApe');
+          removed = true;
+        }
+      }
+    }
+
+    if (start + 4 > end) throw new Error('MP3 audio data was not found.');
+    const frame = await readBytes(file, start, 4);
+    if (!isMp3FrameHeader(frame)) throw new Error('Invalid MP3 audio data.');
+    return { start, end, labels };
+  }
+
+  function isMp3FrameHeader(bytes) {
+    if (bytes.length < 4 || bytes[0] !== 0xff || (bytes[1] & 0xe0) !== 0xe0) return false;
+    const version = (bytes[1] >> 3) & 0x03;
+    const layer = (bytes[1] >> 1) & 0x03;
+    const bitrate = (bytes[2] >> 4) & 0x0f;
+    const sampleRate = (bytes[2] >> 2) & 0x03;
+    return version !== 1 && layer !== 0 && bitrate !== 0 && bitrate !== 0x0f && sampleRate !== 0x03;
   }
 
   async function inspectMp4Boxes(file, boxes, patches, labels, depth) {

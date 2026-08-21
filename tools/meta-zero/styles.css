@@ -103,6 +103,7 @@ h1 span { color: var(--blue); }
 .thumb { position: relative; width: 52px; height: 42px; overflow: hidden; background: #dae8f7; border-radius: 8px; }
 .thumb img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .thumb.video::after { content: "▶"; position: absolute; inset: 0; display: grid; place-items: center; color: #fff; background: rgba(16,29,54,.26); text-shadow: 0 1px 5px rgba(0,0,0,.4); font-size: 13px; }
+.thumb.audio::after { content: "♪"; position: absolute; inset: 0; display: grid; place-items: center; color: #fff; background: rgba(16,74,128,.2); text-shadow: 0 1px 5px rgba(0,0,0,.35); font-size: 18px; }
 .file-info { min-width: 0; }
 .file-info strong { display: block; overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .file-info small { display: block; margin-top: 3px; color: #748298; font-size: 9px; }

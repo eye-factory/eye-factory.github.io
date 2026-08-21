@@ -3,45 +3,45 @@
 
   const en = {
     skip: 'Skip to tool', language: 'Language', navOverview: 'Overview', navTool: 'Tool', navSafety: 'Safety', navGuide: 'Specs', eyebrow: 'LOCAL PRIVACY TOOL',
-    lead: 'Keep the photo and video. Zero only the data you do not want.',
+    lead: 'Keep the image, video and audio. Zero only the data you do not want.',
     intro: 'Remove GPS, capture time, device names and more without sending files outside, then create a new file in the same format.',
     trustLocal: 'No uploads', trustFormat: 'Same file format', trustOriginal: 'Original stays untouched',
     localBadge: 'Processed only on this device', toolTitle: 'Remove data and save a new copy',
     saveDestination: 'Save destination', folderUnset: 'Not selected', chooseFolder: 'Choose folder',
     folderNote: 'On PC, choose a destination once and new copies are written there after processing.',
     folderFallback: 'Your browser will use its normal save function after processing.',
-    dropTitle: 'Drop images or videos here', dropSub: 'or click to select', limits: 'JPEG / PNG / WebP up to 10 · MP4 up to 3',
+    dropTitle: 'Drop images, videos or audio here', dropSub: 'or click to select', limits: 'JPEG / PNG / WebP up to 10 · MP4 up to 3 · MP3 up to 10',
     selectedFiles: 'Selected files', clear: 'Clear all', processing: 'Processing', processButton: 'Remove data and save', cancel: 'Cancel',
     outputNote: 'Adds .mz to the original name and saves multiple files one by one to your default downloads.',
     privacyTitle: 'Data removed and content retained', removeHeading: 'Data removed', removeText: 'Standard metadata including GPS, dates, creator, copyright, device and software names, titles, comments, site URLs and original file names.',
     keepHeading: 'What stays unchanged', keepText: 'Image pixels, video/audio data and the original file. Color profiles and orientation data needed for correct display are retained.',
     noticeHeading: 'Support & limits', noticeText: 'Visible faces, addresses or text, the saved file name, network IP addresses, uncommon proprietary data and encoder IDs embedded in compressed media cannot be removed automatically.',
-    keepFormat: 'Keeps JPEG / PNG / WebP / MP4 format', keepMedia: 'Keeps image, video and audio media without recompression', keepOriginal: 'Creates a new copy without changing the original',
+    keepFormat: 'Keeps JPEG / PNG / WebP / MP4 / MP3 format', keepMedia: 'Keeps image, video and audio media without recompression', keepOriginal: 'Creates a new copy without changing the original',
     colorNote: 'ICC color profiles and the minimum orientation data are retained to preserve color and display direction.',
-    specInput: 'INPUT', specOutput: 'OUTPUT', specOutputValue: 'Original format · original-name.mz.ext', specCount: 'LIMIT', specCountValue: '10 images / 3 MP4 files', specSave: 'SAVE', specSaveValue: 'Multiple files download one by one', legal: 'Commercial Transactions Act',
+    specInput: 'INPUT', specOutput: 'OUTPUT', specOutputValue: 'Original format · original-name.mz.ext', specCount: 'LIMIT', specCountValue: '10 images / 3 MP4 files / 10 MP3 files', specSave: 'SAVE', specSaveValue: 'Multiple files download one by one', legal: 'Commercial Transactions Act',
     footer: 'Files stay on your device.', multipleDownloadHint: 'Files will download one by one. If your browser asks, allow multiple downloads.',
     statusReady: 'Ready', statusScanning: 'Reading', statusProcessing: 'Removing data', statusDone: 'Saved', statusError: 'Failed',
     metadataFound: '{count} metadata type(s) ({targets})', metadataNone: 'No removable metadata found', sizeLabel: '{size}', durationLabel: '{duration}',
     folderUnsupported: 'Folder writing is not supported in this browser.', folderSelected: 'Save to: {name}', folderDenied: 'Folder access was not granted.',
-    invalidType: 'Only JPEG, PNG, WebP and MP4 are supported.', imageLimit: 'You can select up to 10 images.', videoLimit: 'You can select up to 3 MP4 files.',
+    invalidType: 'Only JPEG, PNG, WebP, MP4 and MP3 are supported.', imageLimit: 'You can select up to 10 images.', videoLimit: 'You can select up to 3 MP4 files.', audioLimit: 'You can select up to 10 MP3 files.',
     duplicateSkipped: 'Duplicate files were skipped.', noFiles: 'Select at least one file.', pickFolderFirst: 'Choose a save folder first.',
     savedFiles: '{count} new file(s) saved.', someFailed: '{done} saved, {failed} failed.', cancelled: 'Processing cancelled.', saveFailed: 'Could not save this file.',
     processingItem: '{current}/{total} {name}', removeFileLabel: 'Remove {name}', fallbackSave: 'Using the browser save function.',
-    metaExif: 'EXIF / GPS', metaXmp: 'XMP', metaComment: 'Comments', metaText: 'Text / time', metaMp4: 'MP4 metadata', metaTime: 'Creation time'
+    metaExif: 'EXIF / GPS', metaXmp: 'XMP', metaComment: 'Comments', metaText: 'Text / time', metaMp4: 'MP4 metadata', metaId3: 'ID3 metadata', metaApe: 'APE metadata', metaTime: 'Creation time'
   };
 
   const ja = {
-    skip: 'ツールへ移動', language: '言語', navOverview: '概要', navTool: '機能', navSafety: '安全性', navGuide: '仕様', eyebrow: 'LOCAL PRIVACY TOOL', lead: '写真と動画はそのまま。残したくない情報だけをゼロへ。',
+    skip: 'ツールへ移動', language: '言語', navOverview: '概要', navTool: '機能', navSafety: '安全性', navGuide: '仕様', eyebrow: 'LOCAL PRIVACY TOOL', lead: '写真・動画・音声はそのまま。残したくない情報だけをゼロへ。',
     intro: 'GPS、撮影日時、端末名などを外部へ送らず除去し、同じ形式の新しいファイルを作ります。',
     trustLocal: 'アップロードなし', trustFormat: '同じ形式のまま', trustOriginal: '元ファイルは変更しない', localBadge: 'この端末内だけで処理', toolTitle: '情報だけ除去して新規保存',
     saveDestination: '保存先', folderUnset: '未選択', chooseFolder: 'フォルダを選ぶ', folderNote: 'PCでは保存先を一度選ぶと、処理後に新しいコピーを直接作成します。', folderFallback: '処理後はブラウザの通常保存を使用します。',
-    dropTitle: '画像・動画をここへドロップ', dropSub: 'またはクリックして選択', limits: 'JPEG / PNG / WebP 最大10枚・MP4 最大3本', selectedFiles: '選択したファイル', clear: 'すべて解除', processing: '処理中', processButton: '情報を除去して保存', cancel: '中止', outputNote: '元の名前に .mz を付け、複数も1件ずつ既定のダウンロード先へ保存します。',
+    dropTitle: '画像・動画・音声をここへドロップ', dropSub: 'またはクリックして選択', limits: 'JPEG / PNG / WebP 最大10枚・MP4 最大3本・MP3 最大10本', selectedFiles: '選択したファイル', clear: 'すべて解除', processing: '処理中', processButton: '情報を除去して保存', cancel: '中止', outputNote: '元の名前に .mz を付け、複数も1件ずつ既定のダウンロード先へ保存します。',
     privacyTitle: '消す情報と、変えない中身', removeHeading: '除去する情報', removeText: 'GPS、日時、作成者、著作権、端末・ソフト名、タイトル、コメント、サイトURL、元ファイル名などの標準メタデータ。', keepHeading: '変えないもの', keepText: '画像の画素、動画・音声データ、元ファイル。正しい表示に必要な向きとカラープロファイルは残します。', noticeHeading: '対応と注意', noticeText: '写り込んだ顔・住所・画面内文字、保存後のファイル名、通信時のIPアドレス、特殊な独自情報、圧縮データ内のエンコーダー識別子は自動では消せません。',
-    keepFormat: 'JPEG / PNG / WebP / MP4の形式を維持', keepMedia: '再圧縮せず、画像・映像・音声本体を維持', keepOriginal: '元ファイルは変更せず新しいコピーを作成', colorNote: '色や向きを守るため、ICCカラープロファイルと必要最小限の向き情報は残します。',
-    specInput: '入力', specOutput: '出力', specOutputValue: '元形式・元名.mz.ext', specCount: '件数', specCountValue: '画像10枚 / MP4 3本', specSave: '保存', specSaveValue: '複数も1件ずつ順番に保存', legal: '特定商取引法に基づく表記', footer: 'ファイルは端末の外へ送信されません。', multipleDownloadHint: '1件ずつ順番に保存します。ブラウザに確認された場合は複数ダウンロードを許可してください。',
+    keepFormat: 'JPEG / PNG / WebP / MP4 / MP3の形式を維持', keepMedia: '再圧縮せず、画像・映像・音声本体を維持', keepOriginal: '元ファイルは変更せず新しいコピーを作成', colorNote: '色や向きを守るため、ICCカラープロファイルと必要最小限の向き情報は残します。',
+    specInput: '入力', specOutput: '出力', specOutputValue: '元形式・元名.mz.ext', specCount: '件数', specCountValue: '画像10枚 / MP4 3本 / MP3 10本', specSave: '保存', specSaveValue: '複数も1件ずつ順番に保存', legal: '特定商取引法に基づく表記', footer: 'ファイルは端末の外へ送信されません。', multipleDownloadHint: '1件ずつ順番に保存します。ブラウザに確認された場合は複数ダウンロードを許可してください。',
     statusReady: '準備完了', statusScanning: '確認中', statusProcessing: '情報を除去中', statusDone: '保存済み', statusError: '失敗', metadataFound: '除去対象 {count}種類（{targets}）', metadataNone: '除去対象の情報は未検出', sizeLabel: '{size}', durationLabel: '{duration}',
-    folderUnsupported: 'このブラウザはフォルダへの直接保存に未対応です。', folderSelected: '保存先：{name}', folderDenied: 'フォルダへのアクセスが許可されませんでした。', invalidType: 'JPEG、PNG、WebP、MP4のみ対応しています。', imageLimit: '画像は最大10枚まで選択できます。', videoLimit: 'MP4は最大3本まで選択できます。', duplicateSkipped: '重複したファイルは追加しませんでした。', noFiles: 'ファイルを選択してください。', pickFolderFirst: '先に保存先フォルダを選んでください。', savedFiles: '新しいファイルを {count} 件保存しました。', someFailed: '{done}件保存、{failed}件失敗しました。', cancelled: '処理を中止しました。', saveFailed: 'このファイルを保存できませんでした。', processingItem: '{current}/{total} {name}', removeFileLabel: '{name}を解除', fallbackSave: 'ブラウザの通常保存を使用します。',
-    metaExif: 'GPS・撮影情報', metaXmp: 'サイトデータ・作成者情報', metaComment: 'コメント', metaText: '文字情報・日時', metaMp4: '動画情報', metaTime: '作成日時'
+    folderUnsupported: 'このブラウザはフォルダへの直接保存に未対応です。', folderSelected: '保存先：{name}', folderDenied: 'フォルダへのアクセスが許可されませんでした。', invalidType: 'JPEG、PNG、WebP、MP4、MP3のみ対応しています。', imageLimit: '画像は最大10枚まで選択できます。', videoLimit: 'MP4は最大3本まで選択できます。', audioLimit: 'MP3は最大10本まで選択できます。', duplicateSkipped: '重複したファイルは追加しませんでした。', noFiles: 'ファイルを選択してください。', pickFolderFirst: '先に保存先フォルダを選んでください。', savedFiles: '新しいファイルを {count} 件保存しました。', someFailed: '{done}件保存、{failed}件失敗しました。', cancelled: '処理を中止しました。', saveFailed: 'このファイルを保存できませんでした。', processingItem: '{current}/{total} {name}', removeFileLabel: '{name}を解除', fallbackSave: 'ブラウザの通常保存を使用します。',
+    metaExif: 'GPS・撮影情報', metaXmp: 'サイトデータ・作成者情報', metaComment: 'コメント', metaText: '文字情報・日時', metaMp4: '動画情報', metaId3: '曲名・作成者情報', metaApe: '音声タグ情報', metaTime: '作成日時'
   };
 
   const overrides = {
@@ -77,6 +77,15 @@
     de: 'Fügt .mz an den ursprünglichen Namen an und speichert mehrere Dateien nacheinander im Standard-Downloadordner.',
     pt: 'Adiciona .mz ao nome original e salva os arquivos um por um nos downloads padrão.'
   };
+  const audioEnhancements = {
+    'zh-CN': { lead:'保留图片、视频和音频，只清除不想留下的信息。',dropTitle:'将图片、视频或音频拖到这里',limits:'JPEG / PNG / WebP 最多10张 · MP4 最多3个 · MP3 最多10个',removeText:'位置、拍摄时间、设备和软件名称、备注及标准图片、视频和音频元数据。',noticeText:'支持 JPEG / PNG / WebP / MP4 / MP3。无法删除画面中的人脸、地址或网络 IP 地址。',specCountValue:'10张图片 / 3个MP4 / 10个MP3',invalidType:'仅支持 JPEG、PNG、WebP、MP4 和 MP3。',audioLimit:'最多可选择10个 MP3。',metaId3:'ID3 元数据',metaApe:'APE 元数据' },
+    'zh-TW': { lead:'保留圖片、影片與音訊，只清除不想留下的資訊。',dropTitle:'將圖片、影片或音訊拖到這裡',limits:'JPEG / PNG / WebP 最多10張 · MP4 最多3個 · MP3 最多10個',removeText:'位置、拍攝時間、裝置與軟體名稱、註解及標準圖片、影片和音訊中繼資料。',noticeText:'支援 JPEG / PNG / WebP / MP4 / MP3。無法移除畫面中的人臉、地址或網路 IP 位址。',specCountValue:'10張圖片 / 3個MP4 / 10個MP3',invalidType:'僅支援 JPEG、PNG、WebP、MP4 與 MP3。',audioLimit:'最多可選擇10個 MP3。',metaId3:'ID3 中繼資料',metaApe:'APE 中繼資料' },
+    ko: { lead:'사진·영상·음성은 그대로, 남기고 싶지 않은 정보만 지웁니다.',dropTitle:'이미지·영상·음성을 여기에 놓기',limits:'JPEG / PNG / WebP 최대 10장 · MP4 최대 3개 · MP3 최대 10개',removeText:'위치, 촬영 시간, 기기·소프트웨어명, 댓글 및 표준 이미지·영상·음성 메타데이터.',noticeText:'JPEG / PNG / WebP / MP4 / MP3 지원. 화면 속 얼굴·주소와 네트워크 IP 주소는 지울 수 없습니다.',specCountValue:'이미지 10장 / MP4 3개 / MP3 10개',invalidType:'JPEG, PNG, WebP, MP4, MP3만 지원합니다.',audioLimit:'MP3는 최대 10개까지 선택할 수 있습니다.',metaId3:'ID3 메타데이터',metaApe:'APE 메타데이터' },
+    es: { lead:'Conserva imágenes, vídeos y audio. Elimina solo los datos que no quieres.',dropTitle:'Suelta imágenes, vídeos o audio aquí',limits:'JPEG / PNG / WebP hasta 10 · MP4 hasta 3 · MP3 hasta 10',removeText:'Ubicación, fecha, dispositivo, software, comentarios y metadatos estándar de imágenes, vídeo y audio.',noticeText:'JPEG / PNG / WebP / MP4 / MP3. No elimina caras o direcciones visibles ni la IP de red.',specCountValue:'10 imágenes / 3 MP4 / 10 MP3',invalidType:'Solo se admite JPEG, PNG, WebP, MP4 y MP3.',audioLimit:'Puedes elegir hasta 10 MP3.',metaId3:'Metadatos ID3',metaApe:'Metadatos APE' },
+    fr: { lead:'Gardez images, vidéos et audio. Effacez seulement les données indésirables.',dropTitle:'Déposez images, vidéos ou fichiers audio ici',limits:'JPEG / PNG / WebP jusqu’à 10 · MP4 jusqu’à 3 · MP3 jusqu’à 10',removeText:'Lieu, date, appareil, logiciel, commentaires et métadonnées standard des images, vidéos et fichiers audio.',noticeText:'JPEG / PNG / WebP / MP4 / MP3. Les visages ou adresses visibles et l’adresse IP réseau ne sont pas supprimés.',specCountValue:'10 images / 3 MP4 / 10 MP3',invalidType:'Seuls JPEG, PNG, WebP, MP4 et MP3 sont acceptés.',audioLimit:'10 fichiers MP3 maximum.',metaId3:'Métadonnées ID3',metaApe:'Métadonnées APE' },
+    de: { lead:'Bilder, Videos und Audio bleiben gleich. Nur unerwünschte Daten werden entfernt.',dropTitle:'Bilder, Videos oder Audio hier ablegen',limits:'JPEG / PNG / WebP bis 10 · MP4 bis 3 · MP3 bis 10',removeText:'Ort, Aufnahmezeit, Geräte-/Softwarenamen, Kommentare und übliche Bild-, Video- und Audio-Metadaten.',noticeText:'JPEG / PNG / WebP / MP4 / MP3. Sichtbare Gesichter oder Adressen und die Netzwerk-IP werden nicht entfernt.',specCountValue:'10 Bilder / 3 MP4 / 10 MP3',invalidType:'Nur JPEG, PNG, WebP, MP4 und MP3 werden unterstützt.',audioLimit:'Maximal 10 MP3-Dateien.',metaId3:'ID3-Metadaten',metaApe:'APE-Metadaten' },
+    pt: { lead:'Mantenha imagens, vídeos e áudio. Remova apenas os dados indesejados.',dropTitle:'Solte imagens, vídeos ou áudio aqui',limits:'JPEG / PNG / WebP até 10 · MP4 até 3 · MP3 até 10',removeText:'Local, data, dispositivo, software, comentários e metadados padrão de imagem, vídeo e áudio.',noticeText:'JPEG / PNG / WebP / MP4 / MP3. Não remove rostos ou endereços visíveis nem o IP da rede.',specCountValue:'10 imagens / 3 MP4 / 10 MP3',invalidType:'Apenas JPEG, PNG, WebP, MP4 e MP3 são aceitos.',audioLimit:'Até 10 arquivos MP3.',metaId3:'Metadados ID3',metaApe:'Metadados APE' }
+  };
   const metadataFoundDetails = {
     'zh-CN': '发现 {count} 类元数据（{targets}）',
     'zh-TW': '發現 {count} 類中繼資料（{targets}）',
@@ -88,7 +97,7 @@
   };
   const tables = { en, ja };
   Object.entries(overrides).forEach(([language, values]) => {
-    tables[language] = { ...en, ...values, outputNote: outputNotes[language] || en.outputNote, metadataFound: metadataFoundDetails[language] || en.metadataFound };
+    tables[language] = { ...en, ...values, ...audioEnhancements[language], outputNote: outputNotes[language] || en.outputNote, metadataFound: metadataFoundDetails[language] || en.metadataFound };
   });
   const supported = Object.keys(tables);
 

@@ -4,16 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f5f9ff">
-  <meta name="description" content="画像・動画のメタデータだけを端末内で除去し、元の形式のまま新規保存するプライバシーツール META ZERO。">
+  <meta name="description" content="画像・動画・音声のメタデータだけを端末内で除去し、元の形式のまま新規保存するプライバシーツール META ZERO。">
   <title>META ZERO | eye-factory</title>
   <link rel="icon" type="image/png" href="assets/meta-zero-icon.png">
   <meta property="og:title" content="META ZERO | eye-factory">
-  <meta property="og:description" content="画像・動画を再圧縮せず、メタデータだけを端末内で除去します。">
+  <meta property="og:description" content="画像・動画・音声を再圧縮せず、メタデータだけを端末内で除去します。">
   <meta property="og:image" content="assets/meta-zero-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260822-2">
+  <link rel="stylesheet" href="styles.css?v=20260822-3">
 </head>
 <body>
   <a class="skip-link" href="#tool" data-i18n="skip">ツールへ移動</a>
@@ -36,7 +36,7 @@
       <div id="top" class="intro-pane section-watch">
         <div class="eyebrow"><span></span><span data-i18n="eyebrow">LOCAL PRIVACY TOOL</span></div>
         <h1 id="pageTitle"><span>META</span> ZERO</h1>
-        <p class="lead" data-i18n="lead">写真と動画はそのまま。残したくない情報だけをゼロへ。</p>
+        <p class="lead" data-i18n="lead">写真・動画・音声はそのまま。残したくない情報だけをゼロへ。</p>
         <p class="intro-copy" data-i18n="intro">GPS、撮影日時、端末名などを外部へ送らず除去し、同じ形式の新しいファイルを作ります。</p>
         <div class="hero-visual" aria-label="GPSや作成者情報を消去するイメージ">
           <div class="privacy-globe" aria-hidden="true">
@@ -50,7 +50,7 @@
               <span class="orbiter orbit-author"><span class="data-chip">AUTHOR <svg class="eraser" viewBox="0 0 24 24"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></span></span>
             </div>
             <div class="core"><img src="assets/meta-zero-icon.png" alt="" width="1256" height="1256"></div>
-            <span class="format-badge">JPEG / PNG / WebP / MP4 <b>✓</b></span>
+            <span class="format-badge">JPEG / PNG / WebP / MP4 / MP3 <b>✓</b></span>
           </div>
         </div>
         <ul class="trust-list">
@@ -65,11 +65,11 @@
           <div><span class="local-badge"><i></i><span data-i18n="localBadge">この端末内だけで処理</span></span><h2 id="toolTitle" data-i18n="toolTitle">情報だけ除去して新規保存</h2></div>
           <span class="step-mark">01—02</span>
         </div>
-        <input id="fileInput" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,.jpg,.jpeg,.png,.webp,.mp4" multiple>
+        <input id="fileInput" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,audio/mpeg,.jpg,.jpeg,.png,.webp,.mp4,.mp3" multiple>
         <label class="drop-zone" id="dropZone" for="fileInput" role="button" tabindex="0" aria-controls="fileInput">
           <div class="drop-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v4h16v-4"/></svg></div>
-          <div><strong data-i18n="dropTitle">画像・動画をここへドロップ</strong><span data-i18n="dropSub">またはクリックして選択</span></div>
-          <small data-i18n="limits">JPEG / PNG / WebP 最大10枚・MP4 最大3本</small>
+          <div><strong data-i18n="dropTitle">画像・動画・音声をここへドロップ</strong><span data-i18n="dropSub">またはクリックして選択</span></div>
+          <small data-i18n="limits">JPEG / PNG / WebP 最大10枚・MP4 最大3本・MP3 最大10本</small>
         </label>
         <div class="queue-head" id="queueHead" hidden>
           <strong><span data-i18n="selectedFiles">選択したファイル</span> <b id="fileCount">0</b></strong>
@@ -94,12 +94,12 @@
         <article class="privacy-card remove">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></div>
           <span>REMOVE</span><h3 data-i18n="removeHeading">除去する情報</h3><p data-i18n="removeText">GPS、日時、作成者、著作権、端末・ソフト名、タイトル、コメント、サイトURL、元ファイル名などの標準メタデータ。</p>
-          <div class="metadata-tags"><b>GPS</b><b>EXIF</b><b>XMP</b><b>IPTC</b><b>AUTHOR</b><b>TITLE</b><b>URL</b><b>DEVICE</b></div>
+          <div class="metadata-tags"><b>GPS</b><b>EXIF</b><b>XMP</b><b>IPTC</b><b>ID3</b><b>AUTHOR</b><b>TITLE</b><b>URL</b><b>DEVICE</b></div>
         </article>
         <article class="privacy-card keep">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></div>
           <span>KEEP</span><h3 data-i18n="keepHeading">変えないもの</h3><p data-i18n="keepText">画像の画素、動画・音声データ、元ファイル。正しい表示に必要な向きとカラープロファイルは残します。</p>
-          <ul><li data-i18n="keepFormat">JPEG / PNG / WebP / MP4の形式を維持</li><li data-i18n="keepMedia">再圧縮せず、画像・映像・音声本体を維持</li><li data-i18n="keepOriginal">元ファイルは変更せず新しいコピーを作成</li></ul>
+          <ul><li data-i18n="keepFormat">JPEG / PNG / WebP / MP4 / MP3の形式を維持</li><li data-i18n="keepMedia">再圧縮せず、画像・映像・音声本体を維持</li><li data-i18n="keepOriginal">元ファイルは変更せず新しいコピーを作成</li></ul>
         </article>
         <article class="privacy-card limit">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg></div>
@@ -108,9 +108,9 @@
         </article>
       </div>
       <div id="guide" class="spec-line">
-        <div><b data-i18n="specInput">入力</b><span>JPEG / PNG / WebP / MP4</span></div>
+        <div><b data-i18n="specInput">入力</b><span>JPEG / PNG / WebP / MP4 / MP3</span></div>
         <div><b data-i18n="specOutput">出力</b><span data-i18n="specOutputValue">元形式・元名.mz.ext</span></div>
-        <div><b data-i18n="specCount">件数</b><span data-i18n="specCountValue">画像10枚 / MP4 3本</span></div>
+        <div><b data-i18n="specCount">件数</b><span data-i18n="specCountValue">画像10枚 / MP4 3本 / MP3 10本</span></div>
         <div><b data-i18n="specSave">保存</b><span data-i18n="specSaveValue">複数も1件ずつ順番に保存</span></div>
       </div>
     </section>
@@ -121,6 +121,6 @@
     </div>
   </footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="i18n.js?v=20260822-1"></script><script src="app.js?v=20260822-1"></script>
+  <script src="i18n.js?v=20260822-3"></script><script src="app.js?v=20260822-3"></script>
 </body>
 </html>
