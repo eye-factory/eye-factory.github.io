@@ -27,9 +27,9 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 
 .site-header { position: sticky; top: 0; z-index: 100; width: 100%; background: rgba(255, 255, 255, .88); border-bottom: 1px solid rgba(26, 110, 180, .13); box-shadow: 0 8px 30px rgba(42, 91, 142, .05); backdrop-filter: blur(20px) saturate(1.35); }
 .header-inner { width: min(1100px, calc(100% - 48px)); height: 70px; margin: auto; display: flex; align-items: center; justify-content: space-between; }
-.brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; font-weight: 800; }
-.brand-mark { display: grid; place-items: center; width: 42px; height: 42px; color: #071a2d; background: linear-gradient(135deg, var(--cyan), var(--purple)); border-radius: 10px; box-shadow: 0 0 20px rgba(0, 197, 238, .42); font-family: var(--font-header); font-size: 16px; letter-spacing: -.08em; animation: brandGlow 3.2s ease-in-out infinite; }
-.brand-name { color: transparent; background: linear-gradient(90deg, #00aee7, #00ca98); background-clip: text; font-family: var(--font-header); font-size: 20px; letter-spacing: .05em; }
+.brand { display: inline-flex; align-items: center; gap: 12px; color: var(--ink); text-decoration: none; }
+.brand-mark { display: grid; place-items: center; width: 42px; height: 42px; color: #000; background: linear-gradient(135deg, #00d4ff, #8b5cf6); border-radius: 10px; box-shadow: 0 0 20px rgba(0, 212, 255, .5); font-family: var(--font-header); font-size: 16px; font-weight: 800; animation: brandGlow 3s ease-in-out infinite; }
+.brand-name { color: transparent; background: linear-gradient(90deg, #00d4ff, #00ff88); background-clip: text; font-family: var(--font-header); font-size: 20px; font-weight: 700; letter-spacing: .05em; }
 .language-picker { display: flex; align-items: center; gap: 7px; padding: 7px 10px; color: #38566e; background: rgba(255,255,255,.9); border: 1px solid rgba(0,157,209,.18); border-radius: 999px; box-shadow: 0 5px 18px rgba(44,95,140,.07); }
 .language-picker svg { width: 16px; height: 16px; color: #168fc2; }
 .language-picker select { max-width: 128px; color: inherit; background: transparent; border: 0; outline: 0; cursor: pointer; font-family: var(--font-header); font-size: 11px; font-weight: 600; }
@@ -159,7 +159,7 @@ footer { position: relative; z-index: 1; margin-top: 48px; padding: 46px 24px; t
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 .toast.error { background: rgba(172,53,73,.96); }
 
-@keyframes brandGlow { 50% { box-shadow: 0 0 30px rgba(0,197,238,.6), 0 10px 30px rgba(82,94,220,.22); } }
+@keyframes brandGlow { 0%, 100% { box-shadow: 0 0 20px rgba(0,212,255,.5); } 50% { box-shadow: 0 0 30px rgba(0,212,255,.8), 0 0 60px rgba(0,212,255,.4); } }
 @keyframes pulseDot { 70%, 100% { box-shadow: 0 0 0 11px rgba(0,201,149,0), 0 0 18px rgba(0,201,149,.4); } }
 @keyframes orbFloat { 50% { transform: translate3d(30px,45px,0) scale(1.08); } }
 @keyframes orbitData { to { offset-distance: 100%; } }
@@ -179,8 +179,8 @@ footer { position: relative; z-index: 1; margin-top: 48px; padding: 46px 24px; t
 @media (max-width: 760px) {
   html { scroll-padding-top: 68px; }
   .header-inner { width: calc(100% - 28px); height: 58px; }
-  .brand-mark { width: 35px; height: 35px; border-radius: 9px; font-size: 13px; }
-  .brand-name { font-size: 15px; }
+  .brand-mark { width: 34px; height: 34px; border-radius: 8px; font-size: 13px; }
+  .brand-name { font-size: 16px; }
   .language-picker { padding: 5px 8px; }
   .language-picker select { max-width: 92px; font-size: 10px; }
   .page-shell { width: min(100% - 28px, 620px); margin-top: 12px; }
