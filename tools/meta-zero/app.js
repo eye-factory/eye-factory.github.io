@@ -1,766 +1,932 @@
 (() => {
   'use strict';
 
-  const $ = (selector, root = document) => root.querySelector(selector);
-  const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-  const tr = value => window.MetaZeroI18n?.translate(value) || value;
-  const state = { images: [], videos: [], busy: false, token: null };
-  let idSeed = 0;
+  const $ = selector => document.querySelector(selector);
+  const t = (key, variables) => window.MetaZeroI18n?.t(key, variables) ?? key;
+  const IMAGE_LIMIT = 10;
+  const VIDEO_LIMIT = 3;
+  const ZERO_CHUNK = new Uint8Array(64 * 1024);
+  const state = {
+    items: [], busy: false, preparing: 0, token: null, outputDirectory: null,
+    folderSupported: typeof window.showDirectoryPicker === 'function' && window.isSecureContext,
+    downloadUrls: new Set(), prepareChain: Promise.resolve()
+  };
+  let itemId = 0;
   let toastTimer = 0;
 
   const els = {
-    imageInput: $('#imageInput'), videoInput: $('#videoInput'),
-    imageQueue: $('#imageQueue'), videoQueue: $('#videoQueue'),
-    processImages: $('#processImages'), processVideos: $('#processVideos'),
-    clearImages: $('#clearImages'), clearVideos: $('#clearVideos'),
-    globalProgress: $('#globalProgress'), progressTitle: $('#progressTitle'),
-    progressPercent: $('#progressPercent'), progressBar: $('#progressBar'),
-    progressDetail: $('#progressDetail'), cancelProcessing: $('#cancelProcessing'),
-    toast: $('#toast'), videoCapability: $('#videoCapability')
+    fileInput: $('#fileInput'), dropZone: $('#dropZone'), fileQueue: $('#fileQueue'), queueHead: $('#queueHead'),
+    fileCount: $('#fileCount'), clearQueue: $('#clearQueue'), chooseFolder: $('#chooseFolder'), folderRow: $('#folderRow'),
+    folderName: $('#folderName'), folderNote: $('#folderNote'), processFiles: $('#processFiles'), cancelProcessing: $('#cancelProcessing'),
+    progressPanel: $('#progressPanel'), progressTitle: $('#progressTitle'), progressPercent: $('#progressPercent'),
+    progressBar: $('#progressBar'), progressDetail: $('#progressDetail'), toast: $('#toast')
   };
 
-  setupNavigation();
-  setupTabs();
-  setupDropZones();
-  setupActions();
-  updateVideoCapability();
-  window.addEventListener('metazero:languagechange', () => {
-    renderQueue('image');
-    renderQueue('video');
-    updateVideoCapability();
-  });
+  initialize();
 
-  function setupNavigation() {
-    const links = $$('.follow-link');
-    const sections = $$('.section-watch');
-    const observer = new IntersectionObserver(entries => {
-      const visible = entries.filter(e => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (!visible) return;
-      links.forEach(link => link.classList.toggle('active', link.dataset.target === visible.target.id));
-    }, { rootMargin: '-22% 0px -58%', threshold: [0, .2, .45, .7] });
-    sections.forEach(section => observer.observe(section));
+  function initialize() {
+    if (!state.folderSupported) els.folderRow.hidden = true;
+    updateLocalizedUi();
+    setupFileSelection();
+    els.chooseFolder.addEventListener('click', chooseOutputFolder);
+    els.clearQueue.addEventListener('click', clearQueue);
+    els.processFiles.addEventListener('click', processFiles);
+    els.cancelProcessing.addEventListener('click', () => { if (state.token) state.token.cancelled = true; });
+    window.addEventListener('metazero:languagechange', () => { updateLocalizedUi(); renderQueue(); });
+    window.addEventListener('beforeunload', releaseAllResources);
   }
 
-  function setupTabs() {
-    $$('.tool-tab').forEach(tab => tab.addEventListener('click', () => {
-      if (state.busy) return showToast('処理中は種類を切り替えられません。', 'error');
-      $$('.tool-tab').forEach(t => {
-        const active = t === tab;
-        t.classList.toggle('active', active);
-        t.setAttribute('aria-selected', String(active));
-      });
-      $$('.tool-panel').forEach(panel => {
-        const active = panel.id === tab.dataset.panel;
-        panel.classList.toggle('active', active);
-        panel.hidden = !active;
-      });
-    }));
-  }
-
-  function setupDropZones() {
-    $$('.drop-zone').forEach(zone => {
-      const kind = zone.dataset.kind;
-      const input = kind === 'image' ? els.imageInput : els.videoInput;
-      zone.addEventListener('click', () => !state.busy && input.click());
-      zone.addEventListener('keydown', event => {
-        if (!state.busy && (event.key === 'Enter' || event.key === ' ')) {
-          event.preventDefault(); input.click();
-        }
-      });
-      ['dragenter', 'dragover'].forEach(type => zone.addEventListener(type, event => {
-        event.preventDefault(); if (!state.busy) zone.classList.add('dragover');
-      }));
-      ['dragleave', 'drop'].forEach(type => zone.addEventListener(type, event => {
-        event.preventDefault(); zone.classList.remove('dragover');
-      }));
-      zone.addEventListener('drop', event => {
-        if (!state.busy) addFiles(kind, [...event.dataTransfer.files]);
-      });
-      input.addEventListener('change', () => {
-        addFiles(kind, [...input.files]);
-        input.value = '';
-      });
+  function setupFileSelection() {
+    els.dropZone.addEventListener('click', () => { if (!state.busy) els.fileInput.click(); });
+    els.dropZone.addEventListener('keydown', event => {
+      if (!state.busy && (event.key === 'Enter' || event.key === ' ')) { event.preventDefault(); els.fileInput.click(); }
+    });
+    for (const type of ['dragenter', 'dragover']) {
+      els.dropZone.addEventListener(type, event => { event.preventDefault(); if (!state.busy) els.dropZone.classList.add('dragover'); });
+    }
+    for (const type of ['dragleave', 'drop']) {
+      els.dropZone.addEventListener(type, event => { event.preventDefault(); els.dropZone.classList.remove('dragover'); });
+    }
+    els.dropZone.addEventListener('drop', event => { if (!state.busy) addFiles([...event.dataTransfer.files]); });
+    els.fileInput.addEventListener('change', () => {
+      const files = [...els.fileInput.files];
+      setTimeout(() => { els.fileInput.value = ''; }, 100);
+      addFiles(files);
     });
   }
 
-  function setupActions() {
-    els.clearImages.addEventListener('click', () => clearQueue('image'));
-    els.clearVideos.addEventListener('click', () => clearQueue('video'));
-    els.processImages.addEventListener('click', () => {
-      if (els.processImages.dataset.mode === 'download') downloadAll('image');
-      else processImageQueue();
-    });
-    els.processVideos.addEventListener('click', () => {
-      if (els.processVideos.dataset.mode === 'download') downloadAll('video');
-      else processVideoQueue();
-    });
-    els.cancelProcessing.addEventListener('click', () => {
-      if (state.token) {
-        state.token.cancelled = true;
-        els.progressDetail.textContent = tr('安全に中止しています…');
+  function updateLocalizedUi() {
+    if (state.folderSupported) {
+      els.folderName.textContent = state.outputDirectory?.name || t('folderUnset');
+      els.folderNote.textContent = t('folderNote');
+    } else {
+      els.folderNote.textContent = t('folderFallback');
+    }
+    updateControls();
+  }
+
+  async function chooseOutputFolder() {
+    if (!state.folderSupported || state.busy) return;
+    try {
+      const directory = await window.showDirectoryPicker({ mode: 'readwrite', id: 'meta-zero-output' });
+      state.outputDirectory = directory;
+      els.folderName.textContent = directory.name;
+      showToast(t('folderSelected', { name: directory.name }));
+      updateControls();
+    } catch (error) {
+      if (error?.name !== 'AbortError') showToast(t('folderDenied'), true);
+    }
+  }
+
+  function addFiles(files) {
+    if (!files.length || state.busy) return;
+    if (state.items.length && state.items.every(item => !item.file)) clearQueue();
+    const existing = new Set(state.items.map(item => item.fingerprint));
+    let imageCount = state.items.filter(item => item.kind === 'image').length;
+    let videoCount = state.items.filter(item => item.kind === 'video').length;
+    let duplicate = false;
+    let invalid = false;
+    let imageOverflow = false;
+    let videoOverflow = false;
+
+    for (const file of files) {
+      const info = identifyFile(file);
+      if (!info) { invalid = true; continue; }
+      const fingerprint = `${file.name}\u0000${file.size}\u0000${file.lastModified}`;
+      if (existing.has(fingerprint)) { duplicate = true; continue; }
+      if (info.kind === 'image' && imageCount >= IMAGE_LIMIT) { imageOverflow = true; continue; }
+      if (info.kind === 'video' && videoCount >= VIDEO_LIMIT) { videoOverflow = true; continue; }
+      if (info.kind === 'image') imageCount += 1; else videoCount += 1;
+      existing.add(fingerprint);
+      const item = {
+        id: ++itemId, file, sourceName: file.name, size: file.size, fingerprint, kind: info.kind,
+        format: info.format, extension: info.extension, mime: info.mime, status: 'scanning', canProcess: false,
+        metadataKeys: [], thumbnailUrl: '', duration: 0, analysis: null, disposed: false
+      };
+      state.items.push(item);
+      state.preparing += 1;
+      state.prepareChain = state.prepareChain.then(() => prepareItem(item)).catch(() => {}).finally(() => {
+        state.preparing = Math.max(0, state.preparing - 1);
+        updateControls();
+      });
+    }
+    renderQueue();
+    if (invalid) showToast(t('invalidType'), true);
+    else if (imageOverflow) showToast(t('imageLimit'), true);
+    else if (videoOverflow) showToast(t('videoLimit'), true);
+    else if (duplicate) showToast(t('duplicateSkipped'));
+  }
+
+  function identifyFile(file) {
+    const extension = file.name.includes('.') ? file.name.split('.').pop().toLowerCase() : '';
+    if (file.type === 'image/jpeg' || extension === 'jpg' || extension === 'jpeg') return { kind: 'image', format: 'jpeg', extension: extension === 'jpeg' ? 'jpeg' : 'jpg', mime: 'image/jpeg' };
+    if (file.type === 'image/png' || extension === 'png') return { kind: 'image', format: 'png', extension: 'png', mime: 'image/png' };
+    if (file.type === 'image/webp' || extension === 'webp') return { kind: 'image', format: 'webp', extension: 'webp', mime: 'image/webp' };
+    if (file.type === 'video/mp4' || extension === 'mp4') return { kind: 'video', format: 'mp4', extension: 'mp4', mime: 'video/mp4' };
+    return null;
+  }
+
+  async function prepareItem(item) {
+    try {
+      const thumbnail = item.kind === 'image' ? await createImageThumbnail(item.file) : await createVideoThumbnail(item.file);
+      if (item.disposed) { if (thumbnail.url) URL.revokeObjectURL(thumbnail.url); return; }
+      item.thumbnailUrl = thumbnail.url;
+      item.duration = thumbnail.duration || 0;
+      if (item.kind === 'image') {
+        item.metadataKeys = await scanImageMetadata(item.file, item.format);
+      } else {
+        item.analysis = await buildMp4Analysis(item.file);
+        item.metadataKeys = [...item.analysis.labels];
       }
+      if (item.disposed) return;
+      item.status = 'ready';
+      item.canProcess = true;
+    } catch (error) {
+      if (!item.disposed) {
+        item.status = 'error';
+        item.canProcess = false;
+        item.error = error?.message || String(error);
+        if (!item.thumbnailUrl) item.thumbnailUrl = await createPlaceholderThumbnail(item.kind);
+      }
+    } finally {
+      if (!item.disposed) renderQueue();
+    }
+  }
+
+  async function createImageThumbnail(file) {
+    let bitmap;
+    let image;
+    let sourceUrl;
+    try {
+      if ('createImageBitmap' in window) {
+        try {
+          bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+          return { url: await drawThumbnail(bitmap, bitmap.width, bitmap.height), duration: 0 };
+        } catch {}
+      }
+      sourceUrl = URL.createObjectURL(file);
+      image = new Image();
+      image.decoding = 'async';
+      image.src = sourceUrl;
+      await waitForEvent(image, 'load', 'error', 15000);
+      return { url: await drawThumbnail(image, image.naturalWidth, image.naturalHeight), duration: 0 };
+    } finally {
+      bitmap?.close?.();
+      if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+      if (image) image.src = '';
+    }
+  }
+
+  async function createVideoThumbnail(file) {
+    const video = document.createElement('video');
+    const sourceUrl = URL.createObjectURL(file);
+    video.preload = 'metadata';
+    video.muted = true;
+    video.playsInline = true;
+    video.src = sourceUrl;
+    try {
+      await waitForEvent(video, 'loadedmetadata', 'error', 20000);
+      const duration = Number.isFinite(video.duration) ? video.duration : 0;
+      if (video.videoWidth && video.videoHeight) {
+        const target = duration > .2 ? Math.min(1, duration * .12) : 0;
+        if (target > 0) {
+          video.currentTime = target;
+          await waitForEvent(video, 'seeked', 'error', 15000);
+        } else if (video.readyState < 2) {
+          video.preload = 'auto';
+          await waitForEvent(video, 'loadeddata', 'error', 15000);
+        }
+        return { url: await drawThumbnail(video, video.videoWidth, video.videoHeight), duration };
+      }
+      return { url: await createPlaceholderThumbnail('video'), duration };
+    } catch (error) {
+      return { url: await createPlaceholderThumbnail('video'), duration: Number.isFinite(video.duration) ? video.duration : 0 };
+    } finally {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      URL.revokeObjectURL(sourceUrl);
+      video.remove();
+    }
+  }
+
+  function waitForEvent(target, success, failure, timeout) {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => finish(new Error('Timed out while reading the file.')), timeout);
+      const onSuccess = () => finish();
+      const onFailure = () => finish(new Error('The file could not be decoded.'));
+      function finish(error) {
+        clearTimeout(timer);
+        target.removeEventListener(success, onSuccess);
+        target.removeEventListener(failure, onFailure);
+        error ? reject(error) : resolve();
+      }
+      target.addEventListener(success, onSuccess, { once: true });
+      target.addEventListener(failure, onFailure, { once: true });
     });
-    window.addEventListener('beforeunload', releaseAllUrls);
   }
 
-  function addFiles(kind, incoming) {
-    const isImage = kind === 'image';
-    const queue = isImage ? state.images : state.videos;
-    const max = isImage ? 10 : 3;
-    const recognized = incoming.filter(file => isImage ? /^image\/(jpeg|png|webp)$/i.test(file.type) : /^video\//i.test(file.type));
-    const oversized = isImage ? [] : recognized.filter(file => file.size > 1024 * 1024 * 1024);
-    const allowed = isImage ? recognized : recognized.filter(file => file.size <= 1024 * 1024 * 1024);
-    const invalidCount = incoming.length - recognized.length;
-    let added = 0;
-    for (const file of allowed) {
-      if (queue.length >= max) break;
-      const duplicate = queue.some(item => item.file.name === file.name && item.file.size === file.size && item.file.lastModified === file.lastModified);
-      if (duplicate) continue;
-      queue.push({ id: ++idSeed, file, status: '待機中', state: 'waiting', output: null, savedDirectly: false });
-      added++;
-    }
-    const overflow = Math.max(0, allowed.length - added);
-    if (invalidCount) showToast(isImage ? 'JPEG・PNG・WebP以外の画像は追加できません。' : '動画として認識できないファイルを除外しました。', 'error');
-    else if (oversized.length) showToast('1GBを超える動画は追加できません。', 'error');
-    else if (overflow) showToast(`${max}件を超えたファイルは追加していません。`, 'error');
-    else if (added) showToast(`${added}件追加しました。`);
-    resetProcessMode(kind);
-    renderQueue(kind);
+  async function drawThumbnail(source, width, height) {
+    const maxWidth = 180;
+    const maxHeight = 112;
+    const scale = Math.min(maxWidth / width, maxHeight / height, 1);
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(width * scale));
+    canvas.height = Math.max(1, Math.round(height * scale));
+    const context = canvas.getContext('2d', { alpha: false });
+    context.fillStyle = '#dce9f7';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.drawImage(source, 0, 0, canvas.width, canvas.height);
+    const blob = await canvasToBlob(canvas, 'image/jpeg', .78);
+    canvas.width = 1;
+    canvas.height = 1;
+    return URL.createObjectURL(blob);
   }
 
-  function renderQueue(kind) {
-    const queue = kind === 'image' ? state.images : state.videos;
-    const container = kind === 'image' ? els.imageQueue : els.videoQueue;
-    container.replaceChildren(...queue.map((item, index) => createFileRow(kind, item, index)));
-    updateButtons(kind);
+  async function createPlaceholderThumbnail(kind) {
+    const canvas = document.createElement('canvas');
+    canvas.width = 140;
+    canvas.height = 88;
+    const context = canvas.getContext('2d');
+    const gradient = context.createLinearGradient(0, 0, 140, 88);
+    gradient.addColorStop(0, '#dcecff');
+    gradient.addColorStop(1, '#bcd9fa');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, 140, 88);
+    context.fillStyle = '#3279c8';
+    context.font = '700 17px system-ui';
+    context.textAlign = 'center';
+    context.fillText(kind === 'video' ? 'MP4' : 'IMAGE', 70, 51);
+    const blob = await canvasToBlob(canvas, 'image/jpeg', .75);
+    canvas.width = 1;
+    canvas.height = 1;
+    return URL.createObjectURL(blob);
   }
 
-  function createFileRow(kind, item, index) {
-    const row = document.createElement('div');
-    row.className = 'file-row';
-    row.dataset.id = item.id;
-    const extension = fileExtension(item.file.name) || (kind === 'image' ? 'IMG' : 'VIDEO');
-    row.innerHTML = `
-      <div class="file-type ${kind === 'video' ? 'video' : ''}">${escapeHtml(extension.slice(0, 5).toUpperCase())}</div>
-      <div class="file-info">
-        <span class="file-name" title="${escapeHtml(item.file.name)}">${escapeHtml(item.file.name)}</span>
-        <span class="file-meta">${formatBytes(item.file.size)} ・ ${index + 1}/${kind === 'image' ? state.images.length : state.videos.length}</span>
-        <span class="file-status ${item.state}">${escapeHtml(tr(item.status))}</span>
-      </div>
-      <div class="file-actions"></div>`;
-    const actions = $('.file-actions', row);
-    if (item.output?.url) {
-      const link = document.createElement('a');
-      link.className = 'download-link';
-      link.href = item.output.url;
-      link.download = item.output.name;
-      link.title = tr('保存');
-      link.innerHTML = downloadIcon();
-      actions.append(link);
-    }
-    if (!state.busy) {
+  function canvasToBlob(canvas, type, quality) {
+    return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Thumbnail creation failed.')), type, quality));
+  }
+
+  function renderQueue() {
+    els.fileQueue.replaceChildren();
+    for (const item of state.items) {
+      const row = document.createElement('article');
+      row.className = 'file-row';
+      const thumb = document.createElement('div');
+      thumb.className = `thumb ${item.kind}`;
+      if (item.thumbnailUrl) {
+        const image = document.createElement('img');
+        image.src = item.thumbnailUrl;
+        image.alt = '';
+        thumb.append(image);
+      }
+      const info = document.createElement('div');
+      info.className = 'file-info';
+      const name = document.createElement('strong');
+      name.textContent = item.sourceName;
+      const detail = document.createElement('small');
+      const details = [formatBytes(item.size)];
+      if (item.duration) details.push(formatDuration(item.duration));
+      if (item.status === 'ready') details.push(item.metadataKeys.length ? t('metadataFound', { count: item.metadataKeys.length }) : t('metadataNone'));
+      detail.textContent = details.join(' · ');
+      info.append(name, detail);
+      const status = document.createElement('span');
+      status.className = `status-pill ${item.status === 'done' ? 'done' : item.status === 'error' ? 'error' : ''}`;
+      status.textContent = t(`status${item.status[0].toUpperCase()}${item.status.slice(1)}`);
       const remove = document.createElement('button');
       remove.type = 'button';
-      remove.title = tr('外す');
-      remove.innerHTML = closeIcon();
-      remove.addEventListener('click', () => removeItem(kind, item.id));
-      actions.append(remove);
+      remove.className = 'remove-file';
+      remove.textContent = '×';
+      remove.setAttribute('aria-label', t('removeFileLabel', { name: item.sourceName }));
+      remove.disabled = state.busy;
+      remove.addEventListener('click', () => removeItem(item.id));
+      row.append(thumb, info, item.status === 'processing' || item.status === 'done' || item.status === 'error' ? status : remove);
+      els.fileQueue.append(row);
     }
-    return row;
+    els.queueHead.hidden = state.items.length === 0;
+    els.fileCount.textContent = String(state.items.length);
+    updateControls();
   }
 
-  function updateButtons(kind) {
-    const queue = kind === 'image' ? state.images : state.videos;
-    const clear = kind === 'image' ? els.clearImages : els.clearVideos;
-    const process = kind === 'image' ? els.processImages : els.processVideos;
-    clear.disabled = state.busy || !queue.length;
-    process.disabled = state.busy || !queue.length || (kind === 'video' && !videoSupported());
-    if (process.dataset.mode !== 'download') process.textContent = tr(kind === 'image' ? '画像を変換' : '動画を変換');
+  function updateControls() {
+    const processable = state.items.some(item => item.file && item.canProcess && item.status !== 'done');
+    els.processFiles.disabled = state.busy || state.preparing > 0 || !processable;
+    els.chooseFolder.disabled = state.busy;
+    els.clearQueue.disabled = state.busy;
+    els.dropZone.setAttribute('aria-disabled', String(state.busy));
   }
 
-  function resetProcessMode(kind) {
-    const process = kind === 'image' ? els.processImages : els.processVideos;
-    process.dataset.mode = '';
-    process.textContent = tr(kind === 'image' ? '画像を変換' : '動画を変換');
-  }
-
-  function removeItem(kind, id) {
-    const queue = kind === 'image' ? state.images : state.videos;
-    const index = queue.findIndex(item => item.id === id);
-    if (index < 0) return;
-    releaseItem(queue[index]);
-    queue.splice(index, 1);
-    resetProcessMode(kind);
-    renderQueue(kind);
-  }
-
-  function clearQueue(kind) {
+  function removeItem(id) {
     if (state.busy) return;
-    const queue = kind === 'image' ? state.images : state.videos;
-    queue.forEach(releaseItem);
-    queue.length = 0;
-    resetProcessMode(kind);
-    renderQueue(kind);
+    const index = state.items.findIndex(item => item.id === id);
+    if (index < 0) return;
+    disposeItem(state.items[index]);
+    state.items.splice(index, 1);
+    renderQueue();
   }
 
-  async function processImageQueue() {
-    if (state.busy || !state.images.length) return;
-    startBusy('画像を変換しています');
-    const quality = Number($('#imageQuality').value) || .93;
-    const harden = $('#imageHarden').checked;
-    try {
-      for (let index = 0; index < state.images.length; index++) {
-        if (state.token.cancelled) throw cancelledError();
-        const item = state.images[index];
-        releaseItemOutput(item);
-        setItemState(item, 'processing', '読み込んでいます…', 'image');
-        setProgress(index / state.images.length, `画像 ${index + 1}/${state.images.length}`, item.file.name);
-        try {
-          const result = await convertImage(item.file, { quality, harden, token: state.token, itemIndex: index, itemCount: state.images.length });
-          item.output = { blob: result.blob, url: URL.createObjectURL(result.blob), name: outputName(index, state.images.length, result.extension) };
-          item.status = result.clean ? '変換完了・埋め込み情報は検出されませんでした' : '変換完了・保存前に再確認してください';
-          item.state = result.clean ? 'success' : 'error';
-        } catch (error) {
-          if (error.name === 'AbortError') throw error;
-          item.status = friendlyError(error);
-          item.state = 'error';
-        }
-        renderQueue('image');
-      }
-      const completed = state.images.filter(item => item.output).length;
-      setProgress(1, '画像の変換が完了しました', `${completed}/${state.images.length}件を保存できます。`);
-      setDownloadMode('image', completed);
-      showToast(`${completed}件の画像を変換しました。`, completed ? 'success' : 'error');
-    } catch (error) {
-      if (error.name === 'AbortError') showToast('画像処理を中止しました。', 'error');
-      else showToast(friendlyError(error), 'error');
-    } finally {
-      stopBusy(); renderQueue('image');
+  function clearQueue() {
+    if (state.busy) return;
+    state.items.forEach(disposeItem);
+    state.items = [];
+    els.fileInput.value = '';
+    els.progressPanel.hidden = true;
+    renderQueue();
+  }
+
+  function disposeItem(item) {
+    item.disposed = true;
+    if (item.thumbnailUrl) URL.revokeObjectURL(item.thumbnailUrl);
+    item.thumbnailUrl = '';
+    item.file = null;
+    item.analysis = null;
+    item.metadataKeys = [];
+  }
+
+  function releaseAllResources() {
+    state.items.forEach(disposeItem);
+    for (const url of state.downloadUrls) URL.revokeObjectURL(url);
+    state.downloadUrls.clear();
+    state.outputDirectory = null;
+  }
+
+  async function processFiles() {
+    if (state.busy) return;
+    const items = state.items.filter(item => item.file && item.canProcess && item.status !== 'done');
+    if (!items.length) return showToast(t('noFiles'), true);
+    if (state.folderSupported && !state.outputDirectory) {
+      await chooseOutputFolder();
+      if (!state.outputDirectory) return;
     }
-  }
+    if (state.folderSupported && !(await ensureDirectoryPermission())) return showToast(t('folderDenied'), true);
 
-  async function convertImage(file, options) {
-    if (await isAnimatedImage(file)) throw new Error('アニメーションWebP／APNGは現在未対応です。');
-    const bitmap = await decodeImage(file);
-    const width = bitmap.width;
-    const height = bitmap.height;
-    if (!width || !height) { bitmap.close?.(); throw new Error('画像サイズを取得できません。'); }
-    if (width * height > 64_000_000) { bitmap.close?.(); throw new Error('64メガピクセルを超える画像には対応していません。'); }
-    const canvas = document.createElement('canvas');
-    canvas.width = width; canvas.height = height;
-    const ctx = canvas.getContext('2d', { alpha: true, willReadFrequently: options.harden });
-    if (!ctx) { bitmap.close?.(); throw new Error('この端末では画像を処理できません。'); }
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(bitmap, 0, 0, width, height);
-    bitmap.close?.();
-    if (options.harden) await applyMicroDither(ctx, width, height, options);
-    if (options.token.cancelled) throw cancelledError();
-    const mime = normalizedImageMime(file.type);
-    const encodedBlob = await canvasToBlob(canvas, mime, mime === 'image/png' ? undefined : options.quality);
-    canvas.width = 1; canvas.height = 1;
-    const blob = await sanitizeEncodedImageBlob(encodedBlob, mime);
-    const clean = await verifyImageMetadata(blob, mime);
-    return { blob, clean, extension: extensionForMime(mime) };
-  }
-
-  async function decodeImage(file) {
-    if ('createImageBitmap' in window) {
-      try { return await createImageBitmap(file, { imageOrientation: 'from-image', premultiplyAlpha: 'default', colorSpaceConversion: 'default' }); }
-      catch (_) { /* fallback below */ }
-    }
-    const url = URL.createObjectURL(file);
-    try {
-      const img = new Image();
-      img.decoding = 'async';
-      img.src = url;
-      await img.decode();
-      return img;
-    } finally { URL.revokeObjectURL(url); }
-  }
-
-  async function applyMicroDither(ctx, width, height, options) {
-    const seed = new Uint32Array(1);
-    crypto.getRandomValues(seed);
-    let randomState = seed[0] || 0x6d2b79f5;
-    const random3 = () => {
-      randomState ^= randomState << 13; randomState ^= randomState >>> 17; randomState ^= randomState << 5;
-      return (randomState >>> 0) % 3 - 1;
-    };
-    const tileHeight = 256;
-    for (let y = 0; y < height; y += tileHeight) {
-      if (options.token.cancelled) throw cancelledError();
-      const h = Math.min(tileHeight, height - y);
-      const imageData = ctx.getImageData(0, y, width, h);
-      const data = imageData.data;
-      for (let i = 0; i < data.length; i += 4) {
-        if (!data[i + 3]) continue;
-        const delta = random3();
-        data[i] = clampByte(data[i] + delta);
-        data[i + 1] = clampByte(data[i + 1] + delta);
-        data[i + 2] = clampByte(data[i + 2] + delta);
-      }
-      ctx.putImageData(imageData, 0, y);
-      const within = (y + h) / height;
-      const overall = (options.itemIndex + within * .82) / options.itemCount;
-      setProgress(overall, `画像 ${options.itemIndex + 1}/${options.itemCount}`, `端末由来の特徴を弱めています… ${Math.round(within * 100)}%`);
-      await nextFrame();
-    }
-  }
-
-  async function verifyImageMetadata(blob, mime) {
-    const bytes = new Uint8Array(await blob.arrayBuffer());
-    if (mime === 'image/jpeg') return !jpegHasPrivateSegments(bytes);
-    if (mime === 'image/png') return !pngHasPrivateChunks(bytes);
-    if (mime === 'image/webp') return !webpHasPrivateChunks(bytes);
-    return false;
-  }
-
-  async function sanitizeEncodedImageBlob(blob, mime) {
-    const bytes = new Uint8Array(await blob.arrayBuffer());
-    let cleanBytes = bytes;
-    if (mime === 'image/jpeg') cleanBytes = stripJpegPrivateSegments(bytes);
-    else if (mime === 'image/png') cleanBytes = stripPngPrivateChunks(bytes);
-    else if (mime === 'image/webp') cleanBytes = stripWebpPrivateChunks(bytes);
-    return new Blob([cleanBytes], { type: mime });
-  }
-
-  function stripJpegPrivateSegments(bytes) {
-    if (bytes[0] !== 0xff || bytes[1] !== 0xd8) return bytes;
-    const parts = [bytes.slice(0, 2)];
-    let offset = 2;
-    while (offset + 4 <= bytes.length) {
-      if (bytes[offset] !== 0xff) { parts.push(bytes.slice(offset)); break; }
-      const marker = bytes[offset + 1];
-      if (marker === 0xda || marker === 0xd9) { parts.push(bytes.slice(offset)); break; }
-      if (marker >= 0xd0 && marker <= 0xd7) { parts.push(bytes.slice(offset, offset + 2)); offset += 2; continue; }
-      const length = (bytes[offset + 2] << 8) | bytes[offset + 3];
-      if (length < 2 || offset + 2 + length > bytes.length) return bytes;
-      const isPrivate = (marker >= 0xe1 && marker <= 0xef) || marker === 0xfe;
-      if (!isPrivate) parts.push(bytes.slice(offset, offset + 2 + length));
-      offset += 2 + length;
-    }
-    return concatBytes(parts);
-  }
-
-  function stripPngPrivateChunks(bytes) {
-    if (bytes.length < 20 || ascii(bytes, 1, 3) !== 'PNG') return bytes;
-    const safeTypes = new Set(['IHDR', 'PLTE', 'IDAT', 'IEND', 'tRNS', 'sRGB', 'gAMA', 'cHRM', 'pHYs']);
-    const parts = [bytes.slice(0, 8)];
-    let offset = 8;
-    while (offset + 12 <= bytes.length) {
-      const length = readUint32(bytes, offset);
-      const type = ascii(bytes, offset + 4, 4);
-      const end = offset + 12 + length;
-      if (end > bytes.length) return bytes;
-      if (safeTypes.has(type)) parts.push(bytes.slice(offset, end));
-      offset = end;
-      if (type === 'IEND') break;
-    }
-    return concatBytes(parts);
-  }
-
-  function stripWebpPrivateChunks(bytes) {
-    if (ascii(bytes, 0, 4) !== 'RIFF' || ascii(bytes, 8, 4) !== 'WEBP') return bytes;
-    const safeTypes = new Set(['VP8 ', 'VP8L', 'VP8X', 'ALPH']);
-    const parts = [bytes.slice(0, 12)];
-    let offset = 12;
-    while (offset + 8 <= bytes.length) {
-      const type = ascii(bytes, offset, 4);
-      const size = readUint32LE(bytes, offset + 4);
-      const end = offset + 8 + size + (size % 2);
-      if (end > bytes.length) return bytes;
-      if (safeTypes.has(type)) {
-        const chunk = bytes.slice(offset, end);
-        if (type === 'VP8X' && size >= 1) chunk[8] &= ~0x2c;
-        parts.push(chunk);
-      }
-      offset = end;
-    }
-    const output = concatBytes(parts);
-    const riffSize = output.length - 8;
-    output[4] = riffSize & 0xff;
-    output[5] = (riffSize >>> 8) & 0xff;
-    output[6] = (riffSize >>> 16) & 0xff;
-    output[7] = (riffSize >>> 24) & 0xff;
-    return output;
-  }
-
-  function concatBytes(parts) {
-    const length = parts.reduce((sum, part) => sum + part.length, 0);
-    const output = new Uint8Array(length);
-    let offset = 0;
-    for (const part of parts) { output.set(part, offset); offset += part.length; }
-    return output;
-  }
-
-  function jpegHasPrivateSegments(bytes) {
-    if (bytes[0] !== 0xff || bytes[1] !== 0xd8) return true;
-    let offset = 2;
-    while (offset + 4 < bytes.length) {
-      if (bytes[offset] !== 0xff) { offset++; continue; }
-      const marker = bytes[offset + 1];
-      if (marker === 0xda || marker === 0xd9) break;
-      if (marker >= 0xd0 && marker <= 0xd7) { offset += 2; continue; }
-      const length = (bytes[offset + 2] << 8) | bytes[offset + 3];
-      if (length < 2) return true;
-      if ((marker >= 0xe1 && marker <= 0xef) || marker === 0xfe) return true;
-      offset += 2 + length;
-    }
-    return false;
-  }
-
-  function pngHasPrivateChunks(bytes) {
-    if (bytes.length < 20 || ascii(bytes, 1, 3) !== 'PNG') return true;
-    const safeTypes = new Set(['IHDR', 'PLTE', 'IDAT', 'IEND', 'tRNS', 'sRGB', 'gAMA', 'cHRM', 'pHYs']);
-    let offset = 8;
-    while (offset + 12 <= bytes.length) {
-      const length = readUint32(bytes, offset);
-      const type = ascii(bytes, offset + 4, 4);
-      if (!safeTypes.has(type) || offset + 12 + length > bytes.length) return true;
-      offset += 12 + length;
-      if (type === 'IEND') break;
-    }
-    return false;
-  }
-
-  function webpHasPrivateChunks(bytes) {
-    if (ascii(bytes, 0, 4) !== 'RIFF' || ascii(bytes, 8, 4) !== 'WEBP') return true;
-    const safeTypes = new Set(['VP8 ', 'VP8L', 'VP8X', 'ALPH']);
-    let offset = 12;
-    while (offset + 8 <= bytes.length) {
-      const type = ascii(bytes, offset, 4);
-      const size = readUint32LE(bytes, offset + 4);
-      if (!safeTypes.has(type) || offset + 8 + size > bytes.length) return true;
-      offset += 8 + size + (size % 2);
-    }
-    return false;
-  }
-
-  async function isAnimatedImage(file) {
-    if (!['image/png', 'image/webp'].includes(file.type)) return false;
-    const bytes = new Uint8Array(await file.slice(0, Math.min(file.size, 4 * 1024 * 1024)).arrayBuffer());
-    if (file.type === 'image/png') {
-      let offset = 8;
-      while (offset + 12 <= bytes.length) {
-        const length = readUint32(bytes, offset);
-        const type = ascii(bytes, offset + 4, 4);
-        if (type === 'acTL') return true;
-        if (type === 'IDAT' || type === 'IEND') break;
-        offset += 12 + length;
-      }
-      return false;
-    }
-    let offset = 12;
-    while (offset + 8 <= bytes.length) {
-      const type = ascii(bytes, offset, 4);
-      const size = readUint32LE(bytes, offset + 4);
-      if (type === 'ANIM' || type === 'ANMF') return true;
-      offset += 8 + size + (size % 2);
-    }
-    return false;
-  }
-
-  async function processVideoQueue() {
-    if (state.busy || !state.videos.length) return;
-    if (!videoSupported()) return showToast('このブラウザでは動画の端末内再生成を利用できません。', 'error');
-    startBusy('動画を変換しています');
-    try {
-      await prepareLargeVideoHandles(state.videos);
-      for (let index = 0; index < state.videos.length; index++) {
-        if (state.token.cancelled) throw cancelledError();
-        const item = state.videos[index];
-        releaseItemOutput(item);
-        setItemState(item, 'processing', '動画を準備しています…', 'video');
-        setProgress(index / state.videos.length, `動画 ${index + 1}/${state.videos.length}`, item.file.name);
-        try {
-          const result = await convertVideo(item, index, state.videos.length, state.token);
-          if (result.savedDirectly) {
-            item.savedDirectly = true;
-            item.status = '変換完了・指定した保存先へ保存しました';
-            item.state = 'success';
-          } else {
-            item.output = { blob: result.blob, url: URL.createObjectURL(result.blob), name: result.name };
-            item.status = '変換完了・元の埋め込み情報を引き継がず再生成しました';
-            item.state = 'success';
-          }
-        } catch (error) {
-          if (error.name === 'AbortError') throw error;
-          item.status = friendlyError(error);
-          item.state = 'error';
-        }
-        renderQueue('video');
-      }
-      const completed = state.videos.filter(item => item.output || item.savedDirectly).length;
-      setProgress(1, '動画の変換が完了しました', `${completed}/${state.videos.length}件が完了しました。`);
-      setDownloadMode('video', state.videos.filter(item => item.output).length);
-      showToast(`${completed}件の動画を変換しました。`, completed ? 'success' : 'error');
-    } catch (error) {
-      if (error.name === 'AbortError') showToast('動画処理を中止しました。', 'error');
-      else showToast(friendlyError(error), 'error');
-    } finally {
-      stopBusy(); renderQueue('video');
-    }
-  }
-
-  async function prepareLargeVideoHandles(queue) {
-    const largeItems = queue.filter(item => item.file.size > 300 * 1024 * 1024);
-    if (!largeItems.length) return;
-    if (!('showSaveFilePicker' in window)) throw new Error('300MBを超える動画は、PC版ChromeまたはEdgeの大容量モードが必要です。');
-    for (let i = 0; i < largeItems.length; i++) {
-      if (state.token.cancelled) throw cancelledError();
-      const item = largeItems[i];
-      const extension = preferredVideoExtension();
-      item.largeHandle = await window.showSaveFilePicker({
-        suggestedName: outputName(queue.indexOf(item), queue.length, extension),
-        types: [{ description: 'META ZERO video', accept: { [preferredVideoMime().split(';')[0]]: [`.${extension}`] } }],
-        excludeAcceptAllOption: false
-      });
-    }
-  }
-
-  async function convertVideo(item, itemIndex, itemCount, token) {
-    const fileUrl = URL.createObjectURL(item.file);
-    const video = document.createElement('video');
-    video.playsInline = true;
-    video.preload = 'metadata';
-    video.src = fileUrl;
-    video.style.cssText = 'position:fixed;width:2px;height:2px;left:-10px;bottom:-10px;opacity:.001;pointer-events:none';
-    document.body.append(video);
-    let audioContext = null;
-    let sourceNode = null;
-    let recorder = null;
-    let drawHandle = 0;
-    let progressTimer = 0;
-    let writable = null;
-    let writeChain = Promise.resolve();
-    try {
-      await eventOnce(video, 'loadedmetadata', '動画情報を読み込めませんでした。');
-      if (!Number.isFinite(video.duration) || !video.duration) throw new Error('動画の再生時間を取得できません。');
-      if (!video.videoWidth || !video.videoHeight) throw new Error('映像トラックが見つかりません。');
-      if (video.videoWidth * video.videoHeight > 3840 * 2160 * 1.2) throw new Error('現在は4K相当を超える動画には対応していません。');
-
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext('2d', { alpha: false, desynchronized: true });
-      if (!ctx || !canvas.captureStream) throw new Error('このブラウザでは映像を再生成できません。');
-      const canvasStream = canvas.captureStream(30);
-
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      await audioContext.resume();
-      sourceNode = audioContext.createMediaElementSource(video);
-      const audioDestination = audioContext.createMediaStreamDestination();
-      const silentGain = audioContext.createGain();
-      silentGain.gain.value = 0;
-      sourceNode.connect(audioDestination);
-      sourceNode.connect(silentGain).connect(audioContext.destination);
-      audioDestination.stream.getAudioTracks().forEach(track => canvasStream.addTrack(track));
-
-      const mimeType = preferredVideoMime();
-      const bitrate = chooseVideoBitrate(video.videoWidth, video.videoHeight);
-      recorder = new MediaRecorder(canvasStream, { mimeType, videoBitsPerSecond: bitrate, audioBitsPerSecond: 160000 });
-      const chunks = [];
-      if (item.largeHandle) writable = await item.largeHandle.createWritable();
-      recorder.addEventListener('dataavailable', event => {
-        if (!event.data?.size) return;
-        if (writable) writeChain = writeChain.then(() => writable.write(event.data));
-        else chunks.push(event.data);
-      });
-
-      const noise = createNoisePattern();
-      let drawing = true;
-      const drawFrame = () => {
-        if (!drawing || token.cancelled || video.ended) return;
-        ctx.globalAlpha = 1;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        ctx.globalAlpha = .007;
-        const pattern = ctx.createPattern(noise, 'repeat');
-        if (pattern) { ctx.fillStyle = pattern; ctx.fillRect(0, 0, canvas.width, canvas.height); }
-        ctx.globalAlpha = 1;
-        if ('requestVideoFrameCallback' in video) video.requestVideoFrameCallback(drawFrame);
-        else drawHandle = requestAnimationFrame(drawFrame);
-      };
-
-      const stopped = eventPromise(recorder, 'stop');
-      recorder.start(1000);
-      await video.play();
-      drawFrame();
-      progressTimer = window.setInterval(() => {
-        if (token.cancelled) {
-          video.pause();
-          if (recorder.state !== 'inactive') recorder.stop();
-          return;
-        }
-        const within = Math.min(1, video.currentTime / video.duration);
-        const overall = (itemIndex + within) / itemCount;
-        setProgress(overall, `動画 ${itemIndex + 1}/${itemCount}`, `${formatTime(video.currentTime)} / ${formatTime(video.duration)} — 再生しながら端末内で再生成中`);
-      }, 200);
-      await Promise.race([eventPromise(video, 'ended'), stopped]);
-      drawing = false;
-      if (recorder.state !== 'inactive') recorder.stop();
-      await stopped;
-      await writeChain;
-      if (token.cancelled) {
-        if (writable) await writable.abort().catch(() => {});
-        throw cancelledError();
-      }
-      if (writable) {
-        await writable.close(); writable = null;
-        return { savedDirectly: true };
-      }
-      const blob = new Blob(chunks, { type: mimeType });
-      if (!blob.size) throw new Error('動画の出力に失敗しました。');
-      return { blob, name: outputName(itemIndex, itemCount, extensionForVideoMime(mimeType)), savedDirectly: false };
-    } finally {
-      clearInterval(progressTimer);
-      cancelAnimationFrame(drawHandle);
-      if (recorder?.state && recorder.state !== 'inactive') recorder.stop();
-      if (writable) await writable.abort().catch(() => {});
-      sourceNode?.disconnect();
-      if (audioContext && audioContext.state !== 'closed') await audioContext.close().catch(() => {});
-      video.pause(); video.removeAttribute('src'); video.load(); video.remove();
-      URL.revokeObjectURL(fileUrl);
-    }
-  }
-
-  function createNoisePattern() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 64; canvas.height = 64;
-    const ctx = canvas.getContext('2d');
-    const data = ctx.createImageData(64, 64);
-    const random = new Uint8Array(64 * 64);
-    crypto.getRandomValues(random);
-    for (let i = 0, p = 0; i < random.length; i++, p += 4) {
-      const v = 118 + (random[i] % 20);
-      data.data[p] = v; data.data[p + 1] = v; data.data[p + 2] = v; data.data[p + 3] = 255;
-    }
-    ctx.putImageData(data, 0, 0);
-    return canvas;
-  }
-
-  function videoSupported() {
-    return Boolean(window.MediaRecorder && window.HTMLCanvasElement?.prototype?.captureStream && (window.AudioContext || window.webkitAudioContext) && preferredVideoMime());
-  }
-
-  function updateVideoCapability() {
-    if (!videoSupported()) {
-      els.videoCapability.textContent = tr('このブラウザは動画の端末内再生成に未対応です。最新版のChromeまたはEdgeをお試しください。');
-      els.videoCapability.style.color = '#c64662';
-    } else if ('showSaveFilePicker' in window) {
-      els.videoCapability.textContent = tr('動画変換に対応しています。300MB超は保存先へ直接書き込む大容量モードを使用できます。');
-    } else {
-      els.videoCapability.textContent = tr('動画変換に対応しています。この端末では300MB以下の動画を推奨します。');
-    }
-    updateButtons('video');
-  }
-
-  function startBusy(title) {
     state.busy = true;
     state.token = { cancelled: false };
-    els.globalProgress.hidden = false;
-    els.progressTitle.textContent = tr(title);
-    els.cancelProcessing.disabled = false;
-    renderQueue('image'); renderQueue('video');
-  }
+    els.progressPanel.hidden = false;
+    els.cancelProcessing.hidden = false;
+    updateControls();
+    let done = 0;
+    let failed = 0;
 
-  function stopBusy() {
+    for (let index = 0; index < items.length; index += 1) {
+      const item = items[index];
+      if (state.token.cancelled) break;
+      item.status = 'processing';
+      renderQueue();
+      updateProgress(index, items.length, item.sourceName);
+      try {
+        const desiredName = makeOutputName(item.extension, index, items.length);
+        if (item.kind === 'image') {
+          const cleanBlob = await sanitizeImage(item.file, item.format);
+          await saveBlob(cleanBlob, desiredName, state.token);
+        } else {
+          const analysis = item.analysis || await buildMp4Analysis(item.file);
+          await savePatchedMp4(item.file, analysis.patches, desiredName, state.token);
+        }
+        if (state.token.cancelled) throw new DOMException('Cancelled', 'AbortError');
+        item.status = 'done';
+        item.canProcess = false;
+        item.file = null;
+        item.analysis = null;
+        item.metadataKeys = [];
+        done += 1;
+      } catch (error) {
+        if (error?.name === 'AbortError') break;
+        item.status = 'error';
+        item.canProcess = true;
+        item.error = error?.message || String(error);
+        failed += 1;
+      }
+      updateProgress(index + 1, items.length, item.sourceName);
+      renderQueue();
+    }
+
+    const cancelled = state.token.cancelled;
     state.busy = false;
     state.token = null;
-    els.cancelProcessing.disabled = true;
-    renderQueue('image'); renderQueue('video');
+    els.cancelProcessing.hidden = true;
+    els.progressPercent.textContent = cancelled ? `${Math.round(done / items.length * 100)}%` : '100%';
+    els.progressBar.style.width = cancelled ? `${done / items.length * 100}%` : '100%';
+    renderQueue();
+    if (cancelled) showToast(t('cancelled'), true);
+    else if (failed) showToast(t('someFailed', { done, failed }), true);
+    else showToast(t('savedFiles', { count: done }));
   }
 
-  function setProgress(value, title, detail) {
-    const percent = Math.round(Math.max(0, Math.min(1, value)) * 100);
-    els.progressTitle.textContent = tr(title);
+  async function ensureDirectoryPermission() {
+    if (!state.outputDirectory) return false;
+    const options = { mode: 'readwrite' };
+    if ((await state.outputDirectory.queryPermission?.(options)) === 'granted') return true;
+    return (await state.outputDirectory.requestPermission?.(options)) === 'granted';
+  }
+
+  function updateProgress(current, total, name) {
+    const percent = Math.round(current / total * 100);
+    els.progressTitle.textContent = t('processing');
     els.progressPercent.textContent = `${percent}%`;
     els.progressBar.style.width = `${percent}%`;
-    els.progressDetail.textContent = tr(detail);
+    els.progressDetail.textContent = t('processingItem', { current: Math.min(current + 1, total), total, name });
   }
 
-  function setItemState(item, itemState, status, kind) {
-    item.state = itemState; item.status = status; renderQueue(kind);
+  function makeOutputName(extension, index, total) {
+    const suffix = total === 1 ? '' : `_${String(index + 1).padStart(2, '0')}`;
+    return `meta_zero${suffix}.${extension}`;
   }
 
-  function setDownloadMode(kind, count) {
-    if (!count) return;
-    const button = kind === 'image' ? els.processImages : els.processVideos;
-    button.dataset.mode = 'download';
-    button.textContent = tr(`変換済みを保存（${count}件）`);
+  async function saveBlob(blob, desiredName, token) {
+    if (token.cancelled) throw new DOMException('Cancelled', 'AbortError');
+    if (!state.outputDirectory) return triggerDownload(blob, desiredName);
+    const name = await findAvailableName(desiredName);
+    const handle = await state.outputDirectory.getFileHandle(name, { create: true });
+    const writable = await handle.createWritable();
+    try {
+      if (token.cancelled) throw new DOMException('Cancelled', 'AbortError');
+      await writable.write(blob);
+      await writable.close();
+    } catch (error) {
+      await writable.abort?.().catch(() => {});
+      throw error;
+    }
   }
 
-  function downloadAll(kind) {
-    const queue = kind === 'image' ? state.images : state.videos;
-    const downloadable = queue.filter(item => item.output?.url);
-    if (!downloadable.length) return;
-    downloadable.forEach((item, index) => setTimeout(() => {
-      const anchor = document.createElement('a');
-      anchor.href = item.output.url; anchor.download = item.output.name;
-      document.body.append(anchor); anchor.click(); anchor.remove();
-    }, index * 220));
-    showToast(`${downloadable.length}件の保存を開始しました。`, 'success');
+  async function savePatchedMp4(file, patches, desiredName, token) {
+    if (!state.outputDirectory) return triggerDownload(createPatchedBlob(file, patches, 'video/mp4'), desiredName);
+    const name = await findAvailableName(desiredName);
+    const handle = await state.outputDirectory.getFileHandle(name, { create: true });
+    const writable = await handle.createWritable();
+    const reader = file.stream().getReader();
+    let offset = 0;
+    try {
+      while (true) {
+        if (token.cancelled) throw new DOMException('Cancelled', 'AbortError');
+        const { value, done } = await reader.read();
+        if (done) break;
+        const output = applyPatchesToChunk(value, offset, patches);
+        await writable.write(output);
+        offset += value.byteLength;
+      }
+      await writable.close();
+    } catch (error) {
+      await reader.cancel().catch(() => {});
+      await writable.abort?.().catch(() => {});
+      throw error;
+    }
   }
 
-  function releaseItemOutput(item) {
-    if (item.output?.url) URL.revokeObjectURL(item.output.url);
-    item.output = null; item.savedDirectly = false;
-  }
-  function releaseItem(item) { releaseItemOutput(item); item.largeHandle = null; }
-  function releaseAllUrls() { [...state.images, ...state.videos].forEach(releaseItem); }
-
-  function outputName(index, total, extension) {
-    return total === 1 ? `meta_zero.${extension}` : `meta_zero_${String(index + 1).padStart(2, '0')}.${extension}`;
-  }
-  function normalizedImageMime(mime) { return ['image/jpeg', 'image/png', 'image/webp'].includes(mime) ? mime : 'image/png'; }
-  function extensionForMime(mime) { return ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' })[mime] || 'png'; }
-  function extensionForVideoMime(mime) { return mime.startsWith('video/mp4') ? 'mp4' : 'webm'; }
-  function preferredVideoExtension() { return extensionForVideoMime(preferredVideoMime()); }
-  function preferredVideoMime() {
-    if (!window.MediaRecorder?.isTypeSupported) return '';
-    return ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm', 'video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4'].find(type => MediaRecorder.isTypeSupported(type)) || '';
-  }
-  function chooseVideoBitrate(width, height) {
-    const pixels = width * height;
-    if (pixels >= 3840 * 2160) return 18_000_000;
-    if (pixels >= 2560 * 1440) return 12_000_000;
-    if (pixels >= 1920 * 1080) return 8_000_000;
-    return 4_000_000;
+  async function findAvailableName(desiredName) {
+    const dot = desiredName.lastIndexOf('.');
+    const stem = dot >= 0 ? desiredName.slice(0, dot) : desiredName;
+    const extension = dot >= 0 ? desiredName.slice(dot) : '';
+    for (let copy = 0; copy < 1000; copy += 1) {
+      const candidate = copy === 0 ? desiredName : `${stem}_${String(copy + 1).padStart(2, '0')}${extension}`;
+      try {
+        await state.outputDirectory.getFileHandle(candidate);
+      } catch (error) {
+        if (error?.name === 'NotFoundError') return candidate;
+        throw error;
+      }
+    }
+    throw new Error(t('saveFailed'));
   }
 
-  function canvasToBlob(canvas, mime, quality) {
-    return new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('画像の再生成に失敗しました。')), mime, quality));
+  function triggerDownload(blob, name) {
+    const url = URL.createObjectURL(blob);
+    state.downloadUrls.add(url);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = name;
+    link.hidden = true;
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      state.downloadUrls.delete(url);
+    }, 5000);
   }
-  function eventPromise(target, type) { return new Promise(resolve => target.addEventListener(type, resolve, { once: true })); }
-  function eventOnce(target, type, message) {
-    return new Promise((resolve, reject) => {
-      const ok = () => { cleanup(); resolve(); };
-      const fail = () => { cleanup(); reject(new Error(message)); };
-      const cleanup = () => { target.removeEventListener(type, ok); target.removeEventListener('error', fail); };
-      target.addEventListener(type, ok, { once: true }); target.addEventListener('error', fail, { once: true });
-    });
-  }
-  function nextFrame() { return new Promise(resolve => requestAnimationFrame(resolve)); }
-  function cancelledError() { return new DOMException('Cancelled', 'AbortError'); }
-  function clampByte(value) { return value < 0 ? 0 : value > 255 ? 255 : value; }
-  function readUint32(bytes, offset) { return ((bytes[offset] << 24) | (bytes[offset + 1] << 16) | (bytes[offset + 2] << 8) | bytes[offset + 3]) >>> 0; }
-  function readUint32LE(bytes, offset) { return (bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16) | (bytes[offset + 3] << 24)) >>> 0; }
-  function ascii(bytes, offset, length) { return String.fromCharCode(...bytes.subarray(offset, offset + length)); }
-  function fileExtension(name) { return name.includes('.') ? name.split('.').pop() : ''; }
-  function formatBytes(bytes) { const units = ['B', 'KB', 'MB', 'GB']; let i = 0, value = bytes; while (value >= 1024 && i < units.length - 1) { value /= 1024; i++; } return `${value.toFixed(i ? 1 : 0)} ${units[i]}`; }
-  function formatTime(seconds) { const s = Math.max(0, Math.floor(seconds || 0)); return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`; }
-  function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char]); }
-  function friendlyError(error) {
-    if (error?.name === 'NotAllowedError') return '保存先の選択がキャンセルされました。';
-    if (error?.name === 'QuotaExceededError') return '端末の空き容量が不足しています。';
-    return tr(error?.message || '処理中にエラーが発生しました。');
-  }
-  function showToast(message, type = '') {
+
+  function showToast(message, error = false) {
     clearTimeout(toastTimer);
-    els.toast.textContent = tr(message);
-    els.toast.className = `toast show ${type}`;
-    toastTimer = setTimeout(() => els.toast.className = 'toast', 3300);
+    els.toast.textContent = message;
+    els.toast.classList.toggle('error', error);
+    els.toast.classList.add('show');
+    toastTimer = setTimeout(() => els.toast.classList.remove('show'), 3400);
   }
-  function closeIcon() { return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>'; }
-  function downloadIcon() { return '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-5-5 5 5 5-5M5 20h14"/></svg>'; }
+
+  function formatBytes(bytes) {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(bytes < 10240 ? 1 : 0)} KB`;
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+    return `${(bytes / 1024 / 1024 / 1024).toFixed(2)} GB`;
+  }
+
+  function formatDuration(seconds) {
+    const total = Math.max(0, Math.round(seconds));
+    const hours = Math.floor(total / 3600);
+    const minutes = Math.floor(total % 3600 / 60);
+    const secs = total % 60;
+    return hours ? `${hours}:${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}` : `${minutes}:${String(secs).padStart(2, '0')}`;
+  }
+
+  async function sanitizeImage(file, format) {
+    if (format === 'jpeg') return sanitizeJpeg(file);
+    if (format === 'png') return sanitizePng(file);
+    if (format === 'webp') return sanitizeWebp(file);
+    throw new Error(t('invalidType'));
+  }
+
+  async function scanImageMetadata(file, format) {
+    if (format === 'jpeg') {
+      const segments = await parseJpegSegments(file);
+      const labels = new Set();
+      for (const segment of segments) {
+        const prefix = await readBytes(file, segment.payloadStart, Math.min(segment.payloadLength, 64));
+        if (segment.marker === 0xe1 && startsWithAscii(prefix, 'Exif\0\0')) labels.add('metaExif');
+        else if (segment.marker === 0xe1) labels.add('metaXmp');
+        else if (segment.marker === 0xfe) labels.add('metaComment');
+        else if (shouldRemoveJpegSegment(segment.marker, prefix)) labels.add('metaText');
+      }
+      return [...labels];
+    }
+    if (format === 'png') {
+      const chunks = await parsePngChunks(file);
+      const labels = new Set();
+      for (const chunk of chunks) {
+        if (chunk.type === 'eXIf') labels.add('metaExif');
+        else if (['tEXt', 'zTXt', 'iTXt'].includes(chunk.type)) labels.add('metaText');
+        else if (['tIME', 'pHYs'].includes(chunk.type) || isRemovablePngChunk(chunk.type)) labels.add('metaTime');
+      }
+      return [...labels];
+    }
+    if (format === 'webp') {
+      const chunks = await parseWebpChunks(file);
+      const labels = new Set();
+      if (chunks.some(chunk => chunk.type === 'EXIF')) labels.add('metaExif');
+      if (chunks.some(chunk => chunk.type === 'XMP ')) labels.add('metaXmp');
+      if (chunks.some(chunk => isRemovableWebpChunk(chunk.type))) labels.add('metaText');
+      return [...labels];
+    }
+    return [];
+  }
+
+  async function parseJpegSegments(file) {
+    const signature = await readBytes(file, 0, 2);
+    if (signature[0] !== 0xff || signature[1] !== 0xd8) throw new Error('Invalid JPEG file.');
+    const segments = [];
+    let offset = 2;
+    while (offset + 2 <= file.size) {
+      const markerHead = await readBytes(file, offset, Math.min(12, file.size - offset));
+      if (markerHead[0] !== 0xff) throw new Error('Invalid JPEG marker.');
+      let codeIndex = 1;
+      while (codeIndex < markerHead.length && markerHead[codeIndex] === 0xff) codeIndex += 1;
+      if (codeIndex >= markerHead.length) throw new Error('Invalid JPEG marker.');
+      const marker = markerHead[codeIndex];
+      if (marker === 0xda || marker === 0xd9) break;
+      const markerStart = offset;
+      if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd8)) {
+        offset += codeIndex + 1;
+        continue;
+      }
+      const lengthOffset = offset + codeIndex + 1;
+      const lengthBytes = await readBytes(file, lengthOffset, 2);
+      const length = readU16BE(lengthBytes, 0);
+      if (length < 2) throw new Error('Invalid JPEG segment length.');
+      const end = lengthOffset + length;
+      if (end > file.size) throw new Error('JPEG segment exceeds file size.');
+      segments.push({ marker, start: markerStart, end, payloadStart: lengthOffset + 2, payloadLength: length - 2 });
+      offset = end;
+    }
+    return segments;
+  }
+
+  function shouldRemoveJpegSegment(marker, prefix) {
+    if (marker === 0xfe || marker === 0xe1) return true;
+    if (marker === 0xe0) return !startsWithAscii(prefix, 'JFIF\0');
+    return marker >= 0xe3 && marker <= 0xef && marker !== 0xee;
+  }
+
+  async function sanitizeJpeg(file) {
+    const segments = await parseJpegSegments(file);
+    const parts = [];
+    let cursor = 0;
+    for (const segment of segments) {
+      const prefix = await readBytes(file, segment.payloadStart, Math.min(segment.payloadLength, 64));
+      let replacement = null;
+      let remove = shouldRemoveJpegSegment(segment.marker, prefix);
+      if (segment.marker === 0xe0 && startsWithAscii(prefix, 'JFIF\0')) {
+        replacement = makeCleanJfif(prefix);
+        remove = true;
+      } else if (segment.marker === 0xe1 && startsWithAscii(prefix, 'Exif\0\0')) {
+        const orientation = await readExifOrientation(file, segment);
+        if (orientation > 1 && orientation <= 8) replacement = makeOrientationExif(orientation);
+        remove = true;
+      }
+      if (!remove) continue;
+      if (cursor < segment.start) parts.push(file.slice(cursor, segment.start));
+      if (replacement) parts.push(replacement);
+      cursor = segment.end;
+    }
+    if (cursor < file.size) parts.push(file.slice(cursor));
+    return new Blob(parts, { type: 'image/jpeg' });
+  }
+
+  function makeCleanJfif(prefix) {
+    if (prefix.length < 14) return null;
+    const payload = new Uint8Array(14);
+    payload.set(prefix.subarray(0, 12));
+    payload[12] = 0;
+    payload[13] = 0;
+    return makeJpegSegment(0xe0, payload);
+  }
+
+  async function readExifOrientation(file, segment) {
+    const bytes = await readBytes(file, segment.payloadStart, Math.min(segment.payloadLength, 1024 * 1024));
+    if (!startsWithAscii(bytes, 'Exif\0\0') || bytes.length < 14) return 1;
+    const little = bytes[6] === 0x49 && bytes[7] === 0x49;
+    const big = bytes[6] === 0x4d && bytes[7] === 0x4d;
+    if (!little && !big) return 1;
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const ifdOffset = view.getUint32(10, little) + 6;
+    if (ifdOffset + 2 > bytes.length) return 1;
+    const count = view.getUint16(ifdOffset, little);
+    for (let index = 0; index < count; index += 1) {
+      const entry = ifdOffset + 2 + index * 12;
+      if (entry + 12 > bytes.length) break;
+      if (view.getUint16(entry, little) === 0x0112 && view.getUint16(entry + 2, little) === 3) return view.getUint16(entry + 8, little);
+    }
+    return 1;
+  }
+
+  function makeOrientationExif(orientation) {
+    const payload = new Uint8Array(32);
+    payload.set([0x45,0x78,0x69,0x66,0,0,0x49,0x49,0x2a,0,8,0,0,0,1,0,0x12,1,3,0,1,0,0,0,orientation,0,0,0,0,0,0,0]);
+    return makeJpegSegment(0xe1, payload);
+  }
+
+  function makeJpegSegment(marker, payload) {
+    const output = new Uint8Array(payload.length + 4);
+    output[0] = 0xff;
+    output[1] = marker;
+    const length = payload.length + 2;
+    output[2] = length >>> 8;
+    output[3] = length & 0xff;
+    output.set(payload, 4);
+    return output;
+  }
+
+  async function parsePngChunks(file) {
+    const signature = await readBytes(file, 0, 8);
+    const expected = [137,80,78,71,13,10,26,10];
+    if (!expected.every((value, index) => signature[index] === value)) throw new Error('Invalid PNG file.');
+    const chunks = [];
+    let offset = 8;
+    while (offset + 12 <= file.size) {
+      const header = await readBytes(file, offset, 8);
+      const length = readU32BE(header, 0);
+      const type = ascii(header, 4, 4);
+      const end = offset + 12 + length;
+      if (end > file.size) throw new Error('PNG chunk exceeds file size.');
+      chunks.push({ type, start: offset, end, length });
+      offset = end;
+      if (type === 'IEND') break;
+    }
+    return chunks;
+  }
+
+  function isRemovablePngChunk(type) {
+    const safeAncillary = new Set(['tRNS','acTL','fcTL','fdAT','sRGB','gAMA','cHRM','cICP','mDCv','cLLi','sBIT','bKGD','iCCP']);
+    const critical = type.charCodeAt(0) >= 65 && type.charCodeAt(0) <= 90;
+    return !critical && !safeAncillary.has(type);
+  }
+
+  async function sanitizePng(file) {
+    const chunks = await parsePngChunks(file);
+    const parts = [file.slice(0, 8)];
+    for (const chunk of chunks) if (!isRemovablePngChunk(chunk.type)) parts.push(file.slice(chunk.start, chunk.end));
+    return new Blob(parts, { type: 'image/png' });
+  }
+
+  async function parseWebpChunks(file) {
+    const header = await readBytes(file, 0, 12);
+    if (ascii(header, 0, 4) !== 'RIFF' || ascii(header, 8, 4) !== 'WEBP') throw new Error('Invalid WebP file.');
+    const declaredEnd = Math.min(file.size, readU32LE(header, 4) + 8);
+    const chunks = [];
+    let offset = 12;
+    while (offset + 8 <= declaredEnd) {
+      const chunkHeader = await readBytes(file, offset, 8);
+      const type = ascii(chunkHeader, 0, 4);
+      const length = readU32LE(chunkHeader, 4);
+      const end = offset + 8 + length + (length & 1);
+      if (end > declaredEnd) throw new Error('WebP chunk exceeds file size.');
+      chunks.push({ type, start: offset, payloadStart: offset + 8, length, end });
+      offset = end;
+    }
+    return chunks;
+  }
+
+  function isRemovableWebpChunk(type) {
+    return !new Set(['VP8 ','VP8L','VP8X','ALPH','ANIM','ANMF','ICCP']).has(type);
+  }
+
+  async function sanitizeWebp(file) {
+    const originalHeader = await readBytes(file, 0, 12);
+    const chunks = await parseWebpChunks(file);
+    const parts = [];
+    let bodySize = 4;
+    for (const chunk of chunks) {
+      if (isRemovableWebpChunk(chunk.type)) continue;
+      const chunkSize = chunk.end - chunk.start;
+      bodySize += chunkSize;
+      if (chunk.type === 'VP8X' && chunk.length > 0) {
+        const flag = await readBytes(file, chunk.payloadStart, 1);
+        parts.push(file.slice(chunk.start, chunk.payloadStart), Uint8Array.of(flag[0] & ~0x0c), file.slice(chunk.payloadStart + 1, chunk.end));
+      } else {
+        parts.push(file.slice(chunk.start, chunk.end));
+      }
+    }
+    const header = new Uint8Array(originalHeader);
+    new DataView(header.buffer).setUint32(4, bodySize, true);
+    return new Blob([header, ...parts], { type: 'image/webp' });
+  }
+
+  async function buildMp4Analysis(file) {
+    const top = await listMp4Boxes(file, 0, file.size);
+    if (!top.length || top[0].type !== 'ftyp') throw new Error('Invalid MP4 file.');
+    const patches = [];
+    const labels = new Set();
+    await inspectMp4Boxes(file, top, patches, labels, 0);
+    return { patches: normalizePatches(patches), labels };
+  }
+
+  async function inspectMp4Boxes(file, boxes, patches, labels, depth) {
+    if (depth > 8) return;
+    for (const box of boxes) {
+      if (box.type === 'udta' || box.type === 'meta') {
+        replaceMp4Box(box, patches);
+        labels.add('metaMp4');
+        continue;
+      }
+      if (box.type === 'uuid' && await isXmpUuid(file, box)) {
+        replaceMp4Box(box, patches);
+        labels.add('metaXmp');
+        continue;
+      }
+      if (['free', 'skip', 'wide'].includes(box.type)) {
+        if (box.end > box.start + box.headerSize) patches.push({ start: box.start + box.headerSize, end: box.end, fill: 0 });
+        continue;
+      }
+      if (['mvhd', 'tkhd', 'mdhd'].includes(box.type)) {
+        if (await addMp4TimePatch(file, box, patches)) labels.add('metaTime');
+        continue;
+      }
+      if (box.type === 'trak') {
+        const handler = await findTrackHandler(file, box);
+        if (['meta', 'mdta', 'tmcd'].includes(handler)) {
+          replaceMp4Box(box, patches);
+          labels.add('metaMp4');
+          continue;
+        }
+      }
+      if (['moov', 'trak', 'mdia'].includes(box.type)) {
+        const children = await listMp4Boxes(file, box.start + box.headerSize, box.end);
+        await inspectMp4Boxes(file, children, patches, labels, depth + 1);
+      }
+    }
+  }
+
+  async function listMp4Boxes(file, start, end) {
+    const boxes = [];
+    let offset = start;
+    let guard = 0;
+    while (offset + 8 <= end && guard < 100000) {
+      const header = await readBytes(file, offset, Math.min(16, end - offset));
+      let size = readU32BE(header, 0);
+      const type = ascii(header, 4, 4);
+      let headerSize = 8;
+      if (size === 1) {
+        if (header.length < 16) throw new Error('Invalid extended MP4 box.');
+        size = readU64BE(header, 8);
+        headerSize = 16;
+      } else if (size === 0) {
+        size = end - offset;
+      }
+      if (!Number.isSafeInteger(size) || size < headerSize || offset + size > end) throw new Error('Invalid MP4 box size.');
+      boxes.push({ type, start: offset, end: offset + size, size, headerSize });
+      offset += size;
+      guard += 1;
+    }
+    return boxes;
+  }
+
+  async function findTrackHandler(file, track) {
+    const trackChildren = await listMp4Boxes(file, track.start + track.headerSize, track.end);
+    const media = trackChildren.find(box => box.type === 'mdia');
+    if (!media) return '';
+    const mediaChildren = await listMp4Boxes(file, media.start + media.headerSize, media.end);
+    const handler = mediaChildren.find(box => box.type === 'hdlr');
+    if (!handler || handler.start + handler.headerSize + 12 > handler.end) return '';
+    const bytes = await readBytes(file, handler.start + handler.headerSize + 8, 4);
+    return ascii(bytes, 0, 4);
+  }
+
+  async function addMp4TimePatch(file, box, patches) {
+    const versionBytes = await readBytes(file, box.start + box.headerSize, 1);
+    const length = versionBytes[0] === 1 ? 16 : 8;
+    const start = box.start + box.headerSize + 4;
+    if (start + length > box.end) return false;
+    const values = await readBytes(file, start, length);
+    if (!values.some(value => value !== 0)) return false;
+    patches.push({ start, end: start + length, fill: 0 });
+    return true;
+  }
+
+  async function isXmpUuid(file, box) {
+    if (box.start + box.headerSize + 16 > box.end) return false;
+    const bytes = await readBytes(file, box.start + box.headerSize, 16);
+    return [...bytes].map(value => value.toString(16).padStart(2, '0')).join('') === 'be7acfcb97a942e89c71999491e3afac';
+  }
+
+  function replaceMp4Box(box, patches) {
+    patches.push({ start: box.start + 4, end: box.start + 8, bytes: new Uint8Array([0x66,0x72,0x65,0x65]) });
+    if (box.end > box.start + box.headerSize) patches.push({ start: box.start + box.headerSize, end: box.end, fill: 0 });
+  }
+
+  function normalizePatches(patches) {
+    const sorted = patches.filter(patch => patch.end > patch.start).sort((a, b) => a.start - b.start || a.end - b.end);
+    const output = [];
+    for (const patch of sorted) {
+      const previous = output.at(-1);
+      if (previous && patch.start < previous.end) throw new Error('Overlapping MP4 metadata ranges.');
+      if (previous && previous.fill === 0 && patch.fill === 0 && patch.start === previous.end) previous.end = patch.end;
+      else output.push(patch);
+    }
+    return output;
+  }
+
+  function applyPatchesToChunk(input, chunkStart, patches) {
+    const chunkEnd = chunkStart + input.byteLength;
+    let output = input;
+    let copied = false;
+    for (const patch of patches) {
+      if (patch.end <= chunkStart) continue;
+      if (patch.start >= chunkEnd) break;
+      if (!copied) { output = new Uint8Array(input); copied = true; }
+      const overlapStart = Math.max(chunkStart, patch.start);
+      const overlapEnd = Math.min(chunkEnd, patch.end);
+      const targetStart = overlapStart - chunkStart;
+      const targetEnd = overlapEnd - chunkStart;
+      if (patch.bytes) {
+        const sourceStart = overlapStart - patch.start;
+        output.set(patch.bytes.subarray(sourceStart, sourceStart + targetEnd - targetStart), targetStart);
+      } else {
+        output.fill(0, targetStart, targetEnd);
+      }
+    }
+    return output;
+  }
+
+  function createPatchedBlob(file, patches, mime) {
+    const parts = [];
+    let cursor = 0;
+    for (const patch of patches) {
+      if (cursor < patch.start) parts.push(file.slice(cursor, patch.start));
+      if (patch.bytes) parts.push(patch.bytes);
+      else appendZeros(parts, patch.end - patch.start);
+      cursor = patch.end;
+    }
+    if (cursor < file.size) parts.push(file.slice(cursor));
+    return new Blob(parts, { type: mime });
+  }
+
+  function appendZeros(parts, length) {
+    let remaining = length;
+    while (remaining > 0) {
+      const size = Math.min(remaining, ZERO_CHUNK.length);
+      parts.push(size === ZERO_CHUNK.length ? ZERO_CHUNK : ZERO_CHUNK.subarray(0, size));
+      remaining -= size;
+    }
+  }
+
+  async function readBytes(file, start, length) {
+    if (length <= 0) return new Uint8Array();
+    const buffer = await file.slice(start, start + length).arrayBuffer();
+    return new Uint8Array(buffer);
+  }
+
+  function ascii(bytes, start, length) {
+    let output = '';
+    for (let index = 0; index < length && start + index < bytes.length; index += 1) output += String.fromCharCode(bytes[start + index]);
+    return output;
+  }
+
+  function startsWithAscii(bytes, text) {
+    if (bytes.length < text.length) return false;
+    for (let index = 0; index < text.length; index += 1) if (bytes[index] !== text.charCodeAt(index)) return false;
+    return true;
+  }
+
+  function readU16BE(bytes, offset) { return (bytes[offset] << 8) | bytes[offset + 1]; }
+  function readU32BE(bytes, offset) { return (bytes[offset] * 0x1000000) + (bytes[offset + 1] << 16) + (bytes[offset + 2] << 8) + bytes[offset + 3]; }
+  function readU32LE(bytes, offset) { return bytes[offset] + (bytes[offset + 1] << 8) + (bytes[offset + 2] << 16) + (bytes[offset + 3] * 0x1000000); }
+  function readU64BE(bytes, offset) { return readU32BE(bytes, offset) * 0x100000000 + readU32BE(bytes, offset + 4); }
 })();
