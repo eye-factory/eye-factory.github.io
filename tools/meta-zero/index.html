@@ -4,16 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f5f9ff">
-  <meta name="description" content="画像・動画・音声のメタデータだけを端末内で除去し、元の形式のまま新規保存するプライバシーツール META ZERO。">
+  <meta name="description" content="画像・音声・動画のメタデータだけを端末内で除去し、元の形式のまま新規保存するプライバシーツール META ZERO。">
   <title>META ZERO | eye-factory</title>
   <link rel="icon" type="image/png" href="assets/meta-zero-icon.png">
   <meta property="og:title" content="META ZERO | eye-factory">
-  <meta property="og:description" content="画像・動画・音声を再圧縮せず、メタデータだけを端末内で除去します。">
+  <meta property="og:description" content="画像・音声・動画を再圧縮せず、メタデータだけを端末内で除去します。">
   <meta property="og:image" content="assets/meta-zero-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260822-3">
+  <link rel="stylesheet" href="styles.css?v=20260823-1">
 </head>
 <body>
   <a class="skip-link" href="#tool" data-i18n="skip">ツールへ移動</a>
@@ -36,21 +36,19 @@
       <div id="top" class="intro-pane section-watch">
         <div class="eyebrow"><span></span><span data-i18n="eyebrow">LOCAL PRIVACY TOOL</span></div>
         <h1 id="pageTitle"><span>META</span> ZERO</h1>
-        <p class="lead" data-i18n="lead">写真・動画・音声はそのまま。残したくない情報だけをゼロへ。</p>
+        <p class="lead" data-i18n="lead">写真・画像・音声・動画はそのまま。残したくない情報だけをゼロへ。</p>
         <p class="intro-copy" data-i18n="intro">GPS、撮影日時、端末名などを外部へ送らず除去し、同じ形式の新しいファイルを作ります。</p>
         <div class="hero-visual" aria-label="GPSや作成者情報を消去するイメージ">
           <div class="privacy-globe" aria-hidden="true">
             <div class="globe-grid"></div>
-            <div class="orbit-layer orbit-horizontal">
-              <span class="orbiter orbit-gps"><span class="data-chip">GPS <svg class="eraser" viewBox="0 0 24 24"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></span></span>
-              <span class="orbiter orbit-xmp"><span class="data-chip">XMP <svg class="eraser" viewBox="0 0 24 24"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></span></span>
-            </div>
-            <div class="orbit-layer orbit-tilted">
-              <span class="orbiter orbit-exif"><span class="data-chip">EXIF <svg class="eraser" viewBox="0 0 24 24"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></span></span>
-              <span class="orbiter orbit-author"><span class="data-chip">AUTHOR <svg class="eraser" viewBox="0 0 24 24"><path d="m4 15 8.7-9a2.2 2.2 0 0 1 3.1 0l2.3 2.3a2.2 2.2 0 0 1 0 3.1L10.6 19H6.8L4 16.2Z"/><path d="m10 19 9.5.1M8.3 10.5l5.3 5.2"/></svg></span></span>
-            </div>
+            <div class="orbit-track orbit-horizontal"></div>
+            <div class="orbit-track orbit-tilted"></div>
+            <span class="orbiter orbit-gps"><span class="data-chip">GPS <svg class="eraser" viewBox="0 0 24 24"><path class="eraser-shell" d="m4.8 13.7 8-8a2 2 0 0 1 2.8 0l3 3a2 2 0 0 1 0 2.8l-7.5 7.5H7.5l-2.7-2.7a1.8 1.8 0 0 1 0-2.6Z"/><path class="eraser-rubber" d="m9.7 8.8 5.5 5.5-4.1 4.1H7.7l-2.9-2.9Z"/><path class="eraser-line" d="M11.1 19h8.1"/></svg></span></span>
+            <span class="orbiter orbit-xmp"><span class="data-chip">XMP <svg class="eraser" viewBox="0 0 24 24"><path class="eraser-shell" d="m4.8 13.7 8-8a2 2 0 0 1 2.8 0l3 3a2 2 0 0 1 0 2.8l-7.5 7.5H7.5l-2.7-2.7a1.8 1.8 0 0 1 0-2.6Z"/><path class="eraser-rubber" d="m9.7 8.8 5.5 5.5-4.1 4.1H7.7l-2.9-2.9Z"/><path class="eraser-line" d="M11.1 19h8.1"/></svg></span></span>
+            <span class="orbiter orbit-exif"><span class="data-chip">EXIF <svg class="eraser" viewBox="0 0 24 24"><path class="eraser-shell" d="m4.8 13.7 8-8a2 2 0 0 1 2.8 0l3 3a2 2 0 0 1 0 2.8l-7.5 7.5H7.5l-2.7-2.7a1.8 1.8 0 0 1 0-2.6Z"/><path class="eraser-rubber" d="m9.7 8.8 5.5 5.5-4.1 4.1H7.7l-2.9-2.9Z"/><path class="eraser-line" d="M11.1 19h8.1"/></svg></span></span>
+            <span class="orbiter orbit-author"><span class="data-chip">AUTHOR <svg class="eraser" viewBox="0 0 24 24"><path class="eraser-shell" d="m4.8 13.7 8-8a2 2 0 0 1 2.8 0l3 3a2 2 0 0 1 0 2.8l-7.5 7.5H7.5l-2.7-2.7a1.8 1.8 0 0 1 0-2.6Z"/><path class="eraser-rubber" d="m9.7 8.8 5.5 5.5-4.1 4.1H7.7l-2.9-2.9Z"/><path class="eraser-line" d="M11.1 19h8.1"/></svg></span></span>
             <div class="core"><img src="assets/meta-zero-icon.png" alt="" width="1256" height="1256"></div>
-            <span class="format-badge">JPEG / PNG / WebP / MP4 / MP3 <b>✓</b></span>
+            <span class="format-badge">JPEG / PNG / WebP / MP3 / MP4 <b>✓</b></span>
           </div>
         </div>
         <ul class="trust-list">
@@ -63,13 +61,12 @@
       <section id="tool" class="tool-card section-watch" aria-labelledby="toolTitle">
         <div class="tool-heading">
           <div><span class="local-badge"><i></i><span data-i18n="localBadge">この端末内だけで処理</span></span><h2 id="toolTitle" data-i18n="toolTitle">情報だけ除去して新規保存</h2></div>
-          <span class="step-mark">01—02</span>
         </div>
         <input id="fileInput" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp,video/mp4,audio/mpeg,.jpg,.jpeg,.png,.webp,.mp4,.mp3" multiple>
         <label class="drop-zone" id="dropZone" for="fileInput" role="button" tabindex="0" aria-controls="fileInput">
           <div class="drop-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v4h16v-4"/></svg></div>
-          <div><strong data-i18n="dropTitle">画像・動画・音声をここへドロップ</strong><span data-i18n="dropSub">またはクリックして選択</span></div>
-          <small data-i18n="limits">JPEG / PNG / WebP 最大10枚・MP4 最大3本・MP3 最大10本</small>
+          <div><strong data-i18n="dropTitle">画像・音声・動画をここへドロップ</strong><span data-i18n="dropSub">またはクリックして選択</span></div>
+          <small data-i18n="limits">JPEG / PNG / WebP 最大10枚・MP3 最大10本・MP4 最大3本</small>
         </label>
         <div class="queue-head" id="queueHead" hidden>
           <strong><span data-i18n="selectedFiles">選択したファイル</span> <b id="fileCount">0</b></strong>
@@ -98,21 +95,33 @@
         </article>
         <article class="privacy-card keep">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z"/><circle cx="12" cy="12" r="2.5"/></svg></div>
-          <span>KEEP</span><h3 data-i18n="keepHeading">変えないもの</h3><p data-i18n="keepText">画像の画素、動画・音声データ、元ファイル。正しい表示に必要な向きとカラープロファイルは残します。</p>
-          <ul><li data-i18n="keepFormat">JPEG / PNG / WebP / MP4 / MP3の形式を維持</li><li data-i18n="keepMedia">再圧縮せず、画像・映像・音声本体を維持</li><li data-i18n="keepOriginal">元ファイルは変更せず新しいコピーを作成</li></ul>
+          <span>KEEP</span><h3 data-i18n="keepHeading">変えないもの</h3><p data-i18n="keepText">画像の画素、音声・動画データ、元ファイル。正しい表示に必要な向きとカラープロファイルは残します。</p>
+          <ul><li data-i18n="keepFormat">JPEG / PNG / WebP / MP3 / MP4の形式を維持</li><li data-i18n="keepMedia">再圧縮せず、画像・音声・映像本体を維持</li><li data-i18n="keepOriginal">元ファイルは変更せず新しいコピーを作成</li></ul>
         </article>
         <article class="privacy-card limit">
           <div class="card-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5m0 3h.01"/></svg></div>
           <span>CHECK</span><h3 data-i18n="noticeHeading">対応と注意</h3><p data-i18n="noticeText">写り込んだ顔・住所・画面内文字、保存後のファイル名、通信時のIPアドレス、特殊な独自情報、圧縮データ内のエンコーダー識別子は自動では消せません。</p>
-          <p class="card-note" data-i18n="colorNote">色や向きを守るため、ICCカラープロファイルと必要最小限の向き情報は残します。</p>
+          <p class="card-note" data-i18n="colorNote">画像の色を保ち、本来の縦向き・横向きで逆さまにならず表示されるよう、ICCカラープロファイルと表示方向に必要な情報だけは残します。</p>
         </article>
       </div>
       <div id="guide" class="spec-line">
-        <div><b data-i18n="specInput">入力</b><span>JPEG / PNG / WebP / MP4 / MP3</span></div>
+        <div><b data-i18n="specInput">入力</b><span>JPEG / PNG / WebP / MP3 / MP4</span></div>
         <div><b data-i18n="specOutput">出力</b><span data-i18n="specOutputValue">元形式・元名.mz.ext</span></div>
-        <div><b data-i18n="specCount">件数</b><span data-i18n="specCountValue">画像10枚 / MP4 3本 / MP3 10本</span></div>
+        <div><b data-i18n="specCount">件数</b><span data-i18n="specCountValue">画像10枚 / MP3 10本 / MP4 3本</span></div>
         <div><b data-i18n="specSave">保存</b><span data-i18n="specSaveValue">複数も1件ずつ順番に保存</span></div>
       </div>
+    </section>
+
+    <section class="keycraft-promo section-watch" aria-labelledby="keycraftTitle">
+      <div class="keycraft-icon" aria-hidden="true">
+        <svg viewBox="0 0 32 32"><rect x="4" y="7" width="24" height="18" rx="5"/><path d="M9 12h2m3 0h2m3 0h2m3 0h1M9 17h2m3 0h2m3 0h2m3 0h1M10 22h12"/><path class="keycraft-spark" d="m25 3 .8 2.2L28 6l-2.2.8L25 9l-.8-2.2L22 6l2.2-.8Z"/></svg>
+      </div>
+      <div class="keycraft-copy">
+        <span data-i18n="keycraftEyebrow">WINDOWS APP</span>
+        <h2 id="keycraftTitle" data-i18n="keycraftTitle">高機能版META ZEROは、KeyCraftに搭載。</h2>
+        <p data-i18n="keycraftText">画像・音声・動画の対応形式と複数処理をさらに強化。無料のショートカット作成ツールと一緒に、PC内で使えます。</p>
+      </div>
+      <a class="keycraft-link" href="https://eye-factory.booth.pm/items/8681427" target="_blank" rel="noopener noreferrer"><span data-i18n="keycraftButton">KeyCraftをBOOTHで見る</span><span aria-hidden="true">↗</span></a>
     </section>
   </main>
   <footer>
@@ -121,6 +130,6 @@
     </div>
   </footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="i18n.js?v=20260822-3"></script><script src="app.js?v=20260822-3"></script>
+  <script src="i18n.js?v=20260823-1"></script><script src="app.js?v=20260822-3"></script>
 </body>
 </html>
