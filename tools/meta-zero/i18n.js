@@ -20,7 +20,7 @@
     colorNote: 'ICC color profiles and only the orientation data needed to display the image upright are retained.',
     specInput: 'INPUT', specOutput: 'OUTPUT', specOutputValue: 'Original format · original-name.mz.ext', specCount: 'LIMIT', specCountValue: '10 images / 10 MP3 files / 3 MP4 or MOV files total', specSave: 'SAVE', specSaveValue: 'Multiple files download one by one', legal: 'Commercial Transactions Act',
     keycraftEyebrow: 'WINDOWS APP', keycraftTitle: 'Advanced META ZERO is built into KeyCraft.', keycraftText: 'Expanded image, audio and video format support with stronger batch processing, included in a free Windows shortcut tool.', keycraftButton: 'View KeyCraft on BOOTH',
-    footer: 'Files stay on your device.', footerCopyright: '2026 eye-factory. All rights reserved.', backToTop: 'Back to top', multipleDownloadHint: 'Files will download one by one. If your browser asks, allow multiple downloads.',
+    footer: 'Files stay on your device.', backToTop: 'Back to top', multipleDownloadHint: 'Files will download one by one. If your browser asks, allow multiple downloads.',
     statusReady: 'Ready', statusScanning: 'Reading', statusProcessing: 'Removing data', statusDone: 'Saved', statusError: 'Failed',
     metadataFound: '{count} metadata type(s) ({targets})', metadataNone: 'No removable metadata found', sizeLabel: '{size}', durationLabel: '{duration}',
     folderUnsupported: 'Folder writing is not supported in this browser.', folderSelected: 'Save to: {name}', folderDenied: 'Folder access was not granted.',
@@ -39,7 +39,7 @@
     dropTitle: '画像・音声・動画をここへドロップ', dropSub: 'またはクリックして選択', limits: 'JPEG / PNG / WebP 最大10枚・MP3 最大10本・MP4 / MOV 合計3本', selectedFiles: '選択したファイル', clear: 'すべて解除', processing: '処理中', processButton: '情報を除去して保存', cancel: '中止', outputNote: '元の名前に .mz を付け、複数も1件ずつ既定のダウンロード先へ保存します。',
     privacyTitle: '消す情報と、変えない中身', removeHeading: '除去する情報', removeText: 'GPS、日時、作成者、著作権、端末・ソフト名、タイトル、コメント、サイトURL、元ファイル名などの標準メタデータ。', keepHeading: '変えないもの', keepText: '画像の画素、音声・動画データ、元ファイル。正しい表示に必要な向きとカラープロファイルは残します。', noticeHeading: '対応と注意', noticeText: '写り込んだ顔・住所・画面内文字、保存後のファイル名、通信時のIPアドレス、特殊な独自情報、圧縮データ内のエンコーダー識別子は自動では消せません。',
     keepFormat: 'JPEG / PNG / WebP / MP3 / MP4 / MOVの形式を維持', keepMedia: '再圧縮せず、画像・音声・映像本体を維持', keepOriginal: '元ファイルは変更せず新しいコピーを作成', colorNote: '画像の色を保ち、本来の縦向き・横向きで逆さまにならず表示されるよう、ICCカラープロファイルと表示方向に必要な情報だけは残します。',
-    specInput: '入力', specOutput: '出力', specOutputValue: '元形式・元名.mz.ext', specCount: '件数', specCountValue: '画像10枚 / MP3 10本 / MP4・MOV 合計3本', specSave: '保存', specSaveValue: '複数も1件ずつ順番に保存', legal: '特定商取引法に基づく表記', footer: 'ファイルは端末の外へ送信されません。', footerCopyright: '2026 eye-factory. 無断転載を禁じます。', backToTop: 'TOPに戻る', multipleDownloadHint: '1件ずつ順番に保存します。ブラウザに確認された場合は複数ダウンロードを許可してください。',
+    specInput: '入力', specOutput: '出力', specOutputValue: '元形式・元名.mz.ext', specCount: '件数', specCountValue: '画像10枚 / MP3 10本 / MP4・MOV 合計3本', specSave: '保存', specSaveValue: '複数も1件ずつ順番に保存', legal: '特定商取引法に基づく表記', footer: 'ファイルは端末の外へ送信されません。', backToTop: 'TOPに戻る', multipleDownloadHint: '1件ずつ順番に保存します。ブラウザに確認された場合は複数ダウンロードを許可してください。',
     keycraftEyebrow: 'WINDOWS APP', keycraftTitle: '高機能版META ZEROは、KeyCraftに搭載。', keycraftText: '画像・音声・動画の対応形式と複数処理をさらに強化。無料のショートカット作成ツールと一緒に、PC内で使えます。', keycraftButton: 'KeyCraftをBOOTHで見る',
     statusReady: '準備完了', statusScanning: '確認中', statusProcessing: '情報を除去中', statusDone: '保存済み', statusError: '失敗', metadataFound: '除去対象 {count}種類（{targets}）', metadataNone: '除去対象の情報は未検出', sizeLabel: '{size}', durationLabel: '{duration}',
     folderUnsupported: 'このブラウザはフォルダへの直接保存に未対応です。', folderSelected: '保存先：{name}', folderDenied: 'フォルダへのアクセスが許可されませんでした。', invalidType: 'JPEG、PNG、WebP、MP3、MP4、MOVのみ対応しています。', imageLimit: '画像は最大10枚まで選択できます。', videoLimit: 'MP4とMOVは合計3本まで選択できます。', audioLimit: 'MP3は最大10本まで選択できます。', duplicateSkipped: '重複したファイルは追加しませんでした。', noFiles: 'ファイルを選択してください。', pickFolderFirst: '先に保存先フォルダを選んでください。', savedFiles: '新しいファイルを {count} 件保存しました。', someFailed: '{done}件保存、{failed}件失敗しました。', cancelled: '処理を中止しました。', saveFailed: 'このファイルを保存できませんでした。', processingItem: '{current}/{total} {name}', removeFileLabel: '{name}を解除', fallbackSave: 'ブラウザの通常保存を使用します。',
@@ -106,18 +106,9 @@
     de: 'Nach oben',
     pt: 'Voltar ao topo'
   };
-  const footerCopyrightLabels = {
-    'zh-CN': '2026 eye-factory. 保留所有权利。',
-    'zh-TW': '2026 eye-factory. 保留所有權利。',
-    ko: '2026 eye-factory. 모든 권리 보유.',
-    es: '2026 eye-factory. Todos los derechos reservados.',
-    fr: '2026 eye-factory. Tous droits réservés.',
-    de: '2026 eye-factory. Alle Rechte vorbehalten.',
-    pt: '2026 eye-factory. Todos os direitos reservados.'
-  };
   const tables = { en, ja };
   Object.entries(overrides).forEach(([language, values]) => {
-    tables[language] = { ...en, ...values, ...audioEnhancements[language], outputNote: outputNotes[language] || en.outputNote, metadataFound: metadataFoundDetails[language] || en.metadataFound, backToTop: backToTopLabels[language] || en.backToTop, footerCopyright: footerCopyrightLabels[language] || en.footerCopyright };
+    tables[language] = { ...en, ...values, ...audioEnhancements[language], outputNote: outputNotes[language] || en.outputNote, metadataFound: metadataFoundDetails[language] || en.metadataFound, backToTop: backToTopLabels[language] || en.backToTop };
   });
   const supported = Object.keys(tables);
 
