@@ -8,7 +8,8 @@
   const VIDEO_LIMIT = 3;
   const AUDIO_LIMIT = 10;
   const ZERO_CHUNK = new Uint8Array(64 * 1024);
-  const DOWNLOAD_GAP_MS = 900;
+  const IS_IOS = /iP(?:hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const DOWNLOAD_GAP_MS = IS_IOS ? 1600 : 900;
   const MP4_METADATA_BOXES = new Set([
     '\u00a9nam', '\u00a9ART', '\u00a9alb', '\u00a9day', '\u00a9cmt', '\u00a9too', '\u00a9wrt', '\u00a9cpy', '\u00a9xyz',
     'loci', 'keys', 'ilst', 'ID32', 'Exif', 'xml ', 'bxml', 'auth', 'titl', 'dscp', 'cprt', 'perf', 'gnre', 'albm'
@@ -107,6 +108,7 @@
     if (file.type === 'image/png' || extension === 'png') return { kind: 'image', format: 'png', extension: 'png', mime: 'image/png' };
     if (file.type === 'image/webp' || extension === 'webp') return { kind: 'image', format: 'webp', extension: 'webp', mime: 'image/webp' };
     if (file.type === 'video/mp4' || extension === 'mp4') return { kind: 'video', format: 'mp4', extension: 'mp4', mime: 'video/mp4' };
+    if (file.type === 'video/quicktime' || extension === 'mov') return { kind: 'video', format: 'mov', extension: 'mov', mime: 'video/quicktime' };
     if (file.type === 'audio/mpeg' || extension === 'mp3') return { kind: 'audio', format: 'mp3', extension: 'mp3', mime: 'audio/mpeg' };
     return null;
   }
@@ -116,7 +118,7 @@
       const thumbnail = item.kind === 'image'
         ? await createImageThumbnail(item.file)
         : item.kind === 'video'
-          ? await createVideoThumbnail(item.file)
+          ? await createVideoThumbnail(item.file, item.format)
           : await createAudioThumbnail(item.file);
       if (item.disposed) { if (thumbnail.url) URL.revokeObjectURL(thumbnail.url); return; }
       item.thumbnailUrl = thumbnail.url;
@@ -138,7 +140,7 @@
         item.status = 'error';
         item.canProcess = false;
         item.error = error?.message || String(error);
-        if (!item.thumbnailUrl) item.thumbnailUrl = await createPlaceholderThumbnail(item.kind);
+        if (!item.thumbnailUrl) item.thumbnailUrl = await createPlaceholderThumbnail(item.kind, item.format);
       }
     } finally {
       if (!item.disposed) renderQueue();
@@ -169,7 +171,7 @@
     }
   }
 
-  async function createVideoThumbnail(file) {
+  async function createVideoThumbnail(file, format) {
     const video = document.createElement('video');
     const sourceUrl = URL.createObjectURL(file);
     video.preload = 'metadata';
@@ -190,9 +192,9 @@
         }
         return { url: await drawThumbnail(video, video.videoWidth, video.videoHeight), duration };
       }
-      return { url: await createPlaceholderThumbnail('video'), duration };
+      return { url: await createPlaceholderThumbnail('video', format), duration };
     } catch (error) {
-      return { url: await createPlaceholderThumbnail('video'), duration: Number.isFinite(video.duration) ? video.duration : 0 };
+      return { url: await createPlaceholderThumbnail('video', format), duration: Number.isFinite(video.duration) ? video.duration : 0 };
     } finally {
       video.pause();
       video.removeAttribute('src');
@@ -257,7 +259,7 @@
     return URL.createObjectURL(blob);
   }
 
-  async function createPlaceholderThumbnail(kind) {
+  async function createPlaceholderThumbnail(kind, format = '') {
     const canvas = document.createElement('canvas');
     canvas.width = 140;
     canvas.height = 88;
@@ -270,7 +272,7 @@
     context.fillStyle = '#3279c8';
     context.font = '700 17px system-ui';
     context.textAlign = 'center';
-    const label = kind === 'video' ? 'MP4' : kind === 'audio' ? 'MP3' : 'IMAGE';
+    const label = kind === 'video' ? format.toUpperCase() || 'VIDEO' : kind === 'audio' ? 'MP3' : 'IMAGE';
     context.fillText(label, 70, 51);
     const blob = await canvasToBlob(canvas, 'image/jpeg', .75);
     canvas.width = 1;
@@ -394,7 +396,7 @@
           cleanBlob = await sanitizeImage(item.file, item.format);
         } else if (item.kind === 'video') {
           const analysis = item.analysis || await buildMp4Analysis(item.file);
-          cleanBlob = createPatchedBlob(item.file, analysis.patches, 'video/mp4');
+          cleanBlob = createPatchedBlob(item.file, analysis.patches, item.mime);
         } else {
           const analysis = item.analysis || await buildMp3Analysis(item.file);
           cleanBlob = new Blob([item.file.slice(analysis.start, analysis.end)], { type: 'audio/mpeg' });
@@ -463,15 +465,19 @@
   }
 
   function triggerDownload(blob, name) {
-    const url = URL.createObjectURL(blob);
+    const downloadBlob = IS_IOS && blob.type !== 'application/octet-stream'
+      ? new Blob([blob], { type: 'application/octet-stream' })
+      : blob;
+    const url = URL.createObjectURL(downloadBlob);
     state.downloadUrls.add(url);
     const link = document.createElement('a');
     link.href = url;
     link.download = name;
-    link.hidden = true;
+    link.rel = 'noopener';
+    link.style.cssText = 'position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;opacity:0;';
     document.body.append(link);
     link.click();
-    link.remove();
+    setTimeout(() => link.remove(), IS_IOS ? 1800 : 0);
     setTimeout(() => {
       URL.revokeObjectURL(url);
       state.downloadUrls.delete(url);
@@ -720,7 +726,7 @@
 
   async function buildMp4Analysis(file) {
     const top = await listMp4Boxes(file, 0, file.size);
-    if (!top.length || top[0].type !== 'ftyp') throw new Error('Invalid MP4 file.');
+    if (!top.length || !top.some(box => box.type === 'ftyp')) throw new Error('Invalid MP4/MOV file.');
     const patches = [];
     const labels = new Set();
     await inspectMp4Boxes(file, top, patches, labels, 0);
