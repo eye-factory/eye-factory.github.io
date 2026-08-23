@@ -830,6 +830,10 @@
         if (await addMp4TimePatch(file, box, patches)) labels.add('metaTime');
         continue;
       }
+      if (box.type === 'hdlr') {
+        if (await addMp4HandlerNamePatch(file, box, patches)) labels.add('metaMp4');
+        continue;
+      }
       if (box.type === 'trak') {
         const handler = await findTrackHandler(file, box);
         if (MP4_METADATA_TRACK_HANDLERS.has(handler)) {
@@ -1018,6 +1022,15 @@
     const values = await readBytes(file, start, length);
     if (!values.some(value => value !== 0)) return false;
     patches.push({ start, end: start + length, fill: 0 });
+    return true;
+  }
+
+  async function addMp4HandlerNamePatch(file, box, patches) {
+    const start = box.start + box.headerSize + 24;
+    if (start >= box.end) return false;
+    const values = await readBytes(file, start, box.end - start);
+    if (!values.some(value => value !== 0)) return false;
+    patches.push({ start, end: box.end, fill: 0 });
     return true;
   }
 
