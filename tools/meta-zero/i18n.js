@@ -13,9 +13,9 @@
     dropTitle: 'Drop images, audio or videos here', dropSub: 'or click to select', limits: 'JPEG / PNG / WebP up to 10 · MP3 up to 10 · MP4 / MOV up to 3 total',
     selectedFiles: 'Selected files', clear: 'Clear all', processing: 'Processing', processButton: 'Remove data and save', cancel: 'Cancel',
     outputNote: 'Adds .mz to the original name and saves multiple files one by one to your default downloads.',
-    privacyTitle: 'Data removed and content retained', removeHeading: 'Data removed', removeText: 'Standard metadata including GPS, dates, creator, copyright, device and software names, titles, comments, site URLs and original file names.',
-    keepHeading: 'What stays unchanged', keepText: 'Image pixels, audio/video data and the original file. Color profiles and orientation data needed for correct display are retained.',
-    noticeHeading: 'Support & limits', noticeText: 'Visible faces, addresses or text, the saved file name, network IP addresses, uncommon proprietary data and encoder IDs embedded in compressed media cannot be removed automatically.',
+    privacyTitle: 'Data removed and content retained', removeHeading: 'Data removed', removeText: 'Standard metadata including GPS, dates, creator, copyright, device and software names, titles, comments, site URLs and original file names, as well as information stored in internal metadata areas.',
+    keepHeading: 'What stays unchanged', keepText: 'Image pixels, audio/video content and the original files remain unchanged. Color profiles and the orientation data needed to keep portrait and landscape media from appearing rotated or upside down are retained.',
+    noticeHeading: 'Support & limits', noticeText: 'Information contained in the media itself, such as faces, addresses or text visible in images or video, and voices or conversations in audio, cannot be removed. Saved file names, network IP addresses, uncommon proprietary data and encoder IDs embedded in compressed media also cannot be removed automatically.',
     keepFormat: 'Keeps JPEG / PNG / WebP / MP3 / MP4 / MOV format', keepMedia: 'Keeps image, audio and video media without recompression', keepOriginal: 'Creates a new copy without changing the original',
     colorNote: 'ICC color profiles and only the orientation data needed to display the image upright are retained.',
     specInput: 'INPUT', specOutput: 'OUTPUT', specOutputValue: 'Original format · original-name.mz.ext', specCount: 'LIMIT', specCountValue: '10 images / 10 MP3 files / 3 MP4 or MOV files total', specSave: 'SAVE', specSaveValue: 'Multiple files download one by one', legal: 'Commercial Transactions Act',
@@ -36,13 +36,13 @@
     intro: 'GPS、撮影日時、端末名などを外部へ送らず除去し、同じ形式の新しいファイルを作ります。',
     trustLocal: 'アップロードなし', trustFormat: '同じ形式のまま', trustOriginal: '元ファイルは変更しない', localBadge: 'この端末内だけで処理', toolTitle: '情報だけ除去して新規保存',
     saveDestination: '保存先', folderUnset: '未選択', chooseFolder: 'フォルダを選ぶ', folderNote: 'PCでは保存先を一度選ぶと、処理後に新しいコピーを直接作成します。', folderFallback: '処理後はブラウザの通常保存を使用します。',
-    dropTitle: '画像・音声・動画をここへドロップ', dropSub: 'またはクリックして選択', limits: 'JPEG / PNG / WebP 最大10枚・MP3 最大10本・MP4 / MOV 合計3本', selectedFiles: '選択したファイル', clear: 'すべて解除', processing: '処理中', processButton: '情報を除去して保存', cancel: '中止', outputNote: '元の名前に .mz を付け、複数も1件ずつ既定のダウンロード先へ保存します。',
-    privacyTitle: '消す情報と、変えない中身', removeHeading: '除去する情報', removeText: 'GPS、日時、作成者、著作権、端末・ソフト名、タイトル、コメント、サイトURL、元ファイル名などの標準メタデータ。', keepHeading: '変えないもの', keepText: '画像の画素、音声・動画データ、元ファイル。正しい表示に必要な向きとカラープロファイルは残します。', noticeHeading: '対応と注意', noticeText: '写り込んだ顔・住所・画面内文字、保存後のファイル名、通信時のIPアドレス、特殊な独自情報、圧縮データ内のエンコーダー識別子は自動では消せません。',
+    dropTitle: '画像・音声・動画をここへドロップ', dropSub: 'またはクリックして選択', limits: 'JPEG / PNG / WebP 最大10枚・MP3 最大10本・動画（MP4 / MOV）最大3本', selectedFiles: '選択したファイル', clear: 'すべて解除', processing: '処理中', processButton: '情報を除去して保存', cancel: '中止', outputNote: '元の名前に .mz を付け、複数も1件ずつ既定のダウンロード先へ保存します。',
+    privacyTitle: '消す情報と、変えない中身', removeHeading: '除去する情報', removeText: 'GPS、日時、作成者、著作権、端末・ソフト名、タイトル、コメント、サイトURL、元ファイル名などの標準メタデータに加え、ファイル内部のメタデータ領域に残る情報も削除します。', keepHeading: '変えないもの', keepText: '画像の画素、音声・動画データ、元ファイルは変更しません。縦向き・横向きの画像や動画が回転・逆さまにならず正しく表示されるための向き情報と、カラープロファイルは残します。', noticeHeading: '対応と注意', noticeText: '画像・動画に写り込んだ顔・住所・画面内文字や、音声に収録された声・会話など、画像・動画・音声そのものに含まれる情報は消せません。また、保存後のファイル名、通信時のIPアドレス、特殊な独自情報、圧縮データ内のエンコーダー識別子も自動では消せません。',
     keepFormat: 'JPEG / PNG / WebP / MP3 / MP4 / MOVの形式を維持', keepMedia: '再圧縮せず、画像・音声・映像本体を維持', keepOriginal: '元ファイルは変更せず新しいコピーを作成', colorNote: '画像の色を保ち、本来の縦向き・横向きで逆さまにならず表示されるよう、ICCカラープロファイルと表示方向に必要な情報だけは残します。',
-    specInput: '入力', specOutput: '出力', specOutputValue: '元形式・元名.mz.ext', specCount: '件数', specCountValue: '画像10枚 / MP3 10本 / MP4・MOV 合計3本', specSave: '保存', specSaveValue: '複数も1件ずつ順番に保存', legal: '特定商取引法に基づく表記', footer: 'ファイルは端末の外へ送信されません。', backToTop: 'TOPに戻る', multipleDownloadHint: '1件ずつ順番に保存します。ブラウザに確認された場合は複数ダウンロードを許可してください。',
+    specInput: '入力', specOutput: '出力', specOutputValue: '元形式・元名.mz.ext', specCount: '一括処理上限', specCountValue: '画像10枚 / MP3 10本 / 動画（MP4 / MOV）3本', specSave: '保存', specSaveValue: '複数も1件ずつ順番に保存', legal: '特定商取引法に基づく表記', footer: 'ファイルは端末の外へ送信されません。', backToTop: 'TOPに戻る', multipleDownloadHint: '1件ずつ順番に保存します。ブラウザに確認された場合は複数ダウンロードを許可してください。',
     keycraftEyebrow: 'WINDOWS APP', keycraftTitle: '高機能版META ZEROは、KeyCraftに搭載。', keycraftText: '画像・音声・動画の対応形式と複数処理をさらに強化。無料のショートカット作成ツールと一緒に、PC内で使えます。', keycraftButton: 'BOOTHでダウンロード',
     statusReady: '準備完了', statusScanning: '確認中', statusProcessing: '情報を除去中', statusDone: '保存済み', statusError: '失敗', metadataFound: '除去対象 {count}種類（{targets}）', metadataNone: '除去対象の情報は未検出', sizeLabel: '{size}', durationLabel: '{duration}',
-    folderUnsupported: 'このブラウザはフォルダへの直接保存に未対応です。', folderSelected: '保存先：{name}', folderDenied: 'フォルダへのアクセスが許可されませんでした。', invalidType: 'JPEG、PNG、WebP、MP3、MP4、MOVのみ対応しています。', imageLimit: '画像は最大10枚まで選択できます。', videoLimit: 'MP4とMOVは合計3本まで選択できます。', audioLimit: 'MP3は最大10本まで選択できます。', duplicateSkipped: '重複したファイルは追加しませんでした。', noFiles: 'ファイルを選択してください。', pickFolderFirst: '先に保存先フォルダを選んでください。', savedFiles: '新しいファイルを {count} 件保存しました。', someFailed: '{done}件保存、{failed}件失敗しました。', cancelled: '処理を中止しました。', saveFailed: 'このファイルを保存できませんでした。', processingItem: '{current}/{total} {name}', removeFileLabel: '{name}を解除', fallbackSave: 'ブラウザの通常保存を使用します。',
+    folderUnsupported: 'このブラウザはフォルダへの直接保存に未対応です。', folderSelected: '保存先：{name}', folderDenied: 'フォルダへのアクセスが許可されませんでした。', invalidType: 'JPEG、PNG、WebP、MP3、MP4、MOVのみ対応しています。', imageLimit: '画像は最大10枚まで選択できます。', videoLimit: 'MP4またはMOVは最大3本まで選択できます。', audioLimit: 'MP3は最大10本まで選択できます。', duplicateSkipped: '重複したファイルは追加しませんでした。', noFiles: 'ファイルを選択してください。', pickFolderFirst: '先に保存先フォルダを選んでください。', savedFiles: '新しいファイルを {count} 件保存しました。', someFailed: '{done}件保存、{failed}件失敗しました。', cancelled: '処理を中止しました。', saveFailed: 'このファイルを保存できませんでした。', processingItem: '{current}/{total} {name}', removeFileLabel: '{name}を解除', fallbackSave: 'ブラウザの通常保存を使用します。',
     metaExif: 'GPS・撮影情報', metaXmp: 'サイトデータ・作成者情報', metaComment: 'コメント', metaText: '文字情報・日時', metaMp4: '動画情報', metaId3: '曲名・作成者情報', metaApe: '音声タグ情報', metaTime: '作成日時'
   };
 
@@ -88,6 +88,43 @@
     de: { lead:'Bilder, Audio und Videos bleiben gleich. Nur unerwünschte Daten werden entfernt.',dropTitle:'Bilder, Audio oder Videos hier ablegen',limits:'JPEG / PNG / WebP bis 10 · MP3 bis 10 · MP4 / MOV zusammen bis 3',removeText:'Ort, Aufnahmezeit, Geräte-/Softwarenamen, Kommentare und übliche Bild-, Audio- und Video-Metadaten.',noticeText:'JPEG / PNG / WebP / MP3 / MP4 / MOV. Sichtbare Gesichter oder Adressen und die Netzwerk-IP werden nicht entfernt.',specCountValue:'10 Bilder / 10 MP3 / zusammen 3 MP4 oder MOV',invalidType:'Nur JPEG, PNG, WebP, MP3, MP4 und MOV werden unterstützt.',videoLimit:'Zusammen maximal 3 MP4- oder MOV-Dateien.',audioLimit:'Maximal 10 MP3-Dateien.',metaId3:'ID3-Metadaten',metaApe:'APE-Metadaten',keycraftEyebrow:'WINDOWS APP',keycraftTitle:'Die erweiterte Version von META ZERO ist in KeyCraft enthalten.',keycraftText:'Mehr Bild-, Audio- und Videoformate sowie stärkere Stapelverarbeitung in einem kostenlosen Windows-Shortcut-Tool.',keycraftButton:'Auf BOOTH herunterladen' },
     pt: { lead:'Mantenha imagens, áudio e vídeos. Remova apenas os dados indesejados.',dropTitle:'Solte imagens, áudio ou vídeos aqui',limits:'JPEG / PNG / WebP até 10 · MP3 até 10 · MP4 / MOV até 3 no total',removeText:'Local, data, dispositivo, software, comentários e metadados padrão de imagem, áudio e vídeo.',noticeText:'JPEG / PNG / WebP / MP3 / MP4 / MOV. Não remove rostos ou endereços visíveis nem o IP da rede.',specCountValue:'10 imagens / 10 MP3 / 3 MP4 ou MOV no total',invalidType:'Apenas JPEG, PNG, WebP, MP3, MP4 e MOV são aceitos.',videoLimit:'Até 3 arquivos MP4 ou MOV no total.',audioLimit:'Até 10 arquivos MP3.',metaId3:'Metadados ID3',metaApe:'Metadados APE',keycraftEyebrow:'WINDOWS APP',keycraftTitle:'A versão avançada do META ZERO está incluída no KeyCraft.',keycraftText:'Mais formatos de imagem, áudio e vídeo e processamento em lote reforçado em uma ferramenta gratuita de atalhos para Windows.',keycraftButton:'Baixar no BOOTH' }
   };
+  const privacyEnhancements = {
+    'zh-CN': {
+      removeText: 'GPS、日期、创作者、版权、设备和软件名称、标题、备注、网站 URL、原文件名等标准元数据，以及文件内部元数据区域中保存的信息。',
+      keepText: '图像像素、音频和视频内容及原文件保持不变。保留色彩配置文件和必要的方向信息，避免竖屏或横屏内容旋转或倒置。',
+      noticeText: '无法删除图片或视频中出现的人脸、地址、画面文字，以及音频中录制的声音或对话等媒体内容本身的信息。保存后的文件名、通信时的 IP 地址、特殊专有信息和压缩数据中的编码器标识也无法自动删除。'
+    },
+    'zh-TW': {
+      removeText: 'GPS、日期、創作者、著作權、裝置與軟體名稱、標題、註解、網站 URL、原始檔名等標準中繼資料，以及檔案內部中繼資料區域中保存的資訊。',
+      keepText: '影像像素、音訊與影片內容及原檔保持不變。保留色彩描述檔與必要的方向資訊，避免直向或橫向內容旋轉或上下顛倒。',
+      noticeText: '無法移除圖片或影片中出現的人臉、地址、畫面文字，以及音訊中錄製的聲音或對話等媒體內容本身的資訊。儲存後的檔名、通訊時的 IP 位址、特殊專有資訊與壓縮資料中的編碼器識別碼也無法自動移除。'
+    },
+    ko: {
+      removeText: 'GPS, 날짜, 작성자, 저작권, 기기·소프트웨어명, 제목, 댓글, 사이트 URL, 원본 파일명 등의 표준 메타데이터와 파일 내부 메타데이터 영역에 저장된 정보.',
+      keepText: '이미지 픽셀, 음성·영상 데이터와 원본 파일은 변경하지 않습니다. 세로·가로 이미지와 영상이 회전되거나 거꾸로 표시되지 않도록 필요한 방향 정보와 색상 프로파일은 유지합니다.',
+      noticeText: '이미지·영상에 보이는 얼굴, 주소, 화면 속 글자와 음성에 녹음된 목소리·대화처럼 미디어 자체에 포함된 정보는 제거할 수 없습니다. 저장 후 파일명, 통신 시 IP 주소, 특수 독자 정보, 압축 데이터의 인코더 식별자도 자동으로 제거할 수 없습니다.'
+    },
+    es: {
+      removeText: 'Metadatos estándar como GPS, fechas, autor, copyright, nombres de dispositivo y software, títulos, comentarios, URL del sitio y nombres de archivo originales, además de información almacenada en áreas internas de metadatos.',
+      keepText: 'Los píxeles de imagen, el contenido de audio/vídeo y los archivos originales no se modifican. Se conservan los perfiles de color y los datos de orientación necesarios para evitar que el contenido vertical u horizontal aparezca girado o invertido.',
+      noticeText: 'No se puede eliminar información contenida en el propio contenido, como caras, direcciones o texto visibles en imágenes o vídeos, ni voces o conversaciones grabadas en audio. Tampoco se eliminan automáticamente los nombres de archivo guardados, las direcciones IP de red, los datos propietarios poco comunes ni los identificadores del codificador incluidos en medios comprimidos.'
+    },
+    fr: {
+      removeText: 'Métadonnées standard telles que GPS, dates, auteur, droits d’auteur, noms d’appareil et de logiciel, titres, commentaires, URL de site et noms de fichiers d’origine, ainsi que les informations stockées dans les zones internes de métadonnées.',
+      keepText: 'Les pixels, le contenu audio/vidéo et les fichiers originaux restent inchangés. Les profils colorimétriques et les données d’orientation nécessaires pour éviter qu’un contenu portrait ou paysage apparaisse tourné ou à l’envers sont conservés.',
+      noticeText: 'Les informations présentes dans le contenu lui-même, comme les visages, adresses ou textes visibles dans les images ou vidéos, ainsi que les voix ou conversations enregistrées dans l’audio, ne peuvent pas être supprimées. Les noms de fichiers enregistrés, les adresses IP réseau, les données propriétaires inhabituelles et les identifiants d’encodeur intégrés aux médias compressés ne sont pas non plus supprimés automatiquement.'
+    },
+    de: {
+      removeText: 'Übliche Metadaten wie GPS, Datum, Urheber, Copyright, Geräte- und Softwarenamen, Titel, Kommentare, Website-URLs und ursprüngliche Dateinamen sowie Informationen in internen Metadatenbereichen.',
+      keepText: 'Bildpixel, Audio-/Videoinhalte und Originaldateien bleiben unverändert. Farbprofile und Ausrichtungsdaten, die verhindern, dass Hoch- oder Querformat gedreht oder auf dem Kopf angezeigt wird, bleiben erhalten.',
+      noticeText: 'Informationen im Medieninhalt selbst, etwa Gesichter, Adressen oder Text in Bildern und Videos sowie Stimmen oder Gespräche in Audioaufnahmen, können nicht entfernt werden. Gespeicherte Dateinamen, Netzwerk-IP-Adressen, ungewöhnliche proprietäre Daten und Encoder-Kennungen in komprimierten Medien werden ebenfalls nicht automatisch entfernt.'
+    },
+    pt: {
+      removeText: 'Metadados padrão como GPS, datas, autor, direitos autorais, nomes de dispositivo e software, títulos, comentários, URLs de sites e nomes de arquivos originais, além de informações armazenadas em áreas internas de metadados.',
+      keepText: 'Os pixels, o conteúdo de áudio/vídeo e os arquivos originais permanecem inalterados. Perfis de cor e dados de orientação necessários para evitar que conteúdos verticais ou horizontais apareçam girados ou de cabeça para baixo são mantidos.',
+      noticeText: 'Informações presentes no próprio conteúdo, como rostos, endereços ou textos visíveis em imagens ou vídeos e vozes ou conversas gravadas em áudio, não podem ser removidas. Nomes de arquivos salvos, endereços IP de rede, dados proprietários incomuns e identificadores do codificador incorporados em mídia compactada também não são removidos automaticamente.'
+    }
+  };
   const metadataFoundDetails = {
     'zh-CN': '发现 {count} 类元数据（{targets}）',
     'zh-TW': '發現 {count} 類中繼資料（{targets}）',
@@ -108,7 +145,7 @@
   };
   const tables = { en, ja };
   Object.entries(overrides).forEach(([language, values]) => {
-    tables[language] = { ...en, ...values, ...audioEnhancements[language], outputNote: outputNotes[language] || en.outputNote, metadataFound: metadataFoundDetails[language] || en.metadataFound, backToTop: backToTopLabels[language] || en.backToTop };
+    tables[language] = { ...en, ...values, ...audioEnhancements[language], ...(privacyEnhancements[language] || {}), outputNote: outputNotes[language] || en.outputNote, metadataFound: metadataFoundDetails[language] || en.metadataFound, backToTop: backToTopLabels[language] || en.backToTop };
   });
   const supported = Object.keys(tables);
 
