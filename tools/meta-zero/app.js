@@ -14,6 +14,9 @@
     '\u00a9nam', '\u00a9ART', '\u00a9alb', '\u00a9day', '\u00a9cmt', '\u00a9too', '\u00a9wrt', '\u00a9cpy', '\u00a9xyz',
     'loci', 'keys', 'ilst', 'ID32', 'Exif', 'xml ', 'bxml', 'auth', 'titl', 'dscp', 'cprt', 'perf', 'gnre', 'albm'
   ]);
+  const MP4_METADATA_TRACK_HANDLERS = new Set(['meta', 'mdta', 'tmcd']);
+  const MP4_C2PA_UUID = 'd8fec3d61b0e483c92975828877ec481';
+  const MP4_MAX_TABLE_ENTRIES = 5_000_000;
   const state = {
     items: [], busy: false, preparing: 0, token: null, downloadUrls: new Set(), prepareChain: Promise.resolve()
   };
@@ -829,7 +832,9 @@
       }
       if (box.type === 'trak') {
         const handler = await findTrackHandler(file, box);
-        if (['meta', 'mdta', 'tmcd'].includes(handler)) {
+        if (MP4_METADATA_TRACK_HANDLERS.has(handler)) {
+          const payloadPatches = await buildMp4TrackPayloadPatches(file, box);
+          patches.push(...payloadPatches);
           replaceMp4Box(box, patches);
           labels.add('metaMp4');
           continue;
@@ -877,6 +882,134 @@
     return ascii(bytes, 0, 4);
   }
 
+  async function buildMp4TrackPayloadPatches(file, track) {
+    const trackChildren = await listMp4Boxes(file, track.start + track.headerSize, track.end);
+    const media = trackChildren.find(box => box.type === 'mdia');
+    if (!media) throw new Error('MP4 metadata track has no media box.');
+    const mediaChildren = await listMp4Boxes(file, media.start + media.headerSize, media.end);
+    const mediaInfo = mediaChildren.find(box => box.type === 'minf');
+    if (!mediaInfo) throw new Error('MP4 metadata track has no media information.');
+    const mediaInfoChildren = await listMp4Boxes(file, mediaInfo.start + mediaInfo.headerSize, mediaInfo.end);
+    const sampleTable = mediaInfoChildren.find(box => box.type === 'stbl');
+    if (!sampleTable) throw new Error('MP4 metadata track has no sample table.');
+    const sampleBoxes = await listMp4Boxes(file, sampleTable.start + sampleTable.headerSize, sampleTable.end);
+    const sampleSizeBox = sampleBoxes.find(box => box.type === 'stsz' || box.type === 'stz2');
+    const chunkOffsetBox = sampleBoxes.find(box => box.type === 'stco' || box.type === 'co64');
+    const sampleToChunkBox = sampleBoxes.find(box => box.type === 'stsc');
+    if (!sampleSizeBox || !chunkOffsetBox || !sampleToChunkBox) {
+      throw new Error('Unsupported MP4 metadata sample table.');
+    }
+    const sampleSizes = sampleSizeBox.type === 'stsz'
+      ? await readMp4SampleSizes(file, sampleSizeBox)
+      : await readMp4CompactSampleSizes(file, sampleSizeBox);
+    const chunkOffsets = await readMp4ChunkOffsets(file, chunkOffsetBox);
+    const sampleToChunk = await readMp4SampleToChunk(file, sampleToChunkBox);
+    return buildMp4SampleRanges(file.size, sampleSizes, chunkOffsets, sampleToChunk)
+      .map(range => ({ ...range, fill: 0 }));
+  }
+
+  async function readMp4SampleSizes(file, box) {
+    const payloadStart = box.start + box.headerSize;
+    const header = await readBytes(file, payloadStart, 12);
+    if (header.length < 12) throw new Error('Invalid MP4 sample-size box.');
+    const fixedSize = readU32BE(header, 4);
+    const count = readMp4TableCount(header, 8, 'sample-size');
+    if (fixedSize) return new Array(count).fill(fixedSize);
+    const bytes = await readBytes(file, payloadStart + 12, count * 4);
+    if (bytes.length !== count * 4) throw new Error('Incomplete MP4 sample-size table.');
+    const sizes = new Array(count);
+    for (let index = 0; index < count; index += 1) sizes[index] = readU32BE(bytes, index * 4);
+    return sizes;
+  }
+
+  async function readMp4CompactSampleSizes(file, box) {
+    const payloadStart = box.start + box.headerSize;
+    const header = await readBytes(file, payloadStart, 12);
+    if (header.length < 12) throw new Error('Invalid compact MP4 sample-size box.');
+    const fieldSize = header[7];
+    if (![4, 8, 16].includes(fieldSize)) throw new Error('Unsupported compact MP4 sample size.');
+    const count = readMp4TableCount(header, 8, 'compact sample-size');
+    const byteLength = fieldSize === 4 ? Math.ceil(count / 2) : count * (fieldSize / 8);
+    const bytes = await readBytes(file, payloadStart + 12, byteLength);
+    if (bytes.length !== byteLength) throw new Error('Incomplete compact MP4 sample-size table.');
+    const sizes = new Array(count);
+    for (let index = 0; index < count; index += 1) {
+      if (fieldSize === 4) sizes[index] = index % 2 ? bytes[index >> 1] & 0x0f : bytes[index >> 1] >> 4;
+      else if (fieldSize === 8) sizes[index] = bytes[index];
+      else sizes[index] = readU16BE(bytes, index * 2);
+    }
+    return sizes;
+  }
+
+  async function readMp4ChunkOffsets(file, box) {
+    const payloadStart = box.start + box.headerSize;
+    const header = await readBytes(file, payloadStart, 8);
+    if (header.length < 8) throw new Error('Invalid MP4 chunk-offset box.');
+    const count = readMp4TableCount(header, 4, 'chunk-offset');
+    const entrySize = box.type === 'co64' ? 8 : 4;
+    const bytes = await readBytes(file, payloadStart + 8, count * entrySize);
+    if (bytes.length !== count * entrySize) throw new Error('Incomplete MP4 chunk-offset table.');
+    const offsets = new Array(count);
+    for (let index = 0; index < count; index += 1) {
+      offsets[index] = entrySize === 8 ? readU64BE(bytes, index * 8) : readU32BE(bytes, index * 4);
+    }
+    return offsets;
+  }
+
+  async function readMp4SampleToChunk(file, box) {
+    const payloadStart = box.start + box.headerSize;
+    const header = await readBytes(file, payloadStart, 8);
+    if (header.length < 8) throw new Error('Invalid MP4 sample-to-chunk box.');
+    const count = readMp4TableCount(header, 4, 'sample-to-chunk');
+    if (!count) throw new Error('Empty MP4 sample-to-chunk table.');
+    const bytes = await readBytes(file, payloadStart + 8, count * 12);
+    if (bytes.length !== count * 12) throw new Error('Incomplete MP4 sample-to-chunk table.');
+    const entries = new Array(count);
+    for (let index = 0; index < count; index += 1) {
+      entries[index] = {
+        firstChunk: readU32BE(bytes, index * 12),
+        samplesPerChunk: readU32BE(bytes, index * 12 + 4)
+      };
+    }
+    if (entries[0].firstChunk !== 1) throw new Error('Invalid MP4 sample-to-chunk order.');
+    for (let index = 0; index < entries.length; index += 1) {
+      if (!entries[index].samplesPerChunk || (index && entries[index].firstChunk <= entries[index - 1].firstChunk)) {
+        throw new Error('Invalid MP4 sample-to-chunk entry.');
+      }
+    }
+    return entries;
+  }
+
+  function readMp4TableCount(bytes, offset, label) {
+    const count = readU32BE(bytes, offset);
+    if (count > MP4_MAX_TABLE_ENTRIES) throw new Error(`MP4 ${label} table is too large.`);
+    return count;
+  }
+
+  function buildMp4SampleRanges(fileSize, sampleSizes, chunkOffsets, sampleToChunk) {
+    if (!sampleSizes.length) return [];
+    const ranges = [];
+    let sampleIndex = 0;
+    let layoutIndex = 0;
+    for (let chunkIndex = 0; chunkIndex < chunkOffsets.length; chunkIndex += 1) {
+      const chunkNumber = chunkIndex + 1;
+      while (layoutIndex + 1 < sampleToChunk.length && sampleToChunk[layoutIndex + 1].firstChunk <= chunkNumber) layoutIndex += 1;
+      const samplesPerChunk = sampleToChunk[layoutIndex].samplesPerChunk;
+      if (sampleIndex + samplesPerChunk > sampleSizes.length) throw new Error('MP4 metadata sample count is inconsistent.');
+      let chunkSize = 0;
+      for (let count = 0; count < samplesPerChunk; count += 1) chunkSize += sampleSizes[sampleIndex + count];
+      const start = chunkOffsets[chunkIndex];
+      const end = start + chunkSize;
+      if (!Number.isSafeInteger(start) || !Number.isSafeInteger(end) || start < 0 || end > fileSize) {
+        throw new Error('MP4 metadata sample range is invalid.');
+      }
+      if (chunkSize) ranges.push({ start, end });
+      sampleIndex += samplesPerChunk;
+    }
+    if (sampleIndex !== sampleSizes.length) throw new Error('MP4 metadata samples were not fully mapped.');
+    return ranges;
+  }
+
   async function addMp4TimePatch(file, box, patches) {
     const versionBytes = await readBytes(file, box.start + box.headerSize, 1);
     const length = versionBytes[0] === 1 ? 16 : 8;
@@ -892,11 +1025,12 @@
     if (box.start + box.headerSize + 16 > box.end) return false;
     const bytes = await readBytes(file, box.start + box.headerSize, 16);
     const uuid = [...bytes].map(value => value.toString(16).padStart(2, '0')).join('');
-    if (uuid === 'be7acfcb97a942e89c71999491e3afac') return true;
+    if (uuid === MP4_C2PA_UUID || uuid === 'be7acfcb97a942e89c71999491e3afac') return true;
     const payloadStart = box.start + box.headerSize + 16;
     const sample = await readBytes(file, payloadStart, Math.min(box.end - payloadStart, 1024 * 1024));
     const text = new TextDecoder('latin1').decode(sample).toLowerCase();
-    return text.includes('<?xpacket') || text.includes('<x:xmpmeta') || text.includes('ns.adobe.com/xap/1.0');
+    return text.includes('<?xpacket') || text.includes('<x:xmpmeta') || text.includes('ns.adobe.com/xap/1.0')
+      || text.includes('c2pa') || text.includes('jumb') || text.includes('digitalsourcetype');
   }
 
   function replaceMp4Box(box, patches) {
