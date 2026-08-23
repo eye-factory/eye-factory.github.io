@@ -13,9 +13,11 @@
     dropTitle: 'Drop images, audio or videos here', dropSub: 'or click to select', limits: 'JPEG / PNG / WebP up to 10 · MP3 up to 10 · MP4 / MOV up to 3 total',
     selectedFiles: 'Selected files', clear: 'Clear all', processing: 'Processing', processButton: 'Remove data and save', cancel: 'Cancel',
     outputNote: 'Adds .mz to the original name and saves multiple files one by one to your default downloads.',
-    privacyTitle: 'Data removed and content retained', removeHeading: 'Data removed', removeText: 'Standard metadata including GPS, dates, creator, copyright, device and software names, titles, comments, site URLs and original file names, as well as information stored in internal metadata areas.',
+    privacyTitle: 'Data removed and content retained', removeHeading: 'Data removed', removeText: 'For supported formats, the source app does not matter. META ZERO removes GPS and location, dates, creator and user names, copyright, device, camera and software names, detectable user, device and document IDs, titles, comments, site URLs, original file names, detectable IP address data and other internal metadata.',
     keepHeading: 'What stays unchanged', keepText: 'Image pixels, audio/video content and the original files remain unchanged. Color profiles and the orientation data needed to keep portrait and landscape media from appearing rotated or upside down are retained.',
-    noticeHeading: 'Support & limits', noticeText: 'Information contained in the media itself, such as faces, addresses or text visible in images or video, and voices or conversations in audio, cannot be removed. Saved file names, network IP addresses, uncommon proprietary data and encoder IDs embedded in compressed media also cannot be removed automatically.',
+    noticeHeading: 'Support & limits', noticeText: 'Information contained in the media itself, such as faces, addresses or text visible in images or video, and voices or conversations in audio, cannot be removed. Saved file names also remain. Even in supported formats, complete removal cannot be guaranteed for undetectable information in private software-specific areas or encoder identifiers embedded in compressed data.',
+    networkNotice: 'Detectable IP address data stored inside the file is removed and is not added to the new file. An upload destination may separately collect and manage the source IP address in access logs when the file is sent. That information is separate from file metadata and is outside META ZERO\'s processing and control.',
+    metaIpAddress: 'IP ADDRESS',
     keepFormat: 'Keeps JPEG / PNG / WebP / MP3 / MP4 / MOV format', keepMedia: 'Keeps image, audio and video media without recompression', keepOriginal: 'Creates a new copy without changing the original',
     colorNote: 'ICC color profiles and only the orientation data needed to display the image upright are retained.',
     specInput: 'INPUT', specOutput: 'OUTPUT', specOutputValue: 'Original format · original-name.mz.ext', specCount: 'LIMIT', specCountValue: '10 images / 10 MP3 files / 3 MP4 or MOV files total', specSave: 'SAVE', specSaveValue: 'Multiple files download one by one', legal: 'Commercial Transactions Act',
@@ -37,7 +39,9 @@
     trustLocal: 'アップロードなし', trustFormat: '同じ形式のまま', trustOriginal: '元ファイルは変更しない', localBadge: 'この端末内だけで処理', toolTitle: '情報だけ除去して新規保存',
     saveDestination: '保存先', folderUnset: '未選択', chooseFolder: 'フォルダを選ぶ', folderNote: 'PCでは保存先を一度選ぶと、処理後に新しいコピーを直接作成します。', folderFallback: '処理後はブラウザの通常保存を使用します。',
     dropTitle: '画像・音声・動画をここへドロップ', dropSub: 'またはクリックして選択', limits: 'JPEG / PNG / WebP 最大10枚・MP3 最大10本・動画（MP4 / MOV）最大3本', selectedFiles: '選択したファイル', clear: 'すべて解除', processing: '処理中', processButton: '情報を除去して保存', cancel: '中止', outputNote: '元の名前に .mz を付け、複数も1件ずつ既定のダウンロード先へ保存します。',
-    privacyTitle: '消す情報と、変えない中身', removeHeading: '除去する情報', removeText: 'GPS、日時、作成者、著作権、端末・ソフト名、タイトル、コメント、サイトURL、元ファイル名などの標準メタデータに加え、ファイル内部のメタデータ領域に残る情報も削除します。', keepHeading: '変えないもの', keepText: '画像の画素、音声・動画データ、元ファイルは変更しません。縦向き・横向きの画像や動画が回転・逆さまにならず正しく表示されるための向き情報と、カラープロファイルは残します。', noticeHeading: '対応と注意', noticeText: '画像・動画に写り込んだ顔・住所・画面内文字や、音声に収録された声・会話など、画像・動画・音声そのものに含まれる情報は消せません。また、保存後のファイル名、通信時のIPアドレス、特殊な独自情報、圧縮データ内のエンコーダー識別子も自動では消せません。',
+    privacyTitle: '消す情報と、変えない中身', removeHeading: '除去する情報', removeText: 'Canva、ibisPaint、Premiere Proなど作成ツールを問わず、対応形式内のGPS・位置情報、日時、作成者・ユーザー名、著作権、端末・カメラ・ソフト名、検出可能なユーザー・端末・文書ID、タイトル・コメント、サイトURL・元ファイル名、IPアドレス情報などを削除します。', keepHeading: '変えないもの', keepText: '画像の画素、音声・動画データ、元ファイルは変更しません。縦向き・横向きの画像や動画が回転・逆さまにならず正しく表示されるための向き情報と、カラープロファイルは残します。', noticeHeading: '対応と注意', noticeText: '画像・動画に写り込んだ顔・住所・画面内文字や、音声に収録された声・会話など、画像・動画・音声そのものに含まれる情報と、保存後のファイル名は消せません。対応形式でも、ソフト独自の非公開領域など検出できない情報や、圧縮データ内のエンコーダー識別子は完全な除去を保証できません。',
+    networkNotice: 'ファイル内部の検出可能なIPアドレス情報は除去し、新しいファイルにも追加しません。ただし、アップロード先のサービスが送信時のIPアドレスをアクセスログなどとして取得・管理する場合があります。これはファイル内部のメタデータとは別の情報で、META ZEROの処理・管理対象外です。',
+    metaIpAddress: 'IPアドレス',
     keepFormat: 'JPEG / PNG / WebP / MP3 / MP4 / MOVの形式を維持', keepMedia: '再圧縮せず、画像・音声・映像本体を維持', keepOriginal: '元ファイルは変更せず新しいコピーを作成', colorNote: '画像の色を保ち、本来の縦向き・横向きで逆さまにならず表示されるよう、ICCカラープロファイルと表示方向に必要な情報だけは残します。',
     specInput: '入力', specOutput: '出力', specOutputValue: '元形式・元名.mz.ext', specCount: '一括処理上限', specCountValue: '画像10枚 / MP3 10本 / 動画（MP4 / MOV）3本', specSave: '保存', specSaveValue: '複数も1件ずつ順番に保存', legal: '特定商取引法に基づく表記', footer: 'ファイルは端末の外へ送信されません。', backToTop: 'TOPに戻る', multipleDownloadHint: '1件ずつ順番に保存します。ブラウザに確認された場合は複数ダウンロードを許可してください。',
     keycraftEyebrow: 'WINDOWS APP', keycraftTitle: '高機能版META ZEROは、KeyCraftに搭載。', keycraftText: '画像・音声・動画の対応形式と複数処理をさらに強化。無料のショートカット作成ツールと一緒に、PC内で使えます。', keycraftButton: 'BOOTHでダウンロード',
@@ -90,39 +94,53 @@
   };
   const privacyEnhancements = {
     'zh-CN': {
-      removeText: 'GPS、日期、创作者、版权、设备和软件名称、标题、备注、网站 URL、原文件名等标准元数据，以及文件内部元数据区域中保存的信息。',
+      removeText: '无论文件来自 Canva、ibisPaint、Premiere Pro 还是其他工具，只要是支持的格式，都会删除 GPS 和位置、日期、创作者与用户名、版权、设备、相机与软件名称、可检测的用户、设备与文档 ID、标题、备注、网站 URL、原文件名、IP 地址信息及其他内部元数据。',
       keepText: '图像像素、音频和视频内容及原文件保持不变。保留色彩配置文件和必要的方向信息，避免竖屏或横屏内容旋转或倒置。',
-      noticeText: '无法删除图片或视频中出现的人脸、地址、画面文字，以及音频中录制的声音或对话等媒体内容本身的信息。保存后的文件名、通信时的 IP 地址、特殊专有信息和压缩数据中的编码器标识也无法自动删除。'
+      noticeText: '无法删除图片或视频中出现的人脸、地址、画面文字，以及音频中录制的声音或对话等媒体内容本身的信息，保存后的文件名也会保留。即使是支持的格式，也无法保证完全删除软件专用的非公开区域中无法检测的信息或压缩数据中的编码器标识。',
+      networkNotice: '文件内部可检测的 IP 地址信息会被删除，也不会添加到新文件中。但上传目标服务可能在发送时通过访问日志另行获取和管理来源 IP 地址。该信息与文件元数据不同，不属于 META ZERO 的处理和管理范围。',
+      metaIpAddress: 'IP 地址'
     },
     'zh-TW': {
-      removeText: 'GPS、日期、創作者、著作權、裝置與軟體名稱、標題、註解、網站 URL、原始檔名等標準中繼資料，以及檔案內部中繼資料區域中保存的資訊。',
+      removeText: '無論檔案來自 Canva、ibisPaint、Premiere Pro 或其他工具，只要是支援的格式，就會移除 GPS 與位置、日期、創作者與使用者名稱、著作權、裝置、相機與軟體名稱、可偵測的使用者、裝置與文件 ID、標題、註解、網站 URL、原始檔名、IP 位址資訊及其他內部中繼資料。',
       keepText: '影像像素、音訊與影片內容及原檔保持不變。保留色彩描述檔與必要的方向資訊，避免直向或橫向內容旋轉或上下顛倒。',
-      noticeText: '無法移除圖片或影片中出現的人臉、地址、畫面文字，以及音訊中錄製的聲音或對話等媒體內容本身的資訊。儲存後的檔名、通訊時的 IP 位址、特殊專有資訊與壓縮資料中的編碼器識別碼也無法自動移除。'
+      noticeText: '無法移除圖片或影片中出現的人臉、地址、畫面文字，以及音訊中錄製的聲音或對話等媒體內容本身的資訊，儲存後的檔名也會保留。即使是支援的格式，也無法保證完全移除軟體專用的非公開區域中無法偵測的資訊或壓縮資料中的編碼器識別資訊。',
+      networkNotice: '檔案內部可偵測的 IP 位址資訊會被移除，也不會加入新檔案。但上傳目的地服務可能在傳送時透過存取日誌另行取得和管理來源 IP 位址。該資訊與檔案中繼資料不同，不屬於 META ZERO 的處理與管理範圍。',
+      metaIpAddress: 'IP 位址'
     },
     ko: {
-      removeText: 'GPS, 날짜, 작성자, 저작권, 기기·소프트웨어명, 제목, 댓글, 사이트 URL, 원본 파일명 등의 표준 메타데이터와 파일 내부 메타데이터 영역에 저장된 정보.',
+      removeText: 'Canva, ibisPaint, Premiere Pro 등 제작 도구와 관계없이 지원 형식 안의 GPS·위치, 날짜, 작성자·사용자명, 저작권, 기기·카메라·소프트웨어명, 감지 가능한 사용자·기기·문서 ID, 제목·댓글, 사이트 URL·원본 파일명, IP 주소 정보와 기타 내부 메타데이터를 제거합니다.',
       keepText: '이미지 픽셀, 음성·영상 데이터와 원본 파일은 변경하지 않습니다. 세로·가로 이미지와 영상이 회전되거나 거꾸로 표시되지 않도록 필요한 방향 정보와 색상 프로파일은 유지합니다.',
-      noticeText: '이미지·영상에 보이는 얼굴, 주소, 화면 속 글자와 음성에 녹음된 목소리·대화처럼 미디어 자체에 포함된 정보는 제거할 수 없습니다. 저장 후 파일명, 통신 시 IP 주소, 특수 독자 정보, 압축 데이터의 인코더 식별자도 자동으로 제거할 수 없습니다.'
+      noticeText: '이미지·영상에 보이는 얼굴, 주소, 화면 속 글자와 음성에 녹음된 목소리·대화처럼 미디어 자체에 포함된 정보와 저장 후 파일명은 제거할 수 없습니다. 지원 형식이라도 소프트웨어 전용 비공개 영역의 감지할 수 없는 정보나 압축 데이터의 인코더 식별자를 완전히 제거한다고 보장할 수 없습니다.',
+      networkNotice: '파일 내부의 감지 가능한 IP 주소 정보는 제거하며 새 파일에도 추가하지 않습니다. 다만 업로드 대상 서비스가 전송 시 접속 로그 등을 통해 출발지 IP 주소를 별도로 수집·관리할 수 있습니다. 이는 파일 메타데이터와 다른 정보이며 META ZERO의 처리·관리 대상이 아닙니다.',
+      metaIpAddress: 'IP 주소'
     },
     es: {
-      removeText: 'Metadatos estándar como GPS, fechas, autor, copyright, nombres de dispositivo y software, títulos, comentarios, URL del sitio y nombres de archivo originales, además de información almacenada en áreas internas de metadatos.',
+      removeText: 'Sin importar si el archivo procede de Canva, ibisPaint, Premiere Pro u otra herramienta, en los formatos compatibles se eliminan GPS y ubicación, fechas, autor y usuario, copyright, dispositivo, cámara y software, ID detectables de usuario, dispositivo y documento, títulos, comentarios, URL, nombre original, datos de IP y otros metadatos internos.',
       keepText: 'Los píxeles de imagen, el contenido de audio/vídeo y los archivos originales no se modifican. Se conservan los perfiles de color y los datos de orientación necesarios para evitar que el contenido vertical u horizontal aparezca girado o invertido.',
-      noticeText: 'No se puede eliminar información contenida en el propio contenido, como caras, direcciones o texto visibles en imágenes o vídeos, ni voces o conversaciones grabadas en audio. Tampoco se eliminan automáticamente los nombres de archivo guardados, las direcciones IP de red, los datos propietarios poco comunes ni los identificadores del codificador incluidos en medios comprimidos.'
+      noticeText: 'No se puede eliminar información contenida en el propio contenido, como caras, direcciones o texto visibles en imágenes o vídeos, ni voces o conversaciones grabadas en audio. El nombre guardado también permanece. Incluso en formatos compatibles, no se garantiza la eliminación completa de información indetectable en áreas privadas de cada software ni de identificadores del codificador incluidos en datos comprimidos.',
+      networkNotice: 'Los datos de dirección IP detectables dentro del archivo se eliminan y no se añaden al archivo nuevo. El servicio de destino puede obtener y gestionar por separado la IP de origen mediante registros de acceso durante el envío. Esa información es distinta de los metadatos del archivo y está fuera del procesamiento y control de META ZERO.',
+      metaIpAddress: 'DIRECCIÓN IP'
     },
     fr: {
-      removeText: 'Métadonnées standard telles que GPS, dates, auteur, droits d’auteur, noms d’appareil et de logiciel, titres, commentaires, URL de site et noms de fichiers d’origine, ainsi que les informations stockées dans les zones internes de métadonnées.',
+      removeText: 'Que le fichier provienne de Canva, ibisPaint, Premiere Pro ou d’un autre outil, les formats pris en charge sont nettoyés des données GPS et de localisation, dates, auteur et utilisateur, droits d’auteur, appareil, caméra et logiciel, identifiants détectables d’utilisateur, d’appareil et de document, titres, commentaires, URL, nom d’origine, données d’adresse IP et autres métadonnées internes.',
       keepText: 'Les pixels, le contenu audio/vidéo et les fichiers originaux restent inchangés. Les profils colorimétriques et les données d’orientation nécessaires pour éviter qu’un contenu portrait ou paysage apparaisse tourné ou à l’envers sont conservés.',
-      noticeText: 'Les informations présentes dans le contenu lui-même, comme les visages, adresses ou textes visibles dans les images ou vidéos, ainsi que les voix ou conversations enregistrées dans l’audio, ne peuvent pas être supprimées. Les noms de fichiers enregistrés, les adresses IP réseau, les données propriétaires inhabituelles et les identifiants d’encodeur intégrés aux médias compressés ne sont pas non plus supprimés automatiquement.'
+      noticeText: 'Les informations présentes dans le contenu lui-même, comme les visages, adresses ou textes visibles dans les images ou vidéos, ainsi que les voix ou conversations enregistrées dans l’audio, ne peuvent pas être supprimées. Le nom enregistré reste également. Même pour les formats pris en charge, la suppression complète des informations indétectables dans des zones privées propres aux logiciels ou des identifiants d’encodeur intégrés aux données compressées n’est pas garantie.',
+      networkNotice: 'Les données d’adresse IP détectables à l’intérieur du fichier sont supprimées et ne sont pas ajoutées au nouveau fichier. Le service de destination peut collecter et gérer séparément l’adresse IP source dans ses journaux d’accès lors de l’envoi. Cette information est distincte des métadonnées du fichier et échappe au traitement et au contrôle de META ZERO.',
+      metaIpAddress: 'ADRESSE IP'
     },
     de: {
-      removeText: 'Übliche Metadaten wie GPS, Datum, Urheber, Copyright, Geräte- und Softwarenamen, Titel, Kommentare, Website-URLs und ursprüngliche Dateinamen sowie Informationen in internen Metadatenbereichen.',
+      removeText: 'Unabhängig davon, ob die Datei aus Canva, ibisPaint, Premiere Pro oder einem anderen Werkzeug stammt, werden bei unterstützten Formaten GPS und Standort, Datum, Urheber- und Benutzername, Copyright, Geräte-, Kamera- und Softwarename, erkennbare Benutzer-, Geräte- und Dokument-IDs, Titel, Kommentare, Website-URL, ursprünglicher Dateiname, IP-Adressdaten und andere interne Metadaten entfernt.',
       keepText: 'Bildpixel, Audio-/Videoinhalte und Originaldateien bleiben unverändert. Farbprofile und Ausrichtungsdaten, die verhindern, dass Hoch- oder Querformat gedreht oder auf dem Kopf angezeigt wird, bleiben erhalten.',
-      noticeText: 'Informationen im Medieninhalt selbst, etwa Gesichter, Adressen oder Text in Bildern und Videos sowie Stimmen oder Gespräche in Audioaufnahmen, können nicht entfernt werden. Gespeicherte Dateinamen, Netzwerk-IP-Adressen, ungewöhnliche proprietäre Daten und Encoder-Kennungen in komprimierten Medien werden ebenfalls nicht automatisch entfernt.'
+      noticeText: 'Informationen im Medieninhalt selbst, etwa Gesichter, Adressen oder Text in Bildern und Videos sowie Stimmen oder Gespräche in Audioaufnahmen, können nicht entfernt werden. Auch der gespeicherte Dateiname bleibt bestehen. Selbst bei unterstützten Formaten kann die vollständige Entfernung nicht erkennbarer Informationen in privaten softwarespezifischen Bereichen oder von Encoder-Kennungen in komprimierten Daten nicht garantiert werden.',
+      networkNotice: 'Erkennbare IP-Adressdaten innerhalb der Datei werden entfernt und nicht zur neuen Datei hinzugefügt. Der Zieldienst kann die Quell-IP beim Senden separat über Zugriffsprotokolle erfassen und verwalten. Diese Information ist von Dateimetadaten getrennt und liegt außerhalb der Verarbeitung und Kontrolle von META ZERO.',
+      metaIpAddress: 'IP-ADRESSE'
     },
     pt: {
-      removeText: 'Metadados padrão como GPS, datas, autor, direitos autorais, nomes de dispositivo e software, títulos, comentários, URLs de sites e nomes de arquivos originais, além de informações armazenadas em áreas internas de metadados.',
+      removeText: 'Independentemente de o arquivo vir do Canva, ibisPaint, Premiere Pro ou outra ferramenta, nos formatos compatíveis são removidos GPS e localização, datas, autor e usuário, direitos autorais, dispositivo, câmera e software, IDs detectáveis de usuário, dispositivo e documento, títulos, comentários, URL, nome original, dados de IP e outros metadados internos.',
       keepText: 'Os pixels, o conteúdo de áudio/vídeo e os arquivos originais permanecem inalterados. Perfis de cor e dados de orientação necessários para evitar que conteúdos verticais ou horizontais apareçam girados ou de cabeça para baixo são mantidos.',
-      noticeText: 'Informações presentes no próprio conteúdo, como rostos, endereços ou textos visíveis em imagens ou vídeos e vozes ou conversas gravadas em áudio, não podem ser removidas. Nomes de arquivos salvos, endereços IP de rede, dados proprietários incomuns e identificadores do codificador incorporados em mídia compactada também não são removidos automaticamente.'
+      noticeText: 'Informações presentes no próprio conteúdo, como rostos, endereços ou textos visíveis em imagens ou vídeos e vozes ou conversas gravadas em áudio, não podem ser removidas. O nome salvo também permanece. Mesmo em formatos compatíveis, não é garantida a remoção completa de informações não detectáveis em áreas privadas específicas do software nem de identificadores do codificador presentes em dados compactados.',
+      networkNotice: 'Os dados de endereço IP detectáveis dentro do arquivo são removidos e não são adicionados ao novo arquivo. O serviço de destino pode obter e gerenciar separadamente o IP de origem por meio de logs de acesso durante o envio. Essa informação é diferente dos metadados do arquivo e está fora do processamento e controle do META ZERO.',
+      metaIpAddress: 'ENDEREÇO IP'
     }
   };
   const metadataFoundDetails = {

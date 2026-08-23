@@ -61,6 +61,7 @@ h1 span { color: var(--blue); }
 .orbit-track.orbit-tilted { width: 330px; height: 104px; border-style: dashed; border-color: rgba(92,102,232,.2); transform: translate(-50%, -50%) rotate(28deg); }
 .orbiter { --orbit-time: 16s; --orbit-delay: 0s; position: absolute; left: 0; top: 0; z-index: 6; width: 1px; height: 1px; offset-path: ellipse(44.5% 30% at 50% 49%); offset-rotate: 0deg; animation: orbitData var(--orbit-time) linear var(--orbit-delay) infinite, orbitDepth var(--orbit-time) linear var(--orbit-delay) infinite; will-change: offset-distance, transform, opacity; backface-visibility: hidden; }
 .orbit-xmp { --orbit-delay: -8s; }
+.orbit-id { --orbit-delay: -4s; }
 .orbit-exif, .orbit-author { --orbit-time: 19s; offset-path: path("M342.4 168.4 C328.9 193.7 258.7 182.8 185.6 143.9 C112.5 105 64.1 52.9 77.6 27.6 C91.1 2.3 161.3 13.2 234.4 52.1 C307.5 91 355.9 143.1 342.4 168.4 Z"); }
 .orbit-exif { --orbit-delay: -3s; }
 .orbit-author { --orbit-delay: -12.5s; }
@@ -143,6 +144,7 @@ h1 span { color: var(--blue); }
 .metadata-tags { position: relative; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 17px; }
 .metadata-tags b { padding: 5px 8px; color: #227aa4; background: #eaf8ff; border: 1px solid rgba(0,170,220,.12); border-radius: 999px; font-size: 8px; letter-spacing: .06em; }
 .card-note { position: relative; margin-top: 15px !important; padding: 11px 12px; color: #665c45 !important; background: rgba(255,248,229,.9); border-radius: 11px; }
+.privacy-network-note { margin: 14px 0 0; padding: 12px 15px; color: #665c45; background: rgba(255,248,229,.9); border: 1px solid rgba(201,165,83,.18); border-radius: 14px; font-size: 11px; line-height: 1.75; }
 .spec-line { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 14px; overflow: hidden; background: rgba(255,255,255,.8); border: 1px solid var(--line); border-radius: 17px; box-shadow: 0 10px 30px rgba(42,91,142,.07); }
 .spec-line > div { min-width: 0; padding: 15px 17px; border-right: 1px solid var(--line); }
 .spec-line > div:last-child { border: 0; }
