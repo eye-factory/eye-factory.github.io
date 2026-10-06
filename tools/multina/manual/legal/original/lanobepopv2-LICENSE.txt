@@ -1,0 +1,14 @@
+ラノベPOP V2 / LightNovelPOPv2.otf
+Copyright (C) 2002-2019 M+ FONTS PROJECT
+Copyright (C) 2020 flopdesign.com
+Copyright (C) 2020 Kato Masashi
+
+Official distribution: https://flopdesign.booth.pm/items/2328262
+The unmodified distribution README is included as lanobepopv2-ReadMe-original.html.
+It specifies the M+ license. This is the legacy mplus license, not SIL OFL.
+
+M+ license text (SPDX: mplus; https://spdx.org/licenses/mplus.html):
+These fonts are free softwares.
+Unlimited permission is granted to use, copy, and distribute it, with or without
+modification, either commercially and noncommercially.
+THESE FONTS ARE PROVIDED "AS IS" WITHOUT WARRANTY.

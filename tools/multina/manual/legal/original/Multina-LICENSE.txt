@@ -1,0 +1,67 @@
+MULTINA SOURCE-AVAILABLE LICENSE 1.0
+Copyright (c) 2026 eye-factory
+Official site: https://eye-factory.net/
+Effective version: Multina 1.0.0, release terms dated 2026-10-06
+
+1. Scope
+This license applies only to original Multina code and other original material
+for which eye-factory owns the necessary rights and supplies this license.
+It does not replace third-party licenses, including licenses for FFmpeg,
+Electron, Chromium, fonts, music, sound effects, or dependencies. Materials
+already licensed to you under another valid license retain those permissions.
+This is a source-available license, not an OSI-approved open-source license.
+
+2. Using Multina and creating works
+You may use Multina free of charge for personal or business purposes. You may
+publish, sell, or otherwise commercially use your creative outputs, including
+videos, images, recordings, and comics. This license does not require a Multina
+credit on those outputs. Respect separate rights in any materials you use.
+
+3. Original code: free derivatives only
+You may inspect, copy, modify, and distribute the covered code, in whole or in
+part, and distribute derivative software free of charge, subject to this
+license. You must not use any covered code to develop or distribute a tool or
+software product sold for a fee. You must not supply it or a derivative as a
+paid bonus, paid membership benefit, or other benefit conditioned on payment.
+Do not evade these restrictions by labeling the covered software as free while
+requiring payment for a package or entitlement that includes it.
+
+4. Attribution and notices
+Preserve this license, NOTICE.txt, and the eye-factory copyright and attribution
+notices in retained or reused portions of the original code. If you reuse only
+a portion, retain its notice or supply the notice adjacent to that portion.
+On the distribution page and in a bundled README or About page, state that the
+software is based on Multina by eye-factory, link to https://eye-factory.net/,
+identify the distributor and changes, and distinguish it from the official
+release. Do not imply endorsement. These obligations also apply to code
+rewritten or incorporated with AI tools; they are license conditions, not a
+technical guarantee that an AI or person cannot remove the notices.
+
+5. Agreed damages for prohibited paid reuse
+By using the covered code under this license, the user agrees that a violation
+of the prohibition on developing or selling paid tools using this code, or on
+distributing it as a paid benefit, entails agreement to pay eye-factory damages
+of at least JPY 3,000,000. This clause is subject to applicable mandatory law;
+its inclusion is not a guarantee of enforceability in every jurisdiction.
+The agreed Japanese clause is:
+利用者は、本コードを利用した有料ツールの開発・販売、または有料特典としての配布に関する禁止事項に違反した場合、eye-factoryに対し、300万円以上の損害賠償を支払うことに同意するものとします。
+
+6. No warranty; mandatory rights
+The covered software and code are supplied AS IS, without warranties of
+fitness, uninterrupted operation, data integrity, or non-infringement. To the
+extent permitted by law, eye-factory is not liable for loss of data, device
+damage, lost profits, or other damages arising from use or inability to use
+the software. Back up important work. Nothing excludes liability or rights
+that applicable law does not permit to be excluded, including liability for
+intentional misconduct or gross negligence where such exclusion is prohibited.
+
+7. Third-party components and existing permissions
+Nothing in this license limits rights granted by third-party licenses or by
+previous valid licenses. Keep their notices and comply with their source-code
+and redistribution requirements separately. Applying this license to a new
+release does not retroactively revoke previously granted permissions.
+
+8. Distribution of modified code
+Retain these conditions for the covered original portions. If a condition is
+invalid under applicable law, remaining conditions apply to the extent valid.
+No trademark ownership or right to represent yourself as eye-factory is granted.

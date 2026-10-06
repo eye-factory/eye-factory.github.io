@@ -1,0 +1,18 @@
+Source: Kenney, Interface Sounds 1.0 (2020)
+https://kenney.nl/assets/interface-sounds
+License: CC0 1.0 Universal
+https://creativecommons.org/publicdomain/zero/1.0/
+Archive downloaded from the official source. Original license is included.
+No affiliation with or endorsement by Kenney or Adobe is implied.
+
+Derived samples (not newly recorded and not Adobe/Premiere samples):
+confirm.wav: switch_002.ogg + glass_001.ogg
+back.wav: select_003.ogg
+notify.wav: glass_003.ogg + pluck_001.ogg
+pop.wav: pluck_002.ogg
+swipe.wav: scratch_002.ogg + scroll_004.ogg
+
+Edits: layering/filtering, trimming, short edge fades, -6 dBFS peak target,
+48 kHz stereo 24-bit PCM conversion. Source recording methods are unverified;
+these are not represented as newly recorded Foley. Processing recipes:
+work/prepare-preset-sounds.cjs (development project).

@@ -1,0 +1,11 @@
+MP4 recording uses Mediabunny 1.56.2, Copyright (c) Vanilagy and contributors.
+Mediabunny is licensed under the Mozilla Public License 2.0.
+An unmodified copy of its covered source and license is distributed alongside
+this notice in mediabunny/src and mediabunny/LICENSE. These files are not
+covered by the application's proprietary terms.
+Upstream: https://github.com/Vanilagy/mediabunny
+Package: https://www.npmjs.com/package/mediabunny/v/1.56.2
+
+Mediabunny is bundled into the renderer without changes to its source files.
+This notice covers this dependency, not a full distribution/license audit of
+the application, its other libraries, codecs, or FFmpeg build.

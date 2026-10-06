@@ -1,0 +1,5 @@
+*.html text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+# Preserve third-party notices byte-for-byte, including their original line endings.
+manual/legal/original/** -text -diff

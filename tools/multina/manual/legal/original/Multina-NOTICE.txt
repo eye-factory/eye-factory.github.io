@@ -1,0 +1,16 @@
+Multina — original software by eye-factory
+Copyright (c) 2026 eye-factory
+Official site: https://eye-factory.net/
+
+Original Multina code is supplied under MULTINA SOURCE-AVAILABLE LICENSE 1.0.
+Free derivatives are permitted with attribution. Paid tools and paid benefits
+using covered original code are prohibited. See LICENSE.txt for full terms.
+Commercial creative outputs made with Multina are permitted.
+
+Retain eye-factory notices when reusing covered original code, including when
+using AI-assisted coding tools. Attribution checks run at build time only;
+they are not an anti-tamper mechanism and do not block editing or exporting.
+
+Third-party components have their own licenses. They are not covered by the
+paid-reuse restriction. Bundled notices and corresponding-source information
+must accompany those components. Existing licenses are not retroactively revoked.
