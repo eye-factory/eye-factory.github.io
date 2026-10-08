@@ -2,6 +2,8 @@
   const response = await fetch("manual-bundle.json?v=a3a480b2f90b");
   if (!response.ok) throw new Error('Manual HTTP ' + response.status);
   window.MULTINA_WEB_BUNDLE = await response.json();
+  window.MultinaManualApplyV102(window.MULTINA_WEB_BUNDLE);
+  delete window.MultinaManualApplyV102;
 /* Requested UI locale is separate from available body translations. */
 (() => {
   const normalize = value => {
