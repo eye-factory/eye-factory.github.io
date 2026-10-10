@@ -4,6 +4,10 @@
   window.MULTINA_WEB_BUNDLE = await response.json();
   window.MultinaManualApplyV102(window.MULTINA_WEB_BUNDLE);
   delete window.MultinaManualApplyV102;
+  const detailResponse = await fetch('manual-detail-copy.json?v=1.0.3-detail-1');
+  if (!detailResponse.ok) throw new Error('Manual details HTTP ' + detailResponse.status);
+  window.MultinaManualApplyDetail(window.MULTINA_WEB_BUNDLE, await detailResponse.json());
+  delete window.MultinaManualApplyDetail;
 /* Requested UI locale is separate from available body translations. */
 (() => {
   const normalize = value => {
