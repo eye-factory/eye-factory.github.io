@@ -59,7 +59,7 @@
       "Check microphone and external voices",
       "Use dedicated expression and echo keys"
     ],
-    "demo": "The real application components use a fictional game, destination and microphone. Screenshots show the Japanese interface. These examples show features after they have been enabled manually.",
+    "demo": "The real application components use a fictional game, destination and microphone. Screenshots show the English interface. These examples show features after they have been enabled manually.",
     "blocks": [
       [
         "Microphone, voice conversion and recording wipe default to OFF. Opening settings does not enable them. Turn on what you need explicitly. Applied settings are retained; the microphone returns to OFF on restart.",
@@ -110,7 +110,7 @@
       "Mikrofon und externe Stimmen prüfen",
       "Eigene Tasten für Gesichtsausdruck und Echo"
     ],
-    "demo": "Echte App-Komponenten mit fiktivem Spiel, Speicherort und Mikrofon. Die Bilder zeigen die japanische Oberfläche. Die Beispiele zeigen manuell eingeschaltete Funktionen.",
+    "demo": "Echte App-Komponenten mit fiktivem Spiel, Speicherort und Mikrofon. Die Bilder zeigen die englische Oberfläche. Die Beispiele zeigen manuell eingeschaltete Funktionen.",
     "blocks": [
       [
         "Mikrofon, Stimmenumwandlung und Bild-im-Bild sind anfangs AUS. Das Öffnen der Einstellungen schaltet sie nicht ein. Benötigte Funktionen selbst einschalten. Bestätigte Einstellungen bleiben erhalten; das Mikrofon ist nach Neustart AUS.",
@@ -161,7 +161,7 @@
       "Vérifier micro et voix externes",
       "Touches dédiées aux expressions et à l’écho"
     ],
-    "demo": "Composants réels avec jeu, dossier et micro fictifs. Les images montrent l’interface japonaise. Ces exemples montrent les fonctions activées manuellement.",
+    "demo": "Composants réels avec jeu, dossier et micro fictifs. Les images montrent l’interface anglaise. Ces exemples montrent les fonctions activées manuellement.",
     "blocks": [
       [
         "Le micro, la transformation vocale et l’incrustation sont désactivés au départ. Ouvrir les réglages ne les active pas. Activez vous-même les options voulues. Les réglages validés sont conservés ; le micro est désactivé au redémarrage.",
@@ -212,7 +212,7 @@
       "Comprobar micrófono y voces externas",
       "Teclas dedicadas para expresiones y eco"
     ],
-    "demo": "Componentes reales con juego, carpeta y micrófono ficticios. Las imágenes muestran la interfaz japonesa. Los ejemplos muestran funciones activadas manualmente.",
+    "demo": "Componentes reales con juego, carpeta y micrófono ficticios. Las imágenes muestran la interfaz inglesa. Los ejemplos muestran funciones activadas manualmente.",
     "blocks": [
       [
         "Micrófono, cambio de voz e imagen superpuesta empiezan en OFF. Abrir ajustes no los activa. Active lo que necesite. Los ajustes aplicados se conservan; el micrófono vuelve a OFF al reiniciar.",
@@ -263,7 +263,7 @@
       "Verificar microfone e vozes externas",
       "Teclas dedicadas para expressões e eco"
     ],
-    "demo": "Componentes reais com jogo, pasta e microfone fictícios. As imagens mostram a interface japonesa. Os exemplos mostram funções ativadas manualmente.",
+    "demo": "Componentes reais com jogo, pasta e microfone fictícios. As imagens mostram a interface inglesa. Os exemplos mostram funções ativadas manualmente.",
     "blocks": [
       [
         "Microfone, mudança de voz e sobreposição começam em OFF. Abrir os ajustes não os ativa. Ative o que precisar. Os ajustes aplicados são mantidos; o microfone volta a OFF ao reiniciar.",
@@ -314,7 +314,7 @@
       "Periksa mikrofon dan suara eksternal",
       "Tombol khusus ekspresi dan gema"
     ],
-    "demo": "Komponen aplikasi asli dengan game, folder dan mikrofon fiktif. Gambar memakai antarmuka Jepang. Contoh menampilkan fitur yang telah diaktifkan secara manual.",
+    "demo": "Komponen aplikasi asli dengan game, folder dan mikrofon fiktif. Gambar memakai antarmuka Inggris. Contoh menampilkan fitur yang telah diaktifkan secara manual.",
     "blocks": [
       [
         "Mikrofon, pengubah suara dan inset rekaman awalnya OFF. Membuka pengaturan tidak mengaktifkannya. Aktifkan sendiri yang diperlukan. Pengaturan tersimpan; mikrofon kembali OFF saat aplikasi dimulai ulang.",
@@ -365,7 +365,7 @@
       "检查麦克风与外部声音",
       "表情与回声专用快捷键"
     ],
-    "demo": "使用真实界面组件和虚构游戏、保存位置、麦克风的操作示例。截图界面为日语。 图例为手动启用功能后的设置。",
+    "demo": "使用真实界面组件和虚构游戏、保存位置、麦克风的操作示例。截图界面为英语。 图例为手动启用功能后的设置。",
     "blocks": [
       [
         "初始麦克风、变声和录制画中画均为OFF。打开设置不会启用它们，请自行开启需要的功能。已确认设置会保留，重启后麦克风恢复OFF。",
@@ -416,7 +416,7 @@
       "檢查麥克風與外部聲音",
       "表情與回音專用快捷鍵"
     ],
-    "demo": "使用真實介面元件與虛構遊戲、儲存位置、麥克風的操作範例。截圖介面為日文。 圖例為手動啟用功能後的設定。",
+    "demo": "使用真實介面元件與虛構遊戲、儲存位置、麥克風的操作範例。截圖介面為英文。 圖例為手動啟用功能後的設定。",
     "blocks": [
       [
         "初始麥克風、變聲與錄製子畫面皆為OFF。開啟設定不會啟用它們，請自行開啟需要的功能。已確認設定會保留，重啟後麥克風恢復OFF。",
@@ -467,7 +467,7 @@
       "마이크와 외부 보이스 확인",
       "표정·에코 전용 키 사용"
     ],
-    "demo": "실제 UI 구성 요소에 가상 게임·저장 위치·마이크를 사용한 예입니다. 화면은 일본어입니다. 기능을 수동으로 켠 뒤의 설정 예시입니다.",
+    "demo": "실제 UI 구성 요소에 가상 게임·저장 위치·마이크를 사용한 예입니다. 화면은 영어입니다. 기능을 수동으로 켠 뒤의 설정 예시입니다.",
     "blocks": [
       [
         "마이크·보이스 변환·녹화 와이프의 초기값은 OFF입니다. 설정을 열기만 해서는 켜지지 않습니다. 필요한 항목을 직접 켜세요. 적용한 설정은 유지되며 마이크는 재시작 후 OFF로 돌아갑니다.",
@@ -518,7 +518,7 @@
       "ตรวจไมโครโฟนและเสียงภายนอก",
       "ปุ่มเฉพาะสำหรับสีหน้าและเสียงสะท้อน"
     ],
-    "demo": "ใช้ส่วน UI จริงกับเกม โฟลเดอร์และไมโครโฟนสมมติ ภาพหน้าจอเป็นภาษาญี่ปุ่น ตัวอย่างเป็นค่าหลังเปิดฟังก์ชันเอง",
+    "demo": "ใช้ส่วน UI จริงกับเกม โฟลเดอร์และไมโครโฟนสมมติ ภาพหน้าจอเป็นภาษาอังกฤษ ตัวอย่างเป็นค่าหลังเปิดฟังก์ชันเอง",
     "blocks": [
       [
         "ค่าเริ่มต้นไมค์ เปลี่ยนเสียง และภาพซ้อนบันทึกเป็น OFF การเปิดตั้งค่าไม่เปิดฟังก์ชัน ให้เปิดสิ่งที่ต้องการเอง ค่าที่ใช้แล้วคงไว้ แต่ไมค์กลับ OFF เมื่อเปิดแอปใหม่",
