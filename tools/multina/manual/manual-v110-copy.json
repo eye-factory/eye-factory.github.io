@@ -1,0 +1,563 @@
+{
+  "ja": {
+    "heads": [
+      "1.1.0の録画・ワイプ・ボイス",
+      "録画ソースに合わせてワイプを配置",
+      "キャラ・枠・背景を選ぶ",
+      "口パクと大声の表情を調整",
+      "マイクと外部ボイスを確認",
+      "表情・エコーを専用キーで操作"
+    ],
+    "demo": "実際の画面部品に架空のゲーム画面・保存先・マイクを与えた操作例です。画像内の表示は日本語です。 各機能を手動でONにした後の設定例です。",
+    "blocks": [
+      [
+        "初期状態はマイク・ボイチェン・録画用ワイプがOFFです。設定を開くだけではONになりません。必要な項目を自分でONにしてください。決定した設定は次回も保持します。マイクは再起動後にOFFへ戻ります。",
+        "1.1.0では、録画画面の「ワイプ・声を設定」からキャラ、枠、背景、配置、マイク、ボイスと表情キーをまとめて設定します。「決定して保存」で反映します。設定を開いたり決定したりしても、動作中のプレビューは保ちます。",
+        "まず短く録画し、保存完了後に映像・声・ワイプの位置を再生確認してください。外部ボイスはこの版では録画停止後にマイクだけを変換します。"
+      ],
+      [
+        "録画する画面・ウィンドウを選び、プレビューで画角を確定してから設定を開きます。配置キャンバスの縦横比とサイズは、選択中の録画ソースに合わせます。ワイプをドラッグし、大きさ・左右・上下のバーで調整します。",
+        "「元画面でワイプを確認」はOFF／半透明50%／不透明度100%。初期値は半透明です。確認用ワイプは元画面の操作を通し、録画から除外します。保存動画には同じ位置・大きさのワイプを通常の濃さで1つ合成します。",
+        "ソースを変えた場合は、左右・上下の割合と短辺に対する大きさを引き継ぎ、新しい画角へ配置を計算し直します。画角変更後は再確認してください。"
+      ],
+      [
+        "マルチナちゃん、お嬢様、眼鏡女子、男の子、ダンディ、宇宙人の6種類があります。キャラ・枠・枠内の背景をそれぞれ選べます。禁止マークは「枠なし」「背景なし」です。",
+        "カメラ自撮りは、PCのWebカメラと卓上マイクを使う顔なしの人物の絵です。手は親指と残り4本をまとめた形です。選択だけではカメラを取得しません。「カメラの試写を開始」で確認し、録音するマイクは別途ONにします。カメラの実機確認は未実施です。"
+      ],
+      [
+        "「声の出力」はボイチェン後に動画へ入れるマイク音量です。口パクと大声判定には影響しません。「口パクの反応しきい値」は小さいほど敏感です。小さな口パクでも最大の半分以上開くようにし、最大の開きは変えていません。",
+        "「通常声の大きさ」は判定の基準で、初期値は3倍です。普段の声が大声扱いになる場合は右へ動かします。録音の音量は変わりません。「大声判定」はその基準に対する倍率で、初期値は5です。",
+        "自動変更はON/OFFでき、大声の表情は初期値が怒り。喜び・怒り・泣き・笑い・驚き・不安から選べます。他の表情や大声の表情中も口パクします。"
+      ],
+      [
+        "「マイクをON」は録画画面と連動します。プレビューを開始しなくても入力を取得し、録画画面の波形・メーターで確認できます。アプリ再起動時はマイクOFFなので、録画前に確認します。",
+        "「ボイチェンをON」と女性1〜5／男性1〜3で外部モデルを選びます。OFF（地声）は変換しません。音声はPC内で処理し、システム音声は変換しません。録画停止後にマイクの変換と保存が終わるまで待ってください。",
+        "「この設定で声を4秒テスト」と「地声を4秒テスト（比較用）」で比較できます。テスト音声を保存する操作はありません。追加調整の初期値は調整なしで、「追加調整をすべて戻す」で戻せます。エフェクトはエコーのみです。"
+      ],
+      [
+        "初期割り当てはテンキー1＝喜び、2＝怒り、3＝泣き、4＝笑い、5＝驚き、6＝不安、7＝エコー。キーを押している間だけ動作し、離すと通常に戻ります。エコーは有効なボイスへ加わります。",
+        "録画画面にいる間は、録画前・プレビュー中・録画中・停止後も有効です。別アプリが前面でも、登録したキーの通常入力を止めて専用操作に使います。例えば喜びをテンキー1にした場合、チャットへ111…を入力しません。ワイプがOFFなら表情キー、ボイチェンがOFFならエコーキーは専用化しません。",
+        "各キー欄を選ぶと「登録するキーを入力してください」と表示します。単独キーとCtrl／Alt／Shift／Winの組み合わせに対応し、テンキーと上段の数字は別です。キー登録欄にいる間は専用操作を一時解除します。何も押さずに欄を離れれば元の割り当てに戻ります。",
+        "変更した古いキーは通常入力へ戻り、新しいキーが専用操作になります。画像・動画・漫画編集へ切り替えるかアプリを終了すると解除します。録画画面へ戻れば保存した割り当てを再び使います。"
+      ],
+      [
+        "録画の「ショートカット設定」にある「録画開始・停止（他アプリの操作中も有効）」を使います。初期値はF9。同じキーで待機中は開始、録画中は停止します。押し続けても開始・停止を繰り返しません。旧「アプリ内」のSpace項目はありません。",
+        "他アプリが前面でも有効です。録画ソース未選択、準備中・保存処理中、設定画面を開いている間は開始しません。登録欄を選んでいる間だけ専用キーを一時解除します。キー登録失敗が表示された場合は画面のボタンを使います。P・Vなどの他の録画操作はアプリ内で使います。"
+      ],
+      [
+        "録画前に必要なシステム音声とマイクをONにします。マイクはONにするとプレビューなしで取得し、メーターと波形で入力を確認できます。録画開始前にONなら、プレビューボタンを押さず開始してもマイク音声を録画します。",
+        "システム音声はPC全体の再生音です。短く録画して保存ファイルを再生し、無音・歪み・二重取りを確認します。マイクONは再起動後に引き継ぎません。録画中の音声ON/OFFと入力デバイス変更はできません。"
+      ]
+    ]
+  },
+  "en": {
+    "heads": [
+      "Recording, wipe and voice in 1.1.0",
+      "Place the wipe on the recording source",
+      "Choose a character, frame and background",
+      "Adjust lip sync and loud reactions",
+      "Check microphone and external voices",
+      "Use dedicated expression and echo keys"
+    ],
+    "demo": "The real application components use a fictional game, destination and microphone. Screenshots show the Japanese interface. These examples show features after they have been enabled manually.",
+    "blocks": [
+      [
+        "Microphone, voice conversion and recording wipe default to OFF. Opening settings does not enable them. Turn on what you need explicitly. Applied settings are retained; the microphone returns to OFF on restart.",
+        "Open Wipe / voice settings in the recording workspace to choose appearance, placement, microphone, voices and expression keys. Apply and save to commit. Opening or applying settings keeps an active preview running.",
+        "Check a short saved recording first. In this version, external voice conversion processes only the microphone after recording stops."
+      ],
+      [
+        "Select a source and establish its dimensions with preview before opening settings. The placement canvas follows the selected source. Drag the wipe or adjust size, horizontal and vertical position.",
+        "The source confirmation has OFF, 50% and 100% options; 50% is the default. It passes mouse operations through and is excluded from recording. The saved video receives one full-opacity wipe at the same position and size.",
+        "Changing sources preserves relative position and size as a proportion of the shorter edge, recalculated for the new source. Check placement after a change."
+      ],
+      [
+        "Six characters are available: Multina-chan, lady, glasses girl, boy, dandy and alien. Choose the character, frame and inner background separately. A prohibition icon means no frame or no background.",
+        "Camera selfie uses a faceless 2D person at a PC webcam with a desktop microphone. Hands use a separate thumb and a single rounded shape for the other four fingers. Selection alone does not acquire the camera; start the camera test explicitly. Enable the recording microphone separately. Physical camera validation has not been performed."
+      ],
+      [
+        "Voice output changes the converted microphone volume in the video, not lip-sync or loudness detection. A lower lip-sync threshold is more sensitive. Small openings reach at least half the maximum; maximum opening is unchanged.",
+        "Normal voice level is a detection baseline, default 3×. Increase it if ordinary speech triggers loud reactions. It does not change recording volume. Loud detection is relative to that baseline, default 5.",
+        "Automatic loud reactions can be disabled. Anger is the default; choose joy, anger, sadness, laughter, surprise or anxiety. Lip sync continues in other expressions."
+      ],
+      [
+        "Microphone ON is synchronized with recording settings and acquires input without preview. Check the waveform and meter. Microphone returns to OFF after restarting the app.",
+        "Enable voice conversion and choose Female 1–5 or Male 1–3. OFF retains the original voice. Processing is local and affects only the microphone. Wait for conversion and saving after stopping.",
+        "Compare the four-second current-settings and original-voice tests. There is no test-audio save action. Additional adjustments default to neutral and can be reset. Echo is the only effect."
+      ],
+      [
+        "Defaults: numpad 1 joy, 2 anger, 3 sadness, 4 laughter, 5 surprise, 6 anxiety, 7 echo. Hold the key to apply; release to return. Echo applies to an enabled voice.",
+        "These keys work before recording, in preview, while recording and after stopping, including in other applications. Their ordinary input is suppressed: numpad 1 changes the expression without typing 111… into chat. Expression keys are not claimed when wipe is OFF; echo is not claimed when voice conversion is OFF.",
+        "Focus a key field and press a single key or a Ctrl / Alt / Shift / Win combination. Numpad and number-row keys are distinct. Dedicated actions pause while a registration field is focused. Leaving without input restores the previous assignment.",
+        "Reassignment restores the old key and claims the new one. Switching to another editing mode or exiting releases the keys. Returning to recording restores saved assignments."
+      ],
+      [
+        "The single Start / stop recording (works in other apps) row defaults to F9. It starts while idle and stops while recording, once per press. The old in-app Space row has been removed.",
+        "It works in the background. Starting is blocked without a selected source, during preparation or finalization, or while settings are open. Registration fields temporarily release dedicated keys. Use the onscreen button if key registration fails. Other controls such as P and V remain in-app."
+      ],
+      [
+        "Enable the required system audio and microphone before recording. Microphone ON acquires input without preview and shows a waveform and meter. Recording directly also includes the microphone if enabled beforehand.",
+        "System audio includes all PC playback. Play a short saved recording to check silence, distortion or duplication. Microphone ON is not retained on restart. Audio ON/OFF and device changes are unavailable during recording."
+      ]
+    ]
+  },
+  "de": {
+    "heads": [
+      "Aufnahme, Einblendung und Stimme in 1.1.0",
+      "Einblendung an der Quelle positionieren",
+      "Figur, Rahmen und Hintergrund wählen",
+      "Lippensynchronisation und laute Reaktionen",
+      "Mikrofon und externe Stimmen prüfen",
+      "Eigene Tasten für Gesichtsausdruck und Echo"
+    ],
+    "demo": "Echte App-Komponenten mit fiktivem Spiel, Speicherort und Mikrofon. Die Bilder zeigen die japanische Oberfläche. Die Beispiele zeigen manuell eingeschaltete Funktionen.",
+    "blocks": [
+      [
+        "Mikrofon, Stimmenumwandlung und Bild-im-Bild sind anfangs AUS. Das Öffnen der Einstellungen schaltet sie nicht ein. Benötigte Funktionen selbst einschalten. Bestätigte Einstellungen bleiben erhalten; das Mikrofon ist nach Neustart AUS.",
+        "In der Aufnahmeansicht die Einblendungs-/Stimmeinstellungen öffnen, anpassen und speichern. Die laufende Vorschau bleibt dabei erhalten.",
+        "Zuerst eine kurze Aufnahme prüfen. Externe Stimmen verändern in dieser Version nur das Mikrofon nach dem Stoppen."
+      ],
+      [
+        "Quelle wählen, mit der Vorschau ihre Maße ermitteln und dann die Einstellungen öffnen. Die Leinwand folgt der Quelle. Einblendung ziehen oder Größe und Position einstellen.",
+        "Kontrollanzeige: AUS, 50% oder 100%; Standard 50%. Mausaktionen gehen hindurch. Sie wird aus der Aufnahme ausgeschlossen; im Video erscheint eine Einblendung mit voller Deckkraft an derselben Stelle und in derselben Größe.",
+        "Beim Quellenwechsel bleiben relative Position und Größe zur kurzen Kante erhalten. Die Position wird neu berechnet; anschließend prüfen."
+      ],
+      [
+        "Sechs Figuren: Multina-chan, Dame, Brillenmädchen, Junge, Dandy und Alien. Rahmen und Hintergrund separat wählen. Das Verbotszeichen bedeutet ohne Rahmen bzw. Hintergrund.",
+        "Kamera-Selfie zeigt eine gesichtslose 2D-Figur mit PC-Webcam und Tischmikrofon. Der Daumen ist getrennt, die vier anderen Finger bilden eine runde Form. Auswahl allein aktiviert keine Kamera; den Test ausdrücklich starten. Aufnahmemikrofon separat einschalten. Eine Prüfung mit echter Kamera steht aus."
+      ],
+      [
+        "Stimmenausgabe ändert die umgewandelte Mikrofonlautstärke im Video, nicht die Erkennung. Eine kleinere Mundschwelle reagiert empfindlicher. Kleine Öffnungen erreichen mindestens die Hälfte; das Maximum bleibt gleich.",
+        "Normale Stimme: Standard 3×. Erhöhen, wenn normales Sprechen als laut gilt; keine Änderung der Aufnahmelautstärke. Laut-Erkennung: Standard 5 relativ zu dieser Basis.",
+        "Automatische Reaktionen lassen sich ausschalten. Standard ist Ärger; auch Freude, Trauer, Lachen, Überraschung und Angst wählbar. Der Mund bewegt sich weiter."
+      ],
+      [
+        "Mikrofon EIN ist mit der Aufnahme synchronisiert und funktioniert ohne Vorschau. Wellenform und Pegel prüfen. Nach Neustart ist das Mikrofon AUS.",
+        "Umwandlung einschalten und Frauenstimme 1–5 oder Männerstimme 1–3 wählen. AUS erhält die Originalstimme. Lokale Verarbeitung nur des Mikrofons. Nach Stopp auf Umwandlung und Speicherung warten.",
+        "Viersekundentests mit aktuellen Einstellungen und Originalstimme vergleichen. Keine Testaudio-Speicherung. Zusätzliche Anpassungen sind neutral und zurücksetzbar. Nur Echo bleibt als Effekt."
+      ],
+      [
+        "Nummernblock 1 Freude, 2 Ärger, 3 Trauer, 4 Lachen, 5 Überraschung, 6 Angst, 7 Echo. Nur während des Haltens. Echo benötigt aktive Stimmumwandlung.",
+        "Vor, während und nach der Aufnahme sowie in anderen Apps aktiv. Normaler Tastentext wird unterdrückt. Bei ausgeschalteter Einblendung werden Ausdruckstasten freigegeben; bei ausgeschalteter Umwandlung die Echotaste.",
+        "Tastenfeld fokussieren und Einzeltaste oder Ctrl/Alt/Shift/Win-Kombination drücken. Nummernblock und obere Ziffernreihe sind getrennt. Während Registrierung wird die Sonderfunktion ausgesetzt. Ohne Eingabe bleibt die alte Belegung.",
+        "Änderungen geben die alte Taste frei. Andere Bearbeitungsmodi und App-Ende geben alle Tasten frei; Rückkehr zur Aufnahme stellt gespeicherte Belegungen wieder her."
+      ],
+      [
+        "Eine globale Start/Stopp-Zeile, Standard F9. Start im Leerlauf, Stopp bei Aufnahme; einmal pro Druck. Die alte lokale Space-Zeile entfällt.",
+        "Kein Start ohne Quelle, bei Vorbereitung/Speicherung oder offenen Einstellungen. Tastenregistrierung setzt Sondertasten aus. Bei Registrierungsfehler Bildschirmtaste verwenden. P/V bleiben appintern."
+      ],
+      [
+        "Benötigte Audioquellen vor Beginn aktivieren. Mikrofon EIN liefert ohne Vorschau Wellenform und Pegel; direkter Aufnahmebeginn enthält das eingeschaltete Mikrofon.",
+        "Systemaudio umfasst alle PC-Töne. Kurze gespeicherte Aufnahme auf Stille, Verzerrung und Dopplung prüfen. Mikrofon bleibt nach Neustart AUS. Während Aufnahme keine EIN/AUS- oder Geräteänderung."
+      ]
+    ]
+  },
+  "fr": {
+    "heads": [
+      "Capture, incrustation et voix en 1.1.0",
+      "Placer l’incrustation sur la source",
+      "Choisir personnage, cadre et fond",
+      "Régler les lèvres et les réactions fortes",
+      "Vérifier micro et voix externes",
+      "Touches dédiées aux expressions et à l’écho"
+    ],
+    "demo": "Composants réels avec jeu, dossier et micro fictifs. Les images montrent l’interface japonaise. Ces exemples montrent les fonctions activées manuellement.",
+    "blocks": [
+      [
+        "Le micro, la transformation vocale et l’incrustation sont désactivés au départ. Ouvrir les réglages ne les active pas. Activez vous-même les options voulues. Les réglages validés sont conservés ; le micro est désactivé au redémarrage.",
+        "Ouvrez les réglages d’incrustation et de voix dans la capture, puis validez pour enregistrer. L’aperçu en cours est conservé.",
+        "Vérifiez une courte capture. Dans cette version, la voix externe transforme seulement le micro après l’arrêt."
+      ],
+      [
+        "Choisissez la source et lancez l’aperçu pour obtenir ses dimensions avant les réglages. Déplacez l’incrustation ou ajustez taille et position.",
+        "Confirmation sur la source : OFF, 50% ou 100%, avec 50% par défaut. Les clics traversent cette vue, exclue de la capture. La vidéo reçoit une seule incrustation opaque, à la même position et taille.",
+        "Changer de source conserve les proportions de position et de taille par rapport au petit côté. Le placement est recalculé ; vérifiez-le."
+      ],
+      [
+        "Six personnages : Multina-chan, demoiselle, fille à lunettes, garçon, dandy et extraterrestre. Cadre et fond sont indépendants. Le symbole d’interdiction signifie sans cadre ou sans fond.",
+        "Le selfie caméra montre une personne 2D sans visage avec webcam PC et micro de bureau. Le pouce est séparé des quatre doigts réunis en une forme arrondie. La sélection seule n’active pas la caméra ; lancez l’essai. Activez le micro d’enregistrement séparément. Aucun test de caméra physique n’a été effectué."
+      ],
+      [
+        "La sortie vocale règle le volume du micro transformé dans la vidéo, pas les réactions. Un seuil de lèvres plus faible est plus sensible. Les petites ouvertures atteignent au moins la moitié du maximum, inchangé.",
+        "Voix normale : 3× par défaut. Augmentez si la parole normale déclenche les réactions fortes. Le volume enregistré reste inchangé. Seuil fort : 5 par défaut, relatif à cette base.",
+        "Réaction automatique désactivable. Colère par défaut ; joie, tristesse, rire, surprise et anxiété disponibles. Les lèvres restent animées."
+      ],
+      [
+        "Micro ON est synchronisé avec la capture, sans aperçu requis. Vérifiez onde et niveau. Le micro revient à OFF au redémarrage.",
+        "Activez la transformation et choisissez Femme 1–5 ou Homme 1–3. OFF garde la voix originale. Traitement local du micro seul. Après arrêt, attendez conversion et sauvegarde.",
+        "Comparez les essais de quatre secondes, réglages actuels et voix originale. Pas de sauvegarde de l’audio d’essai. Ajustements neutres et réinitialisables. Seul l’écho reste."
+      ],
+      [
+        "Pavé numérique : 1 joie, 2 colère, 3 tristesse, 4 rire, 5 surprise, 6 anxiété, 7 écho. Maintenez la touche ; relâchez pour revenir. Écho avec transformation active.",
+        "Actif avant, pendant et après la capture, même dans une autre app. La saisie normale est bloquée. Incrustation OFF libère les touches d’expression ; transformation OFF libère l’écho.",
+        "Sélectionnez un champ et pressez une touche ou Ctrl/Alt/Shift/Win avec une touche. Pavé numérique et rangée de chiffres sont distincts. Les actions dédiées sont suspendues pendant la saisie du raccourci. Quitter sans saisir conserve l’ancienne valeur.",
+        "Modifier libère l’ancienne touche. Changer de mode d’édition ou quitter libère les touches ; revenir à la capture restaure les raccourcis enregistrés."
+      ],
+      [
+        "Une seule ligne globale démarrer/arrêter, F9 par défaut. Démarre au repos et arrête la capture, une fois par pression. L’ancienne ligne locale Espace disparaît.",
+        "Pas de démarrage sans source, pendant préparation/sauvegarde ou réglages ouverts. Les champs de raccourcis libèrent temporairement les touches. En cas d’échec, utilisez le bouton. P/V restent internes à l’app."
+      ],
+      [
+        "Activez les sources audio avant de commencer. Micro ON affiche onde et niveau sans aperçu. Le démarrage direct inclut le micro déjà activé.",
+        "Le son système comprend tous les sons du PC. Écoutez une courte capture pour vérifier silence, saturation et doublons. Micro OFF au redémarrage. Pas de changement ON/OFF ou de périphérique pendant la capture."
+      ]
+    ]
+  },
+  "es": {
+    "heads": [
+      "Grabación, recuadro y voz en 1.1.0",
+      "Colocar el recuadro en la fuente",
+      "Elegir personaje, marco y fondo",
+      "Ajustar labios y reacciones fuertes",
+      "Comprobar micrófono y voces externas",
+      "Teclas dedicadas para expresiones y eco"
+    ],
+    "demo": "Componentes reales con juego, carpeta y micrófono ficticios. Las imágenes muestran la interfaz japonesa. Los ejemplos muestran funciones activadas manualmente.",
+    "blocks": [
+      [
+        "Micrófono, cambio de voz e imagen superpuesta empiezan en OFF. Abrir ajustes no los activa. Active lo que necesite. Los ajustes aplicados se conservan; el micrófono vuelve a OFF al reiniciar.",
+        "Abra los ajustes de recuadro y voz desde grabación y confirme para guardar. La vista previa activa se conserva.",
+        "Pruebe una grabación corta. En esta versión la voz externa transforma solo el micrófono después de detenerse."
+      ],
+      [
+        "Elija la fuente y obtenga sus dimensiones con la vista previa antes de abrir ajustes. Arrastre el recuadro o ajuste tamaño y posición.",
+        "Confirmación en la fuente: OFF, 50% o 100%; 50% por defecto. Deja pasar clics y se excluye de la grabación. El vídeo recibe un único recuadro opaco en la misma posición y tamaño.",
+        "Cambiar de fuente conserva posición relativa y tamaño respecto al lado corto. Se recalcula la colocación; revísela."
+      ],
+      [
+        "Seis personajes: Multina-chan, señorita, chica con gafas, chico, dandi y alienígena. Marco y fondo se eligen por separado. El signo de prohibición indica sin marco o fondo.",
+        "El selfie muestra una persona 2D sin rostro con webcam de PC y micrófono de mesa. El pulgar está separado de una forma redondeada que reúne los otros cuatro dedos. Seleccionar no activa la cámara; inicie la prueba. Active el micrófono de grabación por separado. No se ha comprobado una cámara física."
+      ],
+      [
+        "Salida de voz controla el volumen convertido del micro en el vídeo, no la detección. Un umbral de labios menor es más sensible. Aperturas pequeñas alcanzan al menos la mitad del máximo, que no cambia.",
+        "Voz normal: 3× por defecto. Aumente si el habla normal se considera fuerte. No cambia el volumen grabado. Detección fuerte: 5 por defecto respecto a esa base.",
+        "Reacción automática opcional. Ira por defecto; alegría, tristeza, risa, sorpresa y ansiedad disponibles. Los labios siguen moviéndose."
+      ],
+      [
+        "Micrófono ON se sincroniza con grabación y funciona sin vista previa. Compruebe onda y nivel. Vuelve a OFF al reiniciar.",
+        "Active conversión y seleccione Mujer 1–5 u Hombre 1–3. OFF conserva la voz original. Procesamiento local solo del micro. Tras detener, espere conversión y guardado.",
+        "Compare las pruebas de cuatro segundos con ajustes actuales y voz original. No hay guardado de audio de prueba. Ajustes adicionales neutros y restablecibles. Solo queda eco."
+      ],
+      [
+        "Teclado numérico: 1 alegría, 2 ira, 3 tristeza, 4 risa, 5 sorpresa, 6 ansiedad, 7 eco. Solo al mantener la tecla. Eco necesita conversión activa.",
+        "Funcionan antes, durante y después de grabar, también en otras apps. Se bloquea la escritura normal. Recuadro OFF libera expresiones; conversión OFF libera eco.",
+        "Seleccione un campo y pulse una tecla o combinación con Ctrl/Alt/Shift/Win. Teclado numérico y fila superior son distintos. Durante registro se suspenden las acciones dedicadas. Salir sin pulsar conserva la asignación.",
+        "Cambiar restaura la tecla anterior. Otro modo de edición o salir libera las teclas; volver a grabación restaura las asignaciones guardadas."
+      ],
+      [
+        "Una sola fila global iniciar/detener, F9 por defecto. Inicia en espera y detiene al grabar, una vez por pulsación. Se elimina la antigua fila local Espacio.",
+        "No inicia sin fuente, preparando/guardando o con ajustes abiertos. Los campos de registro liberan temporalmente las teclas. Si falla, use el botón. P/V siguen siendo internos."
+      ],
+      [
+        "Active audio antes de empezar. Micrófono ON muestra onda y nivel sin vista previa; inicio directo también incluye el micro ya activado.",
+        "Audio del sistema incluye todo el PC. Reproduzca una captura corta para comprobar silencio, distorsión y duplicación. Micro OFF al reiniciar. No cambie ON/OFF ni dispositivo durante grabación."
+      ]
+    ]
+  },
+  "pt-BR": {
+    "heads": [
+      "Gravação, sobreposição e voz em 1.1.0",
+      "Posicionar na fonte de gravação",
+      "Escolher personagem, moldura e fundo",
+      "Ajustar boca e reações a voz alta",
+      "Verificar microfone e vozes externas",
+      "Teclas dedicadas para expressões e eco"
+    ],
+    "demo": "Componentes reais com jogo, pasta e microfone fictícios. As imagens mostram a interface japonesa. Os exemplos mostram funções ativadas manualmente.",
+    "blocks": [
+      [
+        "Microfone, mudança de voz e sobreposição começam em OFF. Abrir os ajustes não os ativa. Ative o que precisar. Os ajustes aplicados são mantidos; o microfone volta a OFF ao reiniciar.",
+        "Abra as configurações de sobreposição e voz na gravação e confirme para salvar. A prévia ativa continua.",
+        "Confira uma gravação curta. Nesta versão a voz externa converte apenas o microfone depois de parar."
+      ],
+      [
+        "Selecione a fonte e obtenha suas dimensões pela prévia antes dos ajustes. Arraste a sobreposição ou ajuste tamanho e posição.",
+        "Confirmação na fonte: OFF, 50% ou 100%; padrão 50%. Cliques atravessam a confirmação, excluída da gravação. O vídeo recebe uma única sobreposição opaca no mesmo lugar e tamanho.",
+        "Trocar a fonte mantém posição proporcional e tamanho relativo ao lado menor. O posicionamento é recalculado; confira novamente."
+      ],
+      [
+        "Seis personagens: Multina-chan, senhorita, garota de óculos, garoto, dândi e alienígena. Moldura e fundo separados. Sinal de proibição significa sem moldura ou fundo.",
+        "Selfie mostra uma pessoa 2D sem rosto com webcam de PC e microfone de mesa. O polegar é separado e os outros quatro dedos formam uma parte arredondada. Selecionar não ativa a câmera; inicie o teste. Ative o microfone de gravação separadamente. Câmera física ainda não foi validada."
+      ],
+      [
+        "Saída de voz muda o volume convertido do microfone no vídeo, não a detecção. Um limiar menor de boca é mais sensível. Pequenas aberturas atingem pelo menos metade do máximo, que não muda.",
+        "Voz normal: padrão 3×. Aumente se fala normal dispara reação alta; não muda o volume gravado. Detecção alta: padrão 5 em relação a essa base.",
+        "Reação automática opcional. Padrão raiva; alegria, tristeza, riso, surpresa e ansiedade disponíveis. A boca continua animada."
+      ],
+      [
+        "Microfone ON acompanha a gravação e funciona sem prévia. Confira onda e nível. Volta a OFF após reiniciar.",
+        "Ative conversão e escolha Feminina 1–5 ou Masculina 1–3. OFF preserva a voz original. Processamento local só do microfone. Depois de parar, aguarde conversão e salvamento.",
+        "Compare testes de quatro segundos com ajustes atuais e voz original. Não há salvamento do áudio de teste. Ajustes adicionais neutros e restauráveis. Só eco permanece."
+      ],
+      [
+        "Numérico: 1 alegria, 2 raiva, 3 tristeza, 4 riso, 5 surpresa, 6 ansiedade, 7 eco. Ativos enquanto segura. Eco exige conversão ativa.",
+        "Antes, durante e depois da gravação, inclusive em outras apps. Entrada normal bloqueada. Sobreposição OFF libera expressões; conversão OFF libera eco.",
+        "Foque um campo e pressione tecla ou combinação Ctrl/Alt/Shift/Win. Numérico e fileira superior são distintos. Durante registro, ações dedicadas pausam; sair sem entrada mantém a tecla anterior.",
+        "Alterar libera a tecla antiga. Outro modo de edição ou sair libera todas; retornar à gravação restaura as atribuições salvas."
+      ],
+      [
+        "Uma linha global iniciar/parar, padrão F9. Inicia em espera e para ao gravar, uma vez por pressão. A antiga linha local Espaço foi removida.",
+        "Sem início sem fonte, durante preparação/salvamento ou ajustes abertos. Registro libera temporariamente teclas. Se falhar, use o botão. P/V continuam internos."
+      ],
+      [
+        "Ative áudio antes de começar. Microfone ON mostra onda e nível sem prévia; início direto também grava o microfone já ativo.",
+        "Som do sistema inclui todo o PC. Confira silêncio, distorção e duplicação numa gravação curta. Microfone OFF após reiniciar. Sem mudar ON/OFF ou dispositivo durante gravação."
+      ]
+    ]
+  },
+  "id": {
+    "heads": [
+      "Perekaman, overlay dan suara di 1.1.0",
+      "Tempatkan overlay pada sumber",
+      "Pilih karakter, bingkai dan latar",
+      "Atur mulut dan reaksi suara keras",
+      "Periksa mikrofon dan suara eksternal",
+      "Tombol khusus ekspresi dan gema"
+    ],
+    "demo": "Komponen aplikasi asli dengan game, folder dan mikrofon fiktif. Gambar memakai antarmuka Jepang. Contoh menampilkan fitur yang telah diaktifkan secara manual.",
+    "blocks": [
+      [
+        "Mikrofon, pengubah suara dan inset rekaman awalnya OFF. Membuka pengaturan tidak mengaktifkannya. Aktifkan sendiri yang diperlukan. Pengaturan tersimpan; mikrofon kembali OFF saat aplikasi dimulai ulang.",
+        "Buka pengaturan overlay/suara dari perekaman, lalu terapkan dan simpan. Pratinjau aktif tetap berjalan.",
+        "Periksa rekaman pendek. Versi ini mengubah hanya mikrofon setelah perekaman dihentikan."
+      ],
+      [
+        "Pilih sumber dan dapatkan ukurannya melalui pratinjau sebelum membuka pengaturan. Seret overlay atau atur ukuran dan posisi.",
+        "Konfirmasi pada sumber: OFF, 50% atau 100%; awal 50%. Klik diteruskan dan konfirmasi tidak direkam. Video mendapat satu overlay penuh pada posisi dan ukuran sama.",
+        "Mengganti sumber menjaga posisi relatif dan ukuran terhadap sisi pendek. Posisi dihitung ulang; periksa kembali."
+      ],
+      [
+        "Enam karakter: Multina-chan, nona, gadis berkacamata, anak laki-laki, dandy dan alien. Bingkai/latar dipilih terpisah. Tanda larangan berarti tanpa bingkai/latar.",
+        "Selfie kamera menampilkan sosok 2D tanpa wajah dengan webcam PC dan mikrofon meja. Ibu jari terpisah dan empat jari lain menjadi satu bentuk bulat. Pemilihan tidak mengaktifkan kamera; mulai uji secara eksplisit. Aktifkan mikrofon rekaman secara terpisah. Kamera fisik belum diuji."
+      ],
+      [
+        "Keluaran suara mengubah volume mikrofon hasil konversi dalam video, bukan deteksi. Ambang mulut lebih kecil lebih sensitif. Bukaan kecil mencapai minimal setengah maksimum; maksimum tetap.",
+        "Suara normal: awal 3×. Naikkan jika percakapan biasa dianggap keras; volume rekaman tidak berubah. Deteksi keras: awal 5 relatif terhadap dasar ini.",
+        "Reaksi otomatis dapat dimatikan. Awal marah; tersedia senang, sedih, tertawa, terkejut dan cemas. Mulut tetap bergerak."
+      ],
+      [
+        "Mikrofon ON tersinkron dengan perekaman dan bekerja tanpa pratinjau. Periksa gelombang/meter. Kembali OFF setelah aplikasi dimulai ulang.",
+        "Aktifkan konversi dan pilih Perempuan 1–5 atau Laki-laki 1–3. OFF mempertahankan suara asli. Proses lokal hanya mikrofon. Tunggu konversi dan penyimpanan setelah berhenti.",
+        "Bandingkan uji empat detik pengaturan saat ini dan suara asli. Tidak ada penyimpanan audio uji. Penyesuaian tambahan netral dan dapat direset. Efek hanya gema."
+      ],
+      [
+        "Numpad: 1 senang, 2 marah, 3 sedih, 4 tertawa, 5 terkejut, 6 cemas, 7 gema. Tahan untuk aktif; lepas untuk kembali. Gema memerlukan konversi aktif.",
+        "Aktif sebelum, selama dan setelah rekaman, termasuk aplikasi lain. Input biasa diblokir. Overlay OFF melepaskan ekspresi; konversi OFF melepaskan gema.",
+        "Fokuskan kolom lalu tekan tombol atau kombinasi Ctrl/Alt/Shift/Win. Numpad dan angka atas berbeda. Aksi khusus dijeda selama pendaftaran; keluar tanpa input menjaga pengaturan lama.",
+        "Penggantian mengembalikan tombol lama. Mode edit lain atau keluar melepaskan tombol; kembali merekam memulihkan pengaturan tersimpan."
+      ],
+      [
+        "Satu baris global mulai/berhenti, awal F9. Mulai saat siaga, berhenti saat merekam; sekali per tekan. Baris Space lokal lama dihapus.",
+        "Tidak mulai tanpa sumber, saat persiapan/penyimpanan atau pengaturan terbuka. Pendaftaran melepas tombol sementara. Jika gagal, gunakan tombol layar. P/V tetap dalam aplikasi."
+      ],
+      [
+        "Aktifkan audio sebelum mulai. Mikrofon ON menampilkan gelombang/meter tanpa pratinjau; mulai langsung juga merekam mikrofon yang sudah ON.",
+        "Audio sistem meliputi semua suara PC. Putar rekaman pendek untuk memeriksa hening, distorsi dan duplikasi. Mikrofon OFF setelah mulai ulang. Jangan ubah ON/OFF atau perangkat selama rekaman."
+      ]
+    ]
+  },
+  "zh-Hans": {
+    "heads": [
+      "1.1.0录制、画中画与声音",
+      "按录制源放置画中画",
+      "选择角色、边框与背景",
+      "调整口型和大声表情",
+      "检查麦克风与外部声音",
+      "表情与回声专用快捷键"
+    ],
+    "demo": "使用真实界面组件和虚构游戏、保存位置、麦克风的操作示例。截图界面为日语。 图例为手动启用功能后的设置。",
+    "blocks": [
+      [
+        "初始麦克风、变声和录制画中画均为OFF。打开设置不会启用它们，请自行开启需要的功能。已确认设置会保留，重启后麦克风恢复OFF。",
+        "在录制界面打开画中画/声音设置，调整后确认保存。打开或应用设置会保留正在运行的预览。",
+        "先检查一段短录制。本版外部声音仅在停止录制后转换麦克风。"
+      ],
+      [
+        "选择源，先预览确定尺寸，再打开设置。定位画布随当前录制源调整。拖动画中画或调整大小、水平和垂直位置。",
+        "源画面确认可选OFF、50%、100%，默认50%。确认画面透传鼠标操作，并排除在录制之外。视频在相同位置与大小仅合成一个正常不透明度的画中画。",
+        "更换源保留相对位置与相对短边的大小，按新画幅重新计算。请重新检查。"
+      ],
+      [
+        "六种角色：小玛尔蒂娜、大小姐、眼镜女生、男孩、绅士、外星人。角色、边框与内部背景可分别选择。禁止符号表示无边框或无背景。",
+        "摄像头自拍图标是使用PC Web摄像头与桌面麦克风的无脸2D人物。手形为独立拇指与合并的其余四指。仅选择不会开启摄像头，需主动开始试拍。录制麦克风要另行开启。尚未验证实体摄像头。"
+      ],
+      [
+        "声音输出控制转换后的麦克风在视频中的音量，不改变口型或大声检测。口型阈值越小越敏感。较小开口也达到最大的一半以上，最大开口不变。",
+        "普通声音大小默认3倍。正常说话触发大声时可调大；不会改变录制音量。大声检测相对该基准，默认5。",
+        "可关闭自动表情。默认愤怒，也可选喜悦、悲伤、笑、惊讶、焦虑。其他表情期间仍有口型。"
+      ],
+      [
+        "麦克风ON与录制设置联动，不需要预览即可采集。检查波形和电平。重启后麦克风为OFF。",
+        "启用变声，选择女性1–5或男性1–3。OFF保留原声。在PC内仅处理麦克风，不转换系统声音。停止后等待转换与保存完成。",
+        "比较当前设置和原声的4秒测试。没有测试音频保存操作。附加调整默认无调整，可全部重置。效果仅保留回声。"
+      ],
+      [
+        "默认小键盘1喜悦、2愤怒、3悲伤、4笑、5惊讶、6焦虑、7回声。按住有效，松开恢复。回声用于已启用的声音转换。",
+        "录制前、预览、录制中、停止后及其他应用前台时均有效。阻止普通输入，不会在聊天中输入111…。画中画OFF时不占用表情键；变声OFF时不占用回声键。",
+        "聚焦键位栏后按单键或Ctrl/Alt/Shift/Win组合。小键盘与上排数字不同。注册期间暂时解除专用操作；未输入就离开则保留原键。",
+        "改键会恢复旧键普通输入。切换其他编辑模式或退出会解除；返回录制恢复已保存键位。"
+      ],
+      [
+        "合并为一行全局开始/停止，默认F9。待机时开始，录制时停止，每次按下仅执行一次。已移除旧的应用内Space项。",
+        "未选源、准备/保存中或设置打开时不开始。注册键位期间暂时解除。注册失败时用界面按钮。P/V等仍为应用内操作。"
+      ],
+      [
+        "开始前开启所需音频。麦克风ON无需预览即可显示波形与电平；直接开始也录入已开启的麦克风。",
+        "系统声音包括全PC播放。播放短录制检查无声、失真与重复。重启不保留麦克风ON。录制中不能切换音频ON/OFF或设备。"
+      ]
+    ]
+  },
+  "zh-Hant": {
+    "heads": [
+      "1.1.0錄製、子畫面與聲音",
+      "依錄製來源放置子畫面",
+      "選擇角色、框線與背景",
+      "調整嘴型與大聲表情",
+      "檢查麥克風與外部聲音",
+      "表情與回音專用快捷鍵"
+    ],
+    "demo": "使用真實介面元件與虛構遊戲、儲存位置、麥克風的操作範例。截圖介面為日文。 圖例為手動啟用功能後的設定。",
+    "blocks": [
+      [
+        "初始麥克風、變聲與錄製子畫面皆為OFF。開啟設定不會啟用它們，請自行開啟需要的功能。已確認設定會保留，重啟後麥克風恢復OFF。",
+        "在錄製畫面開啟子畫面／聲音設定，調整後確認儲存。開啟或套用設定會保留執行中的預覽。",
+        "先檢查短錄製。本版外部聲音僅在停止錄製後轉換麥克風。"
+      ],
+      [
+        "選擇來源，先預覽確認尺寸再開設定。配置畫布依目前來源調整。拖曳子畫面或調整大小、水平及垂直位置。",
+        "來源確認可選OFF、50%、100%，預設50%。確認畫面可讓滑鼠操作穿透，並排除於錄製。影片僅在相同位置與大小合成一個正常不透明度子畫面。",
+        "切換來源保留相對位置及相對短邊的大小，依新畫幅重新計算。請重新確認。"
+      ],
+      [
+        "六種角色：小瑪爾蒂娜、大小姐、眼鏡女生、男孩、紳士、外星人。角色、框線與內部背景可分別選擇。禁止符號表示無框線或無背景。",
+        "相機自拍圖示是使用PC Web攝影機與桌上麥克風的無臉2D人物。手形為獨立拇指與合併的其他四指。僅選擇不會啟用相機，需主動開始試拍。錄製麥克風須另外開啟。尚未驗證實體相機。"
+      ],
+      [
+        "聲音輸出調整轉換後麥克風在影片中的音量，不改嘴型或大聲判定。嘴型門檻越小越敏感。小開口也達到最大的一半以上，最大開口不變。",
+        "一般聲音大小預設3倍。普通說話觸發大聲時可調大；不改錄製音量。大聲判定相對此基準，預設5。",
+        "可關閉自動表情。預設憤怒，也可選喜悅、悲傷、笑、驚訝、焦慮。其他表情仍有嘴型。"
+      ],
+      [
+        "麥克風ON與錄製設定連動，無須預覽即可擷取。確認波形與音量。重新啟動後為OFF。",
+        "啟用變聲，選女性1–5或男性1–3。OFF保留原聲。僅在PC內處理麥克風，不轉換系統聲音。停止後等待轉換與儲存。",
+        "比較目前設定與原聲的4秒測試。沒有測試音訊儲存操作。額外調整預設無調整，可全部重設。效果僅回音。"
+      ],
+      [
+        "預設數字鍵盤1喜悅、2憤怒、3悲傷、4笑、5驚訝、6焦慮、7回音。按住有效，放開恢復。回音用於已啟用的變聲。",
+        "錄製前、預覽、錄製中、停止後與其他程式前景均有效。阻止一般輸入，不會在聊天輸入111…。子畫面OFF釋放表情鍵；變聲OFF釋放回音鍵。",
+        "選取鍵位欄後按單鍵或Ctrl/Alt/Shift/Win組合。數字鍵盤與上排數字不同。註冊時暫停專用操作；無輸入離開保留舊鍵。",
+        "改鍵恢復舊鍵一般輸入。切換其他編輯模式或退出會解除；回到錄製恢復已儲存鍵位。"
+      ],
+      [
+        "合併為一行全域開始／停止，預設F9。待機開始、錄製停止，每次按下只執行一次。舊應用程式內Space項已移除。",
+        "未選來源、準備／儲存中或設定開啟時不開始。註冊鍵位暫時解除；失敗時用畫面按鈕。P/V仍為程式內操作。"
+      ],
+      [
+        "開始前開啟所需音訊。麥克風ON無須預覽就有波形與音量；直接開始也錄入已開啟麥克風。",
+        "系統聲音包含全PC播放。播放短錄製檢查無聲、失真與重複。重新啟動不保留麥克風ON。錄製中不可切換ON/OFF或裝置。"
+      ]
+    ]
+  },
+  "ko": {
+    "heads": [
+      "1.1.0 녹화·와이프·보이스",
+      "녹화 소스에 와이프 배치",
+      "캐릭터·프레임·배경 선택",
+      "입 모양과 큰 소리 표정 조절",
+      "마이크와 외부 보이스 확인",
+      "표정·에코 전용 키 사용"
+    ],
+    "demo": "실제 UI 구성 요소에 가상 게임·저장 위치·마이크를 사용한 예입니다. 화면은 일본어입니다. 기능을 수동으로 켠 뒤의 설정 예시입니다.",
+    "blocks": [
+      [
+        "마이크·보이스 변환·녹화 와이프의 초기값은 OFF입니다. 설정을 열기만 해서는 켜지지 않습니다. 필요한 항목을 직접 켜세요. 적용한 설정은 유지되며 마이크는 재시작 후 OFF로 돌아갑니다.",
+        "녹화 화면에서 와이프/보이스 설정을 열고 결정하여 저장합니다. 실행 중인 미리보기는 유지됩니다.",
+        "짧은 녹화를 확인하세요. 이 버전은 녹화 중지 후 마이크만 외부 보이스로 변환합니다."
+      ],
+      [
+        "소스를 선택하고 미리보기로 크기를 확인한 뒤 설정을 엽니다. 배치 캔버스는 선택한 소스에 맞춥니다. 드래그하거나 크기·좌우·상하를 조절합니다.",
+        "원본 확인은 OFF/50%/100%, 기본 50%입니다. 마우스 조작은 통과하고 확인용 와이프는 녹화에서 제외됩니다. 영상에는 같은 위치·크기로 불투명 와이프 하나만 합성합니다.",
+        "소스를 바꾸면 상대 위치와 짧은 변 기준 크기를 유지하여 다시 계산합니다. 배치를 재확인하세요."
+      ],
+      [
+        "마르티나짱, 아가씨, 안경 소녀, 소년, 댄디, 외계인 6종입니다. 프레임과 배경을 따로 선택합니다. 금지 표시는 프레임 없음/배경 없음입니다.",
+        "카메라 셀카는 PC 웹캠과 탁상 마이크를 쓰는 얼굴 없는 2D 인물 그림입니다. 엄지는 분리하고 나머지 네 손가락은 둥근 모양 하나로 표현합니다. 선택만으로 카메라를 켜지 않으며 시험 촬영을 직접 시작합니다. 녹음 마이크는 따로 켜세요. 실제 카메라 검증은 미실시입니다."
+      ],
+      [
+        "보이스 출력은 변환된 마이크의 영상 음량이며 입 모양·큰 소리 판정과 별개입니다. 입 모양 임계값이 작을수록 민감합니다. 작은 입 모양도 최대의 절반 이상이며 최대는 유지됩니다.",
+        "보통 목소리 기준은 기본 3배입니다. 평소 말이 큰 소리로 판정되면 높이세요. 녹음 음량은 변하지 않습니다. 큰 소리 판정 기본은 이 기준의 5입니다.",
+        "자동 표정은 끌 수 있습니다. 기본 분노이며 기쁨·슬픔·웃음·놀람·불안도 선택합니다. 다른 표정에서도 입 모양이 계속됩니다."
+      ],
+      [
+        "마이크 ON은 녹화 설정과 연동하며 미리보기 없이 입력을 받습니다. 파형·미터를 확인하세요. 재시작하면 OFF입니다.",
+        "변환을 켜고 여성1–5/남성1–3을 선택합니다. OFF는 원음입니다. PC 내에서 마이크만 처리하며 시스템 소리는 변환하지 않습니다. 중지 후 변환·저장을 기다리세요.",
+        "현재 설정과 원음의 4초 테스트를 비교합니다. 테스트 음성 저장은 없습니다. 추가 조절은 기본 무조절이며 초기화 가능합니다. 효과는 에코만 있습니다."
+      ],
+      [
+        "기본 숫자패드1 기쁨, 2 분노, 3 슬픔, 4 웃음, 5 놀람, 6 불안, 7 에코. 누르는 동안만 적용합니다. 에코는 보이스 변환이 켜져야 합니다.",
+        "녹화 전·미리보기·녹화 중·중지 후와 다른 앱에서도 동작하며 일반 입력을 막습니다. 채팅에 111…이 입력되지 않습니다. 와이프 OFF는 표정 키, 변환 OFF는 에코 키를 해제합니다.",
+        "키 칸을 선택해 단독 키나 Ctrl/Alt/Shift/Win 조합을 누릅니다. 숫자패드와 상단 숫자는 별개입니다. 등록 중 전용 동작은 일시 해제되며 입력 없이 벗어나면 이전 키 유지입니다.",
+        "바꾸면 이전 키는 일반 입력으로 복귀합니다. 다른 편집 모드·종료에서는 해제하고 녹화로 돌아오면 저장한 키를 복구합니다."
+      ],
+      [
+        "전역 시작/중지 한 줄로 통합, 기본 F9입니다. 대기 중 시작, 녹화 중 중지, 한 번 누를 때 한 번 실행합니다. 기존 앱 내부 Space 항목은 삭제했습니다.",
+        "소스 없음·준비/저장 중·설정 열림에서는 시작하지 않습니다. 등록 칸에서는 일시 해제하며 실패하면 화면 버튼을 씁니다. P/V 등은 앱 내부입니다."
+      ],
+      [
+        "시작 전 필요한 소리를 켭니다. 마이크 ON이면 미리보기 없이 파형·미터가 나오며 직접 녹화를 시작해도 켜진 마이크가 들어갑니다.",
+        "시스템 소리는 PC 전체 재생입니다. 짧은 영상을 재생해 무음·왜곡·중복을 확인하세요. 재시작 시 마이크 OFF입니다. 녹화 중 ON/OFF와 장치를 바꿀 수 없습니다."
+      ]
+    ]
+  },
+  "th": {
+    "heads": [
+      "การบันทึก ภาพซ้อนและเสียงใน 1.1.0",
+      "วางภาพซ้อนตามแหล่งบันทึก",
+      "เลือกตัวละคร กรอบและพื้นหลัง",
+      "ปรับปากและสีหน้าจากเสียงดัง",
+      "ตรวจไมโครโฟนและเสียงภายนอก",
+      "ปุ่มเฉพาะสำหรับสีหน้าและเสียงสะท้อน"
+    ],
+    "demo": "ใช้ส่วน UI จริงกับเกม โฟลเดอร์และไมโครโฟนสมมติ ภาพหน้าจอเป็นภาษาญี่ปุ่น ตัวอย่างเป็นค่าหลังเปิดฟังก์ชันเอง",
+    "blocks": [
+      [
+        "ค่าเริ่มต้นไมค์ เปลี่ยนเสียง และภาพซ้อนบันทึกเป็น OFF การเปิดตั้งค่าไม่เปิดฟังก์ชัน ให้เปิดสิ่งที่ต้องการเอง ค่าที่ใช้แล้วคงไว้ แต่ไมค์กลับ OFF เมื่อเปิดแอปใหม่",
+        "เปิดการตั้งค่าภาพซ้อน/เสียงในหน้าบันทึกแล้วใช้และบันทึก พรีวิวที่ทำงานอยู่ยังคงทำงาน",
+        "ตรวจคลิปสั้นก่อน รุ่นนี้แปลงเฉพาะไมโครโฟนเป็นเสียงภายนอกหลังหยุดบันทึก"
+      ],
+      [
+        "เลือกแหล่งและใช้พรีวิวตรวจขนาดก่อนเปิดตั้งค่า ผืนผ้าใบวางภาพตรงกับแหล่งที่เลือก ลากภาพหรือปรับขนาดและตำแหน่ง",
+        "ภาพยืนยันบนแหล่งเลือก OFF/50%/100% ค่าเริ่มต้น50% เมาส์ทำงานผ่านภาพได้และภาพยืนยันไม่อยู่ในการบันทึก วิดีโอมีภาพซ้อนทึบหนึ่งภาพที่ตำแหน่งและขนาดเดียวกัน",
+        "เปลี่ยนแหล่งคงตำแหน่งสัมพัทธ์และขนาดเทียบด้านสั้น คำนวณใหม่ตามแหล่ง ตรวจซ้ำหลังเปลี่ยน"
+      ],
+      [
+        "มี6ตัว: Multina-chan คุณหนู สาวแว่น เด็กชาย แดนดี้ มนุษย์ต่างดาว เลือกกรอบ/พื้นหลังแยกกัน ป้ายห้ามหมายถึงไม่มีกรอบ/พื้นหลัง",
+        "ภาพเซลฟีเป็นคน2Dไร้หน้ากับเว็บแคมPCและไมโครโฟนตั้งโต๊ะ มือแยกนิ้วโป้ง ส่วนอีกสี่นิ้วรวมเป็นรูปมน การเลือกไม่เปิดกล้อง ต้องเริ่มทดสอบเอง เปิดไมค์บันทึกแยกต่างหาก ยังไม่ได้ตรวจกล้องจริง"
+      ],
+      [
+        "เสียงออกปรับความดังไมค์ที่แปลงแล้วในวิดีโอ ไม่เปลี่ยนการตรวจปาก/เสียงดัง เกณฑ์ปากต่ำไวกว่า การเปิดเล็กอย่างน้อยครึ่งสูงสุด ค่าสูงสุดคงเดิม",
+        "เสียงปกติเริ่ม3เท่า เพิ่มเมื่อเสียงพูดปกติถูกนับว่าดัง ไม่เปลี่ยนเสียงบันทึก เกณฑ์เสียงดังเริ่ม5เทียบฐานนี้",
+        "ปิดสีหน้าอัตโนมัติได้ เริ่มโกรธ เลือกดีใจ เศร้า หัวเราะ ตกใจหรือกังวลได้ ปากยังขยับในสีหน้าอื่น"
+      ],
+      [
+        "ไมโครโฟนONเชื่อมกับหน้าบันทึก รับเสียงได้โดยไม่ต้องพรีวิว ตรวจคลื่น/มิเตอร์ เปิดแอปใหม่จะOFF",
+        "เปิดแปลงเสียงเลือกหญิง1–5หรือชาย1–3 OFFเก็บเสียงเดิม ประมวลผลในPCเฉพาะไมค์ไม่ใช่เสียงระบบ หลังหยุดรอแปลงและบันทึก",
+        "เปรียบเทียบทดสอบ4วินาทีจากค่าปัจจุบันกับเสียงเดิม ไม่มีปุ่มบันทึกเสียงทดสอบ ค่าปรับเพิ่มเริ่มไม่มีการปรับและรีเซ็ตได้ เอฟเฟกต์เหลือเสียงสะท้อน"
+      ],
+      [
+        "แป้นตัวเลข1ดีใจ 2โกรธ 3เศร้า 4หัวเราะ 5ตกใจ 6กังวล 7สะท้อน กดค้างจึงมีผล ปล่อยกลับปกติ สะท้อนต้องเปิดแปลงเสียง",
+        "ทำงานก่อน ระหว่าง หลังบันทึกและในแอปอื่น ระงับการพิมพ์ปกติ ภาพซ้อนOFFคืนปุ่มสีหน้า แปลงเสียงOFFคืนปุ่มสะท้อน",
+        "เลือกช่องแล้วกดปุ่มเดี่ยวหรือCtrl/Alt/Shift/Win แป้นตัวเลขต่างจากตัวเลขแถวบน ระหว่างลงทะเบียนพักการทำงานเฉพาะ ออกจากช่องโดยไม่กดคงปุ่มเดิม",
+        "เปลี่ยนแล้วคืนปุ่มเดิม เปลี่ยนโหมดแก้ไขหรือปิดแอปคืนทุกปุ่ม กลับหน้าบันทึกใช้ค่าที่บันทึกไว้"
+      ],
+      [
+        "รวมเริ่ม/หยุดทั่วระบบหนึ่งรายการ เริ่มF9 กดขณะรอเริ่ม ขณะบันทึกหยุด ครั้งเดียวต่อการกด ลบSpaceเฉพาะแอปเดิม",
+        "ไม่เริ่มเมื่อไม่มีแหล่ง กำลังเตรียม/บันทึกไฟล์หรือเปิดตั้งค่า ช่องลงทะเบียนพักปุ่ม ถ้าล้มเหลวใช้ปุ่มหน้าจอ P/Vยังเฉพาะแอป"
+      ],
+      [
+        "เปิดเสียงที่ต้องการก่อนเริ่ม ไมค์ONแสดงคลื่น/มิเตอร์โดยไม่ต้องพรีวิว เริ่มบันทึกตรงก็มีไมค์ที่เปิดไว้",
+        "เสียงระบบรวมเสียงทั้งPC เล่นคลิปสั้นตรวจเงียบ แตกและซ้ำ เปิดแอปใหม่ไมค์OFF ระหว่างบันทึกเปลี่ยนON/OFFหรืออุปกรณ์ไม่ได้"
+      ]
+    ]
+  }
+}

@@ -8,6 +8,10 @@
   if (!detailResponse.ok) throw new Error('Manual details HTTP ' + detailResponse.status);
   window.MultinaManualApplyDetail(window.MULTINA_WEB_BUNDLE, await detailResponse.json());
   delete window.MultinaManualApplyDetail;
+  const v110Response=await fetch('manual-v110-copy.json?v=1.1.0');
+  if(!v110Response.ok)throw Error('Missing 1.1.0 operation notes');
+  window.MultinaManualApplyV110(window.MULTINA_WEB_BUNDLE,await v110Response.json());
+  delete window.MultinaManualApplyV110;
 /* Requested UI locale is separate from available body translations. */
 (() => {
   const normalize = value => {
