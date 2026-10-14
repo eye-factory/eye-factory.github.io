@@ -1,0 +1,132 @@
+{
+  "ja": [
+    "豪華なテキスト装飾とプリセット",
+    "GPUを使った動画の書き出し",
+    "動画では左のテキスト装飾から追加するか、文字を選択して右の装飾プリセットを適用します。静止12種類と動き付き9種類を追加しました。画像の文字素材には静止タイプを用意しています。",
+    "「光の装飾」で細かな光る粒子、発光の強弱、流れる光沢、ホログラム、オーロラを選べます。動画では「動かす」で切り替え、強さ・速度・粒子の数を調整します。ホログラムとオーロラは専用の配色です。",
+    "プリセットを適用しても文章・位置・文字サイズ・既存のモーションは維持します。縁やぼかしは適用先の文字サイズに合わせます。内側の縁を塗って小さな不自然な透過穴を防ぐ処理は維持しています。内縁を手動で太くしすぎた場合は、内縁幅を下げてください。",
+    "書き出しのエンコーダーを「自動」にすると利用可能なGPUを確認します。対応GPUがない場合はCPUを使います。GPUの起動・変換に失敗した場合もCPUで再試行します。キャンセルした処理は再試行しません。",
+    "最終段のトランジション・映像・文字合成からエンコードまでを繋ぎ、不要な中間動画の保存を減らしました。すべての処理がGPUに変わるわけではありません。速度は素材・解像度・効果・GPUによって変わります。",
+    "説明用に作った操作イメージです。実際の作品・録画・個人設定は使用していません。",
+    "光の装飾",
+    "細かな光る粒子",
+    "動かす",
+    "光の色",
+    "光の強さ",
+    "速度",
+    "粒子の数",
+    "微粒子・きらめき",
+    "プリセット",
+    "操作イメージ（説明用）"
+  ],
+  "en": [
+    "Premium text decorations and presets",
+    "Video export with GPU acceleration",
+    "In video editing, add Text decoration from the left library or select text and apply a style preset in the right inspector. There are 12 new static and 9 animated styles. Image text materials include the static styles.",
+    "Open Light decoration to choose fine glowing particles, pulsing glow, moving shine, hologram or aurora. In video, use Animate and adjust strength, speed and particle count. Hologram and aurora use their own palettes.",
+    "Applying a preset preserves wording, position, font size and existing motion. Outline and blur widths adapt to the target text size. The deliberate inner-outline fill that prevents tiny unnatural transparent holes remains. If you manually make the inner outline too thick, reduce its width.",
+    "Choose Auto as the export encoder to check available GPU encoders. Without a compatible GPU, export uses the CPU. GPU startup or encoding failure also retries on the CPU. Cancellation does not trigger a retry.",
+    "The last transition, video or text composition pass feeds final encoding directly, reducing unnecessary intermediate video files. Some operations still run on the CPU. Speed depends on media, resolution, effects and GPU.",
+    "Fictional operation illustration. No real project, recording or personal settings are used.",
+    "Light decoration",
+    "Fine glowing particles",
+    "Animate",
+    "Light color",
+    "Light strength",
+    "Speed",
+    "Particle count",
+    "Twinkling dust",
+    "Presets",
+    "Operation illustration"
+  ],
+  "de": [
+    "Aufwendige Textdekorationen und Vorlagen",
+    "Videoexport mit GPU-Beschleunigung",
+    "Im Video links eine Textdekoration hinzufügen oder Text auswählen und rechts eine Vorlage anwenden. Neu sind 12 statische und 9 animierte Stile. Für Bildtexte stehen die statischen Stile bereit.",
+    "Unter Lichtdekoration lassen sich feine Leuchtpartikel, pulsierendes Leuchten, wandernder Glanz, Hologramm und Aurora wählen. Im Video Animation, Stärke, Tempo und Partikelanzahl einstellen. Hologramm und Aurora nutzen eigene Farbpaletten.",
+    "Vorlagen behalten Text, Position, Schriftgröße und vorhandene Bewegung bei. Konturen und Unschärfe passen sich beim Anwenden an die Schriftgröße an. Die innere Füllung gegen kleine unnatürliche transparente Löcher bleibt erhalten. Zu dicke Innenkonturen manuell verringern.",
+    "Beim Export prüft der Encoder Automatisch die verfügbaren GPUs. Ohne kompatible GPU wird die CPU verwendet. Auch bei GPU-Start- oder Kodierungsfehlern erfolgt ein CPU-Versuch. Ein Abbruch löst keinen neuen Versuch aus.",
+    "Die letzte Übergangs-, Video- oder Textkomposition geht direkt an die Endkodierung; unnötige Zwischendateien entfallen. Manche Schritte bleiben auf der CPU. Die Geschwindigkeit hängt von Material, Auflösung, Effekten und GPU ab.",
+    "Fiktive Bedienungsabbildung ohne echte Projekte, Aufnahmen oder persönliche Einstellungen."
+  ],
+  "fr": [
+    "Décorations et préréglages de texte enrichis",
+    "Export vidéo avec accélération GPU",
+    "En vidéo, ajoutez une décoration depuis la bibliothèque de gauche ou sélectionnez un texte et appliquez un préréglage à droite. Ajout de 12 styles fixes et 9 animés. Les textes image disposent des styles fixes.",
+    "Décoration lumineuse propose des particules fines, une lueur pulsée, un reflet mobile, un hologramme et une aurore. En vidéo, activez Animer et réglez intensité, vitesse et nombre de particules. Hologramme et aurore ont leurs propres palettes.",
+    "Le préréglage conserve texte, position, taille et mouvement existant. Contours et flou s’adaptent à la taille lors de l’application. Le remplissage intérieur évitant de petits trous transparents artificiels est conservé. Réduisez manuellement un contour intérieur trop épais.",
+    "L’encodeur Auto vérifie les GPU disponibles. Sans GPU compatible, l’export utilise le CPU. Un échec de démarrage ou d’encodage GPU entraîne aussi un nouvel essai sur CPU. Annuler ne relance pas le traitement.",
+    "La dernière composition de transition, vidéo ou texte alimente directement l’encodage final, limitant les fichiers intermédiaires. Certaines opérations restent sur CPU. La vitesse dépend des médias, de la résolution, des effets et du GPU.",
+    "Illustration fictive sans projet réel, enregistrement ni réglages personnels."
+  ],
+  "es": [
+    "Decoraciones y preajustes de texto avanzados",
+    "Exportación de vídeo con GPU",
+    "En vídeo, añade una decoración desde la biblioteca izquierda o selecciona texto y aplica un preajuste a la derecha. Se añaden 12 estilos estáticos y 9 animados. Los textos de imagen incluyen los estilos estáticos.",
+    "Decoración luminosa ofrece partículas finas, brillo pulsante, reflejo móvil, holograma y aurora. En vídeo, activa Animar y ajusta intensidad, velocidad y cantidad de partículas. Holograma y aurora tienen paletas propias.",
+    "El preajuste conserva texto, posición, tamaño y movimiento existente. Los bordes y el desenfoque se adaptan al tamaño al aplicarlo. Se mantiene el relleno interior que evita pequeños huecos transparentes artificiales. Reduce manualmente un borde interior demasiado grueso.",
+    "El codificador Auto comprueba las GPU disponibles. Sin una GPU compatible se usa CPU. Un fallo de inicio o codificación GPU también provoca un reintento por CPU. Cancelar no inicia un reintento.",
+    "La última composición de transición, vídeo o texto pasa directamente a la codificación final y reduce archivos intermedios. Algunas operaciones siguen usando CPU. La velocidad depende de medios, resolución, efectos y GPU.",
+    "Ilustración ficticia sin proyectos reales, grabaciones ni ajustes personales."
+  ],
+  "pt-BR": [
+    "Decorações e predefinições de texto aprimoradas",
+    "Exportação de vídeo com GPU",
+    "Em vídeo, adicione uma decoração pela biblioteca esquerda ou selecione texto e aplique uma predefinição à direita. São 12 novos estilos estáticos e 9 animados. Os textos de imagem incluem os estilos estáticos.",
+    "Decoração luminosa oferece partículas finas, brilho pulsante, reflexo móvel, holograma e aurora. Em vídeo, ative Animar e ajuste intensidade, velocidade e quantidade de partículas. Holograma e aurora têm paletas próprias.",
+    "A predefinição mantém texto, posição, tamanho e movimento existente. Contornos e desfoque se adaptam ao tamanho ao aplicar. O preenchimento interno que evita pequenos buracos transparentes artificiais é mantido. Reduza manualmente um contorno interno muito grosso.",
+    "O codificador Auto verifica as GPUs disponíveis. Sem GPU compatível, a exportação usa CPU. Falhas de inicialização ou codificação GPU também geram uma tentativa por CPU. Cancelar não gera nova tentativa.",
+    "A última composição de transição, vídeo ou texto alimenta diretamente a codificação final e reduz arquivos intermediários. Algumas operações continuam na CPU. A velocidade depende de mídia, resolução, efeitos e GPU.",
+    "Ilustração fictícia sem projetos reais, gravações ou configurações pessoais."
+  ],
+  "id": [
+    "Dekorasi dan preset teks premium",
+    "Ekspor video dengan GPU",
+    "Dalam video, tambahkan dekorasi dari pustaka kiri atau pilih teks dan terapkan preset di kanan. Ada 12 gaya statis dan 9 animasi baru. Teks gambar menyediakan gaya statis.",
+    "Dekorasi cahaya menawarkan partikel halus, pendar berdenyut, kilau bergerak, hologram dan aurora. Dalam video, aktifkan Animasikan lalu atur kekuatan, kecepatan dan jumlah partikel. Hologram dan aurora memakai palet tersendiri.",
+    "Preset mempertahankan teks, posisi, ukuran huruf dan gerakan yang ada. Garis tepi dan blur menyesuaikan ukuran saat diterapkan. Isian tepi dalam yang mencegah lubang transparan kecil tak wajar tetap dipertahankan. Kurangi lebar tepi dalam jika terlalu tebal.",
+    "Encoder Otomatis memeriksa GPU yang tersedia. Tanpa GPU yang kompatibel, ekspor memakai CPU. Kegagalan memulai atau mengodekan dengan GPU juga dicoba kembali dengan CPU. Pembatalan tidak memulai percobaan ulang.",
+    "Komposisi transisi, video atau teks terakhir langsung menuju pengodean akhir sehingga mengurangi video perantara. Beberapa operasi tetap memakai CPU. Kecepatan bergantung pada media, resolusi, efek dan GPU.",
+    "Ilustrasi operasi fiktif tanpa proyek nyata, rekaman atau pengaturan pribadi."
+  ],
+  "zh-Hans": [
+    "豪华文字装饰与预设",
+    "使用GPU导出视频",
+    "在视频编辑左侧文字装饰库中添加，或选择文字后在右侧应用预设。新增12种静态和9种动态样式。图片文字素材提供静态样式。",
+    "在光效装饰中选择细微发光粒子、呼吸发光、流动光泽、全息或极光。视频中可开启动画，调整强度、速度和粒子数量。全息和极光使用各自的配色。",
+    "应用预设保留文字、位置、字号及已有运动。描边与模糊宽度在应用时随字号调整。保留内描边填充，防止细小的不自然透明孔洞。若手动设置的内描边过粗，请减小宽度。",
+    "导出编码器选择自动时会检查可用GPU。没有兼容GPU则使用CPU。GPU启动或编码失败也会以CPU重试。取消操作不会触发重试。",
+    "最后一步转场、画面或文字合成直接连接最终编码，减少中间视频文件。部分操作仍由CPU处理。速度取决于素材、分辨率、效果及GPU。",
+    "虚构操作示意图，未使用真实项目、录屏或个人设置。"
+  ],
+  "zh-Hant": [
+    "豪華文字裝飾與預設",
+    "使用GPU匯出影片",
+    "在影片編輯左側文字裝飾庫中新增，或選取文字後在右側套用預設。新增12種靜態與9種動態樣式。圖片文字素材提供靜態樣式。",
+    "在光效裝飾中選擇細微發光粒子、呼吸發光、流動光澤、全息或極光。影片中可開啟動畫，調整強度、速度與粒子數量。全息與極光使用各自的配色。",
+    "套用預設保留文字、位置、字級及既有動作。描邊與模糊寬度在套用時隨字級調整。保留內描邊填色，防止細小的不自然透明孔洞。若手動設定的內描邊過粗，請減小寬度。",
+    "匯出編碼器選擇自動時會檢查可用GPU。沒有相容GPU則使用CPU。GPU啟動或編碼失敗也會以CPU重試。取消操作不會觸發重試。",
+    "最後一步轉場、畫面或文字合成直接連接最終編碼，減少中間影片檔案。部分操作仍由CPU處理。速度取決於素材、解析度、效果與GPU。",
+    "虛構操作示意圖，未使用真實專案、錄影或個人設定。"
+  ],
+  "ko": [
+    "고급 텍스트 장식과 프리셋",
+    "GPU를 이용한 동영상 내보내기",
+    "동영상에서는 왼쪽 텍스트 장식에서 추가하거나 텍스트 선택 후 오른쪽에서 프리셋을 적용합니다. 정적 12종과 동적 9종을 추가했습니다. 이미지 텍스트 소재에는 정적 스타일을 제공합니다.",
+    "빛 장식에서 미세 발광 입자, 맥동하는 빛, 흐르는 광택, 홀로그램, 오로라를 선택합니다. 동영상에서는 움직임을 켜고 강도, 속도, 입자 수를 조절합니다. 홀로그램과 오로라는 전용 배색을 사용합니다.",
+    "프리셋을 적용해도 문구, 위치, 글자 크기, 기존 움직임은 유지됩니다. 테두리와 흐림 폭은 적용 시 글자 크기에 맞춥니다. 작은 부자연스러운 투명 구멍을 막는 안쪽 테두리 채우기는 유지합니다. 안쪽 테두리를 너무 두껍게 설정했다면 폭을 줄이세요.",
+    "내보내기 인코더를 자동으로 선택하면 사용 가능한 GPU를 검사합니다. 호환 GPU가 없으면 CPU를 사용합니다. GPU 시작이나 인코딩 실패 시에도 CPU로 다시 시도합니다. 취소는 재시도를 시작하지 않습니다.",
+    "마지막 전환, 영상 또는 텍스트 합성을 최종 인코딩에 직접 연결해 중간 영상 파일을 줄였습니다. 일부 작업은 계속 CPU에서 처리합니다. 속도는 소스, 해상도, 효과 및 GPU에 따라 달라집니다.",
+    "실제 프로젝트, 녹화나 개인 설정을 사용하지 않은 가상 조작 이미지입니다."
+  ],
+  "th": [
+    "การตกแต่งและพรีเซ็ตข้อความแบบพรีเมียม",
+    "ส่งออกวิดีโอด้วย GPU",
+    "ในวิดีโอ เพิ่มการตกแต่งข้อความจากคลังด้านซ้าย หรือเลือกข้อความแล้วใช้พรีเซ็ตด้านขวา เพิ่มแบบนิ่ง 12 แบบและเคลื่อนไหว 9 แบบ ข้อความในงานภาพมีแบบนิ่งให้ใช้",
+    "ในการตกแต่งแสง เลือกอนุภาคละเอียด แสงเป็นจังหวะ ประกายเคลื่อนที่ โฮโลแกรม หรือออโรรา ในวิดีโอเปิดการเคลื่อนไหวและปรับความเข้ม ความเร็ว และจำนวนอนุภาค โฮโลแกรมและออโรราใช้ชุดสีเฉพาะ",
+    "พรีเซ็ตคงข้อความ ตำแหน่ง ขนาดอักษร และการเคลื่อนไหวเดิม ความหนาขอบและความเบลอปรับตามขนาดเมื่อใช้พรีเซ็ต ยังคงเติมขอบด้านในเพื่อป้องกันรูโปร่งใสเล็กที่ดูผิดธรรมชาติ หากตั้งขอบด้านในหนาเกินไปให้ลดความหนา",
+    "เลือกตัวเข้ารหัสอัตโนมัติเพื่อตรวจ GPU ที่ใช้ได้ ถ้าไม่มี GPU ที่รองรับจะใช้ CPU หากเริ่ม GPU หรือเข้ารหัสล้มเหลวจะลองด้วย CPU อีกครั้ง การยกเลิกจะไม่เริ่มลองใหม่",
+    "การประกอบทรานซิชัน ภาพ หรือข้อความขั้นสุดท้ายส่งตรงไปยังการเข้ารหัสสุดท้าย ลดไฟล์วิดีโอระหว่างทาง บางขั้นตอนยังใช้ CPU ความเร็วขึ้นกับสื่อ ความละเอียด เอฟเฟกต์ และ GPU",
+    "ภาพตัวอย่างการใช้งานสมมติ ไม่ใช้โปรเจ็กต์ การบันทึก หรือการตั้งค่าส่วนตัวจริง"
+  ]
+}
