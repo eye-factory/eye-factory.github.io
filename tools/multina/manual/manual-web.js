@@ -20,6 +20,8 @@
   if(!extraResponse.ok)throw Error('Missing audio credits and transfer guide');
   window.MultinaManualApplyV111Extras(window.MULTINA_WEB_BUNDLE,await extraResponse.json());
   delete window.MultinaManualApplyV111Extras;
+  window.MultinaManualApplyV112(window.MULTINA_WEB_BUNDLE);
+  delete window.MultinaManualApplyV112;
 /* Requested UI locale is separate from available body translations. */
 (() => {
   const normalize = value => {
