@@ -1,0 +1,71 @@
+{
+  "locales": {
+    "ja": {
+      "creditTitle": "OtoLogicの音素材とクレジット",
+      "creditBody": "追加音源12点はOtoLogicの素材です（CC BY 4.0）。これらの音を使った作品を公開するときは、OtoLogicのクレジット、出典とライセンスのリンクを表示してください。音を加工した場合は加工したことも示してください。",
+      "transferTitle": "動画のインポート・エクスポート",
+      "transferBody": "編集を続けるための「作品のエクスポート」には、取り込んだ音源・文字設定・追加フォントなどを含めます。別の場所へインポートすると素材をその作品の保存先へコピーし、元のフォルダーを参照せず再編集できます。完成動画の書き出しとは別の操作です。"
+    },
+    "en": {
+      "creditTitle": "OtoLogic audio credits",
+      "creditBody": "The 12 added sounds are by OtoLogic (CC BY 4.0). When publishing works using these sounds, credit OtoLogic and include source and license links. Indicate any audio edits.",
+      "transferTitle": "Video project import and export",
+      "transferBody": "Export a project to keep editing: it includes imported audio, text settings and added fonts. Importing elsewhere copies the assets into that project so you can edit without the original folders. This is separate from rendering a finished video."
+    },
+    "de": {
+      "creditTitle": "OtoLogic: Audio und Quellenangaben",
+      "creditBody": "Die 12 neuen Sounds stammen von OtoLogic (CC BY 4.0). Nenne OtoLogic bei der Veröffentlichung damit erstellter Werke und verlinke Quelle und Lizenz. Gib Änderungen am Audio an.",
+      "transferTitle": "Videoprojekte importieren und exportieren",
+      "transferBody": "Der Projektexport enthält importierte Audiodateien, Texteinstellungen und zusätzliche Schriftarten. Beim Import an einem anderen Ort werden die Medien in das Projekt kopiert; die Originalordner werden nicht benötigt. Dies ist vom Rendern des fertigen Videos getrennt."
+    },
+    "fr": {
+      "creditTitle": "Crédits audio OtoLogic",
+      "creditBody": "Les 12 nouveaux sons proviennent d’OtoLogic (CC BY 4.0). Lors de la publication d’œuvres utilisant ces sons, citez OtoLogic et ajoutez les liens vers la source et la licence. Indiquez les modifications audio.",
+      "transferTitle": "Importer et exporter un projet vidéo",
+      "transferBody": "L’export de projet comprend les sons importés, les réglages de texte et les polices ajoutées. L’import ailleurs copie les médias dans le projet, sans dépendre des dossiers d’origine. Cette opération est distincte du rendu d’une vidéo terminée."
+    },
+    "es": {
+      "creditTitle": "Créditos de audio OtoLogic",
+      "creditBody": "Los 12 sonidos añadidos son de OtoLogic (CC BY 4.0). Al publicar obras que los usen, acredita a OtoLogic e incluye enlaces a la fuente y la licencia. Indica los cambios realizados al audio.",
+      "transferTitle": "Importar y exportar proyectos de vídeo",
+      "transferBody": "La exportación del proyecto incluye audio importado, ajustes de texto y fuentes añadidas. Al importarlo en otra ubicación se copian los recursos al proyecto, sin depender de las carpetas originales. Es una operación distinta de renderizar el vídeo final."
+    },
+    "pt-BR": {
+      "creditTitle": "Créditos de áudio OtoLogic",
+      "creditBody": "Os 12 sons adicionados são da OtoLogic (CC BY 4.0). Ao publicar obras que usem esses sons, dê crédito à OtoLogic e inclua os links da fonte e da licença. Informe alterações no áudio.",
+      "transferTitle": "Importar e exportar projetos de vídeo",
+      "transferBody": "A exportação do projeto inclui áudio importado, ajustes de texto e fontes adicionadas. Ao importar em outro local, os recursos são copiados para o projeto, sem depender das pastas originais. Isso é diferente de renderizar o vídeo final."
+    },
+    "id": {
+      "creditTitle": "Kredit audio OtoLogic",
+      "creditBody": "12 suara tambahan berasal dari OtoLogic (CC BY 4.0). Saat menerbitkan karya yang memakai suara ini, cantumkan kredit OtoLogic serta tautan sumber dan lisensi. Jelaskan perubahan audio yang dibuat.",
+      "transferTitle": "Impor dan ekspor proyek video",
+      "transferBody": "Ekspor proyek menyertakan audio yang diimpor, pengaturan teks dan font tambahan. Impor di lokasi lain menyalin aset ke proyek sehingga folder asli tidak diperlukan. Ini berbeda dari merender video akhir."
+    },
+    "zh-Hans": {
+      "creditTitle": "OtoLogic音源与署名",
+      "creditBody": "新增12个音源由OtoLogic提供（CC BY 4.0）。发布使用这些音源的作品时，请注明OtoLogic，并附上来源和许可证链接。如果修改了音频，也请注明。",
+      "transferTitle": "视频项目的导入与导出",
+      "transferBody": "项目导出包含已导入的音频、文字设置及新增字体。导入到其他位置时，素材会复制到该项目中，无需访问原始文件夹即可继续编辑。此操作与导出成品视频不同。"
+    },
+    "zh-Hant": {
+      "creditTitle": "OtoLogic音源與署名",
+      "creditBody": "新增12個音源由OtoLogic提供（CC BY 4.0）。發布使用這些音源的作品時，請註明OtoLogic，並附上來源與授權連結。如果修改了音訊，也請註明。",
+      "transferTitle": "影片專案的匯入與匯出",
+      "transferBody": "專案匯出包含已匯入的音訊、文字設定及新增字型。匯入至其他位置時，素材會複製到該專案中，無需存取原始資料夾即可繼續編輯。此操作與匯出成品影片不同。"
+    },
+    "ko": {
+      "creditTitle": "OtoLogic 음원과 출처 표기",
+      "creditBody": "추가된 음원 12개는 OtoLogic 제공 자료입니다(CC BY 4.0). 이 음원을 사용한 작품을 공개할 때 OtoLogic 크레딧과 출처·라이선스 링크를 표시하세요. 음원을 수정했다면 변경 사항도 표시하세요.",
+      "transferTitle": "동영상 프로젝트 가져오기와 내보내기",
+      "transferBody": "프로젝트 내보내기에는 가져온 음원, 텍스트 설정과 추가 글꼴이 포함됩니다. 다른 위치로 가져오면 리소스가 프로젝트에 복사되어 원본 폴더 없이 편집할 수 있습니다. 완성 동영상 렌더링과는 별도 작업입니다."
+    },
+    "th": {
+      "creditTitle": "เครดิตเสียงจาก OtoLogic",
+      "creditBody": "เสียงที่เพิ่ม 12 รายการมาจาก OtoLogic (CC BY 4.0) เมื่อเผยแพร่ผลงานที่ใช้เสียงเหล่านี้ โปรดให้เครดิต OtoLogic พร้อมลิงก์แหล่งที่มาและใบอนุญาต หากแก้ไขเสียงให้ระบุการเปลี่ยนแปลงด้วย",
+      "transferTitle": "นำเข้าและส่งออกโปรเจ็กต์วิดีโอ",
+      "transferBody": "การส่งออกโปรเจ็กต์รวมเสียงที่นำเข้า การตั้งค่าข้อความ และแบบอักษรที่เพิ่ม เมื่อนำเข้าในตำแหน่งอื่น ระบบจะคัดลอกสื่อไว้ในโปรเจ็กต์ จึงแก้ไขต่อได้โดยไม่ต้องใช้โฟลเดอร์เดิม ซึ่งต่างจากการเรนเดอร์วิดีโอสำเร็จ"
+    }
+  },
+  "noticeSha256": "a47f8421094720442e9b989865742dc72d350a84e022ffb25a1a6aec4345dfb3"
+}

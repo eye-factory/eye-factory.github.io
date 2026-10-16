@@ -1,0 +1,30 @@
+Bundled OtoLogic audio presets
+Creator and rights holder: OtoLogic
+Source: https://otologic.jp/
+Provider terms: https://otologic.jp/free/license.html
+License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+License text and conditions: https://creativecommons.org/licenses/by/4.0/
+Legal code: https://creativecommons.org/licenses/by/4.0/legalcode
+Checked: 2026-10-16
+
+The following original MP3s are redistributed without audio or metadata changes.
+Only their display names are translated and numbered locally in Multina.
+These files are not CC0 and are not covered by Multina's software license.
+Retain OtoLogic attribution, source and license links with redistributed copies.
+When publishing a work using these sounds, include a credit such as:
+Sound: OtoLogic — https://otologic.jp/ (CC BY 4.0)
+Indicate audio edits if you make any. Do not imply endorsement by OtoLogic.
+
+Included originals and display labels:
+oto-cheer-yay-02-1.mp3 | Cheer-Yay02/Cheer-Yay02-1(High-Long-Solo).mp3 | 歓声1
+oto-scene-change-08-1.mp3 | Scene_Change08/Scene_Change08-1(Delay-Fast).mp3 | 場面転換1
+oto-water-drop-01-1.mp3 | Water_Drop01/Water_Drop01-1(Mid-Reverb).mp3 | 水滴1
+oto-parody-accent-01-1.mp3 | Parody_Accent01/Parody_Accent01-1(Reverb).mp3 | あーん1
+oto-parody-accent-02-1.mp3 | Parody_Accent02/Parody_Accent02-1(Reverb).mp3 | わーお1
+oto-birdland-1.mp3 | birdland/birdland1.mp3 | バードランド1
+oto-bright-transition-1.mp3 | mei kara mei switch/mei kara mei switch1.mp3 | 明るい切り替え1
+oto-negative-15-1.mp3 | Onoma-Negative15/Onoma-Negative15-1(Timbre1).mp3 | がっかり1
+oto-surprise-05-1.mp3 | Onoma-Surprise05/Onoma-Surprise05-1(Low).mp3 | 驚き1
+oto-flash-13-1.mp3 | Onoma-Flash13/Onoma-Flash13-1(High-Long).mp3 | 光る1
+oto-ding-03-1.mp3 | Onoma-Ding03/Onoma-Ding03-1(Low-Long).mp3 | チーン1
+oto-horror-accent-07-1.mp3 | Horror_Accent07/Horror_Accent07-1(Low-Short).mp3 | ホラー1

@@ -12,10 +12,14 @@
   if(!v110Response.ok)throw Error('Missing 1.1.0 operation notes');
   window.MultinaManualApplyV110(window.MULTINA_WEB_BUNDLE,await v110Response.json());
   delete window.MultinaManualApplyV110;
-  const v111Response=await fetch('manual-v111-copy.json?v=1.1.1');
+  const v111Response=await fetch('manual-v111-copy.json?v=1.1.1-124');
   if(!v111Response.ok)throw Error('Missing 1.1.1 operation notes');
   window.MultinaManualApplyV111(window.MULTINA_WEB_BUNDLE,await v111Response.json());
   delete window.MultinaManualApplyV111;
+  const extraResponse=await fetch('manual-v111-audio-transfer.json?v=1.1.1-124');
+  if(!extraResponse.ok)throw Error('Missing audio credits and transfer guide');
+  window.MultinaManualApplyV111Extras(window.MULTINA_WEB_BUNDLE,await extraResponse.json());
+  delete window.MultinaManualApplyV111Extras;
 /* Requested UI locale is separate from available body translations. */
 (() => {
   const normalize = value => {
