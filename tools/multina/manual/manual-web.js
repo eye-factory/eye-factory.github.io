@@ -1,5 +1,5 @@
 (async () => {
-  const response = await fetch("manual-bundle.json?v=a3a480b2f90b");
+  const response = await fetch("manual-bundle.json?v=3abbf4e3abba");
   if (!response.ok) throw new Error('Manual HTTP ' + response.status);
   window.MULTINA_WEB_BUNDLE = await response.json();
   window.MultinaManualApplyV102(window.MULTINA_WEB_BUNDLE);
